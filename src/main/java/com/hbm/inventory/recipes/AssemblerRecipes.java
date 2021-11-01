@@ -45,10 +45,10 @@ public class AssemblerRecipes {
 	public static File config;
 	public static File template;
 	private static final Gson gson = new Gson();
-	public static HashMap<ComparableStack, AStack[]> recipes = new HashMap();
-	public static HashMap<ComparableStack, Integer> time = new HashMap();
-	public static List<ComparableStack> recipeList = new ArrayList();
-	public static HashMap<ComparableStack, HashSet<Item>> hidden = new HashMap();
+	public static HashMap<ComparableStack, AStack[]> recipes = new HashMap<ComparableStack, AStack[]>();
+	public static HashMap<ComparableStack, Integer> time = new HashMap<ComparableStack, Integer>();
+	public static List<ComparableStack> recipeList = new ArrayList<ComparableStack>();
+	public static HashMap<ComparableStack, HashSet<Item>> hidden = new HashMap<ComparableStack, HashSet<Item>>();
 	
 	/**
 	 * Pre-Init phase: Finds the recipe config (if exists) and checks if a template is present, if not it generates one.
@@ -88,7 +88,7 @@ public class AssemblerRecipes {
 	 */
 	private static void generateList() {
 		
-		List<ComparableStack> list = new ArrayList(recipes.keySet());
+		List<ComparableStack> list = new ArrayList<ComparableStack>(recipes.keySet());
 		Collections.sort(list);
 		recipeList = list;
 	}
@@ -1285,7 +1285,7 @@ public class AssemblerRecipes {
 						}
 						
 						Object outp = parseJsonArray(output.getAsJsonArray());
-						List inp = new ArrayList();
+						ArrayList<AStack> inp = new ArrayList<AStack>();
 						
 						for(JsonElement in : input.getAsJsonArray()) {
 							
@@ -1293,7 +1293,7 @@ public class AssemblerRecipes {
 								Object i = parseJsonArray(in.getAsJsonArray());
 
 								if(i instanceof ComparableStack || i instanceof OreDictStack)
-									inp.add(i);
+									inp.add((AStack) i);
 							}
 						}
 						
@@ -1403,6 +1403,7 @@ public class AssemblerRecipes {
 		}
 	}
 	
+	@SuppressWarnings("resource")
 	public static void saveTemplateJSON(File dir) {
 		
 		template = new File(dir.getAbsolutePath() + File.separatorChar + "hbmTemplate.json");

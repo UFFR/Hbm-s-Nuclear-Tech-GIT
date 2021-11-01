@@ -40,25 +40,6 @@ public class ItemCustomLore extends Item implements IHasLore
 	{
 		if (!basicLore.isEmpty())
 			list.add(I18nUtil.resolveKey(basicLore));
-//		String unloc;
-//		if (MainRegistry.isPolaroid11)
-//			unloc = this.getUnlocalizedName(itemstack) + ".desc.11";
-//		else
-//			unloc = this.getUnlocalizedName(itemstack) + ".desc";
-//		
-//		String loc = I18nUtil.resolveKey(unloc);
-//		if (unloc.equals(loc))
-//		{
-//			unloc = this.getUnlocalizedName(itemstack) + ".desc";
-//			loc = I18nUtil.resolveKey(unloc);
-//		}
-//		if(!unloc.equals(loc)) {
-//			
-//			String[] locs = loc.split("\\$");
-//			
-//			for(String s : locs)
-//				list.add(s);
-//		}
 		
 		standardLore(itemstack, list);
 		

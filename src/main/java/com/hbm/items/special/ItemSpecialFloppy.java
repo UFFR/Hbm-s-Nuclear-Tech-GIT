@@ -10,6 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
+import scala.actors.threadpool.Arrays;
 
 public final class ItemSpecialFloppy extends ItemStorageMedium
 {
@@ -23,9 +24,7 @@ public final class ItemSpecialFloppy extends ItemStorageMedium
 	{
 		list.add(I18nUtil.resolveKey(getUnlocalizedName() + ".desc19"));
 		list.add("");
-		// The fate of the world is now (literally) in your hands
-		//list.add(EnumChatFormatting.RED + specialLore[MainRegistry.polaroidID - 1]);
-		list.add(EnumChatFormatting.RED + I18nUtil.resolveKey("item.storage_magnetic_fdd_tainted.desc" + MainRegistry.polaroidID));
+		list.addAll(Arrays.asList(I18nUtil.resolveKeyArray("item.storage_magnetic_fdd_tainted.desc" + MainRegistry.polaroidID)));
 		list.add("");
 		list.add(I18nUtil.resolveKey(getUnlocalizedName() + ".desc20"));
 	}
