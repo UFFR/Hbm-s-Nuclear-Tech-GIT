@@ -223,8 +223,8 @@ public class Gun556mmFactory {
 		
 		bullet.ammo = ModItems.ammo_556;
 		bullet.spread *= inaccuracy;
-		bullet.dmgMin = 6;
-		bullet.dmgMax = 8;
+		bullet.dmgMin = 16;
+		bullet.dmgMax = 20;
 		
 		return bullet;
 	}
@@ -234,6 +234,8 @@ public class Gun556mmFactory {
 		BulletConfiguration bullet = get556Config();
 		
 		bullet.ammo = ModItems.ammo_566_gold;
+		bullet.dmgMin = 250;
+		bullet.dmgMax = 320;
 		bullet.spread = 0.0F;
 		
 		return bullet;
@@ -276,8 +278,8 @@ public class Gun556mmFactory {
 		BulletConfiguration bullet = get556Config();
 		
 		bullet.ammo = ModItems.ammo_556_ap;
-		bullet.dmgMin *= 1.5;
-		bullet.dmgMax *= 1.5;
+		bullet.dmgMin = 20;
+		bullet.dmgMax = 26;
 		bullet.wear = 15;
 		bullet.leadChance = 10;
 		
@@ -289,8 +291,8 @@ public class Gun556mmFactory {
 		BulletConfiguration bullet = get556Config();
 		
 		bullet.ammo = ModItems.ammo_556_du;
-		bullet.dmgMin *= 2;
-		bullet.dmgMax *= 2;
+		bullet.dmgMin = 24;
+		bullet.dmgMax = 32;
 		bullet.wear = 25;
 		bullet.leadChance = 50;
 		
@@ -302,8 +304,8 @@ public class Gun556mmFactory {
 		BulletConfiguration bullet = get556Config();
 		
 		bullet.ammo = ModItems.ammo_556_star;
-		bullet.dmgMin *= 3.5;
-		bullet.dmgMax *= 3.5;
+		bullet.dmgMin = 30;
+		bullet.dmgMax = 36;
 		bullet.wear = 25;
 		bullet.leadChance = 100;
 		
@@ -315,8 +317,8 @@ public class Gun556mmFactory {
 		BulletConfiguration bullet = get556Config();
 		
 		bullet.ammo = ModItems.ammo_556_sleek;
-		bullet.dmgMin *= 3.5;
-		bullet.dmgMax *= 3.5;
+		bullet.dmgMin = 45;
+		bullet.dmgMax = 50;
 		bullet.wear = 10;
 		bullet.leadChance = 100;
 		bullet.doesPenetrate = false;
@@ -374,8 +376,8 @@ public class Gun556mmFactory {
 		BulletConfiguration bullet = get556Config();
 
 		bullet.ammo = ModItems.ammo_556_flechette;
-		bullet.dmgMin = 8;
-		bullet.dmgMax = 10;
+		bullet.dmgMin = 26;
+		bullet.dmgMax = 32;
 		bullet.HBRC = 2;
 		bullet.LBRC = 95;
 		bullet.wear = 15;
@@ -430,8 +432,8 @@ public class Gun556mmFactory {
 		BulletConfiguration bullet = get556FlechetteConfig();
 		
 		bullet.ammo = ModItems.ammo_556_flechette_du;
-		bullet.dmgMin *= 2;
-		bullet.dmgMax *= 2;
+		bullet.dmgMin = 46;
+		bullet.dmgMax = 52;
 		bullet.wear = 25;
 		bullet.leadChance = 50;
 		bullet.doesPenetrate = true;
@@ -444,8 +446,8 @@ public class Gun556mmFactory {
 		BulletConfiguration bullet = get556FlechetteConfig();
 		
 		bullet.ammo = ModItems.ammo_556_flechette_sleek;
-		bullet.dmgMin *= 3.5;
-		bullet.dmgMax *= 3.5;
+		bullet.dmgMin = 45;
+		bullet.dmgMax = 50;
 		bullet.wear = 10;
 		bullet.leadChance = 50;
 		bullet.doesPenetrate = false;

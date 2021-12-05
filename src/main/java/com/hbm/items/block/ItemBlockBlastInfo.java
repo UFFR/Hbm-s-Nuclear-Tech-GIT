@@ -8,8 +8,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 
-public class ItemBlockBlastInfo extends ItemBlockLore
-{
+public class ItemBlockBlastInfo extends ItemBlockBase {
 
 	public ItemBlockBlastInfo(Block block) {
 		super(block);
@@ -17,7 +16,9 @@ public class ItemBlockBlastInfo extends ItemBlockLore
 	
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean bool) {
+		
 		super.addInformation(stack, player, list, bool);
+		
 		Item item = stack.getItem();
 		Block block = Block.getBlockFromItem(item);
 		

@@ -82,6 +82,10 @@ public class SILEXRecipes {
 				.addOut(new WeightedRandomObject(new ItemStack(ModItems.powder_aluminium), 2))
 				.addOut(new WeightedRandomObject(new ItemStack(ModItems.powder_silicon), 6)));
 
+		recipes.put(new ComparableStack(ModItems.fluid_icon, 1, FluidType.DEATH.ordinal()), new SILEXRecipe(1000, 1000)
+				.addOut(new WeightedRandomObject(new ItemStack(ModItems.powder_impure_osmiridium), 1))
+				);
+		
 		for(int i = 0; i < 5; i++) {
 			
 			// UEU //

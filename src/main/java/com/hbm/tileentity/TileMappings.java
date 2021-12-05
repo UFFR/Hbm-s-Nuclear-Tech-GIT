@@ -2,6 +2,8 @@ package com.hbm.tileentity;
 
 import java.util.HashMap;
 
+import com.hbm.blocks.generic.BlockBobble.TileEntityBobble;
+import com.hbm.blocks.generic.BlockLoot.TileEntityLoot;
 import com.hbm.tileentity.bomb.*;
 import com.hbm.tileentity.conductor.*;
 import com.hbm.tileentity.deco.*;
@@ -197,6 +199,10 @@ public class TileMappings {
 		map.put(TileEntityAtomicClock.class, "tileentity_atomic_clock");
 		map.put(TileEntityDiFurnaceRTG.class, "tileentity_diFurnace_rtg");
 		map.put(TileEntityReactorWarp.class, "tileentity_reactor_amat");
+		put(TileEntityLoot.class, "tileentity_ntm_loot");
+		put(TileEntityBobble.class, "tileentity_ntm_bobblehead");
+		put(TileEntityCableBaseNT.class, "tileentity_cable", "tileentity_wirecoated");
+		put(TileEntityCableSwitch.class, "tileentity_cable_switch");
 		
 		putBombs();
 		putTurrets();
@@ -206,66 +212,79 @@ public class TileMappings {
 	}
 	
 	private static void putBombs() {
-		map.put(TileEntityBombMulti.class, "tileentity_bombmulti");
-		map.put(TileEntityNukeGadget.class, "tilentity_nukegadget");
-		map.put(TileEntityNukeBoy.class, "tilentity_nukeboy");
-		map.put(TileEntityNukeMike.class, "tileentity_nukemike");
-		map.put(TileEntityNukeTsar.class, "tileentity_nuketsar");
-		map.put(TileEntityNukeFleija.class, "tileentity_nukefleija");
-		map.put(TileEntityNukePrototype.class, "tileentity_nukeproto");
-		map.put(TileEntityNukeSolinium.class, "tileentity_nuke_solinium");
-		map.put(TileEntityNukeN2.class, "tileentity_nuke_n2");
-		map.put(TileEntityNukeCustom.class, "tileentity_nuke_custom");
+		put(TileEntityBombMulti.class, "tileentity_bombmulti");
+		put(TileEntityNukeGadget.class, "tilentity_nukegadget");
+		put(TileEntityNukeBoy.class, "tilentity_nukeboy");
+		put(TileEntityNukeMike.class, "tileentity_nukemike");
+		put(TileEntityNukeTsar.class, "tileentity_nuketsar");
+		put(TileEntityNukeFleija.class, "tileentity_nukefleija");
+		put(TileEntityNukePrototype.class, "tileentity_nukeproto");
+		put(TileEntityNukeSolinium.class, "tileentity_nuke_solinium");
+		put(TileEntityNukeN2.class, "tileentity_nuke_n2");
+		put(TileEntityNukeCustom.class, "tileentity_nuke_custom");
 	}
 	
 	private static void putTurrets() {
-		map.put(TileEntityTurretChekhov.class, "tileentity_turret_chekhov");
-		map.put(TileEntityTurretJeremy.class, "tileentity_turret_jeremy");
-		map.put(TileEntityTurretTauon.class, "tileentity_turret_tauon");
-		map.put(TileEntityTurretFriendly.class, "tileentity_turret_friendly");
-		map.put(TileEntityTurretRichard.class, "tileentity_turret_richard");
-		map.put(TileEntityTurretHoward.class, "tileentity_turret_howard");
-		map.put(TileEntityTurretHowardDamaged.class, "tileentity_turret_howard_damaged");
-		map.put(TileEntityTurretMaxwell.class, "tileentity_turret_maxwell");
-		map.put(TileEntityTurretFritz.class, "tileentity_turret_fritz");
-		map.put(TileEntityTurretBrandon.class, "tileentity_turret_brandon");
+		put(TileEntityTurretChekhov.class, "tileentity_turret_chekhov");
+		put(TileEntityTurretJeremy.class, "tileentity_turret_jeremy");
+		put(TileEntityTurretTauon.class, "tileentity_turret_tauon");
+		put(TileEntityTurretFriendly.class, "tileentity_turret_friendly");
+		put(TileEntityTurretRichard.class, "tileentity_turret_richard");
+		put(TileEntityTurretHoward.class, "tileentity_turret_howard");
+		put(TileEntityTurretHowardDamaged.class, "tileentity_turret_howard_damaged");
+		put(TileEntityTurretMaxwell.class, "tileentity_turret_maxwell");
+		put(TileEntityTurretFritz.class, "tileentity_turret_fritz");
+		put(TileEntityTurretBrandon.class, "tileentity_turret_brandon");
 	}
 	
 	private static void putMachines() {
-		map.put(TileEntityUVLamp.class, "tileentity_uv_lamp");
+		put(TileEntityDiFurnaceRTG.class, "tileentity_rtg_difurnace");
+		put(TileEntityUVLamp.class, "tileentity_uv_lamp");
 		
-		map.put(TileEntityCondenser.class, "tileentity_condenser");
-		map.put(TileEntityTowerSmall.class, "tileentity_cooling_tower_small");
-		map.put(TileEntityTowerLarge.class, "tileentity_cooling_tower_large");
+		put(TileEntityCondenser.class, "tileentity_condenser");
+		put(TileEntityTowerSmall.class, "tileentity_cooling_tower_small");
+		put(TileEntityTowerLarge.class, "tileentity_cooling_tower_large");
+		put(TileEntityDeuteriumExtractor.class, "tileentity_deuterium_extractor");
+		put(TileEntityDeuteriumTower.class, "tileentity_deuterium_tower");
 		
-		map.put(TileEntityMachineOilWell.class, "tileentity_derrick");
-		map.put(TileEntityMachinePumpjack.class, "tileentity_machine_pumpjack");
-		map.put(TileEntityMachineFrackingTower.class, "tileentity_fracking_tower");
-		map.put(TileEntityMachineGasFlare.class, "tileentity_gasflare");
-		map.put(TileEntityMachineRefinery.class, "tileentity_refinery");
+		put(TileEntityMachineOilWell.class, "tileentity_derrick");
+		put(TileEntityMachinePumpjack.class, "tileentity_machine_pumpjack");
+		put(TileEntityMachineFrackingTower.class, "tileentity_fracking_tower");
+		put(TileEntityMachineGasFlare.class, "tileentity_gasflare");
+		put(TileEntityMachineRefinery.class, "tileentity_refinery");
+		put(TileEntityMachineFractionTower.class, "tileentity_fraction_tower");
+		put(TileEntitySpacer.class, "tileentity_fraction_spacer");
+		put(TileEntityMachineCatalyticCracker.class, "tileentity_catalytic_cracker");
+		
+		put(TileEntityReactorZirnox.class, "tileentity_zirnox");
+		put(TileEntityZirnoxDestroyed.class, "tileentity_zirnox_destroyed");
 	}
 	
 	private static void putPile() {
-		map.put(TileEntityPileFuel.class, "tileentity_pile_fuel");
-		map.put(TileEntityPileSource.class, "tileentity_pile_source");
+		put(TileEntityPileFuel.class, "tileentity_pile_fuel");
+		put(TileEntityPileSource.class, "tileentity_pile_source");
 	}
 	
 	private static void putRBMK() {
-		map.put(TileEntityRBMKRod.class, "tileentity_rbmk_rod");
-		map.put(TileEntityRBMKRodReaSim.class, "tileentity_rbmk_rod_reasim");
-		map.put(TileEntityRBMKControlManual.class, "tileentity_rbmk_control");
-		map.put(TileEntityRBMKControlAuto.class, "tileentity_rbmk_control_auto");
-		map.put(TileEntityRBMKBlank.class, "tileentity_rbmk_blank");
-		map.put(TileEntityRBMKBoiler.class, "tileentity_rbmk_boiler");
-		map.put(TileEntityRBMKReflector.class, "tileentity_rbmk_reflector");
-		map.put(TileEntityRBMKAbsorber.class, "tileentity_rbmk_absorber");
-		map.put(TileEntityRBMKModerator.class, "tileentity_rbmk_moderator");
-		map.put(TileEntityRBMKOutgasser.class, "tileentity_rbmk_outgasser");
-		map.put(TileEntityRBMKCooler.class, "tileentity_rbmk_cooler");
-		map.put(TileEntityRBMKStorage.class, "tileentity_rbmk_storage");
-		map.put(TileEntityCraneConsole.class, "tileentity_rbmk_crane_console");
-		map.put(TileEntityRBMKConsole.class, "tileentity_rbmk_console");
-		map.put(TileEntityRBMKInlet.class, "tileentity_rbmk_inlet");
-		map.put(TileEntityRBMKOutlet.class, "tileentity_rbmk_outlet");
+		put(TileEntityRBMKRod.class, "tileentity_rbmk_rod");
+		put(TileEntityRBMKRodReaSim.class, "tileentity_rbmk_rod_reasim");
+		put(TileEntityRBMKControlManual.class, "tileentity_rbmk_control");
+		put(TileEntityRBMKControlAuto.class, "tileentity_rbmk_control_auto");
+		put(TileEntityRBMKBlank.class, "tileentity_rbmk_blank");
+		put(TileEntityRBMKBoiler.class, "tileentity_rbmk_boiler");
+		put(TileEntityRBMKReflector.class, "tileentity_rbmk_reflector");
+		put(TileEntityRBMKAbsorber.class, "tileentity_rbmk_absorber");
+		put(TileEntityRBMKModerator.class, "tileentity_rbmk_moderator");
+		put(TileEntityRBMKOutgasser.class, "tileentity_rbmk_outgasser");
+		put(TileEntityRBMKCooler.class, "tileentity_rbmk_cooler");
+		put(TileEntityRBMKStorage.class, "tileentity_rbmk_storage");
+		put(TileEntityCraneConsole.class, "tileentity_rbmk_crane_console");
+		put(TileEntityRBMKConsole.class, "tileentity_rbmk_console");
+		put(TileEntityRBMKInlet.class, "tileentity_rbmk_inlet");
+		put(TileEntityRBMKOutlet.class, "tileentity_rbmk_outlet");
+	}
+	
+	private static void put(Class<? extends TileEntity> clazz, String... names) {
+		map.put(clazz, names);
 	}
 }

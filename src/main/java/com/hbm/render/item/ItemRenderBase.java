@@ -53,10 +53,17 @@ public abstract class ItemRenderBase implements IItemRenderer {
 			renderNonInv();
 		}
 		renderCommon();
+		renderCommonWithStack(item);
+		
 		GL11.glPopMatrix();
 	}
 
 	public void renderNonInv() { }
 	public void renderInventory() { }
 	public void renderCommon() { }
+<<<<<<< HEAD
 }
+=======
+	public void renderCommonWithStack(ItemStack item) { }
+}
+>>>>>>> master

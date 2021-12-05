@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hbm.blocks.ModBlocks;
-import com.hbm.interfaces.IConsumer;
 import com.hbm.inventory.RecipesCommon.AStack;
 import com.hbm.inventory.UpgradeManager;
 import com.hbm.inventory.recipes.AssemblerRecipes;
@@ -17,6 +16,8 @@ import com.hbm.sound.AudioWrapper;
 import com.hbm.tileentity.TileEntityMachineBase;
 
 import api.hbm.energy.IBatteryItem;
+import api.hbm.energy.IEnergyUser;
+import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.inventory.IInventory;
@@ -27,8 +28,7 @@ import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.tileentity.TileEntityHopper;
 import net.minecraft.util.AxisAlignedBB;
 
-public class TileEntityMachineAssembler extends TileEntityMachineBase implements IConsumer
-{
+public class TileEntityMachineAssembler extends TileEntityMachineBase implements IEnergyUser {
 
 	public long power;
 	public static final long maxPower = 100000;
@@ -113,6 +113,8 @@ public class TileEntityMachineAssembler extends TileEntityMachineBase implements
 	public void updateEntity() {
 		
 		if(!worldObj.isRemote) {
+			
+			this.updateConnections();
 
 			this.consumption = 100;
 			this.speed = 100;
@@ -230,8 +232,36 @@ public class TileEntityMachineAssembler extends TileEntityMachineBase implements
 		}
 	}
 	
-    @Override
-	public void onChunkUnload() {
+	private void updateConnections() {
+		this.getBlockMetadata();
+		
+		if(this.blockMetadata == 5) {
+			this.trySubscribe(worldObj, xCoord - 2, yCoord, zCoord, Library.NEG_X);
+			this.trySubscribe(worldObj, xCoord - 2, yCoord, zCoord + 1, Library.NEG_X);
+			this.trySubscribe(worldObj, xCoord + 3, yCoord, zCoord, Library.POS_X);
+			this.trySubscribe(worldObj, xCoord + 3, yCoord, zCoord + 1, Library.POS_X);
+			
+		} else if(this.blockMetadata == 3) {
+			this.trySubscribe(worldObj, xCoord, yCoord, zCoord - 2, Library.NEG_Z);
+			this.trySubscribe(worldObj, xCoord - 1, yCoord, zCoord - 2, Library.NEG_Z);
+			this.trySubscribe(worldObj, xCoord, yCoord, zCoord + 3, Library.POS_Z);
+			this.trySubscribe(worldObj, xCoord - 1, yCoord, zCoord + 3, Library.POS_Z);
+			
+		} else if(this.blockMetadata == 4) {
+			this.trySubscribe(worldObj, xCoord + 2, yCoord, zCoord, Library.POS_X);
+			this.trySubscribe(worldObj, xCoord + 2, yCoord, zCoord - 1, Library.POS_X);
+			this.trySubscribe(worldObj, xCoord - 3, yCoord, zCoord, Library.NEG_X);
+			this.trySubscribe(worldObj, xCoord - 3, yCoord, zCoord - 1, Library.NEG_X);
+			
+		} else if(this.blockMetadata == 2) {
+			this.trySubscribe(worldObj, xCoord, yCoord, zCoord + 2, Library.POS_Z);
+			this.trySubscribe(worldObj, xCoord + 1, yCoord, zCoord + 2, Library.POS_Z);
+			this.trySubscribe(worldObj, xCoord, yCoord, zCoord - 3, Library.NEG_Z);
+			this.trySubscribe(worldObj, xCoord + 1, yCoord, zCoord - 3, Library.NEG_Z);
+		}
+	}
+	
+    public void onChunkUnload() {
     	
     	if(audio != null) {
 			audio.stopSound();

@@ -102,7 +102,6 @@ public class ItemChemistryTemplate extends Item {
 		QUARTZ,
 		ACRYLIC,
 		DU_DIOXIDE,
-		DUCRETE,
 		OD_CD,
 		OD_DVD,
 		OD_BD,
@@ -123,6 +122,14 @@ public class ItemChemistryTemplate extends Item {
 		GASOLINE,
 		TEL,
 		SARIN;
+		FRACKSOL,
+		HELIUM3,
+		OSMIRIDIUM_DEATH,
+		ETHANOL,
+		METH,
+		CO2,
+		HEAVY_ELECTROLYSIS,
+		DUCRETE;
 		
 		public static EnumChemistryTemplate getEnum(int i) {
 			if(i < EnumChemistryTemplate.values().length)
@@ -357,6 +364,20 @@ public class ItemChemistryTemplate extends Item {
         	return 40;
         case FRACKSOL:
         	return 20;
+		case HELIUM3:
+        	return 200;
+        case OSMIRIDIUM_DEATH:
+        	return 240;
+        case ETHANOL:
+        	return 50;
+        case METH:
+        	return 30;
+        case CO2:
+        	return 60;
+        case HEAVY_ELECTROLYSIS:
+        	return 150;
+        case DUCRETE:
+        	return 150;
         default:
         	return 100;
         }

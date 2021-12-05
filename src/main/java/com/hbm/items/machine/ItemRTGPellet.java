@@ -7,38 +7,62 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import com.google.common.collect.ImmutableSet;
+<<<<<<< HEAD
 import com.hbm.interfaces.IRadioisotopeFuel;
 import com.hbm.items.ModItems;
 import com.hbm.items.special.ItemHazard;
 import com.hbm.util.I18nUtil;
 
 import net.minecraft.entity.player.EntityPlayer;
+=======
+import com.hbm.items.ModItems;
+import com.hbm.tileentity.IRadioisotopeFuel;
+import com.hbm.util.I18nUtil;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+>>>>>>> master
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
+<<<<<<< HEAD
 public class ItemRTGPellet extends ItemHazard implements IRadioisotopeFuel
 {
+=======
+public class ItemRTGPellet extends Item implements IRadioisotopeFuel {
+	
+>>>>>>> master
 	private short heat = 0;
 	private boolean doesDecay = false;
 	private ItemStack decayItem = null;
 	private long lifespan = 0;
 	
+<<<<<<< HEAD
 	private static final ArrayList<ItemRTGPellet> pelletList = new ArrayList<>();
 	
 	@SuppressWarnings("deprecation")
 	public ItemRTGPellet(float radiation, boolean fire, int heatIn)
 	{
 		super(radiation, fire);
+=======
+	public static final List<ItemRTGPellet> pelletList = new ArrayList();
+	
+	public ItemRTGPellet(int heatIn) {
+>>>>>>> master
 		heat = (short) heatIn;
 		setMaxStackSize(1);
 		pelletList.add(this);
 	}
 	
+<<<<<<< HEAD
 	private static final String[] facts = new String[]
 		{
+=======
+	private static final String[] facts = new String[] {
+>>>>>>> master
 			"One gram of Pu-238 costs $8,000.",
 			"One gram of Pu-238 produces just under half a Watt of decay heat.",
 			"The typical plutonium RTG contains close to eight kilograms of Pu-238.",
@@ -58,8 +82,12 @@ public class ItemRTGPellet extends ItemHazard implements IRadioisotopeFuel
 	};
 
 	@Override
+<<<<<<< HEAD
 	public ItemRTGPellet setDecays(@Nonnull ItemStack itemIn, long life)
 	{
+=======
+	public ItemRTGPellet setDecays(@Nonnull ItemStack itemIn, long life) {
+>>>>>>> master
 		doesDecay = true;
 		decayItem = itemIn;
 		lifespan = life;
@@ -67,6 +95,7 @@ public class ItemRTGPellet extends ItemHazard implements IRadioisotopeFuel
 	}
 	
 	@Override
+<<<<<<< HEAD
 	public long getMaxLifespan()
 	{
 		return lifespan;
@@ -88,14 +117,37 @@ public class ItemRTGPellet extends ItemHazard implements IRadioisotopeFuel
 	@Override
 	public boolean getDoesDecay()
 	{
+=======
+	public long getMaxLifespan() {
+		return lifespan;
+	}
+
+	@Override
+	public short getHeat() {
+		return heat;
+	}
+
+	@CheckForNull
+	@Override
+	public ItemStack getDecayItem() {
+		return decayItem == null ? null : decayItem.copy();
+	}
+
+	@Override
+	public boolean getDoesDecay() {
+>>>>>>> master
 		return doesDecay;
 	}
 	
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
 		
+<<<<<<< HEAD
 		if(!world.isRemote && this == ModItems.pellet_rtg)
 		{
+=======
+		if(!world.isRemote && this == ModItems.pellet_rtg) {
+>>>>>>> master
 			player.addChatComponentMessage(new ChatComponentText(facts[world.rand.nextInt(facts.length)]).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)));
 			world.playSoundAtEntity(player, "random.orb", 1.0F, 1.0F);
 		}
@@ -104,6 +156,7 @@ public class ItemRTGPellet extends ItemHazard implements IRadioisotopeFuel
 	}
 
 	@Override
+<<<<<<< HEAD
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean bool)
 	{
 		super.addInformation(stack, player, list, bool);
@@ -136,5 +189,24 @@ public class ItemRTGPellet extends ItemHazard implements IRadioisotopeFuel
 	public static ImmutableSet<ItemRTGPellet> getPellets()
 	{
 		return ImmutableSet.copyOf(pelletList);
+=======
+	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean bool) {
+		super.addInformation(stack, player, list, bool);
+		IRadioisotopeFuel.addTooltip(list, stack, bool);
+	}
+
+	@Override
+	public boolean showDurabilityBar(ItemStack stack) {
+		return getDoesDecay() && getLifespan(stack) != getMaxLifespan();
+	}
+
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack) {
+		return IRadioisotopeFuel.getDuraBar(stack);
+	}
+
+	public String getData() {
+		return String.format("%s (%s HE/t) %s", I18nUtil.resolveKey(getUnlocalizedName().concat(".name")), getHeat(), (getDoesDecay() ? " (decays)" : ""));
+>>>>>>> master
 	}
 }

@@ -147,8 +147,8 @@ public class Gun4GaugeFactory {
 		BulletConfiguration bullet = BulletConfigFactory.standardBuckshotConfig();
 		
 		bullet.ammo = ModItems.ammo_4gauge;
-		bullet.dmgMin = 3;
-		bullet.dmgMax = 6;
+		bullet.dmgMin = 5;
+		bullet.dmgMax = 8;
 		bullet.bulletsMin *= 2;
 		bullet.bulletsMax *= 2;
 		
@@ -160,8 +160,8 @@ public class Gun4GaugeFactory {
 		BulletConfiguration bullet = BulletConfigFactory.standardBulletConfig();
 		
 		bullet.ammo = ModItems.ammo_4gauge_slug;
-		bullet.dmgMin = 15;
-		bullet.dmgMax = 20;
+		bullet.dmgMin = 25;
+		bullet.dmgMax = 32;
 		bullet.wear = 7;
 		bullet.style = BulletConfiguration.STYLE_NORMAL;
 		
@@ -173,8 +173,8 @@ public class Gun4GaugeFactory {
 		BulletConfiguration bullet = BulletConfigFactory.standardBuckshotConfig();
 		
 		bullet.ammo = ModItems.ammo_4gauge_flechette;
-		bullet.dmgMin = 5;
-		bullet.dmgMax = 8;
+		bullet.dmgMin = 8;
+		bullet.dmgMax = 15;
 		bullet.bulletsMin *= 2;
 		bullet.bulletsMax *= 2;
 		bullet.wear = 15;
@@ -190,8 +190,8 @@ public class Gun4GaugeFactory {
 		BulletConfiguration bullet = BulletConfigFactory.standardBuckshotConfig();
 		
 		bullet.ammo = ModItems.ammo_4gauge_flechette;
-		bullet.dmgMin = 5;
-		bullet.dmgMax = 8;
+		bullet.dmgMin = 8;
+		bullet.dmgMax = 15;
 		bullet.bulletsMin *= 2;
 		bullet.bulletsMax *= 2;
 		bullet.wear = 15;
@@ -232,8 +232,8 @@ public class Gun4GaugeFactory {
 		bullet.ammo = ModItems.ammo_4gauge_explosive;
 		bullet.velocity *= 2;
 		bullet.gravity *= 2;
-		bullet.dmgMin = 10;
-		bullet.dmgMax = 15;
+		bullet.dmgMin = 20;
+		bullet.dmgMax = 25;
 		bullet.wear = 25;
 		bullet.trail = 1;
 		
@@ -281,8 +281,8 @@ public class Gun4GaugeFactory {
 		bullet.ammo = ModItems.ammo_4gauge_balefire;
 		bullet.velocity *= 2;
 		bullet.gravity *= 2;
-		bullet.dmgMin = 10;
-		bullet.dmgMax = 15;
+		bullet.dmgMin = 50;
+		bullet.dmgMax = 65;
 		bullet.wear = 25;
 		bullet.trail = 1;
 		bullet.explosive = 0.0F;

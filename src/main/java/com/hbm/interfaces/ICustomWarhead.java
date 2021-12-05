@@ -7,12 +7,14 @@ import java.util.List;
 import org.apache.logging.log4j.Level;
 
 import com.google.common.annotations.Beta;
+import com.hbm.hazard.HazardRegistry;
 import com.hbm.interfaces.ICustomWarhead.EnumCustomWarhead.EnumBioType;
 import com.hbm.interfaces.ICustomWarhead.EnumCustomWarhead.EnumChemicalType;
 import com.hbm.items.ModItems;
 import com.hbm.items.special.ItemHazard;
 import com.hbm.lib.Library;
 import com.hbm.main.MainRegistry;
+import com.hbm.util.BobMathUtil;
 import com.hbm.util.I18nUtil;
 
 import net.minecraft.item.Item;
@@ -201,7 +203,7 @@ public interface ICustomWarhead
 	{
 		for (Enum<?> f : combinedFuels)
 			if (data.getFloat(f.toString()) > 0)
-				tooltip.add(String.format("%s: %skg (%s)", I18nUtil.resolveKey("warheadFuel.".concat(f.toString())), df.format(data.getFloat(f.toString())), Library.toPercentage(data.getFloat(f.toString()), data.getFloat(NBT_MASS))));
+				tooltip.add(String.format("%s: %skg (%s)", I18nUtil.resolveKey("warheadFuel.".concat(f.toString())), df.format(data.getFloat(f.toString())), BobMathUtil.toPercentage(data.getFloat(f.toString()), data.getFloat(NBT_MASS))));
 	}
 	
 	public default void addTooltip(ItemStack stack, List<String> tooltip)
@@ -269,14 +271,14 @@ public interface ICustomWarhead
 	
 	public enum FissileFuel
 	{
-		U233(15F, 197.5F, ItemHazard.u233, 19.05F),
-		U235(52F, 202.5F, ItemHazard.u235, 19.05F),
-		Np237(60F, 202.5F, ItemHazard.np237, 20.45F),
-		Pu239(10F, 207.1F, ItemHazard.pu239, 19.86F),
-		Pu241(12, 210F, ItemHazard.pu241, 19.86F),
-		Am241(66, 210F, ItemHazard.am241, 13.67F),
-		Am242m(11F, 212F, ItemHazard.am242m, 13.67F),
-		Sa326(1F, 250F, ItemHazard.sa326, 39.7F);
+		U233(15F, 197.5F, HazardRegistry.u233, 19.05F),
+		U235(52F, 202.5F, HazardRegistry.u235, 19.05F),
+		Np237(60F, 202.5F, HazardRegistry.np237, 20.45F),
+		Pu239(10F, 207.1F, HazardRegistry.pu239, 19.86F),
+		Pu241(12, 210F, HazardRegistry.pu241, 19.86F),
+		Am241(66, 210F, HazardRegistry.am241, 13.67F),
+		Am242m(11F, 212F, HazardRegistry.am242, 13.67F),
+		Sa326(1F, 250F, HazardRegistry.sa326, 39.7F);
 		public final float criticalMass;
 		public final float energyReleased;
 		public final float radioactivity;
@@ -361,7 +363,8 @@ public interface ICustomWarhead
 			return getIngotMass() / 9;
 		}
 	}
-	public static class CustomWarheadWrapper
+	
+	/*public static class CustomWarheadWrapper
 	{
 		public static final ICustomWarhead cWarhead = (ICustomWarhead) ModItems.custom_warhead;
 		public static final ICustomWarhead cCore = (ICustomWarhead) ModItems.custom_core;
@@ -426,5 +429,5 @@ public interface ICustomWarhead
 		{
 			return stack.copy();
 		}
-	}
+	}*/
 }

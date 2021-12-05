@@ -1,13 +1,12 @@
 package com.hbm.tileentity.machine;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.hbm.handler.FluidTypeHandler.FluidType;
-import com.hbm.interfaces.IConsumer;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidContainer;
-import com.hbm.interfaces.ISource;
 import com.hbm.inventory.FluidContainerRegistry;
 import com.hbm.inventory.FluidTank;
 import com.hbm.items.ModItems;
@@ -15,17 +14,17 @@ import com.hbm.lib.Library;
 import com.hbm.tileentity.TileEntityMachineBase;
 
 import api.hbm.energy.IBatteryItem;
+import api.hbm.energy.IEnergyGenerator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityMachineDiesel extends TileEntityMachineBase implements ISource, IFluidContainer, IFluidAcceptor {
+public class TileEntityMachineDiesel extends TileEntityMachineBase implements IEnergyGenerator, IFluidContainer, IFluidAcceptor {
 
 	public long power;
 	public int soundCycle = 0;
 	public static final long maxPower = 50000;
 	public long powerCap = 50000;
-	public int age = 0;
-	public List<IConsumer> list = new ArrayList<IConsumer>();
 	public FluidTank tank;
 
 	private static final int[] slots_top = new int[] { 0 };
@@ -97,13 +96,9 @@ public class TileEntityMachineDiesel extends TileEntityMachineBase implements IS
 	public void updateEntity() {
 		
 		if(!worldObj.isRemote) {
-			age++;
-			if (age >= 20) {
-				age = 0;
-			}
-
-			if (age == 9 || age == 19)
-				ffgeuaInit();
+			
+			for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+				this.sendPower(worldObj, xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ, dir);
 
 			//Tank Management
 			tank.setType(3, 4, slots);
@@ -139,27 +134,23 @@ public class TileEntityMachineDiesel extends TileEntityMachineBase implements IS
 		return getHEFromFuel() > 0;
 	}
 	
+	public static final HashMap<FluidType, Integer> fuels = new HashMap();
+	
+	static {
+		fuels.put(FluidType.HYDROGEN,	10);
+		fuels.put(FluidType.DIESEL,		500);
+		fuels.put(FluidType.PETROIL,	300);
+		fuels.put(FluidType.BIOFUEL,	400);
+		fuels.put(FluidType.GASOLINE,	1500);
+		fuels.put(FluidType.NITAN,		5000);
+		fuels.put(FluidType.LPG,		450);
+		fuels.put(FluidType.ETHANOL,	200);
+	}
+	
 	public int getHEFromFuel() {
 		FluidType type = tank.getTankType();
-		switch (type)
-		{
-		case BIOFUEL:
-			return 400;
-		case DIESEL:
-			return 500;
-		case GASOLINE:
-			return 1500;
-		case HYDROGEN:
-			return 10;
-		case LPG:
-			return 450;
-		case NITAN:
-			return 5000;
-		case PETROIL:
-			return 300;
-		default:
-			return 0;
-		}
+		Integer value = fuels.get(type);
+		return value != null ? value : 0;
 	}
 
 	public void generate() {
@@ -175,7 +166,7 @@ public class TileEntityMachineDiesel extends TileEntityMachineBase implements IS
 				if (soundCycle >= 3)
 					soundCycle = 0;
 
-				tank.setFill(tank.getFill() - 10);
+				tank.setFill(tank.getFill() - 1);
 				if (tank.getFill() < 0)
 					tank.setFill(0);
 
@@ -189,48 +180,18 @@ public class TileEntityMachineDiesel extends TileEntityMachineBase implements IS
 	}
 
 	@Override
-	public void ffgeua(int x, int y, int z, boolean newTact) {
-		
-		Library.ffgeua(x, y, z, newTact, this, worldObj);
-	}
-
-	@Override
-	public void ffgeuaInit() {
-		ffgeua(this.xCoord, this.yCoord + 1, this.zCoord, getTact());
-		ffgeua(this.xCoord, this.yCoord - 1, this.zCoord, getTact());
-		ffgeua(this.xCoord - 1, this.yCoord, this.zCoord, getTact());
-		ffgeua(this.xCoord + 1, this.yCoord, this.zCoord, getTact());
-		ffgeua(this.xCoord, this.yCoord, this.zCoord - 1, getTact());
-		ffgeua(this.xCoord, this.yCoord, this.zCoord + 1, getTact());
-	}
-
-	@Override
-	public boolean getTact() {
-		if (age >= 0 && age < 10) {
-			return true;
-		}
-
-		return false;
-	}
-
-	@Override
-	public long getSPower() {
+	public long getPower() {
 		return power;
 	}
 
 	@Override
-	public void setSPower(long i) {
+	public void setPower(long i) {
 		this.power = i;
 	}
 
 	@Override
-	public List<IConsumer> getList() {
-		return list;
-	}
-
-	@Override
-	public void clearList() {
-		this.list.clear();
+	public long getMaxPower() {
+		return this.maxPower;
 	}
 
 	@Override

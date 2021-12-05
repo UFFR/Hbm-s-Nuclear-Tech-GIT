@@ -1,6 +1,7 @@
 package com.hbm.handler;
 
 import com.hbm.blocks.ModBlocks;
+import com.hbm.blocks.generic.BlockBobble.TileEntityBobble;
 import com.hbm.blocks.machine.NTMAnvil;
 import com.hbm.interfaces.Spaghetti;
 import com.hbm.inventory.container.*;
@@ -363,13 +364,6 @@ public class GUIHandler implements IGuiHandler {
 		case ModBlocks.guiID_nuke_custom: {
 			if(entity instanceof TileEntityNukeCustom) {
 				return new ContainerNukeCustom(player.inventory, (TileEntityNukeCustom) entity);
-			}
-			return null;
-		}
-
-		case ModBlocks.guiID_machine_reix_mainframe: {
-			if(entity instanceof TileEntityReiXMainframe) {
-				return new ContainerReiXMainframe(player.inventory, (TileEntityReiXMainframe) entity);
 			}
 			return null;
 		}
@@ -994,6 +988,37 @@ public class GUIHandler implements IGuiHandler {
 			}
 			return null;
 		}
+		
+		case ModBlocks.guiID_rtg_difurnace: {
+			if (entity instanceof TileEntityDiFurnaceRTG) {
+				return new ContainerMachineDiFurnaceRTG(player.inventory, (TileEntityDiFurnaceRTG) entity);
+			}
+			return null;
+		}
+		
+		case ModBlocks.guiID_reactor_zirnox: {
+			if(entity instanceof TileEntityReactorZirnox) {
+				return new ContainerReactorZirnox(player.inventory, (TileEntityReactorZirnox) entity);
+			}
+			return null;
+		}
+		}
+		// NON-TE CONTAINERS
+
+		switch(ID) {
+		case ModItems.guiID_item_box:
+			return new ContainerLeadBox(player, player.inventory, new InventoryLeadBox(player.getHeldItem()));
+		case ModItems.guiID_item_book:
+			return new ContainerBook(player.inventory);
+		}
+
+		return null;
+	}
+
+	@Override
+	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		TileEntity entity = world.getTileEntity(x, y, z);
+		switch(ID) {
 		case ModBlocks.guiID_test_difurnace: {
 			if(entity instanceof TileEntityDiFurnace) {
 				return new GUITestDiFurnace(player.inventory, (TileEntityDiFurnace) entity);
@@ -1242,13 +1267,6 @@ public class GUIHandler implements IGuiHandler {
 		case ModBlocks.guiID_nuke_custom: {
 			if(entity instanceof TileEntityNukeCustom) {
 				return new GUINukeCustom(player.inventory, (TileEntityNukeCustom) entity);
-			}
-			return null;
-		}
-
-		case ModBlocks.guiID_machine_reix_mainframe: {
-			if(entity instanceof TileEntityReiXMainframe) {
-				return new GUIReiXMainframe(player.inventory, (TileEntityReiXMainframe) entity);
 			}
 			return null;
 		}
@@ -1742,6 +1760,97 @@ public class GUIHandler implements IGuiHandler {
 			}
 			return null;
 		}
+
+		case ModBlocks.guiID_rbmk_rod: {
+			if(entity instanceof TileEntityRBMKRod) {
+				return new GUIRBMKRod(player.inventory, (TileEntityRBMKRod) entity);
+			}
+			return null;
+		}
+
+		case ModBlocks.guiID_rbmk_boiler: {
+			if(entity instanceof TileEntityRBMKBoiler) {
+				return new GUIRBMKBoiler(player.inventory, (TileEntityRBMKBoiler) entity);
+			}
+			return null;
+		}
+
+		case ModBlocks.guiID_rbmk_control: {
+			if(entity instanceof TileEntityRBMKControlManual) {
+				return new GUIRBMKControl(player.inventory, (TileEntityRBMKControlManual) entity);
+			}
+			return null;
+		}
+
+		case ModBlocks.guiID_rbmk_control_auto: {
+			if(entity instanceof TileEntityRBMKControlAuto) {
+				return new GUIRBMKControlAuto(player.inventory, (TileEntityRBMKControlAuto) entity);
+			}
+			return null;
+		}
+
+		case ModBlocks.guiID_rbmk_console: {
+			if(entity instanceof TileEntityRBMKConsole) {
+				return new GUIRBMKConsole(player.inventory, (TileEntityRBMKConsole) entity);
+			}
+			return null;
+		}
+
+		case ModBlocks.guiID_storage_drum: {
+			if(entity instanceof TileEntityStorageDrum) {
+				return new GUIStorageDrum(player.inventory, (TileEntityStorageDrum) entity);
+			}
+			return null;
+		}
+
+		case ModBlocks.guiID_rbmk_outgasser: {
+			if(entity instanceof TileEntityRBMKOutgasser) {
+				return new GUIRBMKOutgasser(player.inventory, (TileEntityRBMKOutgasser) entity);
+			}
+			return null;
+		}
+
+		case ModBlocks.guiID_maxwell: {
+			if(entity instanceof TileEntityTurretMaxwell) {
+				return new GUITurretMaxwell(player.inventory, (TileEntityTurretMaxwell) entity);
+			}
+			return null;
+		}
+
+		case ModBlocks.guiID_anvil: {
+			if(world.getBlock(x, y, z) instanceof NTMAnvil) {
+				return new GUIAnvil(player.inventory, ((NTMAnvil)world.getBlock(x, y, z)).tier);
+			}
+			return null;
+		}
+
+		case ModBlocks.guiID_fritz: {
+			if(entity instanceof TileEntityTurretFritz) {
+				return new GUITurretFritz(player.inventory, (TileEntityTurretFritz) entity);
+			}
+			return null;
+		}
+
+		case ModBlocks.guiID_rbmk_storage: {
+			if(entity instanceof TileEntityRBMKStorage) {
+				return new GUIRBMKStorage(player.inventory, (TileEntityRBMKStorage) entity);
+			}
+			return null;
+		}
+		
+		case ModBlocks.guiID_rtg_difurnace: {
+			if (entity instanceof TileEntityDiFurnaceRTG) {
+				return new GUIMachineDiFurnaceRTG(player.inventory, (TileEntityDiFurnaceRTG) entity);
+			}
+			return null;
+		}
+		
+		case ModBlocks.guiID_reactor_zirnox: {
+			if(entity instanceof TileEntityReactorZirnox) {
+				return new GUIReactorZirnox(player.inventory, (TileEntityReactorZirnox) entity);
+			}
+			return null;
+		}
 		}
 		// ITEM GUIS
 
@@ -1763,6 +1872,8 @@ public class GUIHandler implements IGuiHandler {
 			return new GUIBook(player.inventory);
 		case ModItems.guiID_item_guide:
 			return new GUIScreenGuide(player);
+		case ModItems.guiID_item_bobble:
+			return new GUIScreenBobble((TileEntityBobble) world.getTileEntity(x, y, z));
 		}
 		return null;
 	}

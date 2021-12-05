@@ -72,6 +72,8 @@ public class BulletConfiguration implements Cloneable
 	//whether the bullet should stay alive after colliding with a block
 	public boolean liveAfterImpact;
 	
+	public boolean blackPowder = true;
+	
 	//bullet effects
 	public List<PotionEffect> effects = new ArrayList<PotionEffect>();
 	/**Blocks the bullet can pass through**/

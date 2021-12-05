@@ -298,6 +298,7 @@ public class HbmLivingProps implements IExtendedEntityProperties
 		props.setInteger("hfr_bomb", bombTimer);
 		props.setInteger("hfr_contagion", contagion);
 		props.setInteger("hfr_blacklung", blacklung);
+		props.setInteger("hfr_fibrosis", fibrosis);
 		
 		props.setInteger("hfr_cont_count", this.contamination.size());
 		
@@ -329,6 +330,7 @@ public class HbmLivingProps implements IExtendedEntityProperties
 			bombTimer = props.getInteger("hfr_bomb");
 			contagion = props.getInteger("hfr_contagion");
 			blacklung = props.getInteger("hfr_blacklung");
+			fibrosis = props.getInteger("hfr_fibrosis");
 			
 			int cont = props.getInteger("hfr_cont_count");
 			

@@ -11,6 +11,7 @@ import com.hbm.packet.AuxGaugePacket;
 import com.hbm.packet.PacketDispatcher;
 
 import api.hbm.energy.IBatteryItem;
+import api.hbm.energy.IEnergyUser;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
@@ -20,7 +21,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 
-public class TileEntityMachineArcFurnace extends TileEntity implements ISidedInventory, IConsumer {
+public class TileEntityMachineArcFurnace extends TileEntity implements ISidedInventory, IEnergyUser {
 
 	private ItemStack slots[];
 	
@@ -326,8 +327,10 @@ public class TileEntityMachineArcFurnace extends TileEntity implements ISidedInv
 		this.hasPower();
 		boolean flag1 = false;
 		
-		if(!worldObj.isRemote)
-		{			
+		if(!worldObj.isRemote) {
+			
+			this.updateStandardConnections(worldObj, xCoord, yCoord, zCoord);
+			
 			if(hasPower() && canProcess())
 			{
 				dualCookTime++;

@@ -207,4 +207,73 @@ public class BossSpawnHandler {
 		meteor.motionZ = vec.zCoord;
 		player.worldObj.spawnEntityInWorld(meteor);
 	}
+	
+	public static int meteorShower = 0;
+	private static void meteorUpdate(World world) {
+
+		if(meteorRand.nextInt(meteorShower > 0 ? WorldConfig.meteorShowerChance : WorldConfig.meteorStrikeChance) == 0) {
+			
+			if(!world.playerEntities.isEmpty()) {
+				
+				EntityPlayer p = (EntityPlayer)world.playerEntities.get(meteorRand.nextInt(world.playerEntities.size()));
+				
+				if(p != null && p.dimension == 0) {
+					
+					boolean repell = false;
+					boolean strike = true;
+					
+					if(p.getCurrentArmor(2) != null && ArmorModHandler.hasMods(p.getCurrentArmor(2))) {
+						ItemStack mod = ArmorModHandler.pryMods(p.getCurrentArmor(2))[ArmorModHandler.helmet_only];
+						
+						if(mod != null) {
+							if(mod.getItem() == ModItems.protection_charm) {
+								repell = true;
+							}
+							if(mod.getItem() == ModItems.meteor_charm) {
+								repell = true;
+								strike = meteorRand.nextInt(4) == 0;
+							}
+						}
+					}
+					
+					if(strike)
+						spawnMeteorAtPlayer(p, repell);
+				}
+			}
+		}
+		
+		if(meteorShower > 0) {
+			meteorShower--;
+			if(meteorShower == 0 && GeneralConfig.enableDebugMode)
+				MainRegistry.logger.info("Ended meteor shower.");
+		}
+		
+		if(meteorRand.nextInt(WorldConfig.meteorStrikeChance * 100) == 0 && GeneralConfig.enableMeteorShowers) {
+			meteorShower = (int)(WorldConfig.meteorShowerDuration * 0.75 + WorldConfig.meteorShowerDuration * 0.25 * meteorRand.nextFloat());
+
+			if(GeneralConfig.enableDebugMode)
+				MainRegistry.logger.info("Started meteor shower! Duration: " + meteorShower);
+		}
+	}
+	
+	public static void spawnMeteorAtPlayer(EntityPlayer player, boolean repell) {
+
+		EntityMeteor meteor = new EntityMeteor(player.worldObj);
+		meteor.setPositionAndRotation(player.posX + meteorRand.nextInt(201) - 100, 384, player.posZ + meteorRand.nextInt(201) - 100, 0, 0);
+		
+		Vec3 vec;
+		if(repell) {
+			vec = Vec3.createVectorHelper(meteor.posX - player.posX, 0, meteor.posZ - player.posZ).normalize();
+			vec.xCoord = vec.xCoord * meteorRand.nextDouble() - 0.5D;
+			vec.zCoord = vec.zCoord * meteorRand.nextDouble() - 0.5D;
+		} else {
+			vec = Vec3.createVectorHelper(meteorRand.nextDouble() - 0.5D, 0, 0);
+			vec.rotateAroundY((float) (Math.PI * meteorRand.nextDouble()));
+		}
+		
+		meteor.motionX = vec.xCoord;
+		meteor.motionY = -2.5;
+		meteor.motionZ = vec.zCoord;
+		player.worldObj.spawnEntityInWorld(meteor);
+	}
 }

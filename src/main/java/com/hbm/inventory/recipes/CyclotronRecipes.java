@@ -75,6 +75,7 @@ public class CyclotronRecipes {
 		makeRecipe(carbon, caAmat, new ComparableStack(ModItems.nugget_mercury), new ItemStack(ModItems.powder_polonium), caA);
 		makeRecipe(carbon, caAmat, "dustAstatine", new ItemStack(ModItems.powder_actinium), caA);
 		makeRecipe(carbon, caAmat, "dustAstatine209", new ItemStack(ModItems.powder_actinium), caA);
+		makeRecipe(carbon, caAmat, "dustLead", new ItemStack(ModItems.powder_ra226),caA);
 		makeRecipe(carbon, caAmat, new ComparableStack(ModItems.powder_australium), new ItemStack(ModItems.powder_verticium), caA);
 		/// CARBON END ///
 		
