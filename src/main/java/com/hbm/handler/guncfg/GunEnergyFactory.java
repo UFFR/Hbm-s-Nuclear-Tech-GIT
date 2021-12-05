@@ -561,8 +561,8 @@ public class GunEnergyFactory
 		bullet.maxAge = 350;
 		bullet.wear = 10;
 		
-		bullet.dmgMax = 18F;
-		bullet.dmgMin = 15F;
+		bullet.dmgMax = 36F;
+		bullet.dmgMin = 30F;
 		
 		bullet.gravity = 0D;
 		bullet.doesRicochet = false;
@@ -605,8 +605,8 @@ public class GunEnergyFactory
 		bullet.maxAge = 350;
 		bullet.wear = 25;
 		
-		bullet.dmgMax = 25F;
-		bullet.dmgMin = 20F;
+		bullet.dmgMax = 50F;
+		bullet.dmgMin = 40F;
 		bullet.bulletsMax = 18;
 		bullet.bulletsMin = 12;
 		

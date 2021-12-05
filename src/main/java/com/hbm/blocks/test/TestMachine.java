@@ -12,7 +12,7 @@ import com.hbm.packet.AuxButtonPacket;
 import com.hbm.packet.NBTControlPacket;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.tileentity.machine.TileEntityMachineSingGen;
-import com.hbm.tileentity.turret.TileEntityLunarOni;
+import com.hbm.tileentity.turret.TileEntityBishamonten;
 import com.hbm.tileentity.turret.TileEntityTsukuyomi;
 
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;

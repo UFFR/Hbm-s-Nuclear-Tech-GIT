@@ -6,7 +6,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-public class EasyLocation
+public class EasyLocation implements Cloneable
 {
 	public double posX;
 	public double posY;
@@ -75,7 +75,7 @@ public class EasyLocation
 		
 		EasyLocation test = (EasyLocation) obj;
 		
-		return (posX == test.posX && posY == test.posY && posZ == test.posZ && dimID == test.dimID);
+		return (posX == test.posX && posY == test.posY && posZ == test.posZ && dimID == test.dimID && world.equals(test.world));
 	}
 	/** Also sets the dimID **/
 	public EasyLocation setWorld(World worldIn)
@@ -118,6 +118,14 @@ public class EasyLocation
 		coord[2] = (int) posZ;
 		return coord;
 	}
+	/** <b><i>Must</i></b> have world set!
+	 * @param e The entity to spawn
+	 * @return Whatever spawnEntityInWorld() returns**/
+	public boolean spawnEntityAtCoord(Entity e)
+	{
+		return world.spawnEntityInWorld(e);
+	}
+	
 	@Deprecated
 	public TileEntity getTEAtCoord(World worldIn)
 	{
@@ -162,15 +170,23 @@ public class EasyLocation
 	}
 	
 	@Override
-	public String toString()
+	public EasyLocation clone()
 	{
-		return String.format("posX: %s; posY: %s; posZ: %s", getCoordDouble());
+		try
+		{
+			return (EasyLocation) super.clone();
+		}
+		catch (CloneNotSupportedException e)
+		{
+			e.printStackTrace();
+			return new EasyLocation(getCoordDouble());
+		}
 	}
 	
 	@Override
-	public EasyLocation clone()
+	public String toString()
 	{
-		return new EasyLocation(posX, posY, posZ);
+		return String.format("posX: %s; posY: %s; posZ: %s", getCoordDouble());
 	}
 	
 	@Override

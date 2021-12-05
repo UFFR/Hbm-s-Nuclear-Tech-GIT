@@ -64,8 +64,7 @@ public class FluidConverterConfig
 						
 						FluidType bobFluid = FluidType.valueOf(fluidName);
 						Fluid forgeFluid = new Fluid(name).setDensity(density).setGaseous(isGas).setLuminosity(light).setViscosity(viscosity);
-						TileEntityFluidConverter.bobToForge.put(bobFluid, forgeFluid);
-						TileEntityFluidConverter.forgeToBob.put(forgeFluid, bobFluid);
+						TileEntityFluidConverter.conversions.put(bobFluid, forgeFluid);
 						compats[bobFluid.ordinal()] = true;
 						FluidRegistry.registerFluid(forgeFluid);
 					}

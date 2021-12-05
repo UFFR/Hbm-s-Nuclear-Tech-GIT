@@ -4,12 +4,14 @@ import java.util.List;
 
 import org.apache.logging.log4j.Level;
 
+import com.hbm.calc.EasyLocation;
 import com.hbm.config.BombConfig;
 import com.hbm.config.GeneralConfig;
 import com.hbm.config.WeaponConfig;
 import com.hbm.entity.effect.EntityBlackHole;
 import com.hbm.entity.effect.EntityCloudFleija;
 import com.hbm.entity.effect.EntityRagingVortex;
+import com.hbm.entity.effect.EntityTesseract;
 import com.hbm.entity.effect.EntityVortex;
 import com.hbm.entity.logic.EntityNukeExplosionMK3;
 import com.hbm.explosion.ExplosionChaos;
@@ -23,8 +25,11 @@ import com.hbm.lib.HbmCollection;
 import com.hbm.main.MainRegistry;
 import com.hbm.util.I18nUtil;
 
+import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
@@ -197,6 +202,29 @@ public class ItemDrop extends ItemCustomLore {
 
 		}
 		list.add(EnumChatFormatting.RED + "[" + I18nUtil.resolveKey(HbmCollection.drop) + "]");
+	}
+	
+	@Override
+	public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int p_77663_4_,
+			boolean p_77663_5_)
+	{
+		if (stack.getItem() == ModItems.singularity_counter_resonant && worldIn.rand.nextInt(750) == 0)
+		{
+			MainRegistry.logger.info("Tesseract preparing to spawn");
+			EasyLocation loc = new EasyLocation(entityIn);
+			EasyLocation newLoc;
+			do
+			{
+				newLoc = loc.clone();
+				newLoc.modifyCoord(worldIn.rand.nextInt(10), worldIn.rand.nextInt(10), worldIn.rand.nextInt(10));
+			}
+			while (newLoc.getBlockAtCoord() != Blocks.air);
+			EntityTesseract tesseract = new EntityTesseract(worldIn);
+			tesseract.posX = newLoc.posX;
+			tesseract.posY = newLoc.posY;
+			tesseract.posZ = newLoc.posZ;
+			worldIn.spawnEntityInWorld(tesseract);
+		}
 	}
 	
 	@Override

@@ -111,7 +111,8 @@ public class FluidTypeHandler {
 		PLASMA_WARP		(0x00FFFF,	15,	1,	2,	5,	5,	5,	EnumSymbol.ANTIMATTER,	"hbmfluid.plasma_warp", true, false, true, 1200000),
 		ALCOHOL			(0x00bcbc, 	16, 2, 	2,	1, 	3,	0,  EnumSymbol.NONE,		"hbmfluid.alcohol"),
 		
-		SARIN			(0x00b4b4,	17, 2,	2,	4,	1,	1,	EnumSymbol.CHEMICAL,	"hbmfluid.sarin", FluidTrait.CHEMICAL);
+		SARIN			(0x00b4b4,	17, 2,	2,	4,	1,	1,	EnumSymbol.CHEMICAL,	"hbmfluid.sarin", FluidTrait.CHEMICAL),
+		WRATH			(0x2ECC71,  18, 2,	2,	4,	0,	3,	EnumSymbol.ACID,		"hbmfluid.wrath", FluidTrait.CORROSIVE_STRONG);
 		
 		//Approximate HEX Color of the fluid, used for pipe rendering
 		private int color;

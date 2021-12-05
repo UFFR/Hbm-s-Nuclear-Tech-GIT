@@ -21,7 +21,7 @@ import com.hbm.lib.ModDamageSource;
 import com.hbm.lib.RefStrings;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.machine.TileEntityAtomicClock;
-import com.hbm.tileentity.turret.TileEntityLunarOni;
+import com.hbm.tileentity.turret.TileEntityBishamonten;
 import com.hbm.tileentity.turret.TileEntityTurretBrandon;
 import com.hbm.tileentity.turret.TileEntityTurretChekhov;
 import com.hbm.tileentity.turret.TileEntityTurretFriendly;
@@ -322,6 +322,7 @@ public class ModBlocks {
 	public static Block gravel_obsidian;
 	public static Block gravel_diamond;
 	public static Block asphalt;
+	public static Block asphalt_stairs;
 	public static Block asphalt_light;
 
 	public static Block reinforced_brick;
@@ -1124,7 +1125,7 @@ public class ModBlocks {
 
 	public static Block turret_tsukuyomi;
 	public static final int guiID_tsukuyomi = 124;
-	public static Block turret_lunar_oni;
+	public static Block turret_bishamonten;
 	public static final int guiID_lunar_oni = 125;
 	public static Block book_guide;
 
@@ -1530,6 +1531,7 @@ public class ModBlocks {
 		gravel_obsidian = new BlockFalling(Material.iron).setBlockName("gravel_obsidian").setCreativeTab(MainRegistry.blockTab).setStepSound(Block.soundTypeGravel).setHardness(5.0F).setResistance(600.0F).setBlockTextureName(RefStrings.MODID + ":gravel_obsidian");
 		gravel_diamond = new BlockFalling(Material.sand).setBlockName("gravel_diamond").setCreativeTab(MainRegistry.blockTab).setStepSound(Block.soundTypeGravel).setHardness(0.6F).setBlockTextureName(RefStrings.MODID + ":gravel_diamond");
 		asphalt = new BlockSpeedy(Material.rock, 1.15).setBlockName("asphalt").setCreativeTab(MainRegistry.blockTab).setHardness(15.0F).setResistance(100.0F).setBlockTextureName(RefStrings.MODID + ":asphalt");
+		asphalt_stairs = new BlockNTMStairs(asphalt, 0);
 		asphalt_light = new BlockSpeedy(Material.rock, 1.15).setBlockName("asphalt_light").setCreativeTab(MainRegistry.blockTab).setLightLevel(1F).setHardness(15.0F).setResistance(100.0F).setBlockTextureName(RefStrings.MODID + ":asphalt_light");
 
 		reinforced_brick = new BlockGeneric(Material.rock).setBlockName("reinforced_brick").setCreativeTab(MainRegistry.blockTab).setHardness(15.0F).setResistance(8000.0F).setBlockTextureName(RefStrings.MODID + ":reinforced_brick");
@@ -2037,7 +2039,7 @@ public class ModBlocks {
 		turret_richard = new TurretBaseNT(Material.iron, TileEntityTurretRichard.class, guiID_richard).setBlockName("turret_richard").setHardness(5.0F).setResistance(600.0F).setCreativeTab(MainRegistry.weaponTab).setBlockTextureName(RefStrings.MODID + ":block_steel");
 		turret_howard = new TurretBaseNT(Material.iron, TileEntityTurretHoward.class, guiID_howard).setBlockName("turret_howard").setHardness(5.0F).setResistance(600.0F).setCreativeTab(MainRegistry.weaponTab).setBlockTextureName(RefStrings.MODID + ":block_steel");
 		turret_tsukuyomi = new TurretTsukuyomi().setBlockName("turret_twr").setBlockTextureName(RefStrings.MODID + ":machine_sing_gen_beta");
-		turret_lunar_oni = new TestMachine(Material.iron, TileEntityLunarOni.class, guiID_lunar_oni).setCreativeTab(MainRegistry.weaponTab).setBlockName("turret_lunar_oni").setHardness(15.0F).setResistance(Float.POSITIVE_INFINITY).setBlockTextureName(RefStrings.MODID + ":machine_sing_gen_alpha");// TODO Finish
+		turret_bishamonten = new TestMachine(Material.iron, TileEntityBishamonten.class, guiID_lunar_oni).setCreativeTab(MainRegistry.weaponTab).setBlockName("turret_bishamonten").setHardness(15.0F).setResistance(Float.POSITIVE_INFINITY).setBlockTextureName(RefStrings.MODID + ":machine_sing_gen_alpha");// TODO Finish
 		
 		turret_howard_damaged = new TurretBaseNT(Material.iron, TileEntityTurretHowardDamaged.class, -1).setBlockName("turret_howard_damaged").setHardness(5.0F).setResistance(600.0F).setCreativeTab(MainRegistry.weaponTab).setBlockTextureName(RefStrings.MODID + ":block_rust");
 		turret_maxwell = new TurretBaseNT(Material.iron, TileEntityTurretMaxwell.class, guiID_maxwell).setBlockName("turret_maxwell").setHardness(5.0F).setResistance(600.0F).setCreativeTab(MainRegistry.weaponTab).setBlockTextureName(RefStrings.MODID + ":block_steel");
@@ -2558,6 +2560,7 @@ public class ModBlocks {
 
 		//Reinforced Blocks
 		GameRegistry.registerBlock(asphalt, ItemBlockBlastInfo.class, asphalt.getUnlocalizedName());
+		GameRegistry.registerBlock(asphalt_stairs, ItemBlockBlastInfo.class, asphalt_stairs.getUnlocalizedName());
 		GameRegistry.registerBlock(asphalt_light, ItemBlockBlastInfo.class, asphalt_light.getUnlocalizedName());
 		GameRegistry.registerBlock(reinforced_brick, ItemBlockBlastInfo.class, reinforced_brick.getUnlocalizedName());
 		GameRegistry.registerBlock(reinforced_glass, ItemBlockBlastInfo.class, reinforced_glass.getUnlocalizedName());
@@ -2761,7 +2764,7 @@ public class ModBlocks {
 		GameRegistry.registerBlock(turret_fritz, turret_fritz.getUnlocalizedName());
 		GameRegistry.registerBlock(turret_brandon, turret_brandon.getUnlocalizedName());
 		GameRegistry.registerBlock(turret_tsukuyomi, ItemBlockLore.class, turret_tsukuyomi.getUnlocalizedName());
-		GameRegistry.registerBlock(turret_lunar_oni, ItemBlockLore.class, turret_lunar_oni.getUnlocalizedName());
+		GameRegistry.registerBlock(turret_bishamonten, ItemBlockLore.class, turret_bishamonten.getUnlocalizedName());
 		
 		//Mines
 		GameRegistry.registerBlock(mine_ap, mine_ap.getUnlocalizedName());

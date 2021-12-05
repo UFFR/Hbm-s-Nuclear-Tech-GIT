@@ -20,7 +20,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class GUITsukuyomi extends GuiInfoContainer
 {
-	private static ResourceLocation texture = new ResourceLocation(RefStrings.MODID, "textures/gui/weapon/gui_turret_twr.png");
+	private final static ResourceLocation texture = new ResourceLocation(RefStrings.MODID, "textures/gui/weapon/gui_turret_twr.png");
 	private TileEntityTsukuyomi twr;
 	private GuiTextField tField;
 	private NumberDisplay disp;
@@ -30,7 +30,7 @@ public class GUITsukuyomi extends GuiInfoContainer
 		twr = tedf;
 		xSize = 191;
 		ySize = 215;
-		disp = new NumberDisplay(127, 22, 251, 159).setPadNumber().setDigitLength((byte) 4);
+		disp = new NumberDisplay(127, 22).setPadNumber().setDigitLength((byte) 4);
 	}
 	
 	@Override
@@ -159,19 +159,19 @@ public class GUITsukuyomi extends GuiInfoContainer
 			drawTexturedModalRect(guiLeft + 106, guiTop + 42, 227, 72, 7, 7);
 		if (twr.isOn)
 			drawTexturedModalRect(guiLeft + 128, guiTop + 69, 219, 79, 37, 15);
-		// Number display
-		disp.setNumber(TileEntityTsukuyomi.getCooldown() > 0 ? TileEntityTsukuyomi.getCooldown() : twr.getAmmoCount());
-		disp.drawNumber();
 		
 		int pow = (int) getScaledBar(twr.getPower(), 77, TileEntityTsukuyomi.maxPower);
 		drawTexturedModalRect(guiLeft + 165, guiTop + 95 - pow, 238, 78 - pow, 18, pow);
+		// Number display		
+		disp.setNumber(TileEntityTsukuyomi.getCooldown() > 0 ? TileEntityTsukuyomi.getCooldown() : twr.getAmmoCount());
+		disp.drawNumber();
 	}
 	
 	@Override
 	protected void keyTyped(char c, int i)
 	{
 		if (tField.textboxKeyTyped(c, i))
-			mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("hbm:misc.keyPress"), 1.0F));
+			mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(keyboard, 1.0F));
 		else
 			super.keyTyped(c, i);
 	}

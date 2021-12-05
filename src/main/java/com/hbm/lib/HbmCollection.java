@@ -11,6 +11,7 @@ import com.hbm.handler.BulletConfigSyncingUtil;
 import com.hbm.handler.FluidTypeHandler.FluidType;
 import com.hbm.items.ModItems;
 import com.hbm.items.weapon.ItemAmmo.AmmoItemTrait;
+import com.hbm.main.MainRegistry;
 import com.hbm.potion.HbmPotion;
 
 import api.hbm.internet.IDataStorageUser;
@@ -23,9 +24,23 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.world.World;
+import scala.actors.threadpool.Arrays;
 /** Collection for commonly used data **/
-public class HbmCollection
+public final class HbmCollection
 {
+	private HbmCollection()
+	{
+		throw new IllegalAccessError("Class cannot be instantiated!");
+	}
+	public static final char alpha = '\u03b1';
+	public static final char beta = '\u03b2';
+	public static final char gamma = '\u03b3';
+	public static final char neutron = '\u03b7';
+	public static final char delta = '\u03b4';
+	public static final char theta = '\u03b8';
+	public static final char digamma = '\u03dc';
+	public static final char radiation = '\u2622';
+	public static final char bio = '\u2623';
 	/// ARMORS
 	/** HAZMAT TIERS **/
 	public static Item[][] hazmats;
@@ -313,8 +328,9 @@ public class HbmCollection
 	/** ROBOTS / INORGANIC ENTITIES **/
 	public static final ImmutableSet<Integer> potionImmuneRobot = ImmutableSet.of(HbmPotion.radiation.id, HbmPotion.lead.id, HbmPotion.phosphorus.id, HbmPotion.potionsickness.id, Potion.harm.id, Potion.heal.id, Potion.hunger.id, Potion.poison.id, Potion.wither.id);
 	/** Do AFTER blocks and items are initialized  **/
-	public static void initKits()
+	public static final void initKits()
 	{
+		MainRegistry.logger.info("[HbmCollection] kits and non-final fields initializing...");
 		/// MISC
 		energyRoundBlock = ImmutableSet.of(Blocks.glass, Blocks.glass_pane, Blocks.stained_glass, Blocks.stained_glass_pane, Blocks.ice, Blocks.packed_ice, ModBlocks.glass_polonium, ModBlocks.glass_quartz, ModBlocks.glass_trinitite, ModBlocks.glass_uranium, ModBlocks.hadron_analysis_glass, ModBlocks.hadron_plating_glass, ModBlocks.reinforced_glass);	
 		energyRoundMaterial = ImmutableSet.of(Material.glass, Material.ice, Material.packedIce, Material.water, Material.web, Material.fire, ModBlocks.materialGas);
@@ -625,10 +641,10 @@ public class HbmCollection
 		ItemStack cd = IDataStorageUser.getBlankMedium(ModItems.storage_optical_cd);
 //		fdd.stackSize = 10;
 //		cd.stackSize = 8;
-		fddPack = new ItemStack[] {fdd};
-		cdPack = new ItemStack[] {cd};
-//		Arrays.fill(fddPack, ItemStorageMedium.getBlankMedium(ModItems.storage_magnetic_fdd));
-//		Arrays.fill(cdPack, ItemStorageMedium.getBlankMedium(ModItems.storage_optical_cd));
+//		fddPack = new ItemStack[] {fdd};
+//		cdPack = new ItemStack[] {cd};
+		Arrays.fill(fddPack, fdd);
+		Arrays.fill(cdPack, cd);
 		lunarKit = new ItemStack[]
 				{
 						new ItemStack(ModItems.bj_helmet),
@@ -641,5 +657,6 @@ public class HbmCollection
 						new ItemStack(ModItems.crystal_starmetal, 8),
 						new ItemStack(ModItems.pancake, 8),
 				};
+		MainRegistry.logger.info("[HbmCollection] Initializing complete!");
 	}
 }

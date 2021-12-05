@@ -1,5 +1,10 @@
 package com.hbm.hazard.type;
 
+import static com.hbm.lib.HbmCollection.alpha;
+import static com.hbm.lib.HbmCollection.beta;
+import static com.hbm.lib.HbmCollection.gamma;
+import static com.hbm.lib.HbmCollection.neutron;
+
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -26,7 +31,7 @@ import net.minecraft.util.EnumChatFormatting;
 
 public class HazardTypeRadiation extends HazardTypeBase
 {
-
+	static final char[] radTypeSymbols = {alpha, beta, gamma, neutron};
 	@Override
 	public void onUpdate(EntityLivingBase target, float level, ItemStack stack) {
 		
@@ -67,6 +72,21 @@ public class HazardTypeRadiation extends HazardTypeBase
 		
 		level = HazardModifier.evalAllModifiers(stack, player, level, modifiers);
 		list.add(EnumChatFormatting.GREEN + "[" + I18nUtil.resolveKey("trait.radioactive") + "]");
+		float[] radTypes = HazardSystem.getRadTypes(stack);
+		StringBuilder types = new StringBuilder();
+		// Could be neater
+		boolean flag = false;
+		for (byte i = 0; i < 4; i++)
+		{
+			if (radTypes[i] > 0)
+			{
+				if (flag)
+					types.append(',');
+				types.append(radTypeSymbols[i]);
+				flag = true;
+			}
+		}
+		list.add(String.format("%s[%s emitter]", EnumChatFormatting.GREEN, types));
 		final boolean isRBMK = stack.getItem() instanceof ItemRBMKRod;
 		final double radValue = isRBMK ? level : Library.roundNumber(level, 4);
 		String rad = GeneralConfig.enableRoundedValues ? (level < 0.001 ? sciNotFormatter.format(radValue) : basicFormatter.format(radValue)) : String.valueOf(Math.floor(level* 1000) / 1000);

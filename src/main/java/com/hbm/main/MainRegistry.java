@@ -508,8 +508,9 @@ public class MainRegistry {
 		EntityRegistry.registerModEntity(EntityQuasar.class, "entity_digamma_quasar", 157, this, 250, 1, true);
 		EntityRegistry.registerModEntity(EntitySpear.class, "entity_digamma_spear", 158, this, 1000, 1, true);
 		EntityRegistry.registerModEntity(EntityMissileVolcano.class, "entity_missile_volcano", 159, this, 1000, 1, true);
-		EntityRegistry.registerModEntity(EntityGrenadeLunatic.class, "entity_grenade_lunatic", 153, this, 250, 1, true);
-		EntityRegistry.registerModEntity(EntityGrenadeStunning.class, "entity_grenade_stunning", 154, this, 250, 1, true);
+		EntityRegistry.registerModEntity(EntityGrenadeLunatic.class, "entity_grenade_lunatic", 160, this, 250, 1, true);
+		EntityRegistry.registerModEntity(EntityGrenadeStunning.class, "entity_grenade_stunning", 161, this, 250, 1, true);
+		EntityRegistry.registerModEntity(EntityTesseract.class, "entity_tesseract", 162, this, 0, 1, true);
 
 		EntityRegistry.registerGlobalEntityID(EntityNuclearCreeper.class, "entity_mob_nuclear_creeper", EntityRegistry.findGlobalUniqueEntityId(), 0x204131, 0x75CE00);
 		EntityRegistry.registerGlobalEntityID(EntityTaintedCreeper.class, "entity_mob_tainted_creeper", EntityRegistry.findGlobalUniqueEntityId(), 0x813b9b, 0xd71fdd);

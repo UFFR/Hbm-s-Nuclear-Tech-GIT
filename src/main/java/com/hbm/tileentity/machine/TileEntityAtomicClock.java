@@ -8,7 +8,6 @@ import com.hbm.handler.FluidTypeHandler.FluidType;
 import com.hbm.interfaces.IConsumer;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.inventory.FluidTank;
-import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemMachineUpgrade;
 import com.hbm.lib.Library;
 import com.hbm.saveddata.TimeSavedData;
@@ -24,12 +23,12 @@ public class TileEntityAtomicClock extends TileEntityMachineBase implements ICon
 	private long power = 0;
 	public static final long powerRate = 100000;
 	public static final long maxPower = 50000000;
-	public float time = 0.0F;
-	public byte day = 1;
-	public long year = 2300L;
-	public boolean isOn = false;
+	private float time = 0.0F;
+	private byte day = 1;
+	private long year = 2300L;
+	private boolean isOn = false;
 	public long consumption = powerRate;
-	private int[] upgrades = new int[] {0, 0};
+	private int[] upgrades = {0, 0};
 	public TileEntityAtomicClock()
 	{
 		super(5);
@@ -80,33 +79,45 @@ public class TileEntityAtomicClock extends TileEntityMachineBase implements ICon
 	
 	private void updateUpgrades()
 	{
-		for (int i = 1; i < 5; i++)
+		for (byte i = 1; i < 5; i++)
 		{
 			if (getStackInSlot(i) == null || !(getStackInSlot(i).getItem() instanceof ItemMachineUpgrade))
 				continue;
 			
-			if (getStackInSlot(i).getItem() == ModItems.upgrade_clock_1)
+			switch (getStackInSlot(i).getItem().getUnlocalizedName())
+			{
+			case "upgrade_clock_1":
 				upgrades[0] += 1;
-			else if (getStackInSlot(i).getItem() == ModItems.upgrade_clock_2)
+				break;
+			case "upgrade_clock_2":
 				upgrades[0] += 2;
-			else if (getStackInSlot(i).getItem() == ModItems.upgrade_clock_3)
+				break;
+			case "upgrade_clock_3":
 				upgrades[0] += 3;
-			else if (getStackInSlot(i).getItem() == ModItems.upgrade_clock_4)
-				upgrades[0] += 9;
-			else if (getStackInSlot(i).getItem() == ModItems.upgrade_power_1)
-				upgrades[1] -= 10000;
-			else if (getStackInSlot(i).getItem() == ModItems.upgrade_power_2)
-				upgrades[1] -= 25000;
-			else if (getStackInSlot(i).getItem() == ModItems.upgrade_power_3)
-				upgrades[1] -= 50000;
+				break;
+			case "upgrade_clock_4":
+				upgrades[0] += 20;
+				break;
+			case "upgrade_power_1":
+				upgrades[1] += 10000;
+				break;
+			case "upgrade_power_2":
+				upgrades[1] += 25000;
+				break;
+			case "upgrade_power_3":
+				upgrades[1] += 50000;
+				break;
+			default:
+				break;
+			}
 		}
-		upgrades[0] = MathHelper.clamp_int(upgrades[0], 0, 9);
+		upgrades[0] = MathHelper.clamp_int(upgrades[0], 0, 20);
 		upgrades[1] = MathHelper.clamp_int(upgrades[1], 0, 50000);
 	}
 	
 	public long getConsumption()
 	{
-		consumption = powerRate + upgrades[1];
+		consumption = powerRate - upgrades[1];
 		return consumption;
 	}
 	
@@ -199,6 +210,20 @@ public class TileEntityAtomicClock extends TileEntityMachineBase implements ICon
 	public String getName()
 	{
 		return "container.atomicClock";
+	}
+	
+	public boolean getIsOn()
+	{
+		return isOn;
+	}
+	
+	public Number[] getTimeData()
+	{
+		Number[] data = new Number[3];
+		data[0] = time;
+		data[1] = day;
+		data[2] = year;
+		return data;
 	}
 	
 	@Override

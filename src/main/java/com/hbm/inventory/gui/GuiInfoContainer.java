@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Level;
 import com.google.common.annotations.Beta;
 import com.hbm.handler.FluidTypeHandler.FluidType;
 import com.hbm.inventory.FluidTank;
+import com.hbm.items.machine.ItemRTGPellet;
 import com.hbm.lib.Library;
 import com.hbm.lib.RefStrings;
 import com.hbm.main.MainRegistry;
@@ -21,21 +22,32 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
 public abstract class GuiInfoContainer extends GuiContainer {
 	
 	static final ResourceLocation guiUtil =  new ResourceLocation(RefStrings.MODID + ":textures/gui/gui_utility.png");
+	protected static final ResourceLocation numDisplays = new ResourceLocation(RefStrings.MODID, "textures/gui/gauges/seven_segment.png");
 	/** Default text color **/
 	public static final int color0 = 4210752;
 	/** Green computer color **/
 	public static final int color1 = 0x00ff00;
-	public static final char slimCursor = '│';
-	public static final char blockCursor = '█';
+	public static final char slimCursor = '\u2502';
+	public static final char blockCursor = '\u2588';
 	protected static final ResourceLocation keyboard = new ResourceLocation(RefStrings.MODID, "misc.keyPress"); 
 	public GuiInfoContainer(Container p_i1072_1_) {
 		super(p_i1072_1_);
+	}
+	
+	public static String[] assembleRTGPellets()
+	{
+		final ArrayList<String> pellets = new ArrayList<String>();
+		pellets.add("Accepted Pellets:");
+		for (ItemRTGPellet pellet : ItemRTGPellet.getPellets())
+			pellets.add(" - " + pellet.getData());
+		return pellets.toArray(new String[pellets.size()]);
 	}
 	
 	public void drawFluidInfo(String[] text, int x, int y) {
@@ -204,12 +216,16 @@ public abstract class GuiInfoContainer extends GuiContainer {
 		}
 		catch (NumberFormatException e)
 		{
-			MainRegistry.logger.printf(Level.WARN, "Invalid text input detected, exception: %s", e);
+			MainRegistry.logger.printf(Level.WARN, "Invalid text input detected, exception: %s; Attempted string input: %s", e, in);
 			e.printStackTrace();
 			return -1;
 		}
 	}
-	
+	/**
+	 * Seven segment style displays for GUIs, tried to be as adaptable as possible. Still has some bugs that need to be ironed out but it works for the most part.
+	 * @author UFFR
+	 *
+	 */
 	@Beta
 	public class NumberDisplay
 	{
@@ -218,9 +234,9 @@ public abstract class GuiInfoContainer extends GuiContainer {
 		/** The display's Y coordinate **/
 		private int displayY;
 		/** The X coordinate of the reference **/
-		private int referenceX;
+		private int referenceX = 10;
 		/** The Y coordinate of the reference **/
-		private int referenceY;
+		private int referenceY = 18;
 		/** The amount of padding between digits, default 3 **/
 		@Nonnegative
 		private byte padding = 3;
@@ -241,22 +257,49 @@ public abstract class GuiInfoContainer extends GuiContainer {
 		@Nonnegative
 		private byte digitLength = 3;
 		private double numIn = 0;
-		private char[] toDisp = new char[] {0, 0, 0};
+		private char[] toDisp = {'0', '0', '0'};
 		@Nonnegative
 		private short dispOffset = 0;
 		/**
 		 * Construct a new number display
-		 * @param dX - X coordinate of the display
-		 * @param dY - Y coordinate of the display
-		 * @param rX - X coordinate of the reference
-		 * @param rY - Y coordinate of the reference
+		 * @param dX X coordinate of the display
+		 * @param dY Y coordinate of the display
+		 * @param c Color to use, invalid enums will default to yellow
 		 */
-		public NumberDisplay(int dX, int dY, int rX, int rY) 
+		public NumberDisplay(int x, int y, EnumChatFormatting c)
 		{
-			displayX = dX;
-			displayY = dY;
-			referenceX = rX;
-			referenceY = rY;
+			this(x, y);
+			setupColor(c);
+		}
+		/**
+		 * Construct a new number display, color is yellow
+		 * @param x X coordinate of the display
+		 * @param y Y coordinate of the display
+		 */
+		public NumberDisplay(int x, int y)
+		{
+			displayX = x;
+			displayY = y;
+		}
+		public void setupColor(EnumChatFormatting c)
+		{
+			byte row = 4, column = 3;
+			switch (c)
+			{
+			case OBFUSCATED:
+			case RESET:
+			case STRIKETHROUGH:
+			case UNDERLINE:
+				break;
+			default:
+				column = (byte) (c.ordinal() % 4);
+				row = (byte) Math.floorDiv(c.ordinal(), 4);
+				break;
+			}
+//			System.out.println(column);
+//			System.out.println(row);
+			referenceY = 6 * row;
+			referenceX = 5 * column;
 		}
 		/**
 		 * Draw custom number
@@ -278,7 +321,18 @@ public abstract class GuiInfoContainer extends GuiContainer {
 		/** Draw the previously provided number **/
 		public void drawNumber()
 		{
+//			System.out.println(referenceX);
+//			System.out.println(referenceY);
+			mc.getTextureManager().bindTexture(numDisplays);
+
+			if (isFloat)
+				formatForFloat();
 			drawNumber(toDisp);
+		}
+		public void drawNumber(double num)
+		{
+			setNumber(num);
+			drawNumber();
 		}
 		private void padOut(short gap)
 		{
@@ -407,27 +461,15 @@ public abstract class GuiInfoContainer extends GuiContainer {
 			if (customBounds)
 				numIn = MathHelper.clamp_double(in, minNum, maxNum);
 			if (isFloat)
-			{
-				BigDecimal bd = new BigDecimal(new Double(numIn).toString());
-				bd = bd.setScale(floatPad, RoundingMode.HALF_UP);
-				
-//				char[] proc = new Double(bd.doubleValue()).toString().toCharArray();
-				char[] proc = bd.toString().toCharArray();
-				proc = Double.valueOf(Library.roundDecimal(numIn, floatPad)).toString().toCharArray();
-				
-				if (proc.length == digitLength)
-					toDisp = proc;
-				else
-					toDisp = truncOrExpand();
-			}
+				formatForFloat();
 			else
 			{
-				toDisp = new Long((int) Math.round(new Double(numIn))).toString().toCharArray();
+				toDisp = new Long(Math.round(new Double(numIn))).toString().toCharArray();
 				toDisp = truncOrExpand();
 			}
 		}
 		/** Get the set number **/
-		public Double getNumber()
+		public Number getNumber()
 		{
 			return numIn;
 		}
@@ -481,19 +523,24 @@ public abstract class GuiInfoContainer extends GuiContainer {
 		{
 			floatPad = (byte) pad;
 			isFloat = true;
+			
+			formatForFloat();
+			
+			return this;
+		}
+		private void formatForFloat()
+		{
 			BigDecimal bd = new BigDecimal(new Double(numIn).toString());
-			bd = bd.setScale(pad, RoundingMode.HALF_UP);
+			bd = bd.setScale(floatPad, RoundingMode.HALF_UP);
 			
 //			char[] proc = new Double(bd.doubleValue()).toString().toCharArray();
 			char[] proc = bd.toString().toCharArray();
-			proc = Double.valueOf(Library.roundDecimal(numIn, pad)).toString().toCharArray();
+			proc = Double.valueOf(Library.roundDecimal(numIn, floatPad)).toString().toCharArray();
 			
 			if (proc.length == digitLength)
 				toDisp = proc;
 			else
 				toDisp = truncOrExpand();
-			
-			return this;
 		}
 		@Beta
 		private char[] truncOrExpand()

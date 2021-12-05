@@ -100,8 +100,8 @@ public class Gun762mmConfig
 		BulletConfiguration bullet = Gun556mmFactory.get556Config();
 		
 		bullet.ammo = ModItems.ammo_308;
-		bullet.dmgMax = 12;
-		bullet.dmgMin = 10;
+		bullet.dmgMax = 35;
+		bullet.dmgMin = 30;
 		bullet.velocity *= 2.5;
 		bullet.maxAge *= 2;
 		bullet.spread /= 2;

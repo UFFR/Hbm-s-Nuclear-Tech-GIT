@@ -15,12 +15,11 @@ import com.hbm.entity.effect.EntityNukeCloudSmall;
 import com.hbm.entity.logic.EntityBalefire;
 import com.hbm.handler.FluidTypeHandler.FluidType;
 import com.hbm.interfaces.IConsumer;
-import com.hbm.interfaces.IControlReceiver;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidSource;
 import com.hbm.interfaces.Untested;
 import com.hbm.inventory.FluidTank;
-import com.hbm.inventory.RecipesCommon.ComparableStack;
+import com.hbm.inventory.RecipesCommon.*;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemCassette.TrackType;
 import com.hbm.lib.Library;
@@ -31,37 +30,26 @@ import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.I18nUtil;
 
 import api.hbm.energy.IBatteryItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.MathHelper;
 import scala.actors.threadpool.Arrays;
 @Beta
-public class TileEntityReactorWarp extends TileEntityMachineBase implements IConsumer, IFluidAcceptor, IFluidSource, IControlReceiver
+public class TileEntityReactorWarp extends TileEntityMachineBase implements IConsumer, IFluidAcceptor, IFluidSource
 {
-	protected FluidTank[] tanks = new FluidTank[3];
-	protected byte age = 0;
-	protected List<IFluidAcceptor> cList = new ArrayList<IFluidAcceptor>();
-	protected static final HashMap<ComparableStack, ReactorCore> coreList = new HashMap<>();
-	protected static final HashMap<ComparableStack, ReactorCatalyst> catalystList = new HashMap<>();
-	protected static final HashMap<ComparableStack, ReactorBooster> boosterList = new HashMap<>();
-	public static final long maxPower = 1000000000;
-	public static final long powerRate = 100000;
+	private FluidTank[] tanks = new FluidTank[3];
+	private List<IFluidAcceptor> cList = new ArrayList<IFluidAcceptor>();
+	private static final HashMap<ComparableStack, ReactorCore> coreList = new HashMap<>();
+	private static final HashMap<AStack, ReactorCatalyst> catalystList = new HashMap<>();
+	private static final HashMap<AStack, ReactorBooster> boosterList = new HashMap<>();
+	public static final long maxPower = 1000000000, powerRate = 100000;
 	private long power = 0;
-	public static final int maxTemp = 3500000;
-	public static final int critTemp = (int) (maxTemp * 0.8);
-	private int temperature = 20;
-	public static final int maxBar = 200000;
-	public static final int critBar = (int) (maxBar * 0.8);
-	private int bar = 1;
-	public static final int maxDyne = 500000;
-	public static final int critDyne = (int) (maxDyne * 0.8);
-	private int teradynes = 0;
+	public static final int maxTemp = 3500000, maxBar = 200000, maxDyne = 500000;
+	public static final int critTemp = (int) (maxTemp * 0.8), critBar = (int) (maxBar * 0.8), critDyne = (int) (maxDyne * 0.8);
+	private int temperature = 20, bar = 1, teradynes;
 	private byte[] intermix = {0, 0};
-	private byte delay = 100;
-	private boolean magnets = false;
-	private boolean active = false;
+	private byte level, age;
+	public static final byte maxLevel = 120;
+	private boolean magnets, active;
 	private final boolean[] criticalStats = {false, false, false};
 	public Optional<ReactorCore> currCore = Optional.empty();
 	public Optional<ReactorBooster> currBooster = Optional.empty();
@@ -74,16 +62,16 @@ public class TileEntityReactorWarp extends TileEntityMachineBase implements ICon
 		catalystList.put(new ComparableStack(ModItems.catalyst_clay), new ReactorCatalyst(100, 2, "catalyst_clay"));
 		catalystList.put(new ComparableStack(ModItems.catalyst_rare), new ReactorCatalyst(1000, 10, "catalyst_rare"));
 		catalystList.put(new ComparableStack(ModItems.catalyst_ten), new ReactorCatalyst(10000, 30, "catalyst_ten"));
-		boosterList.put(new ComparableStack(Items.diamond), new ReactorBooster(100, 1, 2, "diamond"));
+		boosterList.put(new OreDictStack("gemDiamond"), new ReactorBooster(100, 1, 2, "diamond"));
 		boosterList.put(new ComparableStack(ModItems.powder_power), new ReactorBooster(250, 5, 15, "powder_power"));
 		boosterList.put(new ComparableStack(ModItems.powder_nitan_mix), new ReactorBooster(1000, 0, 10, "powder_nitan_mix"));
 	}
 	public TileEntityReactorWarp()
 	{
 		super(4);
-		tanks[0] = new FluidTank(FluidType.DEUTERIUM, 32000, 0);
-		tanks[1] = new FluidTank(FluidType.AMAT, 32000, 1);
-		tanks[2] = new FluidTank(FluidType.PLASMA_WARP, 128000, 2);
+		tanks[0] = new FluidTank(FluidType.DEUTERIUM, 64000, 0);
+		tanks[1] = new FluidTank(FluidType.AMAT, 64000, 1);
+		tanks[2] = new FluidTank(FluidType.PLASMA_WARP, 256000, 2);
 	}
 	
 	@Override
@@ -136,7 +124,7 @@ public class TileEntityReactorWarp extends TileEntityMachineBase implements ICon
 		data.setLong("power", power);
 		data.setIntArray("stats", new int[] {temperature, bar, teradynes});
 		data.setByteArray("intermix", intermix);
-		data.setByte("delay", delay);
+		data.setByte("delay", level);
 		data.setBoolean("magnetsOn", magnets);
 		data.setBoolean("isActive", active);
 		if (currCore.isPresent())
@@ -316,7 +304,7 @@ public class TileEntityReactorWarp extends TileEntityMachineBase implements ICon
 		temperature = stats[0];
 		bar = stats[1];
 		teradynes = stats[2];
-		delay = nbt.getByte("delay");
+		level = nbt.getByte("delay");
 		magnets = nbt.getBoolean("magnetsOn");
 		active = nbt.getBoolean("isActive");
 		if (nbt.hasKey("core"))
@@ -335,7 +323,7 @@ public class TileEntityReactorWarp extends TileEntityMachineBase implements ICon
 			tanks[i].writeToNBT(nbt, "tank_" + i);
 		nbt.setLong("power", power);
 		nbt.setIntArray("stats", new int[] {temperature, bar, teradynes});
-		nbt.setByte("delay", delay);
+		nbt.setByte("delay", level);
 		nbt.setBoolean("magnetsOn", magnets);
 		nbt.setBoolean("isActive", active);
 		if (currCore.isPresent())
@@ -357,7 +345,7 @@ public class TileEntityReactorWarp extends TileEntityMachineBase implements ICon
 		temperature = stats[0];
 		bar = stats[1];
 		teradynes = stats[2];
-		delay = nbt.getByte("delay");
+		level = nbt.getByte("delay");
 		magnets = nbt.getBoolean("magnetsOn");
 		active = nbt.getBoolean("isActive");
 		if (nbt.hasKey("core"))
@@ -647,20 +635,6 @@ public class TileEntityReactorWarp extends TileEntityMachineBase implements ICon
 		}
 	}
 
-	@Override
-	public boolean hasPermission(EntityPlayer player)
-	{
-		return isUseableByPlayer(player);
-	}
-
-	@Override
-	public void receiveControl(NBTTagCompound data)
-	{
-		// TODO Auto-generated method stub
-		if (data.hasKey("level"))
-			delay = (byte) (100 - data.getByte("level"));
-	}
-
 	public boolean[] getCriticals()
 	{
 		return criticalStats.clone();
@@ -668,7 +642,7 @@ public class TileEntityReactorWarp extends TileEntityMachineBase implements ICon
 	public int[] assembleStats()
 	{
 		final int[] stats = new int[6];
-		stats[0] = 100 - delay;
+		stats[0] = 100 - level;
 		stats[1] = intermix[0];
 		stats[2] = intermix[1];
 		stats[3] = temperature;
@@ -678,7 +652,7 @@ public class TileEntityReactorWarp extends TileEntityMachineBase implements ICon
 	}
 	public byte getDelayLevel()
 	{
-		return delay;
+		return level;
 	}
 	public boolean isCoreValid()
 	{

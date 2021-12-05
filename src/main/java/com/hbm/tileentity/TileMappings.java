@@ -193,7 +193,7 @@ public class TileMappings {
 		map.put(TileEntityMachineFractionTower.class, "tileentity_fraction_tower");
 		map.put(TileEntitySpacer.class, "tileentity_fraction_spacer");
 		map.put(TileEntityTsukuyomi.class, "tileentity_turret_twr");
-		map.put(TileEntityLunarOni.class, "tileentity_lunar_oni");
+		map.put(TileEntityBishamonten.class, "tileentity_lunar_oni");
 		map.put(TileEntityAtomicClock.class, "tileentity_atomic_clock");
 		map.put(TileEntityDiFurnaceRTG.class, "tileentity_diFurnace_rtg");
 		map.put(TileEntityReactorWarp.class, "tileentity_reactor_amat");

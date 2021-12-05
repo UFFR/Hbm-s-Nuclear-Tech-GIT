@@ -16,10 +16,10 @@ public final class BetavoltaicFuels
 	public static final HashMap<Item, IRadioisotopeFuel> fuelMap = new HashMap<>();
 	
 	private static final int thaLife = 48000 * 40;
-	private static final byte thaPower = 75;
+	private static final short thaPower = 750;
 	private static final int sr90Life = 48000 * 100 * 10;
-	private static final byte sr90Power = 50;
-	private static final byte sa327Power = 30;
+	private static final short sr90Power = 500;
+	private static final short sa327Power = 300;
 	private static boolean isInitialized = false;
 	public static void initialize()
 	{
@@ -107,7 +107,7 @@ public final class BetavoltaicFuels
 		fuelMap.put(ModItems.cell_tritium, new IRadioisotopeFuel()
 		{
 			@Override public IRadioisotopeFuel setDecays(ItemStack stack, long lifespan){return this;}
-			@Override public short getPower(){return 1;}
+			@Override public short getPower(){return 10;}
 			@Override public long getMaxLifespan(){return 48000 * 100 * 5;}
 			@Override public boolean getDoesDecay(){return false;}
 			@Override public ItemStack getDecayItem(){return new ItemStack(ModItems.cell_empty);}
@@ -141,7 +141,7 @@ public final class BetavoltaicFuels
 		fuelMap.put(ModItems.ingot_technetium, new IRadioisotopeFuel()
 		{
 			@Override public IRadioisotopeFuel setDecays(ItemStack stack, long lifespan){return this;}
-			@Override public short getPower(){return 10;}
+			@Override public short getPower(){return 100;}
 			@Override public long getMaxLifespan(){return 0;}
 			@Override public boolean getDoesDecay(){return false;}
 			@Override public ItemStack getDecayItem(){return null;}
@@ -149,7 +149,7 @@ public final class BetavoltaicFuels
 		fuelMap.put(ModItems.billet_technetium, new IRadioisotopeFuel()
 		{
 			@Override public IRadioisotopeFuel setDecays(ItemStack stack, long lifespan){return this;}
-			@Override public short getPower(){return 10;}
+			@Override public short getPower(){return 100;}
 			@Override public long getMaxLifespan(){return 0;}
 			@Override public boolean getDoesDecay(){return false;}
 			@Override public ItemStack getDecayItem(){return null;}
@@ -157,7 +157,7 @@ public final class BetavoltaicFuels
 		fuelMap.put(ModItems.nugget_technetium, new IRadioisotopeFuel()
 		{
 			@Override public IRadioisotopeFuel setDecays(ItemStack stack, long lifespan){return this;}
-			@Override public short getPower(){return 1;}
+			@Override public short getPower(){return 10;}
 			@Override public long getMaxLifespan(){return 0;}
 			@Override public boolean getDoesDecay(){return false;}
 			@Override public ItemStack getDecayItem(){return null;}
@@ -165,7 +165,7 @@ public final class BetavoltaicFuels
 		fuelMap.put(ModItems.ingot_bk249, new IRadioisotopeFuel() {
 			
 			@Override public IRadioisotopeFuel setDecays(ItemStack stack, long lifespan){return this;}
-			@Override public short getPower(){return 15;}
+			@Override public short getPower(){return 150;}
 			@Override public long getMaxLifespan(){return IRadioisotopeFuel.getLifespan(330, HalfLifeType.SHORT, true) * 2;}
 			@Override public boolean getDoesDecay(){return true;}
 			@Override public ItemStack getDecayItem(){return new ItemStack(ModItems.ingot_cf249);}

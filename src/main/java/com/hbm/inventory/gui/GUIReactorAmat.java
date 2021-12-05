@@ -35,7 +35,7 @@ public class GUIReactorAmat extends GuiInfoContainer
 		reactor = te;
 		xSize = 175;
 		ySize = 226;
-		disp = new NumberDisplay(29, 20, 218, 18).setMaxMin(100, 0);
+		disp = new NumberDisplay(29, 20).setMaxMin(100, 0);
 	}
 	
 	@Override

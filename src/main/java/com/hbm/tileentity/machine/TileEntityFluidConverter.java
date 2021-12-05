@@ -1,12 +1,12 @@
 package com.hbm.tileentity.machine;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.CheckReturnValue;
 
 import com.google.common.annotations.Beta;
+import com.google.common.collect.HashBiMap;
 import com.hbm.handler.FluidTypeHandler.FluidType;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.Untested;
@@ -24,8 +24,9 @@ import net.minecraftforge.fluids.IFluidHandler;
 @Untested
 public class TileEntityFluidConverter extends TileEntityMachineBase implements IFluidAcceptor, IFluidHandler
 {
-	public static final HashMap<FluidType, Fluid> bobToForge = new HashMap<>();
-	public static final HashMap<Fluid, FluidType> forgeToBob = new HashMap<>();
+//	public static final HashMap<FluidType, Fluid> bobToForge = new HashMap<>();
+//	public static final HashMap<Fluid, FluidType> forgeToBob = new HashMap<>();
+	public static final HashBiMap<FluidType, Fluid> conversions = HashBiMap.create();
 
 	public static final short maxCapacity = 16000;
 	private FluidTank bobTank = new FluidTank(FluidType.NONE, maxCapacity, 0);
@@ -198,12 +199,12 @@ public class TileEntityFluidConverter extends TileEntityMachineBase implements I
 	@CheckReturnValue
 	public static FluidType getBobFromForge(Fluid f)
 	{
-		return forgeToBob.containsKey(f) ? forgeToBob.get(f) : FluidType.NONE;
+		return conversions.inverse().containsKey(f) ? conversions.inverse().get(f) : FluidType.NONE;
 	}
 	@CheckReturnValue
 	public static Fluid getForgeFromBob(FluidType f)
 	{
-		return bobToForge.containsKey(f) ? bobToForge.get(f) : null;
+		return conversions.containsKey(f) ? conversions.get(f) : null;
 	}
 
 }

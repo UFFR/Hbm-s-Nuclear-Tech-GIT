@@ -15,7 +15,7 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase implements IRT
 	public short progress;
 	private short processSpeed = 0;
 	// Edit as needed
-	private static final short timeRequired = 1200;
+	private static final short timeRequired = 12000;
 	private static final int[] rtgIn = new int[] {3, 4, 5, 6, 7, 8};
 	private String name;
 	
@@ -136,8 +136,8 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase implements IRT
 	public boolean hasPower()
 	{
 //		updateRTGs();
-		processSpeed = (short) updateRTGs(slots, rtgIn);
-		return processSpeed >= 15;
+		processSpeed = (short) (updateRTGs(slots, rtgIn) / 10);
+		return processSpeed >= 150;
 	}
 	
 	public int getPower()

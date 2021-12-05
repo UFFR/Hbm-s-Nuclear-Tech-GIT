@@ -116,7 +116,7 @@ public class ContainerMachineRTG extends Container {
 	public void updateProgressBar(int i, int j) {
 		if(i == 0)
 		{
-			testNuke.heat = j;
+			testNuke.heat = (short) j;
 		}
 	}
 }

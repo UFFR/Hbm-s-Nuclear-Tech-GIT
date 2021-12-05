@@ -398,6 +398,7 @@ public class ClientProxy extends ServerProxy {
 		MinecraftForgeClient.registerItemRenderer(ModItems.gun_thompson_redux, new ItemRenderThompsonRedux());
 		MinecraftForgeClient.registerItemRenderer(ModItems.gun_benelli_mod, new ItemRenderBenelli());// TODO
 		MinecraftForgeClient.registerItemRenderer(ModItems.gun_uac_pistol, new ItemRenderUACPistol());
+		MinecraftForgeClient.registerItemRenderer(ModItems.gun_g36, new ItemRenderG36());
 		MinecraftForgeClient.registerItemRenderer(ModItems.test_gun, new ItemRenderUboinik());
 		
 		//Satori
@@ -556,6 +557,7 @@ public class ClientProxy extends ServerProxy {
 	    RenderingRegistry.registerEntityRenderingHandler(EntityDeathBlast.class, new RenderDeathBlast());
 		RenderingRegistry.registerEntityRenderingHandler(EntityNukeExplosionAdvanced.class, new RenderSnowball(ModItems.energy_ball));
 	    RenderingRegistry.registerEntityRenderingHandler(EntitySpear.class, new RenderSpear());
+	    RenderingRegistry.registerEntityRenderingHandler(EntityTesseract.class, new RenderTesseract());
 		//minecarts
 		RenderingRegistry.registerEntityRenderingHandler(EntityMinecartTest.class, new RenderMinecartTest());
 		//items

@@ -3,12 +3,12 @@ package com.hbm.inventory.gui;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import com.hbm.inventory.container.ContainerLunarOni;
+import com.hbm.inventory.container.ContainerBishamonten;
 import com.hbm.lib.RefStrings;
 import com.hbm.packet.AuxButtonPacket;
 import com.hbm.packet.NBTControlPacket;
 import com.hbm.packet.PacketDispatcher;
-import com.hbm.tileentity.turret.TileEntityLunarOni;
+import com.hbm.tileentity.turret.TileEntityBishamonten;
 import com.hbm.util.I18nUtil;
 
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -17,21 +17,21 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
-public class GUILunarOni extends GuiInfoContainer
+public class GUIBishamonten extends GuiInfoContainer
 {
 	private static ResourceLocation texture = new ResourceLocation(RefStrings.MODID, "textures/gui/weapon/gui_turret_lunar_oni.png");
-	private TileEntityLunarOni luna;
+	private TileEntityBishamonten luna;
 	private NumberDisplay[] displays = new NumberDisplay[3];
 	private GuiTextField tField;
-	public GUILunarOni(InventoryPlayer invPlayer, TileEntityLunarOni te)
+	public GUIBishamonten(InventoryPlayer invPlayer, TileEntityBishamonten te)
 	{
-		super(new ContainerLunarOni(invPlayer, te));
+		super(new ContainerBishamonten(invPlayer, te));
 		luna = te;
 		xSize = 191;
 		ySize = 215;
-		displays[0] = new NumberDisplay(69, 26, 251, 142).setMaxMin(360, 0);
-		displays[1] = new NumberDisplay(69, 51, 251, 142).setMaxMin(50, -50);
-		displays[2] = new NumberDisplay(98, 26, 251, 142).setDigitLength((byte) 4).setMaxMin(100, 0);
+		displays[0] = new NumberDisplay(69, 26).setMaxMin(360, 0);
+		displays[1] = new NumberDisplay(69, 51).setMaxMin(50, -50);
+		displays[2] = new NumberDisplay(98, 26).setDigitLength((byte) 4).setMaxMin(100, 0);
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class GUILunarOni extends GuiInfoContainer
 	{
 		super.drawScreen(mouseX, mouseY, f);
 		drawElectricityInfo(this, mouseX, mouseY, guiLeft + 166, guiTop + 19, 16, 95, luna.getPower(), luna.getMaxPower());
-		drawElectricityInfo(this, mouseX, mouseY, guiLeft + 148, guiTop + 19, 16, 95, luna.getBuffer(), TileEntityLunarOni.maxBuffer);
+		drawElectricityInfo(this, mouseX, mouseY, guiLeft + 148, guiTop + 19, 16, 95, luna.getBuffer(), TileEntityBishamonten.maxBuffer);
 		final String[] dir = new String[] {new Float(luna.getDirection()).toString()};
 		final String[] ele = new String[] {new Float(luna.getElevation()).toString()};
 		final String[] pow = new String[] {new Byte(displays[2].getNumber().byteValue()).toString() + "%"};
@@ -165,7 +165,7 @@ public class GUILunarOni extends GuiInfoContainer
 		
 		int pow = (int) getScaledBar(luna.getPower(), 95, luna.getMaxPower());
 		drawTexturedModalRect(guiLeft + 165, guiTop + 114 - pow, 238, 96 - pow, 18, pow);
-		int buff = (int) getScaledBar(luna.getBuffer(), 95, TileEntityLunarOni.maxBuffer);
+		int buff = (int) getScaledBar(luna.getBuffer(), 95, TileEntityBishamonten.maxBuffer);
 		drawTexturedModalRect(guiLeft + 147, guiTop + 114 - buff, 220, 96 - buff, 18, buff);
 	}
 	@Override

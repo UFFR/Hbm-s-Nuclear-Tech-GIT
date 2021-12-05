@@ -92,8 +92,8 @@ public class GUIHandler implements IGuiHandler {
 			else
 				return null;
 		case ModBlocks.guiID_lunar_oni:
-			if (entity instanceof TileEntityLunarOni)
-				return new ContainerLunarOni(player.inventory, (TileEntityLunarOni) entity);
+			if (entity instanceof TileEntityBishamonten)
+				return new ContainerBishamonten(player.inventory, (TileEntityBishamonten) entity);
 			else
 				return null;
 		case ModBlocks.guiID_amat_reactor:
@@ -964,8 +964,8 @@ public class GUIHandler implements IGuiHandler {
 			else
 				return null;
 		case ModBlocks.guiID_lunar_oni:
-			if (entity instanceof TileEntityLunarOni)
-				return new GUILunarOni(player.inventory, (TileEntityLunarOni) entity);
+			if (entity instanceof TileEntityBishamonten)
+				return new GUIBishamonten(player.inventory, (TileEntityBishamonten) entity);
 			else
 				return null;
 		case ModBlocks.guiID_tsukuyomi:

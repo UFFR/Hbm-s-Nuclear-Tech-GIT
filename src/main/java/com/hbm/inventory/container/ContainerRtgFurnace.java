@@ -109,7 +109,7 @@ public class ContainerRtgFurnace extends Container {
 	public void updateProgressBar(int i, int j) {
 		if(i == 0)
 		{
-			diFurnace.dualCookTime = j;
+			diFurnace.dualCookTime = (short) j;
 		}
 	}
 }

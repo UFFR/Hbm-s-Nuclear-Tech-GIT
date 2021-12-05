@@ -5,7 +5,6 @@ import java.util.List;
 import com.hbm.interfaces.IConsumer;
 import com.hbm.interfaces.IRTGUser;
 import com.hbm.interfaces.ISource;
-import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemRTGPellet;
 import com.hbm.lib.Library;
 import com.hbm.packet.AuxElectricityPacket;
@@ -24,12 +23,12 @@ public class TileEntityMachineRTG extends TileEntity implements ISidedInventory,
 
 	private ItemStack slots[];
 	
-	public int heat;
-	public static final int heatMax = 150;
+	public short heat;
+	public static final short heatMax = 1500;
 	public long power;
 	public static final long powerMax = 90000;
 	public int age = 0;
-	public List<IConsumer> list = new ArrayList();
+	public List<IConsumer> list = new ArrayList<IConsumer>();
 	
 	private static final int[] slots_top = new int[] { 0 };
 	private static final int[] slots_bottom = new int[] { 0 };
@@ -143,7 +142,7 @@ public class TileEntityMachineRTG extends TileEntity implements ISidedInventory,
 		NBTTagList list = nbt.getTagList("items", 10);
 
 		power = nbt.getInteger("power");
-		heat = nbt.getInteger("heat");
+		heat = nbt.getShort("heat");
 		slots = new ItemStack[getSizeInventory()];
 		
 		for(int i = 0; i < list.tagCount(); i++)
@@ -161,7 +160,7 @@ public class TileEntityMachineRTG extends TileEntity implements ISidedInventory,
 	public void writeToNBT(NBTTagCompound nbt) {
 		super.writeToNBT(nbt);
 		nbt.setInteger("power", (short) (power));
-		nbt.setInteger("heat", (short) (heat));
+		nbt.setShort("heat", heat);
 		NBTTagList list = new NBTTagList();
 		
 		for(int i = 0; i < slots.length; i++)
@@ -225,7 +224,7 @@ public class TileEntityMachineRTG extends TileEntity implements ISidedInventory,
 			
 			heat = 0;
 			
-			heat = updateRTGs(slots);
+			heat = (short) updateRTGs(slots);
 			
 			if(heat > heatMax)
 				heat = heatMax;
@@ -291,7 +290,7 @@ public class TileEntityMachineRTG extends TileEntity implements ISidedInventory,
 	}
 
 	@Override
-	public Class getDesiredClass()
+	public Class<ItemRTGPellet> getDesiredClass()
 	{
 		return ItemRTGPellet.class;
 	}

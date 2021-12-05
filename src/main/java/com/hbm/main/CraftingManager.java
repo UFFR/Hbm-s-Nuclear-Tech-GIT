@@ -88,7 +88,7 @@ public class CraftingManager {
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.circuit_targeting_tier2, 1), new Object[] { "CPC", 'C', ModItems.circuit_copper, 'P', ModItems.wafer_silicon }));
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.circuit_targeting_tier3, 1), new Object[] { "CPC", 'C', ModItems.circuit_red_copper, 'P', ModItems.wafer_gold }));
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.circuit_targeting_tier4, 1), new Object[] { "CPC", 'C', ModItems.circuit_gold, 'P', ModItems.wafer_lapis }));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.circuit_targeting_tier5, 1), new Object[] { "CPC", 'C', ModItems.circuit_schrabidium, 'P', ModItems.wafer_diamond }));
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.circuit_targeting_tier5, 1), new Object[] { "CPC", 'C', ModItems.circuit_schrabidium, 'P', ModItems.wafer_caesium }));
 		GameRegistry.addRecipe(new ItemStack(ModItems.circuit_targeting_tier6, 1), new Object[] { "P", "D", "C", 'C', ModItems.circuit_targeting_tier5, 'D', ModItems.battery_potatos, 'P', ModItems.wafer_spark });
 		GameRegistry.addShapelessRecipe(new ItemStack(ModItems.circuit_aluminium, 2), new Object[] { ModItems.circuit_targeting_tier1 });
 		GameRegistry.addShapelessRecipe(new ItemStack(ModItems.circuit_copper, 2), new Object[] { ModItems.circuit_targeting_tier2 });
@@ -922,6 +922,7 @@ public class CraftingManager {
 		GameRegistry.addRecipe(new ItemStack(ModBlocks.concrete_stairs, 8), new Object[] { "C  ", "CC ", "CCC", 'C', ModBlocks.concrete });
 		GameRegistry.addRecipe(new ItemStack(ModBlocks.concrete_smooth_stairs, 8), new Object[] { "C  ", "CC ", "CCC", 'C', ModBlocks.concrete_smooth });
 		GameRegistry.addRecipe(new ItemStack(ModBlocks.brick_concrete_stairs, 8), new Object[] { "C  ", "CC ", "CCC", 'C', ModBlocks.brick_concrete });
+		GameRegistry.addRecipe(new ItemStack(ModBlocks.asphalt_stairs, 8), "A  ", "AA ", "AAA", 'A', ModBlocks.asphalt);
 		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.pill_strontium, 4), new Object[] { "dustStrontium", new ItemStack(ModItems.fluid_tank_full, 1, FluidType.ACID.ordinal()) }));
 		GameRegistry.addRecipe(new ShapelessOreRecipe(ModItems.bottle_sr90, new Object[] { ModItems.bottle2_empty, "dustStrontium90", Items.milk_bucket, "dustCoal" }));
 		GameRegistry.addRecipe(new ItemStack(ModBlocks.pane_acrylic, 6), new Object[] { "GGG", "GGG", 'G', ModItems.acrylic });

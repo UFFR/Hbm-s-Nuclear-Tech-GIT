@@ -1,171 +1,51 @@
 package com.hbm.tileentity.machine;
 
-import net.minecraft.entity.player.EntityPlayer;
+import com.hbm.blocks.machine.MachineRtgFurnace;
+import com.hbm.interfaces.IRTGUser;
+import com.hbm.interfaces.IRadioisotopeFuel;
+import com.hbm.items.machine.ItemRTGPellet;
+import com.hbm.tileentity.TileEntityMachineBase;
+
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
 
-import com.hbm.blocks.machine.MachineRtgFurnace;
-import com.hbm.interfaces.IRTGUser;
-import com.hbm.items.ModItems;
-import com.hbm.items.machine.ItemRTGPellet;
-
-public class TileEntityRtgFurnace extends TileEntity implements ISidedInventory, IRTGUser
+public class TileEntityRtgFurnace extends TileEntityMachineBase implements ISidedInventory, IRTGUser
 {
 
-	private ItemStack slots[];
-	
-	public int dualCookTime;
-	public static final int processingSpeed = 100;
+	public short dualCookTime, speed;
+	public static final short processingSpeed = 12000;
 	
 	private static final int[] slots_top = new int[] {0};
 	private static final int[] slots_bottom = new int[] {4};
 	private static final int[] slots_side = new int[] {1, 2, 3};
 	
-	private String customName;
-	
-	public TileEntityRtgFurnace() {
-		slots = new ItemStack[5];
+	public TileEntityRtgFurnace()
+	{
+		super(5);
 	}
 
-	@Override
-	public int getSizeInventory() {
-		return slots.length;
-	}
-
-	@Override
-	public ItemStack getStackInSlot(int i) {
-		return slots[i];
-	}
-
-	@Override
-	public ItemStack getStackInSlotOnClosing(int i) {
-		if(slots[i] != null)
-		{
-			ItemStack itemStack = slots[i];
-			slots[i] = null;
-			return itemStack;
-		} else {
-		return null;
-		}
-	}
-
-	@Override
-	public void setInventorySlotContents(int i, ItemStack itemStack) {
-		slots[i] = itemStack;
-		if(itemStack != null && itemStack.stackSize > getInventoryStackLimit())
-		{
-			itemStack.stackSize = getInventoryStackLimit();
-		}
-	}
-
-	@Override
-	public String getInventoryName() {
-		return this.hasCustomInventoryName() ? this.customName : "container.rtgFurnace";
-	}
-
-	@Override
-	public boolean hasCustomInventoryName() {
-		return this.customName != null && this.customName.length() > 0;
-	}
-	
-	public void setCustomName(String name) {
-		this.customName = name;
-	}
-
-	@Override
-	public int getInventoryStackLimit() {
-		return 64;
-	}
-
-	@Override
-	public boolean isUseableByPlayer(EntityPlayer player) {
-		if(worldObj.getTileEntity(xCoord, yCoord, zCoord) != this)
-		{
-			return false;
-		}else{
-			return player.getDistanceSq(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D) <=64;
-		}
-	}
-	
-	//You scrubs aren't needed for anything (right now)
-	@Override
-	public void openInventory() {}
-	@Override
-	public void closeInventory() {}
-
-	@Override
-	public boolean isItemValidForSlot(int i, ItemStack itemStack) {
-		return true;
-	}
-	
 	public boolean isLoaded()
 	{
-		return 15 <= updateRTGs(slots, slots_side);
+		speed = (short) getHeat();
+		return 150 <= getHeat();
 	}
 	
 	@Override
-	public ItemStack decrStackSize(int i, int j) {
-		if(slots[i] != null)
-		{
-			if(slots[i].stackSize <= j)
-			{
-				ItemStack itemStack = slots[i];
-				slots[i] = null;
-				return itemStack;
-			}
-			ItemStack itemStack1 = slots[i].splitStack(j);
-			if (slots[i].stackSize == 0)
-			{
-				slots[i] = null;
-			}
-			
-			return itemStack1;
-		} else {
-			return null;
-		}
-	}
-	
-	@Override
-	public void readFromNBT(NBTTagCompound nbt) {
+	public void readFromNBT(NBTTagCompound nbt)
+	{
 		super.readFromNBT(nbt);
-		NBTTagList list = nbt.getTagList("items", 10);
 		
 		dualCookTime = nbt.getShort("CookTime");
-		slots = new ItemStack[getSizeInventory()];
-		
-		for(int i = 0; i < list.tagCount(); i++)
-		{
-			NBTTagCompound nbt1 = list.getCompoundTagAt(i);
-			byte b0 = nbt1.getByte("slot");
-			if(b0 >= 0 && b0 < slots.length)
-			{
-				slots[b0] = ItemStack.loadItemStackFromNBT(nbt1);
-			}
-		}
 	}
 	
 	@Override
-	public void writeToNBT(NBTTagCompound nbt) {
+	public void writeToNBT(NBTTagCompound nbt)
+	{
 		super.writeToNBT(nbt);
-		nbt.setShort("cookTime", (short) dualCookTime);
-		NBTTagList list = new NBTTagList();
-		
-		for(int i = 0; i < slots.length; i++)
-		{
-			if(slots[i] != null)
-			{
-				NBTTagCompound nbt1 = new NBTTagCompound();
-				nbt1.setByte("slot", (byte)i);
-				slots[i].writeToNBT(nbt1);
-				list.appendTag(nbt1);
-			}
-		}
-		nbt.setTag("items", list);
+		nbt.setShort("cookTime", dualCookTime);
 	}
 	
 	@Override
@@ -173,11 +53,6 @@ public class TileEntityRtgFurnace extends TileEntity implements ISidedInventory,
     {
         return p_94128_1_ == 0 ? slots_bottom : (p_94128_1_ == 1 ? slots_top : slots_side);
     }
-
-	@Override
-	public boolean canInsertItem(int i, ItemStack itemStack, int j) {
-		return this.isItemValidForSlot(i, itemStack);
-	}
 
 	@Override
 	public boolean canExtractItem(int i, ItemStack itemStack, int j) {
@@ -259,9 +134,9 @@ public class TileEntityRtgFurnace extends TileEntity implements ISidedInventory,
 		{
 			if(hasPower() && canProcess())
 			{
-				dualCookTime++;
+				dualCookTime += speed;
 				
-				if(this.dualCookTime == TileEntityRtgFurnace.processingSpeed)
+				if(this.dualCookTime >= processingSpeed)
 				{
 					this.dualCookTime = 0;
 					this.processItem();
@@ -289,6 +164,18 @@ public class TileEntityRtgFurnace extends TileEntity implements ISidedInventory,
 		{
 			this.markDirty();
 		}
+		
+		NBTTagCompound data = new NBTTagCompound();
+		data.setShort("speed", speed);
+		data.setShort("cookTime", dualCookTime);
+		networkPack(data, 25);
+	}
+	
+	@Override
+	public void networkUnpack(NBTTagCompound nbt)
+	{
+		speed = nbt.getShort("speed");
+		dualCookTime = nbt.getShort("cookTime");
 	}
 
 	@Override
@@ -298,8 +185,14 @@ public class TileEntityRtgFurnace extends TileEntity implements ISidedInventory,
 	}
 
 	@Override
-	public Class getDesiredClass()
+	public Class<? extends IRadioisotopeFuel> getDesiredClass()
 	{
 		return ItemRTGPellet.class;
+	}
+
+	@Override
+	public String getName()
+	{
+		return "container.rtgFurnace";
 	}
 }

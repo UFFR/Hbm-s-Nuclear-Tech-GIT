@@ -42,6 +42,7 @@ import com.hbm.items.armor.ItemArmorMod;
 import com.hbm.items.armor.ItemModRevive;
 import com.hbm.items.armor.ItemModShackles;
 import com.hbm.items.weapon.ItemGunBase;
+import com.hbm.lib.HbmCollection;
 import com.hbm.lib.Library;
 import com.hbm.lib.ModDamageSource;
 import com.hbm.lib.RefStrings;
@@ -153,6 +154,8 @@ public class ModEventHandler {
 			if(MobConfig.enableDucks && event.player instanceof EntityPlayerMP && !event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean("hasDucked"))
 				PacketDispatcher.wrapper.sendTo(new PlayerInformPacket("Press O to Duck!"), (EntityPlayerMP) event.player);
 		}
+		
+		HbmCollection.initKits();
 	}
 	
 	@SubscribeEvent(priority = EventPriority.HIGHEST)

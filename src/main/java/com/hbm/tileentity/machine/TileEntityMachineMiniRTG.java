@@ -12,7 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 
 public class TileEntityMachineMiniRTG extends TileEntity implements ISource {
 
-	public List<IConsumer> list = new ArrayList();
+	public List<IConsumer> list = new ArrayList<IConsumer>();
 	public long power;
 	boolean tact = false;
 	
@@ -24,7 +24,7 @@ public class TileEntityMachineMiniRTG extends TileEntity implements ISource {
 			if(this.getBlockType() == ModBlocks.machine_powerrtg)
 				power += 2500;
 			else
-				power += 70;
+				power += 50;
 			
 			if(power > getMaxPower())
 				power = getMaxPower();

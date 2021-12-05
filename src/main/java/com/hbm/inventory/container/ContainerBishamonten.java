@@ -1,16 +1,16 @@
 package com.hbm.inventory.container;
 
-import com.hbm.tileentity.turret.TileEntityLunarOni;
+import com.hbm.tileentity.turret.TileEntityBishamonten;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 
-public class ContainerLunarOni extends Container
+public class ContainerBishamonten extends Container
 {
-	private TileEntityLunarOni luna;
-	public ContainerLunarOni(InventoryPlayer invPlayer, TileEntityLunarOni te)
+	private TileEntityBishamonten luna;
+	public ContainerBishamonten(InventoryPlayer invPlayer, TileEntityBishamonten te)
 	{
 		luna = te;
 		

@@ -183,6 +183,38 @@ public class Gun556mmFactory {
 		
 		return config;
 	}
+	
+	public static GunConfiguration getG36Config()
+	{
+		GunConfiguration config = new GunConfiguration();
+		
+		config.rateOfFire = 3;
+		config.roundsPerCycle = 1;
+		config.firingMode = 1;
+		config.hasSights = true;
+		config.reloadDuration = 20;
+		config.ammoCap = 30;
+		config.reloadType = 1;
+		config.allowsInfinity = false;
+		config.crosshair = Crosshair.CLASSIC;
+		config.durability = 4000;
+		config.reloadSound = GunConfiguration.RSOUND_MAG;
+		config.firingSound = "hbm:weapon.carbineShootPB3";
+		config.reloadSoundEnd = false;
+		
+		config.name = "g36";
+		config.manufacturer = EnumGunManufacturer.H_AND_K;
+		
+		config.config.addAll(HbmCollection.NATO);
+		
+		config.animations = new HashMap<>();
+		config.animations.put(AnimType.CYCLE, new BusAnimation()
+				.addBus("RECOIL", new BusAnimationSequence()
+						.addKeyframe(new BusAnimationKeyframe(-0.35, 0, 0, 30))
+						.addKeyframe(new BusAnimationKeyframe(0, 0, 0, 30))));
+		
+		return config;
+	}
 
 	static final float inaccuracy = 2.5F;
 	public static BulletConfiguration get556Config() {

@@ -466,6 +466,7 @@ public class ModItems {
 	public static Item wafer_gold;
 	public static Item wafer_lapis;
 	public static Item wafer_diamond;
+	public static Item wafer_caesium;
 	public static Item wafer_spark;
 	
 	public static Item powder_thorium;
@@ -1818,6 +1819,7 @@ public class ModItems {
 	public static Item gun_dampfmaschine;
 	public static Item gun_waluigi;
 	public static Item gun_darter;
+	public static Item gun_g36;
 	public static Item gun_benelli;
 	public static Item gun_benelli_mod;
 	public static Item gun_uac_pistol;
@@ -3216,6 +3218,7 @@ public class ModItems {
 		wafer_gold = new Item().setUnlocalizedName("wafer_gold").setCreativeTab(MainRegistry.partsTab).setTextureName(RefStrings.MODID + ":wafer_gold");
 		wafer_lapis = new Item().setUnlocalizedName("wafer_lapis").setCreativeTab(MainRegistry.partsTab).setTextureName(RefStrings.MODID + ":wafer_lapis");
 		wafer_diamond = new Item().setUnlocalizedName("wafer_diamond").setCreativeTab(MainRegistry.partsTab).setTextureName(RefStrings.MODID + ":wafer_diamond");
+		wafer_caesium = new ItemCustomLore().setRarity(EnumRarity.rare).setUnlocalizedName("wafer_caesium").setCreativeTab(MainRegistry.partsTab).setTextureName(RefStrings.MODID + ":wafer_caesium");
 		wafer_spark = new ItemCustomLore().setRarity(EnumRarity.epic).setUnlocalizedName("wafer_spark").setCreativeTab(MainRegistry.partsTab).setTextureName(RefStrings.MODID + ":wafer_spark");
 		
 		fragment_neodymium = new Item().setUnlocalizedName("fragment_neodymium").setCreativeTab(MainRegistry.partsTab).setTextureName(RefStrings.MODID + ":fragment_neodymium");
@@ -3404,14 +3407,14 @@ public class ModItems {
 		
 		wiring_red_copper = new ItemWiring().setUnlocalizedName("wiring_red_copper").setCreativeTab(MainRegistry.partsTab).setTextureName(RefStrings.MODID + ":wiring_red_copper");
 
-		pellet_rtg = new ItemRTGPellet(HazardRegistry.pu238 * HazardRegistry.rtg, true, 5).setDecays(new ItemStack(billet_u234, 3), (long) (IRadioisotopeFuel.getLifespan(88, HalfLifeType.MEDIUM, true) * 1.5)).setUnlocalizedName("pellet_rtg").setCreativeTab(MainRegistry.controlTab).setMaxStackSize(1).setTextureName(RefStrings.MODID + ":pellet_rtg");
-		pellet_rtg_weak = new ItemRTGPellet(HazardRegistry.u238 * HazardRegistry.billet * 2 + HazardRegistry.pu238 * HazardRegistry.billet, false, 1).setUnlocalizedName("pellet_rtg_weak").setCreativeTab(MainRegistry.controlTab).setMaxStackSize(1).setTextureName(RefStrings.MODID + ":pellet_rtg_weak");
-		pellet_rtg_polonium = new ItemRTGPellet(HazardRegistry.po210 * HazardRegistry.rtg, true, 25).setDecays(new ItemStack(powder_lead, 2), IRadioisotopeFuel.getLifespan(138, HalfLifeType.SHORT, true)).setUnlocalizedName("pellet_rtg_polonium").setCreativeTab(MainRegistry.controlTab).setMaxStackSize(1).setTextureName(RefStrings.MODID + ":pellet_rtg_polonium");
-		pellet_rtg_actinium = new ItemRTGPellet(HazardRegistry.ac227 * HazardRegistry.rtg, true, 15).setDecays(new ItemStack(powder_lead, 2), (long) (IRadioisotopeFuel.getLifespan(22, HalfLifeType.MEDIUM, true) * 1.5)).setRarity(EnumRarity.epic).setUnlocalizedName("pellet_rtg_actinium").setCreativeTab(MainRegistry.controlTab).setTextureName(RefStrings.MODID + ":pellet_rtg_actinium");
-		pellet_rtg_strontium = new ItemRTGPellet(HazardRegistry.sr90, true, 15).setDecays(new ItemStack(powder_zirconium), (long) (IRadioisotopeFuel.getLifespan(28.79f, HalfLifeType.MEDIUM, true) * 1.5)).setRarity(EnumRarity.epic).setUnlocalizedName("pellet_rtg_strontium").setCreativeTab(MainRegistry.controlTab).setTextureName(RefStrings.MODID + ":pellet_rtg_strontium");
-		pellet_rtg_gold = new ItemRTGPellet(HazardRegistry.au198 * HazardRegistry.rtg, true, 150).setDecays(new ItemStack(nugget_mercury, 2), 60*60*20).setUnlocalizedName("pellet_rtg_gold").setCreativeTab(MainRegistry.controlTab).setMaxStackSize(1).setTextureName(RefStrings.MODID + ":pellet_rtg_gold");
-		pellet_rtg_americium = new ItemRTGPellet(HazardRegistry.am241, false, 15).setUnlocalizedName("pellet_rtg_americium").setCreativeTab(MainRegistry.controlTab).setTextureName(RefStrings.MODID + ":pellet_rtg_americium");
-		pellet_rtg_berkelium = new ItemRTGPellet(HazardRegistry.bk248, false, 20).setUnlocalizedName("pellet_rtg_berkelium").setCreativeTab(MainRegistry.controlTab).setTextureName(RefStrings.MODID + ":pellet_rtg_berkelium");
+		pellet_rtg = new ItemRTGPellet(HazardRegistry.pu238 * HazardRegistry.rtg, true, 50).setDecays(new ItemStack(billet_u234, 3), (long) (IRadioisotopeFuel.getLifespan(88, HalfLifeType.MEDIUM, true) * 1.5)).setUnlocalizedName("pellet_rtg").setCreativeTab(MainRegistry.controlTab).setMaxStackSize(1).setTextureName(RefStrings.MODID + ":pellet_rtg");
+		pellet_rtg_weak = new ItemRTGPellet(HazardRegistry.u238 * HazardRegistry.billet * 2 + HazardRegistry.pu238 * HazardRegistry.billet, false, 10).setUnlocalizedName("pellet_rtg_weak").setCreativeTab(MainRegistry.controlTab).setMaxStackSize(1).setTextureName(RefStrings.MODID + ":pellet_rtg_weak");
+		pellet_rtg_polonium = new ItemRTGPellet(HazardRegistry.po210 * HazardRegistry.rtg, true, 250).setDecays(new ItemStack(powder_lead, 2), IRadioisotopeFuel.getLifespan(138, HalfLifeType.SHORT, true)).setUnlocalizedName("pellet_rtg_polonium").setCreativeTab(MainRegistry.controlTab).setMaxStackSize(1).setTextureName(RefStrings.MODID + ":pellet_rtg_polonium");
+		pellet_rtg_actinium = new ItemRTGPellet(HazardRegistry.ac227 * HazardRegistry.rtg, true, 150).setDecays(new ItemStack(powder_lead, 2), (long) (IRadioisotopeFuel.getLifespan(22, HalfLifeType.MEDIUM, true) * 1.5)).setRarity(EnumRarity.epic).setUnlocalizedName("pellet_rtg_actinium").setCreativeTab(MainRegistry.controlTab).setTextureName(RefStrings.MODID + ":pellet_rtg_actinium");
+		pellet_rtg_strontium = new ItemRTGPellet(HazardRegistry.sr90, true, 150).setDecays(new ItemStack(powder_zirconium), (long) (IRadioisotopeFuel.getLifespan(28.79f, HalfLifeType.MEDIUM, true) * 1.5)).setRarity(EnumRarity.epic).setUnlocalizedName("pellet_rtg_strontium").setCreativeTab(MainRegistry.controlTab).setTextureName(RefStrings.MODID + ":pellet_rtg_strontium");
+		pellet_rtg_gold = new ItemRTGPellet(HazardRegistry.au198 * HazardRegistry.rtg, true, 1500).setDecays(new ItemStack(nugget_mercury, 2), 60*60*20).setUnlocalizedName("pellet_rtg_gold").setCreativeTab(MainRegistry.controlTab).setMaxStackSize(1).setTextureName(RefStrings.MODID + ":pellet_rtg_gold");
+		pellet_rtg_americium = new ItemRTGPellet(HazardRegistry.am241, false, 150).setUnlocalizedName("pellet_rtg_americium").setCreativeTab(MainRegistry.controlTab).setTextureName(RefStrings.MODID + ":pellet_rtg_americium");
+		pellet_rtg_berkelium = new ItemRTGPellet(HazardRegistry.bk248, false, 200).setUnlocalizedName("pellet_rtg_berkelium").setCreativeTab(MainRegistry.controlTab).setTextureName(RefStrings.MODID + ":pellet_rtg_berkelium");
 		
 		tritium_deuterium_cake = new ItemCustomLore().setUnlocalizedName("tritium_deuterium_cake").setCreativeTab(MainRegistry.controlTab).setMaxStackSize(1).setTextureName(RefStrings.MODID + ":tritium_deuterium_cake");
 		
@@ -4130,8 +4133,8 @@ public class ModItems {
 				.setUnlocalizedName("rbmk_fuel_pu238be").setTextureName(RefStrings.MODID + ":rbmk_fuel_pu238be");
 		rbmk_fuel_ac227be = (ItemRBMKRod) new ItemRBMKRod(rbmk_pellet_ac227be)
 				.setYield(50000000D)
-				.setStats(7.5, 75)
-				.setFunction(EnumBurnFunc.SQUARE_ROOT)
+				.setStats(0, 75)
+				.setFunction(EnumBurnFunc.PASSIVE)
 				.setHeat(0.075)
 				.setDiffusion(0.05)
 				.setMeltingPoint(1287)
@@ -5616,6 +5619,7 @@ public class ModItems {
 		gun_dampfmaschine = new GunDampfmaschine().setUnlocalizedName("gun_dampfmaschine").setCreativeTab(MainRegistry.weaponTab).setTextureName(RefStrings.MODID + ":gun_dampfmaschine");
 		gun_darter = new ItemGunDart(GunDartFactory.getDarterConfig()).setFull3D().setUnlocalizedName("gun_darter").setCreativeTab(MainRegistry.weaponTab).setTextureName(RefStrings.MODID + ":gun_darter");
 		gun_uac_pistol = new ItemGunBase(Gun45ACPFactory.getUACPistolConfig()).setFull3D().setUnlocalizedName("gun_uac_pistol").setCreativeTab(MainRegistry.weaponTab);
+		gun_g36 = new ItemGunBase(Gun556mmFactory.getG36Config()).setFull3D().setUnlocalizedName("gun_g36").setCreativeTab(MainRegistry.weaponTab);
 		gun_benelli = new ItemGunBase(Gun12GaugeFactory.getBenelliConfig()).setFull3D().setUnlocalizedName("gun_benelli").setCreativeTab(MainRegistry.weaponTab);
 		gun_benelli_mod = new ItemGunBase(Gun12GaugeFactory.getBenelliModConfig()).setFull3D().setUnlocalizedName("gun_benelli_mod").setCreativeTab(MainRegistry.weaponTab);
 		gun_twr = new ItemGunTWR(GunEnergyFactory.getTWRConfig()).setFull3D().setUnlocalizedName("gun_twr").setCreativeTab(MainRegistry.weaponTab);
@@ -6349,6 +6353,7 @@ public class ModItems {
 		GameRegistry.registerItem(wafer_gold, wafer_gold.getUnlocalizedName());
 		GameRegistry.registerItem(wafer_lapis, wafer_lapis.getUnlocalizedName());
 		GameRegistry.registerItem(wafer_diamond, wafer_diamond.getUnlocalizedName());
+		GameRegistry.registerItem(wafer_caesium, wafer_caesium.getUnlocalizedName());
 		GameRegistry.registerItem(wafer_spark, wafer_spark.getUnlocalizedName());
 		
 		//Powders
@@ -7641,6 +7646,7 @@ public class ModItems {
 		GameRegistry.registerItem(gun_uzi_saturnite, gun_uzi_saturnite.getUnlocalizedName());
 		GameRegistry.registerItem(gun_uzi_saturnite_silencer,gun_uzi_saturnite_silencer.getUnlocalizedName());
 		GameRegistry.registerItem(gun_uboinik, gun_uboinik.getUnlocalizedName());
+		GameRegistry.registerItem(gun_g36, gun_g36.getUnlocalizedName());
 		GameRegistry.registerItem(gun_uac_pistol, gun_uac_pistol.getUnlocalizedName());
 		GameRegistry.registerItem(gun_benelli, gun_benelli.getUnlocalizedName());
 		GameRegistry.registerItem(gun_benelli_mod, gun_benelli_mod.getUnlocalizedName());

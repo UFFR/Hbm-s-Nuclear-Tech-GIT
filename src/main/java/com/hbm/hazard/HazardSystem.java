@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.annotation.CheckForNull;
+
 import com.hbm.hazard.modifier.HazardModifier;
 import com.hbm.hazard.transformer.HazardTransformerBase;
 import com.hbm.hazard.type.HazardTypeBase;
@@ -44,6 +46,13 @@ public class HazardSystem {
 	 * List of hazard transformers, called in order before and after unrolling all the HazardEntries.
 	 */
 	public static final List<HazardTransformerBase> trafos = new ArrayList<HazardTransformerBase>();
+	
+	/**
+	 * Experimental maps for containing the different radiation types
+	 */
+	public static final HashMap<String, float[]> oreData = new HashMap<String, float[]>();
+	public static final HashMap<Item, float[]> itemData = new HashMap<Item, float[]>();
+	public static final HashMap<ComparableStack, float[]> stackData = new HashMap<ComparableStack, float[]>();
 	
 	/**
 	 * Automatically casts the first parameter and registers it to the HazSys
@@ -142,6 +151,52 @@ public class HazardSystem {
 		}
 		
 		return entries;
+	}
+	@Untested
+	@CheckForNull
+	public static float[] getRadTypes(ItemStack stack)
+	{
+		if(isItemBlacklisted(stack))
+			return null;
+			
+		List<HazardData> chronological = new ArrayList<HazardData>();
+		
+		/// ORE DICT ///
+		int[] ids = OreDictionary.getOreIDs(stack);
+		for(int id : ids) {
+			String name = OreDictionary.getOreName(id);
+			
+			if(oreMap.containsKey(name))
+				chronological.add(oreMap.get(name));
+		}
+		
+		/// ITEM ///
+		if(itemMap.containsKey(stack.getItem()))
+			chronological.add(itemMap.get(stack.getItem()));
+		
+		/// STACK ///
+		ComparableStack comp = new ComparableStack(stack).makeSingular();
+		if(stackMap.containsKey(comp))
+			chronological.add(stackMap.get(comp));
+		
+		float[] types = new float[4];
+		
+		int mutex = 0;
+		
+		for(HazardData data : chronological)
+		{
+			if((data.getMutex() & mutex) == 0)
+			{
+				types = data.radTypes;
+				mutex = mutex | data.getMutex();
+			}
+		}
+		float total = 0;
+		
+		for (float f : types)
+			total += f;
+		
+		return total > 0 ? types : new float[] {0, 1, 0, 0};
 	}
 	
 	public static float getHazardLevelFromStack(ItemStack stack, HazardTypeBase hazard) {

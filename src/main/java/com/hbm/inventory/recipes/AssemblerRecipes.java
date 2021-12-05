@@ -779,7 +779,7 @@ public class AssemblerRecipes {
 								new ComparableStack(ModItems.circuit_gold, 2),
 								new OreDictStack("ingotDeshAlloy", 4),
 								new ComparableStack(ModItems.wire_schrabidium, 8),
-								new ComparableStack(ModItems.wafer_diamond, 4)
+								new ComparableStack(ModItems.wafer_caesium, 4)
 						}, 300);
 				makeRecipe(new ComparableStack(ModBlocks.block_circuit_tier_6, 1), new AStack[]
 						{
@@ -910,7 +910,7 @@ public class AssemblerRecipes {
 								new ComparableStack(ModItems.plate_armor_orichalcum, 24),
 								new ComparableStack(ModItems.particle_lutece)
 						}, 4800);
-				makeRecipe(new ComparableStack(ModBlocks.turret_lunar_oni), new AStack[]
+				makeRecipe(new ComparableStack(ModBlocks.turret_bishamonten), new AStack[]
 						{
 								new ComparableStack(ModItems.plate_dineutronium, 64),
 								new ComparableStack(ModItems.circuit_bismuth, 8),
@@ -936,8 +936,6 @@ public class AssemblerRecipes {
 								new ComparableStack(ModBlocks.block_circuit_tier_5, 6),
 								new ComparableStack(ModBlocks.barrel_antimatter, 2),
 								new ComparableStack(ModBlocks.barrel_steel, 2),
-								new ComparableStack(ModItems.circuit_bismuth, 8),
-								new ComparableStack(ModItems.circuit_tantalium, 64)
 						}, 1000);
 				makeRecipe(new ComparableStack(ModItems.betavoltaic_element, 2), new AStack[]
 						{
@@ -947,7 +945,7 @@ public class AssemblerRecipes {
 								new ComparableStack(ModItems.wire_gold, 12),
 								new OreDictStack("plateGold", 2),
 								new OreDictStack("plateLead"),
-								new OreDictStack("ingotUraniumDioxide", 2)
+								new ComparableStack(ModItems.ingot_desh, 2)
 						}, 250);
 				makeRecipe(new ComparableStack(ModBlocks.atomic_clock), new AStack[]
 						{

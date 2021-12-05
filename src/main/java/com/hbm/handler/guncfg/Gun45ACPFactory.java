@@ -54,7 +54,7 @@ public class Gun45ACPFactory
 		config.firingMode = GunConfiguration.FIRE_MANUAL;
 		config.reloadDuration = 10;
 		config.firingDuration = 8;
-		config.ammoCap = 15;
+		config.ammoCap = 16;
 		config.durability = 10000;
 		config.reloadType = 1;
 		config.allowsInfinity = true;
@@ -115,8 +115,8 @@ public class Gun45ACPFactory
 		BulletConfiguration bullet = Gun9mmFactory.get9mmConfig();
 		
 		bullet.ammo = ModItems.ammo_45;
-		bullet.dmgMax = 8;
-		bullet.dmgMin = 6;
+		bullet.dmgMax = 30;
+		bullet.dmgMin = 27;
 		bullet.spread /= 2.5;
 		
 		return bullet;

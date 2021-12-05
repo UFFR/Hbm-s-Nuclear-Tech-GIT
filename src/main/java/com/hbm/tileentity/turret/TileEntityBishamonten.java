@@ -26,7 +26,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityLunarOni extends TileEntityMachineBase implements IConsumer, ILaserable, IControlReceiver
+public class TileEntityBishamonten extends TileEntityMachineBase implements IConsumer, ILaserable, IControlReceiver
 {
 	private long power = 0;
 	private long buffer = 0;
@@ -56,7 +56,7 @@ public class TileEntityLunarOni extends TileEntityMachineBase implements IConsum
 		/** cover yourself in moonlight **/
 		FLOOD;
 	}
-	public TileEntityLunarOni()
+	public TileEntityBishamonten()
 	{
 		super(0);
 	}

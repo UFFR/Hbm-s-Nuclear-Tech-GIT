@@ -31,10 +31,10 @@ public class GUIMachineDiFurnaceRTG extends GuiInfoContainer
 	public void drawScreen(int mouseX, int mouseY, float f)
 	{
 		super.drawScreen(mouseX, mouseY, f);
-		String[] infoText = I18nUtil.resolveKeyArray("desc.gui.rtgBFurnace.pellets");
+//		String[] infoText = I18nUtil.resolveKeyArray("desc.gui.rtgBFurnace.pellets");
 		String[] descText = I18nUtil.resolveKeyArray("desc.gui.rtgBFurnace.desc");
 		String[] heatText = I18nUtil.resolveKeyArray("desc.gui.rtgBFurnace.heat", bFurnace.getPower());
-		this.drawCustomInfoStat(mouseX, mouseY, guiLeft - 15, guiTop + 36, 16, 16, guiLeft - 8, guiTop + 36 + 16, infoText);
+		this.drawCustomInfoStat(mouseX, mouseY, guiLeft - 15, guiTop + 36, 16, 16, guiLeft - 8, guiTop + 36 + 16, assembleRTGPellets());
 		this.drawCustomInfoStat(mouseX, mouseY, guiLeft - 15, guiTop + 36 + 16, 16, 16, guiLeft - 8, guiTop + 36 + 16, descText);
 		this.drawCustomInfoStat(mouseX, mouseY, guiLeft + 58, guiTop + 36, 18, 16, mouseX, mouseY, heatText);
 	}

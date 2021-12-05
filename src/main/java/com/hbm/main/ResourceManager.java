@@ -581,6 +581,7 @@ public class ResourceManager {
 	public static final IModelCustom ar15 = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/weapons/ar15.obj"));
 	
 	public static final IModelCustom lance = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/weapons/lance.obj"));
+	public static final IModelCustom tesseract = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/effect/Tesseract.obj"));
 	public static final IModelCustom twr = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/weapons/time_warp_rifle_final.obj"));
 	public static final IModelCustom hlr = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/weapons/heavy_lunatic_rifle.obj"));
 	public static final IModelCustom benelli = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/weapons/benelli_new.obj"));
@@ -589,6 +590,7 @@ public class ResourceManager {
 	public static final IModelCustom lunatic_smg = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/weapons/lunatic_smg.obj"));
 	public static final IModelCustom thompson_redux = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/weapons/thompson smg final.obj"));
 	public static final IModelCustom uac_pistol = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/weapons/UAC pistol.obj"));
+	public static final IModelCustom g36 = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/weapons/g36.obj"));
 	
 	public static final IModelCustom grenade_frag = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/weapons/grenade_frag.obj"));
 	public static final IModelCustom grenade_aschrab = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/weapons/grenade_aschrab.obj"));

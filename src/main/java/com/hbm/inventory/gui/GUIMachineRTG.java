@@ -33,17 +33,8 @@ public class GUIMachineRTG extends GuiInfoContainer {
 		super.drawScreen(mouseX, mouseY, f);
 
 		this.drawElectricityInfo(this, mouseX, mouseY, guiLeft + 152, guiTop + 69 - 52, 16, 52, rtg.power, TileEntityMachineRTG.powerMax);
-		final ArrayList<String> pellets = new ArrayList<String>();
-		pellets.add("Accepted Pellets:");
-		for (ItemRTGPellet pellet : ItemRTGPellet.getPellets())
-		{
-			pellets.add(" - " + pellet.getData());
-//			String text = String.format("%s (%s HE/t)", I18nUtil.resolveKey(pellet.getUnlocalizedName()), pellet.getPower());
-//			if (pellet.getDoesDecay())
-//				text = text.concat(" (decays)");
-//			pellets.add(text);
-		}
-		this.drawCustomInfoStat(mouseX, mouseY, guiLeft - 16, guiTop + 36, 16, 16, guiLeft - 8, guiTop + 36 + 16, pellets.toArray(new String[pellets.size()]));
+		
+		this.drawCustomInfoStat(mouseX, mouseY, guiLeft - 16, guiTop + 36, 16, 16, guiLeft - 8, guiTop + 36 + 16, assembleRTGPellets());
 	}
 
 	@Override

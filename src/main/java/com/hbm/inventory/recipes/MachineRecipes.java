@@ -1761,7 +1761,7 @@ public class MachineRecipes
         case CIRCUIT_5:
 			list.add(new ItemStack(ModItems.circuit_gold, 1));
 			list.add(new ItemStack(ModItems.wire_schrabidium, 4));
-			list.add(new ItemStack(ModItems.wafer_diamond, 1));
+			list.add(new ItemStack(ModItems.wafer_caesium, 1));
 			list.add(new ItemStack(ModItems.ingot_desh, 1));
 			break;
         case POLYMER:
@@ -2005,7 +2005,7 @@ public class MachineRecipes
 			input[1] = new FluidStack(200, FluidType.PETROLEUM);
         	break;
         case CIRCUIT_5:
-			input[0] = new FluidStack(800, FluidType.ACID);
+			input[0] = new FluidStack(800, FluidType.XENON);
 			input[1] = new FluidStack(200, FluidType.MERCURY);
         	break;
         case SF_OIL:

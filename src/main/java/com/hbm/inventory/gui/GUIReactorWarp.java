@@ -21,7 +21,7 @@ public class GUIReactorWarp extends GuiInfoContainer
 {
 	private static final ResourceLocation texture = new ResourceLocation(RefStrings.MODID, "textures/gui/reactors/gui_reactor_amat_new.png");
 	private final TileEntityReactorWarp warpCore;
-	private final NumberDisplay disp = new NumberDisplay(29, 20, 218, 18).setMaxMin(100, 0).setDigitLength(3);
+	private final NumberDisplay disp = new NumberDisplay(29, 20).setMaxMin(100, 0).setDigitLength(3);
 	private final FluidTankGUI[] guiTanks = new FluidTankGUI[3];
 	private final GuiTextField tInput;
 	public GUIReactorWarp(TileEntityReactorWarp te)

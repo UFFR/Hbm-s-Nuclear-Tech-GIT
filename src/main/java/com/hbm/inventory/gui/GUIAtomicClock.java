@@ -24,9 +24,9 @@ public class GUIAtomicClock extends GuiInfoContainer
 		clock = te;
 		xSize = 256;
 		ySize = 187;
-		displays[0] = new NumberDisplay(49, 23, 43, 187).setDigitLength(6).setMaxMin(9.9999F, 0).setFloat(4);
-		displays[1] = new NumberDisplay(101, 23, 43, 187).setMaxMin(100, 0);
-		displays[2] = new NumberDisplay(49, 73, 43, 187).setDigitLength(28).setPadding(1);
+		displays[0] = new NumberDisplay(49, 23).setDigitLength(6).setMaxMin(9.9999F, 0).setFloat(4);
+		displays[1] = new NumberDisplay(101, 23).setMaxMin(100, 0);
+		displays[2] = new NumberDisplay(49, 73).setDigitLength(28).setPadding(1);
 		clockTank = new FluidTankGUI(clock.getTanks().get(0), 26, 16, 16, 73);
 	}
 	
@@ -38,7 +38,7 @@ public class GUIAtomicClock extends GuiInfoContainer
 //		clock.getTanks().get(0).renderTankInfo(this, mouseX, mouseY, guiLeft + 26, guiTop + 16, 16, 73);
 		clockTank.updateTank(clock.getTanks().get(0));
 		clockTank.renderTankInfo(mouseX, mouseY);
-		if (clock.isOn && clock.getTanks().get(0).getFill() > 0 && clock.getPower() >= clock.consumption)
+		if (clock.getIsOn() && clock.getTanks().get(0).getFill() > 0 && clock.getPower() >= clock.consumption)
 		{
 			drawCustomInfoStat(mouseX, mouseY, guiLeft + 47, guiTop + 21, 46, 16, mouseX, mouseY, String.valueOf(displays[0].getNumber()));
 			drawCustomInfoStat(mouseX, mouseY, guiLeft + 100, guiTop + 21, 28, 16, mouseX, mouseY, String.valueOf(displays[1].getNumber().byteValue()));
@@ -73,22 +73,18 @@ public class GUIAtomicClock extends GuiInfoContainer
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int p_146976_2_, int p_146976_3_)
 	{
-		displays[0].setNumber(clock.time);
-		displays[0].setFloat(4);
-		displays[1].setNumber(clock.day);
-		displays[2].setNumber(clock.year);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(texture);
 		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 		
 		int pow = (int) getScaledBar(clock.getPower(), 54, clock.getMaxPower());
 		drawTexturedModalRect(guiLeft + 8, guiTop + 71 - pow, 49, 242 - pow, 16, pow);
-		if (clock.isOn)
+		if (clock.getIsOn())
 		{
 			drawTexturedModalRect(guiLeft + 44, guiTop + 43, 67, 187, 18, 18);
 			if (clock.getTanks().get(0).getFill() > 0 && clock.getPower() >= clock.consumption)
 				for (byte i = 0; i < 3; i++)
-					displays[i].drawNumber();
+					displays[i].drawNumber(clock.getTimeData()[i].doubleValue());
 		}
 		clockTank.updateTank(clock.getTanks().get(0));
 		clockTank.renderTank();

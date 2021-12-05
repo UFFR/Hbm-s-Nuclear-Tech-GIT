@@ -184,6 +184,7 @@ public class TimeSavedData extends WorldSavedData
 		day = nbt.getByte("day");
 		time = nbt.getFloat("time");
 		timeInternal = nbt.getLong("timeInternal");
+//		MainRegistry.logger.info("[TimeSavedData] Time datra has been read from NBT");
 	}
 
 	@Override
@@ -193,5 +194,6 @@ public class TimeSavedData extends WorldSavedData
 		nbt.setByte("day", day);
 		nbt.setFloat("time", time);
 		nbt.setLong("timeInternal", timeInternal);
+//		MainRegistry.logger.info("[TimeSavedData] Time data has been written to NBT");
 	}
 }
