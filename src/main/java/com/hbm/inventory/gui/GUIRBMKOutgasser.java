@@ -45,10 +45,10 @@ public class GUIRBMKOutgasser extends GuiInfoContainer {
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
 		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 		
-		int progress = (int) (rod.progress * 13 / rod.duration);
+		int progress = (int) (rod.progress * 13 / rod.getMaxDuration());
 		drawTexturedModalRect(guiLeft + 82, guiTop + 50, 176, 0, progress, 6);
 		
-		int gas = (int) (rod.gas.getFill() * 42 / rod.gas.getMaxFill());
+		int gas = rod.gas.getFill() * 42 / rod.gas.getMaxFill();
 		drawTexturedModalRect(guiLeft + 115, guiTop + 66 - gas, 188, 42 - gas, 10, gas);
 	}
 }

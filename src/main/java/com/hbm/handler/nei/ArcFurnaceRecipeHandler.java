@@ -5,8 +5,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 
-import com.hbm.inventory.MachineRecipes;
+import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.gui.GUIMachineArcFurnace;
+import com.hbm.inventory.recipes.MachineRecipes;
 import com.hbm.items.ModItems;
 import com.hbm.lib.RefStrings;
 import com.hbm.util.I18nUtil;
@@ -21,20 +22,23 @@ import scala.actors.threadpool.Arrays;
 // TODO what is this??!!
 public class ArcFurnaceRecipeHandler extends TemplateRecipeHandler
 {
-	public Item[] electrodes = new Item[] { ModItems.arc_electrode, ModItems.arc_electrode_desh };
-	public Random rand = new Random();
+	public static final Item[] electrodes = new Item[2];
+	public static final Random rand = new Random();
+	static
+	{
+		electrodes[0] = ModItems.arc_electrode;
+		electrodes[1] = ModItems.arc_electrode_desh;
+	}
 	public class ArcSet extends TemplateRecipeHandler.CachedRecipe
 	{
 		PositionedStack input;
 		PositionedStack output;
-		PositionedStack electrodeSlot1;
-		PositionedStack electrodeSlot2;
-		PositionedStack electrodeSlot3;
+		PositionedStack[] electrodeSlots = new PositionedStack[3];
 
-		public ArcSet(ItemStack input, ItemStack output)
+		public ArcSet(ComparableStack comparableStack, ItemStack output)
 		{
-			input.stackSize = 1;
-			this.input = new PositionedStack(input, 56, 17);
+			comparableStack.stacksize = 1;
+			this.input = new PositionedStack(comparableStack.toStack(), 56, 17);
 			this.output = new PositionedStack(output, 116, 35);
 		}
 		
@@ -47,13 +51,13 @@ public class ArcFurnaceRecipeHandler extends TemplateRecipeHandler
 		@Override
 		public List<PositionedStack> getIngredients()
 		{
-			return getCycledIngredients(cycleticks / 48, Arrays.asList(new PositionedStack[] {input}));
+			return Arrays.asList(new PositionedStack[] {input});
 		}
 		
 		@Override
 		public List<PositionedStack> getOtherStacks()
 		{
-			return getCycledIngredients(cycleticks / 48, Arrays.asList(new PositionedStack[] {electrodeSlot1, electrodeSlot2, electrodeSlot3}));
+			return getCycledIngredients(cycleticks / 48, Arrays.asList(electrodeSlots));
 		}
 	}
 
@@ -62,9 +66,9 @@ public class ArcFurnaceRecipeHandler extends TemplateRecipeHandler
 	{
 		if (outputId.equals("arcsmelting") && getClass() == ArcFurnaceRecipeHandler.class)
 		{
-			Map<Object, Object> recipes = MachineRecipes.instance().getArcFurnaceRecipes();
-			for (Entry<Object, Object> recipe : recipes.entrySet())
-				this.arecipes.add(new ArcSet((ItemStack)recipe.getKey(), (ItemStack)recipe.getValue()));
+			Map<ComparableStack, ItemStack> recipes = MachineRecipes.instance().getArcFurnaceRecipes();
+			for (Entry<ComparableStack, ItemStack> recipe : recipes.entrySet())
+				this.arecipes.add(new ArcSet(recipe.getKey(), recipe.getValue()));
 		}
 		else
 			super.loadCraftingRecipes(outputId, results);
@@ -73,10 +77,9 @@ public class ArcFurnaceRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public void loadCraftingRecipes(ItemStack result)
 	{
-		Map<Object, Object> recipes = MachineRecipes.instance().getArcFurnaceRecipes();
-		for (Entry<Object, Object> recipe : recipes.entrySet())
-			if (NEIServerUtils.areStacksSameType((ItemStack)recipe.getValue(), result))
-				this.arecipes.add(new ArcSet((ItemStack)recipe.getKey(), (ItemStack)recipe.getValue()));
+		Map<ComparableStack, ItemStack> recipes = MachineRecipes.instance().getArcFurnaceRecipes();
+		for (Entry<ComparableStack, ItemStack> recipe : recipes.entrySet())
+			arecipes.add(new ArcSet(recipe.getKey(), recipe.getValue()));
 	}
 	
 	@Override
@@ -91,10 +94,10 @@ public class ArcFurnaceRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
-		Map<Object, Object> recipes = MachineRecipes.instance().getArcFurnaceRecipes();
-		for (Entry<Object, Object> recipe : recipes.entrySet())
-			if (NEIServerUtils.areStacksSameType((ItemStack)recipe.getKey(), ingredient))
-				this.arecipes.add(new ArcSet((ItemStack)recipe.getKey(), (ItemStack)recipe.getValue()));
+		Map<ComparableStack, ItemStack> recipes = MachineRecipes.instance().getArcFurnaceRecipes();
+		for (Entry<ComparableStack, ItemStack> recipe : recipes.entrySet())
+			if (NEIServerUtils.areStacksSameType(recipe.getKey().toStack(), ingredient))
+				this.arecipes.add(new ArcSet(recipe.getKey(), recipe.getValue()));
 	}
 		
 	@Override

@@ -3,6 +3,7 @@ package com.hbm.inventory.recipes;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hbm.interfaces.IResearchableRecipe;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.items.ModItems;
 
@@ -145,7 +146,7 @@ public class HadronRecipes {
 		return recipes;
 	}
 	
-	public static class HadronRecipe {
+	public static class HadronRecipe implements IResearchableRecipe {
 		
 		public ComparableStack in1;
 		public ComparableStack in2;
@@ -161,6 +162,12 @@ public class HadronRecipes {
 			this.out1 = out1;
 			this.out2 = out2;
 			this.analysisOnly = analysisOnly;
+		}
+
+		@Override
+		public String getKey()
+		{
+			return "NTM_HADRON";
 		}
 	}
 }

@@ -5,9 +5,16 @@ import javax.annotation.Nonnull;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-
+@Deprecated
 public interface IDataStorageUser
 {
+	public static final int KB = 1000;
+	public static final int MB = 1000000;
+	public static final int GB = 1000000000;
+	public static final long TB = 100000000000L;
+	public static final long PB = 100000000000000L;
+	public static final long ZB = 100000000000000000L;
+	
 	public long getMaxCapacity();
 	public long getReadSpeed();
 	public long getWriteSpeed();

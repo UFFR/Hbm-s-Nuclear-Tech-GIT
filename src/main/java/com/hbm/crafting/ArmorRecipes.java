@@ -15,8 +15,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.oredict.ShapedOreRecipe;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 /**
  * For player armor
@@ -38,18 +36,24 @@ public class ArmorRecipes {
 		addChest(	TI.ingot(), ModItems.titanium_plate);
 		addLegs(	TI.ingot(), ModItems.titanium_legs);
 		addBoots(	TI.ingot(), ModItems.titanium_boots);
-		addHelmet(	ALLOY.ingot(), ModItems.alloy_helmet);
-		addChest(	ALLOY.ingot(), ModItems.alloy_plate);
-		addLegs(	ALLOY.ingot(), ModItems.alloy_legs);
-		addBoots(	ALLOY.ingot(), ModItems.alloy_boots);
+		Item[] alloySet = {ModItems.alloy_helmet, ModItems.alloy_plate, ModItems.alloy_legs, ModItems.alloy_boots};
+		addFullArmor(ALLOY.ingot(), alloySet);
+//		addHelmet(	ALLOY.ingot(), ModItems.alloy_helmet);
+//		addChest(	ALLOY.ingot(), ModItems.alloy_plate);
+//		addLegs(	ALLOY.ingot(), ModItems.alloy_legs);
+//		addBoots(	ALLOY.ingot(), ModItems.alloy_boots);
 		addHelmet(	CMB.ingot(), ModItems.cmb_helmet);
 		addChest(	CMB.ingot(), ModItems.cmb_plate);
 		addLegs(	CMB.ingot(), ModItems.cmb_legs);
 		addBoots(	CMB.ingot(), ModItems.cmb_boots);
-		addHelmet(	CO.ingot(), ModItems.cobalt_helmet);
-		addChest(	CO.ingot(), ModItems.cobalt_plate);
-		addLegs(	CO.ingot(), ModItems.cobalt_legs);
-		addBoots(	CO.ingot(), ModItems.cobalt_boots);
+		Item[] cobaltSet = {ModItems.cobalt_helmet, ModItems.cobalt_plate, ModItems.cobalt_legs, ModItems.cobalt_boots};
+		addFullArmor(CO.ingot(), cobaltSet);
+//		addHelmet(	CO.ingot(), ModItems.cobalt_helmet);
+//		addChest(	CO.ingot(), ModItems.cobalt_plate);
+//		addLegs(	CO.ingot(), ModItems.cobalt_legs);
+//		addBoots(	CO.ingot(), ModItems.cobalt_boots);
+		Item[] ferrouraniumSet = {ModItems.ferrouranium_helmet, ModItems.ferrouranium_plate, ModItems.ferrouranium_legs, ModItems.ferrouranium_boots};
+		addFullArmorUpgrade(FERROURANIUM.ingot(), alloySet, ferrouraniumSet);
 		addHelmet(	ModItems.rag, ModItems.robes_helmet);
 		addChest(	ModItems.rag, ModItems.robes_plate);
 		addLegs(	ModItems.rag, ModItems.robes_legs);
@@ -109,15 +113,15 @@ public class ArmorRecipes {
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.jetpack_boost, 1), new Object[] { "PCP", "DJD", "PAP", 'C', ModItems.circuit_targeting_tier4, 'P', BIGMT.plate(), 'D', DESH.ingot(), 'J', ModItems.jetpack_vector, 'A', ModItems.board_copper });
 		
 		//Hazmat
-		CraftingManager.addRecipeAuto(new ItemStack(ModItems.hazmat_helmet, 1), new Object[] { "EEE", "EIE", " P ", 'E', ModItems.hazmat_cloth, 'I', KEY_ANYPANE, 'P', IRON.plate() });
+		CraftingManager.addRecipeAuto(new ItemStack(ModItems.hazmat_helmet, 1), new Object[] { "EEE", "EIE", " P ", 'E', ModItems.hazmat_cloth, 'I', KEY_ANYPANE, 'P', FE.plate() });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.hazmat_plate, 1), new Object[] { "E E", "EEE", "EEE", 'E', ModItems.hazmat_cloth });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.hazmat_legs, 1), new Object[] { "EEE", "E E", "E E", 'E', ModItems.hazmat_cloth });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.hazmat_boots, 1), new Object[] { "E E", "E E", 'E', ModItems.hazmat_cloth });
-		CraftingManager.addRecipeAuto(new ItemStack(ModItems.hazmat_helmet_red, 1), new Object[] { "EEE", "IEI", "EFE", 'E', ModItems.hazmat_cloth_red, 'I', KEY_ANYPANE, 'F', IRON.plate() });
+		CraftingManager.addRecipeAuto(new ItemStack(ModItems.hazmat_helmet_red, 1), new Object[] { "EEE", "IEI", "EFE", 'E', ModItems.hazmat_cloth_red, 'I', KEY_ANYPANE, 'F', FE.plate() });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.hazmat_plate_red, 1), new Object[] { "E E", "EEE", "EEE", 'E', ModItems.hazmat_cloth_red });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.hazmat_legs_red, 1), new Object[] { "EEE", "E E", "E E", 'E', ModItems.hazmat_cloth_red });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.hazmat_boots_red, 1), new Object[] { "E E", "E E", 'E', ModItems.hazmat_cloth_red });
-		CraftingManager.addRecipeAuto(new ItemStack(ModItems.hazmat_helmet_grey, 1), new Object[] { "EEE", "IEI", "EFE", 'E', ModItems.hazmat_cloth_grey, 'I', KEY_ANYPANE, 'F', IRON.plate() });
+		CraftingManager.addRecipeAuto(new ItemStack(ModItems.hazmat_helmet_grey, 1), new Object[] { "EEE", "IEI", "EFE", 'E', ModItems.hazmat_cloth_grey, 'I', KEY_ANYPANE, 'F', FE.plate() });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.hazmat_plate_grey, 1), new Object[] { "E E", "EEE", "EEE", 'E', ModItems.hazmat_cloth_grey });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.hazmat_legs_grey, 1), new Object[] { "EEE", "E E", "E E", 'E', ModItems.hazmat_cloth_grey });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.hazmat_boots_grey, 1), new Object[] { "E E", "E E", 'E', ModItems.hazmat_cloth_grey });
@@ -125,7 +129,7 @@ public class ArmorRecipes {
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.asbestos_plate, 1), new Object[] { "E E", "EEE", "EEE", 'E', ModItems.asbestos_cloth });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.asbestos_legs, 1), new Object[] { "EEE", "E E", "E E", 'E', ModItems.asbestos_cloth });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.asbestos_boots, 1), new Object[] { "E E", "E E", 'E', ModItems.asbestos_cloth });
-		CraftingManager.addRecipeAuto(new ItemStack(ModItems.hazmat_paa_helmet, 1), new Object[] { "EEE", "IEI", " P ", 'E', ModItems.plate_paa, 'I', KEY_ANYPANE, 'P', IRON.plate() });
+		CraftingManager.addRecipeAuto(new ItemStack(ModItems.hazmat_paa_helmet, 1), new Object[] { "EEE", "IEI", " P ", 'E', ModItems.plate_paa, 'I', KEY_ANYPANE, 'P', FE.plate() });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.hazmat_paa_plate, 1), new Object[] { "E E", "EEE", "EEE", 'E', ModItems.plate_paa });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.hazmat_paa_legs, 1), new Object[] { "EEE", "E E", "E E", 'E', ModItems.plate_paa });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.hazmat_paa_boots, 1), new Object[] { "E E", "E E", 'E', ModItems.plate_paa });
@@ -141,11 +145,11 @@ public class ArmorRecipes {
 
 		//Masks
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.goggles, 1), new Object[] { "P P", "GPG", 'G', KEY_ANYPANE, 'P', STEEL.plate() });
-		CraftingManager.addRecipeAuto(new ItemStack(ModItems.gas_mask, 1), new Object[] { "PPP", "GPG", " F ", 'G', KEY_ANYPANE, 'P', STEEL.plate(), 'F', IRON.plate() });
-		CraftingManager.addRecipeAuto(new ItemStack(ModItems.gas_mask_m65, 1), new Object[] { "PPP", "GPG", " F ", 'G', KEY_ANYPANE, 'P', ModItems.plate_polymer, 'F', IRON.plate() });
-		CraftingManager.addRecipeAuto(new ItemStack(ModItems.gas_mask_olde, 1), new Object[] { "PPP", "GPG", " F ", 'G', KEY_ANYPANE, 'P', Items.leather, 'F', IRON.ingot() });
-		CraftingManager.addRecipeAuto(new ItemStack(ModItems.gas_mask_mono, 1), new Object[] { " P ", "PPP", " F ", 'P', ModItems.plate_polymer, 'F', IRON.plate() });
-		CraftingManager.addRecipeAuto(new ItemStack(ModItems.mask_of_infamy, 1), new Object[] { "III", "III", " I ", 'I', IRON.plate() });
+		CraftingManager.addRecipeAuto(new ItemStack(ModItems.gas_mask, 1), new Object[] { "PPP", "GPG", " F ", 'G', KEY_ANYPANE, 'P', STEEL.plate(), 'F', FE.plate() });
+		CraftingManager.addRecipeAuto(new ItemStack(ModItems.gas_mask_m65, 1), new Object[] { "PPP", "GPG", " F ", 'G', KEY_ANYPANE, 'P', ModItems.plate_polymer, 'F', FE.plate() });
+		CraftingManager.addRecipeAuto(new ItemStack(ModItems.gas_mask_olde, 1), new Object[] { "PPP", "GPG", " F ", 'G', KEY_ANYPANE, 'P', Items.leather, 'F', FE.ingot() });
+		CraftingManager.addRecipeAuto(new ItemStack(ModItems.gas_mask_mono, 1), new Object[] { " P ", "PPP", " F ", 'P', ModItems.plate_polymer, 'F', FE.plate() });
+		CraftingManager.addRecipeAuto(new ItemStack(ModItems.mask_of_infamy, 1), new Object[] { "III", "III", " I ", 'I', FE.plate() });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.ashglasses, 1), new Object[] { "I I", "GPG", 'I', ModItems.plate_polymer, 'G', ModBlocks.glass_ash, 'P', POLYMER.ingot() });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.mask_rag, 1), new Object[] { "RRR", 'R', ModItems.rag_damp });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.mask_piss, 1), new Object[] { "RRR", 'R', ModItems.rag_piss });
@@ -167,10 +171,11 @@ public class ArmorRecipes {
 			addLegs(	SA326.ingot(), ModItems.schrabidium_legs);
 			addBoots(	SA326.ingot(), ModItems.schrabidium_boots);
 		} else {
-			CraftingManager.addRecipeAuto(new ItemStack(ModItems.starmetal_helmet, 1), new Object[] { "EEE", "ECE", 'E', STAR.ingot(), 'C', ModItems.cobalt_helmet });
-			CraftingManager.addRecipeAuto(new ItemStack(ModItems.starmetal_plate, 1), new Object[] { "ECE", "EEE", "EEE", 'E', STAR.ingot(), 'C', ModItems.cobalt_plate });
-			CraftingManager.addRecipeAuto(new ItemStack(ModItems.starmetal_legs, 1), new Object[] { "EEE", "ECE", "E E", 'E', STAR.ingot(), 'C', ModItems.cobalt_legs });
-			CraftingManager.addRecipeAuto(new ItemStack(ModItems.starmetal_boots, 1), new Object[] { "E E", "ECE", 'E', STAR.ingot(), 'C', ModItems.cobalt_boots });
+			addFullArmorUpgrade(STAR.ingot(), cobaltSet, new Item[] {ModItems.starmetal_helmet, ModItems.starmetal_plate, ModItems.starmetal_legs, ModItems.starmetal_boots});
+//			CraftingManager.addRecipeAuto(new ItemStack(ModItems.starmetal_helmet, 1), new Object[] { "EEE", "ECE", 'E', STAR.ingot(), 'C', ModItems.cobalt_helmet });
+//			CraftingManager.addRecipeAuto(new ItemStack(ModItems.starmetal_plate, 1), new Object[] { "ECE", "EEE", "EEE", 'E', STAR.ingot(), 'C', ModItems.cobalt_plate });
+//			CraftingManager.addRecipeAuto(new ItemStack(ModItems.starmetal_legs, 1), new Object[] { "EEE", "ECE", "E E", 'E', STAR.ingot(), 'C', ModItems.cobalt_legs });
+//			CraftingManager.addRecipeAuto(new ItemStack(ModItems.starmetal_boots, 1), new Object[] { "E E", "ECE", 'E', STAR.ingot(), 'C', ModItems.cobalt_boots });
 			CraftingManager.addRecipeAuto(new ItemStack(ModItems.schrabidium_helmet, 1), new Object[] { "EEE", "ESE", " P ", 'E', SA326.ingot(), 'S', ModItems.starmetal_helmet, 'P', ModItems.pellet_charged });
 			CraftingManager.addRecipeAuto(new ItemStack(ModItems.schrabidium_plate, 1), new Object[] { "ESE", "EPE", "EEE", 'E', SA326.ingot(), 'S', ModItems.starmetal_plate, 'P', ModItems.pellet_charged });
 			CraftingManager.addRecipeAuto(new ItemStack(ModItems.schrabidium_legs, 1), new Object[] { "EEE", "ESE", "EPE", 'E', SA326.ingot(), 'S', ModItems.starmetal_legs, 'P', ModItems.pellet_charged });
@@ -178,53 +183,50 @@ public class ArmorRecipes {
 		}
 		
 		// Armor mods
-		GameRegistry.addRecipe(IBatteryItem.emptyBattery(ModItems.goggles_night_vision), "BPC", "IGI", 'B', ModItems.battery_lithium, 'P', ModItems.ingot_polymer, 'C', ModItems.circuit_copper, 'I', ModItems.plate_polymer, 'G', ModItems.goggles);
+		CraftingManager.addRecipeAuto(IBatteryItem.emptyBattery(ModItems.goggles_night_vision), "BPC", "IGI", 'B', ModItems.battery_lithium, 'P', ModItems.ingot_polymer, 'C', ModItems.circuit_copper, 'I', ModItems.plate_polymer, 'G', ModItems.goggles);
 	}
-	/** Register an armor set using vanilla style recipes
-	 * @param outs - Must be in the order: helmet, chestplate, leggings, then boots
-	 * @param material - The material the set is made of**/
-	public static void basicArmorSet(Item[] outs, Item material)
+	public static void addFullArmor(Object material, Item...armor)
 	{
-		if (outs.length != 4)
-			throw new IllegalArgumentException("Output array size must be equal to 4!");
-		
-		GameRegistry.addRecipe(new ItemStack(outs[0]), new Object[] { "MMM", "M M", 'M', material });
-		GameRegistry.addRecipe(new ItemStack(outs[1]), new Object[] { "M M", "MMM", "MMM", 'M', material });
-		GameRegistry.addRecipe(new ItemStack(outs[2]), new Object[] { "MMM", "M M", "M M", 'M', material });
-		GameRegistry.addRecipe(new ItemStack(outs[3]), new Object[] { "M M", "M M", 'M', material });
+		assert armor.length == 4;
+		addHelmet(material, armor[0]);
+		addChest(material, armor[1]);
+		addLegs(material, armor[2]);
+		addBoots(material, armor[3]);
 	}
-	/**
-	 * Register an upgrade based armor set still using vanilla style recipes
-	 * @param outs - Must be in the order: helmet, chestplate, leggings, then boots
-	 * @param priorTier - Previous tier of armor, must be in the same order as before
-	 * @param material - Material the set is made of
-	 */
-	public static void upgradeArmorSet(Item[] outs, Item[] priorTier, Item material)
+	public static void addFullArmorUpgrade(Object material, Item[] previous, Item[] upgraded)
 	{
-		if (outs.length != 4)
-			throw new IllegalArgumentException("Output array size must be equal to 4!");
-		if (priorTier.length != 4)
-			throw new IllegalArgumentException("Input array size must be equal to 4!");
-		
-		GameRegistry.addRecipe(new ItemStack(outs[0]), new Object[] { "MMM", "MPM", 'M', material, 'P', priorTier[0] });
-		GameRegistry.addRecipe(new ItemStack(outs[1]), new Object[] { "MPM", "MMM", "MMM", 'M', material, 'P', priorTier[1] });
-		GameRegistry.addRecipe(new ItemStack(outs[2]), new Object[] { "MMM", "MPM", "M M", 'M', material, 'P', priorTier[2] });
-		GameRegistry.addRecipe(new ItemStack(outs[3]), new Object[] { "M M", "MPM", 'M', material, 'P', priorTier[3] });
-	
-	public static void addHelmet(Object ingot, Item pick) {
-		addArmor(ingot, pick, patternHelmet);
+		addArmorUpgrade(material, previous[0], upgraded[0], patternHelmetUpgrade);
+		addArmorUpgrade(material, previous[1], upgraded[1], patternChestplateUpgrade);
+		addArmorUpgrade(material, previous[2], upgraded[2], patternLeggingsUpgrade);
+		addArmorUpgrade(material, previous[3], upgraded[3], patternBootsUpgrade);
 	}
-	public static void addChest(Object ingot, Item axe) {
-		addArmor(ingot, axe, patternChetplate);
+	public static void addHelmet(Object ingot, Item helmet) {
+		addArmor(ingot, helmet, patternHelmet);
 	}
-	public static void addLegs(Object ingot, Item shovel) {
-		addArmor(ingot, shovel, patternLeggings);
+	public static void addChest(Object ingot, Item chest) {
+		addArmor(ingot, chest, patternChestplate);
 	}
-	public static void addBoots(Object ingot, Item hoe) {
-		addArmor(ingot, hoe, patternBoots);
+	public static void addLegs(Object ingot, Item legs) {
+		addArmor(ingot, legs, patternLeggings);
+	}
+	public static void addBoots(Object ingot, Item boots) {
+		addArmor(ingot, boots, patternBoots);
 	}
 	
 	public static void addArmor(Object ingot, Item armor, String[] pattern) {
 		CraftingManager.addRecipeAuto(new ItemStack(armor), new Object[] { pattern, 'X', ingot });
 	}
+	public static void addArmorUpgrade(Object material, Item previous, Item upgraded, String[] pattern)
+	{
+		CraftingManager.addRecipeAuto(new ItemStack(upgraded), pattern, 'X', material, 'P', previous);
+	}
+	public static final String[] patternHelmet = new String[] {"XXX", "X X"};
+	public static final String[] patternChestplate = new String[] {"X X", "XXX", "XXX"};
+	public static final String[] patternLeggings = new String[] {"XXX", "X X", "X X"};
+	public static final String[] patternBoots = new String[] {"X X", "X X"};
+	
+	public static final String[] patternHelmetUpgrade = {"XXX", "XPX"};
+	public static final String[] patternChestplateUpgrade = {"XPX", "XXX", "XXX"};
+	public static final String[] patternLeggingsUpgrade = new String[] {"XXX", "XPX", "X X"};
+	public static final String[] patternBootsUpgrade = new String[] {"XPX", "X X"};
 }

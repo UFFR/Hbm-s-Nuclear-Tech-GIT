@@ -294,7 +294,7 @@ public class InventoryUtil {
 			if(stack != null) {
 				
 				int[] ids = OreDictionary.getOreIDs(stack);
-				List<String> dicts = new ArrayList();
+				List<String> dicts = new ArrayList<String>();
 				
 				for(int id : ids) {
 					if(OreDictionary.getOreName(id).equals(dict)) {
@@ -317,7 +317,7 @@ public class InventoryUtil {
 			if(stack != null) {
 				
 				int[] ids = OreDictionary.getOreIDs(stack);
-				List<String> dicts = new ArrayList();
+				List<String> dicts = new ArrayList<String>();
 				
 				for(int id : ids) {
 					if(OreDictionary.getOreName(id).equals(dict)) {

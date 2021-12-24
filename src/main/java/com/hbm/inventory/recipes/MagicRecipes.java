@@ -5,12 +5,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.hbm.blocks.ModBlocks;
-import com.hbm.inventory.RecipesCommon;
 import com.hbm.inventory.RecipesCommon.AStack;
-import com.hbm.inventory.RecipesCommon.OreDictStack;
-import com.hbm.inventory.recipes.MagicRecipes.MagicRecipe;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
+import com.hbm.inventory.RecipesCommon.OreDictStack;
 import com.hbm.items.ModItems;
+import com.hbm.items.special.Orichalcum;
 
 import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
@@ -96,6 +95,13 @@ public class MagicRecipes {
 				new ComparableStack(ModItems.plate_polymer),
 				new ComparableStack(ModItems.nugget_pu239),
 				new ComparableStack(ModItems.circuit_aluminium)));
+		
+		recipes.add(new MagicRecipe(new ItemStack(ModItems.orichalcum, 1, Orichalcum.FRAGMENT),
+				new ComparableStack(ModItems.powder_chlorophyte),
+				new ComparableStack(ModItems.catalyst_ten),
+				new ComparableStack(ModItems.catalyst_ten),
+				new ComparableStack(ModItems.ingot_bismuth)
+				));
 	}
 	
 	public static List<MagicRecipe> getRecipes() {

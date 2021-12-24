@@ -1,5 +1,6 @@
 package com.hbm.blocks.machine;
 
+import com.hbm.handler.EnumGUI;
 import com.hbm.main.MainRegistry;
 
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
@@ -12,8 +13,8 @@ import net.minecraft.world.World;
 public class BlockBasicMachine extends BlockContainer
 {
 	private Class<? extends TileEntity> teClass = null;
-	private int guiID;
-	public BlockBasicMachine(Material mat, Class<? extends TileEntity> teClassIn, int gui)
+	private EnumGUI guiID;
+	public BlockBasicMachine(Material mat, Class<? extends TileEntity> teClassIn, EnumGUI gui)
 	{
 		super(mat);
 		teClass = teClassIn;
@@ -43,8 +44,8 @@ public class BlockBasicMachine extends BlockContainer
 		else if (!player.isSneaking())
 		{
 			TileEntity te = worldIn.getTileEntity(x, y, z);
-			if (te != null && te.getClass().isAssignableFrom(teClass))
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, guiID, worldIn, x, y, z);
+			if (te != null)
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, guiID.ordinal(), worldIn, x, y, z);
 			return true;
 		}
 		else

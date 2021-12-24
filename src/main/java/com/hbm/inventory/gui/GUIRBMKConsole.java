@@ -48,6 +48,7 @@ public class GUIRBMKConsole extends GuiScreen {
 		this.ySize = 172;
 	}
 	
+	@Override
 	public void initGui() {
 		super.initGui();
 		
@@ -297,7 +298,7 @@ public class GUIRBMKConsole extends GuiScreen {
 
 	@Override
 	protected void keyTyped(char c, int i) {
-
+		mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(GuiInfoContainer.keyboard, 1.0F));
 		if(this.field.textboxKeyTyped(c, i))
 			return;
 		

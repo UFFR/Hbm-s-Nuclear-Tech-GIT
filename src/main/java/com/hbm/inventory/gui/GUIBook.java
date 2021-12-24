@@ -7,6 +7,7 @@ import com.hbm.lib.RefStrings;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 
@@ -17,13 +18,20 @@ public class GUIBook extends GuiContainer {
 	public GUIBook(InventoryPlayer player) {
 		super(new ContainerBook(player));
 	}
+	
+	public GUIBook(EntityPlayer player)
+	{
+		this(player.inventory);
+	}
 
+	@Override
 	protected void drawGuiContainerForegroundLayer(int mX, int mY) {
 
 		Minecraft.getMinecraft().standardGalacticFontRenderer.drawString("Extended 4-Slot Crafting", 28, 6, 4210752);
 		Minecraft.getMinecraft().standardGalacticFontRenderer.drawString("Standard Inventory", 8, this.ySize - 96 + 2, 4210752);
 	}
 
+	@Override
 	protected void drawGuiContainerBackgroundLayer(float inter, int mX, int mY) {
 
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

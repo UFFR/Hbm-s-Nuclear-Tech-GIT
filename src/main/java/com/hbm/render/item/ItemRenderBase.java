@@ -61,9 +61,5 @@ public abstract class ItemRenderBase implements IItemRenderer {
 	public void renderNonInv() { }
 	public void renderInventory() { }
 	public void renderCommon() { }
-<<<<<<< HEAD
-}
-=======
 	public void renderCommonWithStack(ItemStack item) { }
 }
->>>>>>> master

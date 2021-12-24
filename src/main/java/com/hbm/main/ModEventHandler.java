@@ -35,7 +35,6 @@ import com.hbm.handler.EntityEffectHandler;
 import com.hbm.handler.HTTPHandler;
 import com.hbm.hazard.HazardSystem;
 import com.hbm.interfaces.IBomb;
-import com.hbm.handler.HTTPHandler;
 import com.hbm.handler.ImpactWorldHandler;
 import com.hbm.items.IEquipReceiver;
 import com.hbm.items.ModItems;
@@ -147,7 +146,6 @@ import net.minecraftforge.event.terraingen.DecorateBiomeEvent;
 import net.minecraftforge.event.terraingen.DecorateBiomeEvent.Decorate.EventType;
 import net.minecraftforge.event.terraingen.PopulateChunkEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
-import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
@@ -156,7 +154,6 @@ public class ModEventHandler {
 	public static int meteorShower = 0;
 	public static int tsukuyomiCooldown = 0;
 	
-	static Random rand = new Random();
 	//////////////////////////////////////////
 	private static Random rand = new Random();
 	public static float dust;
@@ -567,9 +564,6 @@ public class ModEventHandler {
 		
 		Minecraft mc = Minecraft.getMinecraft();
 
-		// Keep track of time and date
-		TimeSavedData.updateNormal(event.world);
-
 		if(mc.theWorld == null || mc.thePlayer == null)
 			return;
 		
@@ -758,6 +752,10 @@ public class ModEventHandler {
 	@SubscribeEvent
 	public void worldTick(WorldTickEvent event) {
 
+		// Keep track of time and date
+		TimeSavedData.updateNormal(event.world);
+
+		
 		/// TOM IMPACT START///
 		if(event.world != null && !event.world.isRemote && event.phase == Phase.START) {
 			float settle = 1F / 14400000F; /// 600 days to completely clear all
@@ -824,12 +822,9 @@ public class ModEventHandler {
 						if(entity instanceof EntityCreeper && eRad >= 200 && entity.getHealth() > 0) {
 							
 							//effect for radiation
-							EntityLivingBase entity = (EntityLivingBase) e;
-							
 							if(entity instanceof EntityPlayer && ((EntityPlayer)entity).capabilities.isCreativeMode)
 								continue;
 							
-							float eRad = HbmLivingProps.getRadiation(entity);
 							
 							if(entity instanceof EntityCreeper && eRad >= 200 && entity.getHealth() > 0) {
 								

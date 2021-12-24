@@ -3,6 +3,7 @@ package com.hbm.blocks.turret;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.generic.BlockGeneric;
+import com.hbm.handler.EnumGUI;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.TileEntityProxyCombo;
 import com.hbm.tileentity.turret.TileEntityTsukuyomi;
@@ -46,7 +47,7 @@ public class TurretTsukuyomi extends BlockContainer
 //				return false;
 			TileEntityTsukuyomi te = (TileEntityTsukuyomi) worldIn.getTileEntity(x, y, z);
 			if (te != null)
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_tsukuyomi, worldIn, x, y, z);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.TURRET_TSUKUYOMI.ordinal(), worldIn, x, y, z);
 			return true;
 		}
 		else

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.hbm.handler.BulletConfigSyncingUtil;
 import com.hbm.handler.BulletConfiguration;
 import com.hbm.handler.GunConfiguration;
+import com.hbm.handler.GunConfigurationEnergy;
 import com.hbm.items.ModItems;
 import com.hbm.lib.HbmCollection.EnumGunManufacturer;
 import com.hbm.render.util.RenderScreenOverlay.Crosshair;
@@ -35,6 +36,16 @@ public class GunOSIPRFactory {
 		
 		config.config = new ArrayList<Integer>();
 		config.config.add(BulletConfigSyncingUtil.SPECIAL_OSIPR);
+		
+		return config;
+	}
+	
+	public static GunConfiguration getOSIPREnergyConfig()
+	{
+		GunConfigurationEnergy config = (GunConfigurationEnergy) getOSIPRConfig().clone();
+		
+		config.ammoCap = 300000;
+		config.ammoRate = 10000;
 		
 		return config;
 	}

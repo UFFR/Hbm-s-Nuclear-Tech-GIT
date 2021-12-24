@@ -28,9 +28,9 @@ import scala.actors.threadpool.Arrays;
 /** Collection for commonly used data **/
 public final class HbmCollection
 {
-	private HbmCollection()
+	private HbmCollection() throws InstantiationException
 	{
-		throw new IllegalAccessError("Class cannot be instantiated!");
+		throw new InstantiationException("Class cannot be instantiated!");
 	}
 	public static final char alpha = '\u03b1';
 	public static final char beta = '\u03b2';
@@ -203,6 +203,8 @@ public final class HbmCollection
 		BLACK_MESA,
 		/**Cerix Magnus**/
 		CERIX,
+		/**Colt's Manufacturing Company**/
+		COLT,
 		/**The Universal Union**/
 		COMBINE,
 		/**Cube 2: Sauerbraten**/
@@ -255,7 +257,7 @@ public final class HbmCollection
 		SACO,
 		/**Tulsky Oruzheiny Zavod**/
 		TULSKY,
-		/**Union Aerospace Command**/
+		/**Union Aerospace Corporation**/
 		UAC,
 		/**Unknown manufacturer, puts "???"**/
 		UNKNOWN,

@@ -165,7 +165,6 @@ public class TimeSavedData extends WorldSavedData
 	{
 		if (currentInstance != null && currentInstance.worldObj.equals(worldIn))
 			return currentInstance;
-		
 		TimeSavedData date = (TimeSavedData) worldIn.perWorldStorage.loadData(TimeSavedData.class, dataKey);
 		if (date == null)
 		{

@@ -4,13 +4,15 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import com.google.common.collect.ImmutableSet;
+import com.hbm.items.ModItems;
 import com.hbm.render.util.EnumSymbol;
+
+import net.minecraft.item.ItemStack;
 
 public class FluidTypeHandler {
 	
 	public static enum FluidTrait
 	{
-		ANTIMATTER,
 		AMAT,
 		LEAD_CONTAINER,
 		NO_CONTAINER,
@@ -103,7 +105,7 @@ public class FluidTypeHandler {
 		SPENTSTEAM		(0x445772,	3,	2,	2,	2,	0,	0,	EnumSymbol.NONE,		"hbmfluid.spentsteam"),
 		FRACKSOL		(0x798A6B,	4,	2,	2,	1,	3,	3,	EnumSymbol.ACID,		"hbmfluid.fracksol", FluidTrait.CORROSIVE),
 		
-		MERCURY			(0x808080,	7,	1,	2,	2,	0,	0,	EnumSymbol.NONE,		"hbmfluid.mercury", FluidTrait.TOXIC),
+		MERCURY			(0x808080,	7,	1,	2,	2,	0,	0,	EnumSymbol.NONE,		"hbmfluid.mercury"),
 		
 		
 		PLASMA_DT		(0xF7AFDE,	8,	1,	2,	0,	4,	0,	EnumSymbol.RADIATION,	"hbmfluid.plasma_dt", 3250, FluidTrait.NO_CONTAINER, FluidTrait.NO_ID),
@@ -117,13 +119,13 @@ public class FluidTypeHandler {
 		DEATH			(0x717A88,	8,	2,	2,	2,	0,	1,	EnumSymbol.ACID,		"hbmfluid.death", 300, FluidTrait.CORROSIVE_STRONG, FluidTrait.LEAD_CONTAINER),
 		ETHANOL			(0xe0ffff,	9,	2,	2,	2,	3,	0,	EnumSymbol.NONE,		"hbmfluid.ethanol"),
 		HEAVYWATER		(0x00a0b0,	10,	2,	2,	1,	0,	0,	EnumSymbol.NONE,		"hbmfluid.heavywater"),
-		CARBONDIOXIDE	(0x747474,	11,	2,	2,	3,	0,	0,	EnumSymbol.ASPHYXIANT,	"hbmfluid.carbondioxide")
+		CARBONDIOXIDE	(0x747474,	11,	2,	2,	3,	0,	0,	EnumSymbol.ASPHYXIANT,	"hbmfluid.carbondioxide"),
 		PLASMA_WARP		(0x00FFFF,	15,	1,	2,	5,	5,	5,	EnumSymbol.ANTIMATTER,	"hbmfluid.plasma_warp", true, false, true, 1200000),
 		ALCOHOL			(0x00bcbc, 	16, 2, 	2,	1, 	3,	0,  EnumSymbol.NONE,		"hbmfluid.alcohol"),
 		
-		SARIN			(0x00b4b4,	17, 2,	2,	4,	1,	1,	EnumSymbol.CHEMICAL,	"hbmfluid.sarin", FluidTrait.CHEMICAL),
-		WRATH			(0x2ECC71,  18, 2,	2,	4,	0,	3,	EnumSymbol.ACID,		"hbmfluid.wrath", FluidTrait.CORROSIVE_STRONG);
-;
+		SARIN			(0x00b4b4,	17, 2,	2,	4,	1,	1,	EnumSymbol.CHEMICAL,	"hbmfluid.sarin", FluidTrait.CHEMICAL, FluidTrait.LEAD_CONTAINER),
+		WRATH			(0x2ECC71,  18, 2,	2,	4,	0,	3,	EnumSymbol.ACID,		"hbmfluid.wrath", FluidTrait.CORROSIVE_STRONG, FluidTrait.LEAD_CONTAINER);
+
 
 		//Approximate HEX Color of the fluid, used for pipe rendering
 		private int color;
@@ -187,7 +189,7 @@ public class FluidTypeHandler {
 			if (corrosive)
 				this.traits.add(FluidTrait.CORROSIVE);
 			if (antimatter)
-				this.traits.add(FluidTrait.ANTIMATTER);
+				this.traits.add(FluidTrait.AMAT);
 			this.temperature = 0;
 			if (hazards != null)
 				this.traits.addAll(Arrays.asList(hazards));
@@ -271,5 +273,21 @@ public class FluidTypeHandler {
 		public boolean hasNoID() {
 			return this.traits.contains(FluidTrait.NO_ID);
 		}
+	}
+	public static ItemStack newFluidTank(FluidType type)
+	{
+		return newFluidTank(1, type);
+	}
+	public static ItemStack newFluidTank(int count, FluidType type)
+	{
+		return new ItemStack(ModItems.fluid_tank_full, count, type.ordinal());
+	}
+	public static ItemStack newFluidBarrel(FluidType type)
+	{
+		return newFluidBarrel(1, type);
+	}
+	public static ItemStack newFluidBarrel(int count, FluidType type)
+	{
+		return new ItemStack(ModItems.fluid_barrel_full, count, type.ordinal());
 	}
 }

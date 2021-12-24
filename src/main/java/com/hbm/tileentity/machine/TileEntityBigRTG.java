@@ -1,29 +1,22 @@
 package com.hbm.tileentity.machine;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.common.annotations.Beta;
-import com.hbm.interfaces.IConsumer;
-import com.hbm.interfaces.IRTGUser;
-import com.hbm.interfaces.IRadioisotopeFuel;
-import com.hbm.interfaces.ISource;
 import com.hbm.interfaces.Untested;
 import com.hbm.items.machine.ItemRTGPellet;
-import com.hbm.lib.Library;
+import com.hbm.tileentity.IRTGUser;
+import com.hbm.tileentity.IRadioisotopeFuel;
 import com.hbm.tileentity.TileEntityMachineBase;
 
+import api.hbm.energy.IEnergyGenerator;
 import net.minecraft.nbt.NBTTagCompound;
 @Beta
 @Untested
-public class TileEntityBigRTG extends TileEntityMachineBase implements ISource, IRTGUser
+public class TileEntityBigRTG extends TileEntityMachineBase implements IRTGUser, IEnergyGenerator
 {
 	public static final long maxPower = 1000000;
 	public static final short maxHeat = 32000;
-	private ArrayList<IConsumer> cList = new ArrayList<IConsumer>();
 	private short heat = 0;
 	private long power = 0;
-	private byte age = 0;
 	public TileEntityBigRTG()
 	{
 		super(24);
@@ -33,53 +26,6 @@ public class TileEntityBigRTG extends TileEntityMachineBase implements ISource, 
 	public int getHeat()
 	{
 		return heat;
-	}
-
-	@Override
-	public void ffgeuaInit()
-	{
-		ffgeua(xCoord, yCoord + 1, zCoord, getTact());
-		ffgeua(xCoord, yCoord - 1, zCoord, getTact());
-		ffgeua(xCoord - 1,yCoord, zCoord, getTact());
-		ffgeua(xCoord + 1,yCoord, zCoord, getTact());
-		ffgeua(xCoord, yCoord, zCoord - 1, getTact());
-		ffgeua(xCoord, yCoord, zCoord + 1, getTact());
-	}
-
-	@Override
-	public void ffgeua(int x, int y, int z, boolean newTact)
-	{
-		Library.ffgeua(x, y, z, newTact, this, getWorldObj());
-	}
-
-	@Override
-	public boolean getTact()
-	{
-		return age >= 0 && age < 10 ? true : false;
-	}
-
-	@Override
-	public long getSPower()
-	{
-		return power;
-	}
-
-	@Override
-	public void setSPower(long i)
-	{
-		power = i;
-	}
-
-	@Override
-	public List<IConsumer> getList()
-	{
-		return cList;
-	}
-
-	@Override
-	public void clearList()
-	{
-		cList.clear();
 	}
 
 	@Override
@@ -93,12 +39,6 @@ public class TileEntityBigRTG extends TileEntityMachineBase implements ISource, 
 	{
 		if (!worldObj.isRemote)
 		{
-			age++;
-			if (age >= 20)
-				age = 0;
-			if (age == 9 || age == 19)
-				ffgeuaInit();
-			
 			heat = (short) updateRTGs(slots);
 			
 			if (heat > maxHeat)
@@ -140,6 +80,24 @@ public class TileEntityBigRTG extends TileEntityMachineBase implements ISource, 
 	public Class<? extends IRadioisotopeFuel> getDesiredClass()
 	{
 		return ItemRTGPellet.class;
+	}
+
+	@Override
+	public void setPower(long power)
+	{
+		this.power = power;
+	}
+
+	@Override
+	public long getPower()
+	{
+		return power;
+	}
+
+	@Override
+	public long getMaxPower()
+	{
+		return maxPower;
 	}
 
 }

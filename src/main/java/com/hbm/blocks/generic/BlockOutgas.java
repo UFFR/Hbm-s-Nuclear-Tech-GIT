@@ -21,8 +21,19 @@ public class BlockOutgas extends BlockOre implements IItemHazard {
 	boolean onNeighbour;
 	
 	HazardData module;
+	GasType gType = GasType.NONE;
+	public enum GasType
+	{
+		ASBESTOS,
+		COAL,
+		RADON,
+		RADON_DENSE,
+		RADON_TOMB,
+		MONOXIDE,
+		NONE;
+	}
 
-	public BlockOutgas(Material mat, boolean randomTick, int rate, boolean onBreak) {
+	public BlockOutgas(Material mat, boolean randomTick, int rate, boolean onBreak, GasType type) {
 		super(mat);
 		this.module = new HazardData();
 		this.setTickRandomly(randomTick);
@@ -30,10 +41,11 @@ public class BlockOutgas extends BlockOre implements IItemHazard {
 		this.rate = rate;
 		this.onBreak = onBreak;
 		this.onNeighbour = false;
+		gType = type;
 	}
 
-	public BlockOutgas(Material mat, boolean randomTick, int rate, boolean onBreak, boolean onNeighbour) {
-		this(mat, randomTick, rate, onBreak);
+	public BlockOutgas(Material mat, boolean randomTick, int rate, boolean onBreak, boolean onNeighbour, GasType type) {
+		this(mat, randomTick, rate, onBreak, type);
 		this.module = new HazardData();
 		this.onNeighbour = onNeighbour;
 	}
@@ -50,31 +62,24 @@ public class BlockOutgas extends BlockOre implements IItemHazard {
 	
 	protected Block getGas() {
 		
-		if(this == ModBlocks.ore_uranium || this == ModBlocks.ore_uranium_scorched || 
-				this == ModBlocks.ore_gneiss_uranium || this == ModBlocks.ore_gneiss_uranium_scorched || 
-				this == ModBlocks.ore_nether_uranium || this == ModBlocks.ore_nether_uranium_scorched) {
-			return ModBlocks.gas_radon;
-		}
-		
-		if(this == ModBlocks.block_corium_cobble)
-			return ModBlocks.gas_radon;
-		
-		if(this == ModBlocks.ancient_scrap)
-			return ModBlocks.gas_radon_tomb;
-		
-		if(this == ModBlocks.ore_coal_oil_burning || this == ModBlocks.ore_nether_coal) {
-			return ModBlocks.gas_monoxide;
-		}
-		
-		if(this == ModBlocks.ore_asbestos || this == ModBlocks.ore_gneiss_asbestos ||
-				this == ModBlocks.block_asbestos || this == ModBlocks.deco_asbestos ||
-				this == ModBlocks.brick_asbestos || this == ModBlocks.tile_lab ||
-				this == ModBlocks.tile_lab_cracked || this == ModBlocks.tile_lab_broken ||
-				this == ModBlocks.basalt_asbestos) {
+		switch (gType)
+		{
+		case ASBESTOS:
 			return ModBlocks.gas_asbestos;
+		case COAL:
+			return ModBlocks.gas_coal;
+		case MONOXIDE:
+			return ModBlocks.gas_monoxide;
+		case RADON:
+			return ModBlocks.gas_radon;
+		case RADON_DENSE:
+			return ModBlocks.gas_radon_dense;
+		case RADON_TOMB:
+			return ModBlocks.gas_radon_tomb;
+		case NONE:
+		default:
+			return Blocks.air;
 		}
-		
-		return Blocks.air;
 	}
 
 	@Override

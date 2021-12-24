@@ -186,6 +186,20 @@ public class Gun357MagnumFactory {
 		return config;
 	}
 	
+	public static GunConfiguration getColtPythonConfig()
+	{
+		GunConfiguration config = getBaseConfig().clone();
+		
+		config.durability = 8000;
+		config.name = "cPython";
+		config.manufacturer = EnumGunManufacturer.COLT;
+		
+		config.config.add(BulletConfigSyncingUtil.LEAD_REVOLVER);
+		config.config.add(BulletConfigSyncingUtil.DESH_REVOLVER);
+		
+		return config;
+	}
+	
 	    ////    //  //  //      //      //////  //////  //////
 	   //  //  //  //  //      //      //        //    //
 	  ////    //  //  //      //      ////      //    //////

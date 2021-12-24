@@ -6,6 +6,7 @@ import com.hbm.handler.BulletConfigSyncingUtil;
 import com.hbm.handler.BulletConfiguration;
 import com.hbm.handler.GunConfiguration;
 import com.hbm.items.ModItems;
+import com.hbm.lib.HbmCollection;
 import com.hbm.lib.HbmCollection.EnumGunManufacturer;
 import com.hbm.render.util.RenderScreenOverlay.Crosshair;
 
@@ -48,6 +49,20 @@ public class Gun50AEFactory {
 		config.config.add(BulletConfigSyncingUtil.AE50_DU);
 		config.config.add(BulletConfigSyncingUtil.AE50_STAR);
 		config.config.add(BulletConfigSyncingUtil.CHL_AE50);
+		
+		return config;
+	}
+	
+	public static GunConfiguration getUACDeagleConfig()
+	{
+		GunConfiguration config = getBaseConfig().clone();
+		
+		config.durability = 5000;
+		config.ammoCap = 12;
+		config.name = "uacDeagle";
+		config.manufacturer = EnumGunManufacturer.UAC;
+		config.config = new ArrayList<Integer>(HbmCollection.fiftyAE);
+		config.comment.add("Aka: UAC Desert Eagle Mark VII");
 		
 		return config;
 	}

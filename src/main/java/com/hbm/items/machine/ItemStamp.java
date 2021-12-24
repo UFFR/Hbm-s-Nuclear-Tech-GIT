@@ -10,37 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-<<<<<<< HEAD
-public class ItemStamp extends Item
-{
-	private StampType type = StampType.FLAT;
-	public ItemStamp(int dura, StampType typeIn)
-	{
-		this.setMaxDamage(dura);
-		setMaxStackSize(1);
-		type = typeIn;
-	}
-	
-	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean bool)
-	{
-		switch (type)
-		{
-		case CIRCUIT:
-		case DISC:
-		case PLATE:
-		case WIRE:
-			list.add("[CREATED USING TEMPLATE FOLDER]");
-			break;
-		default:
-			break;
-		}
-	}
-	
-	public StampType getType()
-	{
-		return type;
-=======
+
 public class ItemStamp extends Item {
 	
 	public StampType type;
@@ -71,11 +41,10 @@ public class ItemStamp extends Item {
 		PLATE,
 		WIRE,
 		CIRCUIT,
-		//DISC,
+		DISC,
 		C357,
 		C44,
 		C50,
 		C9;
->>>>>>> master
 	}
 }

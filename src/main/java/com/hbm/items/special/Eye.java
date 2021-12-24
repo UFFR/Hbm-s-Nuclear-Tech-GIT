@@ -1,6 +1,8 @@
 package com.hbm.items.special;
 
 import com.google.common.annotations.Beta;
+import com.hbm.main.KoishiBreachException;
+import com.hbm.main.MainRegistry;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.packet.PlayerInformPacket;
 import com.hbm.potion.HbmPotion;
@@ -16,7 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 @Beta
-public class Eye extends ItemCustomLore
+public final class Eye extends ItemCustomLore
 {
 	public Eye()
 	{
@@ -26,6 +28,8 @@ public class Eye extends ItemCustomLore
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World worldIn, EntityPlayer playerIn)
 	{
+		if (MainRegistry.isPolaroid11)
+			throw new RuntimeException(new KoishiBreachException());
 		if (!worldIn.isRemote)
 		{
 			PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(I18nUtil.resolveKey("eye.speakTo", I18nUtil.resolveKey("eye.speakTo.remember"))), (EntityPlayerMP) playerIn);

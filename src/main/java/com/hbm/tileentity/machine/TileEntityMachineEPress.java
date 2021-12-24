@@ -14,7 +14,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -34,7 +33,7 @@ public class TileEntityMachineEPress extends TileEntity implements ISidedInvento
 	public int item;
 	public int meta;
 	boolean isRetracting = false;
-	private static Item[] deshStamps = new Item[] {ModItems.stamp_desh_circuit, ModItems.stamp_desh_disc, ModItems.stamp_desh_flat, ModItems.stamp_desh_plate, ModItems.stamp_desh_wire, ModItems.stamp_357_desh, ModItems.stamp_44_desh, ModItems.stamp_50_desh, ModItems.stamp_9_desh};
+	
 	private String customName;
 	
 	public TileEntityMachineEPress() {
@@ -234,9 +233,6 @@ public class TileEntityMachineEPress extends TileEntity implements ISidedInvento
 								slots[2].stackSize--;
 								if(slots[2].stackSize <= 0)
 									slots[2] = null;
-								if (!Arrays.asList(deshStamps).contains(slots[1].getItem()))
-								{
-									slots[1].setItemDamage(slots[1].getItemDamage() + 1);
 								
 								if(slots[1].getMaxDamage() != 0) {
 									slots[1].setItemDamage(slots[1].getItemDamage() + 1);

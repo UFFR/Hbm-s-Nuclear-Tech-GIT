@@ -21,6 +21,7 @@ import com.hbm.util.I18nUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.inventory.Container;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
@@ -36,7 +37,7 @@ public abstract class GuiInfoContainer extends GuiContainer {
 	public static final int color1 = 0x00ff00;
 	public static final char slimCursor = '\u2502';
 	public static final char blockCursor = '\u2588';
-	protected static final ResourceLocation keyboard = new ResourceLocation(RefStrings.MODID, "misc.keyPress"); 
+	public static final ResourceLocation keyboard = new ResourceLocation(RefStrings.MODID, "misc.keyPress"); 
 	public GuiInfoContainer(Container p_i1072_1_) {
 		super(p_i1072_1_);
 	}
@@ -104,7 +105,7 @@ public abstract class GuiInfoContainer extends GuiContainer {
 	
 	public static char getCursor(char in)
 	{
-		return System.currentTimeMillis() % 1000 < 500 ? ' ' : in;
+		return Library.getBlink() ? ' ' : in;
 	}
 	
 	public static char getCursor()
@@ -307,6 +308,9 @@ public abstract class GuiInfoContainer extends GuiContainer {
 		 */
 		public void drawNumber(char[] num)
 		{
+			if (blink && !Library.getBlink())
+				return;
+				
 			short gap = (short) (digitLength - num.length);
 			for (int i = 0; i < num.length; i++)
 			{
@@ -440,21 +444,41 @@ public abstract class GuiInfoContainer extends GuiContainer {
 		private void drawHorizontal(int pos)
 		{
 			byte offset = (byte) (pos * 6);
-			drawTexturedModalRect(guiLeft + displayX + dispOffset + 1, guiTop + displayY + offset, referenceX + 1, referenceY, 5, 1);
+			renderSegment(guiLeft + displayX + dispOffset + 1, guiTop + displayY + offset, referenceX + 1, referenceY, 4, 1);
 		}
 		
 		private void drawPeriod()
 		{
-			drawTexturedModalRect(guiLeft + displayX + dispOffset + padding - (int) Math.ceil(padding / 2) + 5, guiTop + displayY + 12, referenceX + 1, referenceY, 1, 1);
+			renderSegment(guiLeft + displayX + dispOffset + padding - (int) Math.ceil(padding / 2) + 5, guiTop + displayY + 12, referenceX + 1, referenceY, 1, 1);
 		}
 		
 		private void drawVertical(int posX, int posY)
 		{
 			byte offsetX = (byte) (posX * 5);
 			byte offsetY = (byte) (posY * 6);
-			drawTexturedModalRect(guiLeft + displayX + offsetX + dispOffset, guiTop + displayY + offsetY + 1, referenceX, referenceY + 1, 1, 5);
+			renderSegment(guiLeft + displayX + offsetX + dispOffset, guiTop + displayY + offsetY + 1, referenceX, referenceY + 1, 1, 5);
 		}
-		
+		/**
+		 * drawTexturedModalRect() for cool kids
+		 * @param renX X coordinate to render the part
+		 * @param renY Y coordinate to render the part
+		 * @param refX X coordinate of the reference
+		 * @param refY Y coordinate of the reference
+		 * @param width Relevant for horizontals
+		 * @param height Relevant for verticals
+		 */
+		private void renderSegment(int renX, int renY, int refX, int refY, int width, int height)
+		{
+			final Tessellator tess = Tessellator.instance;
+			final float z = GuiInfoContainer.this.zLevel;
+			tess.startDrawingQuads();
+	        tess.addVertexWithUV(renX, renY + height, z, refX, (refY + height));
+	        tess.addVertexWithUV(renX + width, renY + height, z, (refX + width), (refY + height));
+	        tess.addVertexWithUV(renX + width, renY + 0, z, (refX + width), refY);
+	        tess.addVertexWithUV(renX, renY, z, refX, refY);
+			tess.draw();
+		}
+
 		public void setNumber(double in)
 		{
 			numIn = in;

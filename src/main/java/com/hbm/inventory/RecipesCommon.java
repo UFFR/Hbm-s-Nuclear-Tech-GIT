@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.hbm.items.ModItems;
-
 import com.hbm.main.MainRegistry;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class RecipesCommon {
@@ -81,20 +81,31 @@ public class RecipesCommon {
 			return false;
 		}
 		/** Localized names, so we don't have to read hieroglyphics to figure out what it is **/
-		public String getFriendlyName()
-		{
-			return (this instanceof ComparableStack) ? ((ComparableStack)this).getFriendlyName() :
-				(this instanceof OreDictStack) ? ((OreDictStack)this).getFriendlyName() :
-					"?";
-		}
+		public abstract String getFriendlyName();
 		/** Generic getter to itemstack **/
-		public ItemStack getStack()
-		{
-			return (this instanceof ComparableStack) ? ((ComparableStack)this).toStack() :
-				(this instanceof OreDictStack) ? ((OreDictStack)this).toStacks().get(0) :
-					new ItemStack(ModItems.nothing).setStackDisplayName("Error occurred when retrieving itemstack");
-		}
+		public abstract ItemStack toStack();
+		public abstract void writeToNBT(String key, NBTTagCompound nbt);
+		public abstract void writeToNBT(NBTTagCompound nbt);
 		
+		public static AStack readFromNBT(String key, NBTTagCompound nbt)
+		{
+			NBTBase tag = nbt.getTag(key);
+			if (tag instanceof NBTTagIntArray)
+			{
+				int[] array = ((NBTTagIntArray) tag).func_150302_c();
+				return new ComparableStack(Item.getItemById(array[0]), array[1], array[2]);
+			}
+			else if (tag instanceof NBTTagCompound)
+			{
+				NBTTagCompound item = (NBTTagCompound) tag;
+				return new OreDictStack(item.getString("NAME"), item.getInteger("SIZE"));
+			}
+			return null;
+		}
+		public static AStack readFromNBT(NBTTagCompound nbt)
+		{
+			return readFromNBT("AStack", nbt);
+		}
 		/**
 		 * Whether the supplied itemstack is applicable for a recipe (e.g. anvils). Slightly different from {@code isApplicable}.
 		 * @param stack the ItemStack to check
@@ -168,6 +179,7 @@ public class RecipesCommon {
 			return toStack().getDisplayName();
 		}
 		
+		@Override
 		public ItemStack toStack() {
 			
 			return new ItemStack(item, stacksize, meta);
@@ -195,7 +207,8 @@ public class RecipesCommon {
 			
 			if(item == null) {
 				MainRegistry.logger.error("ComparableStack has a null item! This is a serious issue!");
-				Thread.currentThread().dumpStack();
+				Thread.currentThread();
+				Thread.dumpStack();
 				item = Items.stick;
 			}
 			
@@ -203,7 +216,8 @@ public class RecipesCommon {
 			
 			if(name == null) {
 				MainRegistry.logger.error("ComparableStack holds an item that does not seem to be registered. How does that even happen?");
-				Thread.currentThread().dumpStack();
+				Thread.currentThread();
+				Thread.dumpStack();
 				item = Items.stick; //we know sticks have a name, so sure, why not
 			}
 			
@@ -293,6 +307,18 @@ public class RecipesCommon {
 		public List<ItemStack> extractForNEI() {
 			return Arrays.asList(new ItemStack[] {this.toStack()});
 		}
+
+		@Override
+		public void writeToNBT(String key, NBTTagCompound nbt)
+		{
+			nbt.setIntArray(key, new int[] {Item.getIdFromItem(item), stacksize, meta});
+		}
+
+		@Override
+		public void writeToNBT(NBTTagCompound nbt)
+		{
+			writeToNBT("AStack", nbt);
+		}
 	}
 	
 	/*
@@ -306,6 +332,8 @@ public class RecipesCommon {
 		
 		public ComparableNBTStack(ItemStack stack) {
 			super(stack);
+			if (stack.hasTagCompound())
+				nbt = stack.getTagCompound();
 		}
 		
 		public ComparableNBTStack(Item item) {
@@ -335,6 +363,24 @@ public class RecipesCommon {
 		public ComparableNBTStack addNBT(NBTTagCompound nbt) {
 			this.nbt = nbt;
 			return this;
+		}
+		
+		@Override
+		public void writeToNBT(String key, NBTTagCompound nbt)
+		{
+			super.writeToNBT(key, nbt);
+			nbt.setTag(key.concat("_NBT"), this.nbt);
+		}
+		
+		@Override
+		public boolean matchesRecipe(ItemStack stack, boolean ignoreSize)
+		{
+			boolean matchesNBT = false;
+			if (stack.hasTagCompound() && nbt != null)
+				matchesNBT = stack.getTagCompound().equals(nbt);
+			else if (!stack.hasTagCompound() && nbt == null)
+				matchesNBT = true;
+			return super.matchesRecipe(stack, ignoreSize) && matchesNBT;
 		}
 		
 		@Override
@@ -422,26 +468,61 @@ public class RecipesCommon {
 			
 			return ores;
 		}
+
+		@Override
+		public ItemStack toStack()
+		{
+			return toStacks().get(0);
+		}
+
+		@Override
+		public void writeToNBT(String key, NBTTagCompound nbt)
+		{
+			NBTTagCompound stack = new NBTTagCompound();
+			stack.setString("NAME", name);
+			stack.setInteger("SIZE", stacksize);
+			nbt.setTag(key, stack);
+		}
+
+		@Override
+		public void writeToNBT(NBTTagCompound nbt)
+		{
+			writeToNBT("AStack", nbt);
+		}
 	}
 	/**
 	 * Converts an ItemStack array to an AStack array
-	 * @param stackIn - The ItemStack to be converted
+	 * @param stacksIn - The ItemStack to be converted
 	 * @param singularize - If the stack sizes should be made 1
 	 * @return The requested AStack
 	 */
-	public static AStack[] itemStackToAStack(ItemStack[] stackIn, boolean singularize)
+	public static AStack[] itemStackToAStack(ItemStack[] stacksIn, boolean singularize)
 	{
-		AStack[] newStack = new AStack[stackIn.length];
+		AStack[] newStacks = new AStack[stacksIn.length];
 		
-		for (int i = 0; i < stackIn.length; i++)
+		for (int i = 0; i < stacksIn.length; i++)
 		{
-			if (stackIn[i] != null)
-				newStack[i] = singularize ? new ComparableStack(stackIn[i]).makeSingular() : new ComparableStack(stackIn[i]);
+			if (stacksIn[i] != null)
+				newStacks[i] = singularize ? new ComparableStack(stacksIn[i]).makeSingular() : new ComparableStack(stacksIn[i]);
 			else
-				newStack[i] = null;
+				newStacks[i] = null;
 		}
 		
-		return newStack;
+		return newStacks;
+	}
+	public static ComparableStack[] itemStackToCStack(ItemStack[] stacksIn, boolean singularize)
+	{
+		ComparableStack[] newStacks = new ComparableStack[stacksIn.length];
+		
+		for (int i = 0; i < stacksIn.length; i++)
+		{
+			if (stacksIn[i] == null)
+				newStacks[i] = null;
+			else
+				newStacks[i] = singularize ? new ComparableStack(stacksIn[i]).makeSingular() : new ComparableStack(stacksIn[i]);
+		}
+		
+		return newStacks;
 	}
 	
 	public static class MetaBlock {

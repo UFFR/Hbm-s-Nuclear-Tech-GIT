@@ -16,7 +16,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.calc.EasyLocation;
-import com.hbm.calc.UnionOfTileEntitiesAndBooleans;
 import com.hbm.calc.UnionOfTileEntitiesAndBooleansForFluids;
 import com.hbm.entity.mob.EntityHunterChopper;
 import com.hbm.entity.projectile.EntityChopperMine;
@@ -27,6 +26,7 @@ import com.hbm.interfaces.IFluidDuct;
 import com.hbm.interfaces.IFluidSource;
 import com.hbm.interfaces.Spaghetti;
 import com.hbm.interfaces.Untested;
+import com.hbm.interfaces.ICustomWarhead.SaltedFuel.TimeDurationType;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemStorageMedium;
 import com.hbm.tileentity.TileEntityProxyInventory;
@@ -36,13 +36,16 @@ import com.hbm.tileentity.conductor.TileEntityGasDuctSolid;
 import com.hbm.tileentity.conductor.TileEntityOilDuct;
 import com.hbm.tileentity.conductor.TileEntityOilDuctSolid;
 import com.hbm.tileentity.machine.TileEntityDummy;
-import com.hbm.tileentity.machine.TileEntityMachineBattery;
-import com.hbm.tileentity.machine.TileEntityMachineTransformer;
-import com.hbm.tileentity.network.TileEntityPylon;
+import com.hbm.util.ContaminationUtil;
+import com.hbm.util.ContaminationUtil.ContaminationType;
+import com.hbm.util.ContaminationUtil.HazardType;
+import com.hbm.util.I18nUtil;
 
 import api.hbm.energy.IBatteryItem;
 import api.hbm.energy.IEnergyConnector;
 import api.hbm.energy.IEnergyConnectorBlock;
+import api.hbm.internet.IDataStorageUser;
+import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -102,6 +105,30 @@ public class Library
 	{
 		return player.getUniqueID().toString().equals(ID);
 	}
+	/**
+	 * Convert a real life time unit to Minecraft ticks
+	 * @param time The amount of time
+	 * @param type {@link#TimeDurationType}
+	 * @param realYears Use 365 days per year instead of 100 days per year
+	 * @return The calculated duration
+	 */
+	public static long getLifespan(float time, TimeDurationType type, boolean realYears)
+	{
+		float life = 0;
+		switch (type)
+		{
+		case LONG:
+			life = (48000 * (realYears ? 365 : 100) * 100) * time;
+			break;
+		case MEDIUM:
+			life = (48000 * (realYears ? 365 : 100)) * time;
+			break;
+		case SHORT:
+			life = 48000 * time;
+			break;
+		}
+		return (long) life;
+	}
 	
 	public static void radiate(World worldIn, EasyLocation loc, float rads, double range, ContaminationType type)
 	{
@@ -148,6 +175,8 @@ public class Library
 			tooltip.add(I18nUtil.resolveKey(HbmCollection.antimatter));
 		if (fHazards.contains(FluidTrait.CORROSIVE_STRONG) && fHazards.contains(FluidTrait.CORROSIVE))
 			tooltip.add(I18nUtil.resolveKey(HbmCollection.corrosiveStrong));
+		else if (fHazards.contains(FluidTrait.CORROSIVE_STRONG))
+			tooltip.add(I18nUtil.resolveKey(HbmCollection.corrosiveStrong));
 		else if (!fHazards.contains(FluidTrait.CORROSIVE_STRONG) && fHazards.contains(FluidTrait.CORROSIVE))
 			tooltip.add(I18nUtil.resolveKey(HbmCollection.corrosive));
 		if (fHazards.contains(FluidTrait.BIOHAZARD))
@@ -156,13 +185,10 @@ public class Library
 			tooltip.add(I18nUtil.resolveKey(HbmCollection.chemical));
 		if (fHazards.contains(FluidTrait.RADIOACTIVE))
 			tooltip.add(I18nUtil.resolveKey(HbmCollection.radioactiveFluid));
-		if (fHazards.contains(FluidTrait.TOXIC))
-			tooltip.add(I18nUtil.resolveKey(HbmCollection.toxicGeneric));
-		if(type.traits.contains(FluidTrait.NO_CONTAINER))
-			list.add(EnumChatFormatting.RED + "Cannot be stored in any universal tank");
-		
-		if(type.traits.contains(FluidTrait.LEAD_CONTAINER))
-			list.add(EnumChatFormatting.YELLOW + "Requires hazardous material tank to hold");
+		if (fHazards.contains(FluidTrait.NO_CONTAINER))
+			tooltip.add(EnumChatFormatting.RED + "Cannot be stored in any universal tank");
+		if (fHazards.contains(FluidTrait.LEAD_CONTAINER))
+			tooltip.add(EnumChatFormatting.YELLOW + "Requires hazardous material tank to hold");
 
 	}
 	
@@ -191,6 +217,11 @@ public class Library
 		double leftDigitCount = Math.ceil(Math.log10(Math.abs(num)));
 		double fac = Math.pow(10, digits - leftDigitCount);
 		return Math.round(num * fac) / fac;
+	}
+	
+	public static boolean getBlink()
+	{
+		return System.currentTimeMillis() % 1000 < 500;
 	}
 	
 	public static String[] ticksToDate(long ticks)

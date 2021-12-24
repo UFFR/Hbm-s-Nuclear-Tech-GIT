@@ -43,12 +43,5 @@ public class ItemCustomWarhead extends ItemWithSubtypes implements ICustomWarhea
 		return toOut;
 	}
 
-	@Override
-	public void getSubItems(Item itemIn, CreativeTabs tab, List tabList)
-	{
-		final ItemStack[] warheads = {CustomWarheadWrapper.gravimetricBase.getStack(), CustomWarheadWrapper.pureFusionBase.getStack(), CustomWarheadWrapper.chemicalBase.getStack(), CustomWarheadWrapper.biologicalBase.getStack(), CustomWarheadWrapper.saltedBase.getStack()};
-		for (ItemStack w : warheads)
-			tabList.add(w);
-	}
 	
 }

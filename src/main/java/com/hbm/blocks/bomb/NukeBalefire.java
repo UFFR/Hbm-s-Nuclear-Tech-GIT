@@ -1,6 +1,7 @@
 package com.hbm.blocks.bomb;
 
 import com.hbm.blocks.machine.BlockMachineBase;
+import com.hbm.handler.EnumGUI;
 import com.hbm.hazard.HazardData;
 import com.hbm.interfaces.IBomb;
 import com.hbm.interfaces.IItemHazard;
@@ -15,7 +16,7 @@ public class NukeBalefire extends BlockMachineBase implements IBomb, IItemHazard
 
 	HazardData module;
 
-	public NukeBalefire(Material mat, int guiID) {
+	public NukeBalefire(Material mat, EnumGUI guiID) {
 		super(mat, guiID);
 		rotatable = true;
 		this.module = new HazardData();

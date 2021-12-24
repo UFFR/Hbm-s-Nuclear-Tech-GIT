@@ -2,12 +2,12 @@ package com.hbm.inventory.gui;
 
 import org.lwjgl.opengl.GL11;
 
-import com.hbm.inventory.container.ContainerMachineSingGen;
+import com.hbm.inventory.container.ContainerSingGen;
 import com.hbm.inventory.recipes.SingGenRecipes.SingGenRecipe;
 import com.hbm.lib.RefStrings;
 import com.hbm.packet.AuxButtonPacket;
 import com.hbm.packet.PacketDispatcher;
-import com.hbm.tileentity.machine.TileEntityMachineSingGen;
+import com.hbm.tileentity.machine.TileEntitySingGen;
 import com.hbm.util.I18nUtil;
 
 import net.minecraft.client.Minecraft;
@@ -19,11 +19,11 @@ import net.minecraft.util.ResourceLocation;
 public class GUISingGen extends GuiInfoContainer
 {
 	private static final ResourceLocation texture = new ResourceLocation(RefStrings.MODID, "textures/gui/machine/gui_sing_gen.png");
-	private TileEntityMachineSingGen singGen;
+	private TileEntitySingGen singGen;
 	private FluidTankGUI tank;
-	public GUISingGen(InventoryPlayer invPlayer, TileEntityMachineSingGen tileEntity)
+	public GUISingGen(InventoryPlayer invPlayer, TileEntitySingGen tileEntity)
 	{
-		super(new ContainerMachineSingGen(invPlayer, tileEntity));
+		super(new ContainerSingGen(invPlayer, tileEntity));
 		singGen = tileEntity;
 		tank = new FluidTankGUI(tileEntity.tank, guiLeft + 152, guiTop + 22, 16, 70);
 		this.xSize = 175;
@@ -35,9 +35,7 @@ public class GUISingGen extends GuiInfoContainer
 	{
 		super.drawScreen(mouseX, mouseY, f);
 		
-		this.drawCustomInfoStat(mouseX, mouseY, guiLeft + 132, guiTop + 111, 18, 18, mouseX, mouseY, I18nUtil.resolveKeyArray("hbmfluid." + singGen.tank.getTankType().toString().toLowerCase()));
-		
-		this.drawElectricityInfo(this, mouseX, mouseY, guiLeft + 8, guiTop + 22, 16, 88, singGen.power, TileEntityMachineSingGen.maxPower);
+		this.drawElectricityInfo(this, mouseX, mouseY, guiLeft + 8, guiTop + 22, 16, 88, singGen.getPower(), TileEntitySingGen.maxPower);
 		tank.updateTank(singGen.tank);
 		tank.renderTankInfo(mouseX, mouseY);
 //		singGen.tank.renderTankInfo(this, mouseX, mouseY, guiLeft + 152, guiTop + 22, 16, 70);
@@ -63,15 +61,7 @@ public class GUISingGen extends GuiInfoContainer
 		super.mouseClicked(x, y, i);
 //		if (guiLeft + 25 <= x && guiLeft + 25 + 18 > x && guiTop + 111 < y && guiTop + 111 + 18 >= y)
 		if (getButtonBool(x, y, 25, 111, 18, 18, guiLeft, guiTop))
-		{
-			mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
 			PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(singGen.xCoord, singGen.yCoord, singGen.zCoord, 0, 0));
-		}
-		if (guiLeft + 132 <= x && guiLeft + 132 + 18 > x && guiTop + 111 < y && guiTop + 111 + 18 >= y)
-		{
-			mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
-			PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(singGen.xCoord, singGen.yCoord, singGen.zCoord, 0, 1));
-		}
 	}
 	
 	@Override
@@ -96,16 +86,6 @@ public class GUISingGen extends GuiInfoContainer
 			drawTexturedModalRect(guiLeft + 80, guiTop + 125, 210, 4 * lvl, 16, 4);
 		}
 		
-		switch(singGen.tank.getTankType())
-		{
-		case ASCHRAB:
-			drawTexturedModalRect(guiLeft + 133, guiTop + 111, 226, 0, 18, 18);
-			break;
-		case PLASMA_WARP:
-			drawTexturedModalRect(guiLeft + 133, guiTop + 111, 226, 18, 18, 18);
-		default:
-			break;
-		}
 		tank.updateTank(singGen.tank);
 		tank.renderTank();
 //		Minecraft.getMinecraft().getTextureManager().bindTexture(singGen.tank.getSheet());

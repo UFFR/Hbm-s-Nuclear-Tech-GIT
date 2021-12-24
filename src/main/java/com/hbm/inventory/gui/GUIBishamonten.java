@@ -63,6 +63,7 @@ public class GUIBishamonten extends GuiInfoContainer
 		drawCustomInfoStat(mouseX, mouseY, guiLeft + 62, guiTop + 92, 35, 16, guiLeft + 85, guiTop + 107, purify);
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int i)
 	{
@@ -78,9 +79,7 @@ public class GUIBishamonten extends GuiInfoContainer
 			PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(luna, 0, 3));
 		if (getButtonBool(mouseX, mouseY, 109, 59, 35, 13))
 		{
-			NBTTagCompound data = new NBTTagCompound();
-			data.setByte("input", validateTextInput(tField.getText(), 0, 100).byteValue());
-			PacketDispatcher.wrapper.sendToServer(new NBTControlPacket(data, luna));
+			PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(luna, 2, validateTextInput(tField.getText(), 0, 100).byteValue()));
 			tField.setText("");
 		}
 		if (getButtonBool(mouseX, mouseY, 63, 92, 35, 13))

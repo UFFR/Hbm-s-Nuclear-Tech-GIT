@@ -1,8 +1,9 @@
 package com.hbm.crafting;
 
+import static com.hbm.inventory.OreDictManager.*;
+
 import com.hbm.blocks.ModBlocks;
 import com.hbm.config.GeneralConfig;
-import static com.hbm.inventory.OreDictManager.*;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemBattery;
 import com.hbm.main.CraftingManager;
@@ -41,16 +42,22 @@ public class ToolRecipes {
 		addAxe(		ALLOY.ingot(), ModItems.alloy_axe);
 		addShovel(	ALLOY.ingot(), ModItems.alloy_shovel);
 		addHoe(		ALLOY.ingot(), ModItems.alloy_hoe);
-		addSword(	CMB.ingot(), ModItems.cmb_sword);
-		addPickaxe(	CMB.ingot(), ModItems.cmb_pickaxe);
-		addAxe(		CMB.ingot(), ModItems.cmb_axe);
-		addShovel(	CMB.ingot(), ModItems.cmb_shovel);
-		addHoe(		CMB.ingot(), ModItems.cmb_hoe);
-		addSword(	DESH.ingot(), ModItems.desh_sword);
-		addPickaxe(	DESH.ingot(), ModItems.desh_pickaxe);
-		addAxe(		DESH.ingot(), ModItems.desh_axe);
-		addShovel(	DESH.ingot(), ModItems.desh_shovel);
-		addHoe(		DESH.ingot(), ModItems.desh_hoe);
+		Item[] cmbSet = {ModItems.cmb_sword, ModItems.cmb_pickaxe, ModItems.cmb_axe, ModItems.cmb_shovel, ModItems.cmb_hoe};
+		Item[] deshSet = {ModItems.desh_sword, ModItems.desh_pickaxe, ModItems.desh_axe, ModItems.desh_shovel, ModItems.desh_hoe};
+		Item[] ferrouraniumSet = {ModItems.ferrouranium_sword, ModItems.ferrouranium_pickaxe, ModItems.ferrouranium_axe, ModItems.ferrouranium_shovel, ModItems.ferrouranium_hoe};
+		addFullToolUpgrade(CMB.ingot(), ModItems.bolt_staballoy, cmbSet, deshSet);
+		addFullToolSet(FERROURANIUM.ingot(), ModItems.bolt_dura_steel, ferrouraniumSet);
+		addFullToolUpgrade(DESH.ingot(), ModItems.bolt_staballoy, deshSet, ferrouraniumSet);
+//		addSword(	CMB.ingot(), ModItems.cmb_sword);
+//		addPickaxe(	CMB.ingot(), ModItems.cmb_pickaxe);
+//		addAxe(		CMB.ingot(), ModItems.cmb_axe);
+//		addShovel(	CMB.ingot(), ModItems.cmb_shovel);
+//		addHoe(		CMB.ingot(), ModItems.cmb_hoe);
+//		addSword(	DESH.ingot(), ModItems.desh_sword);
+//		addPickaxe(	DESH.ingot(), ModItems.desh_pickaxe);
+//		addAxe(		DESH.ingot(), ModItems.desh_axe);
+//		addShovel(	DESH.ingot(), ModItems.desh_shovel);
+//		addHoe(		DESH.ingot(), ModItems.desh_hoe);
 		
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.elec_sword, 1), new Object[] { "RPR", "RPR", " B ", 'P', POLYMER.ingot(), 'D', DURA.ingot(), 'R', ModItems.bolt_dura_steel, 'M', ModItems.motor, 'B', ModItems.battery_lithium });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.elec_pickaxe, 1), new Object[] { "RDM", " PB", " P ", 'P', POLYMER.ingot(), 'D', DURA.ingot(), 'R', ModItems.bolt_dura_steel, 'M', ModItems.motor, 'B', ModItems.battery_lithium });
@@ -58,7 +65,7 @@ public class ToolRecipes {
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.elec_shovel, 1), new Object[] { "  P", "RRM", "  B", 'P', POLYMER.ingot(), 'D', DURA.ingot(), 'R', ModItems.bolt_dura_steel, 'M', ModItems.motor, 'B', ModItems.battery_lithium });
 		CraftingManager.addShapelessAuto(new ItemStack(ModItems.centri_stick, 1), new Object[] { ModItems.centrifuge_element, ModItems.energy_core, KEY_STICK });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.smashing_hammer, 1), new Object[] { "STS", "SPS", " P ", 'S', STEEL.block(), 'T', W.block(), 'P', POLYMER.ingot() });
-		CraftingManager.addRecipeAuto(new ItemStack(ModItems.meteorite_sword, 1), new Object[] { "  B", "GB ", "SG ", 'B', ModItems.blade_meteorite, 'G', GOLD.plate(), 'S', KEY_STICK });
+		CraftingManager.addRecipeAuto(new ItemStack(ModItems.meteorite_sword, 1), new Object[] { "  B", "GB ", "SG ", 'B', ModItems.blade_meteorite, 'G', AU.plate(), 'S', KEY_STICK });
 
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.cobalt_decorated_sword, 1), new Object[] { " I ", " I ", "SBS", 'I', CO.ingot(), 'S', ModItems.ingot_meteorite_forged, 'B', ModItems.cobalt_sword });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.cobalt_decorated_pickaxe, 1), new Object[] { "III", " B ", " S ", 'I', CO.ingot(), 'S', ModItems.ingot_meteorite_forged, 'B', ModItems.cobalt_pickaxe });
@@ -106,30 +113,30 @@ public class ToolRecipes {
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.bat, 1), new Object[] { "P", "P", "S", 'S', STEEL.plate(), 'P', KEY_PLANKS });
 		CraftingManager.addShapelessAuto(new ItemStack(ModItems.bat_nail, 1), new Object[] { ModItems.bat, STEEL.plate() });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.golf_club, 1), new Object[] { "IP", " P", " P", 'P', STEEL.plate(), 'I', STEEL.ingot() });
-		CraftingManager.addRecipeAuto(new ItemStack(ModItems.pipe_rusty, 1), new Object[] { "II", " I", " I", 'I', IRON.ingot() });
+		CraftingManager.addRecipeAuto(new ItemStack(ModItems.pipe_rusty, 1), new Object[] { "II", " I", " I", 'I', FE.ingot() });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.pipe_lead, 1), new Object[] { "II", " I", " I", 'I', PB.ingot() });
-		CraftingManager.addRecipeAuto(new ItemStack(ModItems.ullapool_caber, 1), new Object[] { "ITI", " S ", " S ", 'I', IRON.plate(), 'T', Blocks.tnt, 'S', KEY_STICK });
+		CraftingManager.addRecipeAuto(new ItemStack(ModItems.ullapool_caber, 1), new Object[] { "ITI", " S ", " S ", 'I', FE.plate(), 'T', Blocks.tnt, 'S', KEY_STICK });
 
 		//Utility
-		CraftingManager.addRecipeAuto(new ItemStack(ModItems.designator, 1), new Object[] { "  A", "#B#", "#B#", '#', IRON.plate(), 'A', STEEL.plate(), 'B', ModItems.circuit_red_copper });
+		CraftingManager.addRecipeAuto(new ItemStack(ModItems.designator, 1), new Object[] { "  A", "#B#", "#B#", '#', FE.plate(), 'A', STEEL.plate(), 'B', ModItems.circuit_red_copper });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.designator_range, 1), new Object[] { "RRD", "PIC", "  P", 'P', STEEL.plate(), 'R', Items.redstone, 'C', ModItems.circuit_gold, 'D', ModItems.designator, 'I', STEEL.ingot() });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.designator_manual, 1), new Object[] { "  A", "#C#", "#B#", '#', POLYMER.ingot(), 'A', PB.plate(), 'B', ModItems.circuit_gold, 'C', ModItems.designator });
-		CraftingManager.addRecipeAuto(new ItemStack(ModItems.linker, 1), new Object[] { "I I", "ICI", "GGG", 'I', IRON.plate(), 'G', GOLD.plate(), 'C', ModItems.circuit_gold });
+		CraftingManager.addRecipeAuto(new ItemStack(ModItems.linker, 1), new Object[] { "I I", "ICI", "GGG", 'I', FE.plate(), 'G', AU.plate(), 'C', ModItems.circuit_gold });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.oil_detector, 1), new Object[] { "W I", "WCI", "PPP", 'W', ModItems.wire_gold, 'I', CU.ingot(), 'C', ModItems.circuit_red_copper, 'P', STEEL.plate() });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.turret_chip, 1), new Object[] { "WWW", "CPC", "WWW", 'W', ModItems.wire_gold, 'P', POLYMER.ingot(), 'C', ModItems.circuit_gold, });
-		CraftingManager.addRecipeAuto(new ItemStack(ModItems.turret_biometry, 1), new Object[] { "CC ", "GGS", "SSS", 'C', ModItems.circuit_copper, 'S', STEEL.plate(), 'G', GOLD.plate(), 'I', PB.plate() });
-		CraftingManager.addRecipeAuto(new ItemStack(ModItems.survey_scanner, 1), new Object[] { "SWS", " G ", "PCP", 'W', ModItems.wire_gold, 'P', POLYMER.ingot(), 'C', ModItems.circuit_gold, 'S', STEEL.plate(), 'G', GOLD.ingot() });
-		CraftingManager.addRecipeAuto(new ItemStack(ModItems.geiger_counter, 1), new Object[] { "GPP", "WCS", "WBB", 'W', ModItems.wire_gold, 'P', ModItems.plate_polymer, 'C', ModItems.circuit_aluminium, 'G', GOLD.ingot(), 'S', STEEL.plate(), 'B', ModItems.ingot_beryllium });
+		CraftingManager.addRecipeAuto(new ItemStack(ModItems.turret_biometry, 1), new Object[] { "CC ", "GGS", "SSS", 'C', ModItems.circuit_copper, 'S', STEEL.plate(), 'G', AU.plate(), 'I', PB.plate() });
+		CraftingManager.addRecipeAuto(new ItemStack(ModItems.survey_scanner, 1), new Object[] { "SWS", " G ", "PCP", 'W', ModItems.wire_gold, 'P', POLYMER.ingot(), 'C', ModItems.circuit_gold, 'S', STEEL.plate(), 'G', AU.ingot() });
+		CraftingManager.addRecipeAuto(new ItemStack(ModItems.geiger_counter, 1), new Object[] { "GPP", "WCS", "WBB", 'W', ModItems.wire_gold, 'P', ModItems.plate_polymer, 'C', ModItems.circuit_aluminium, 'G', AU.ingot(), 'S', STEEL.plate(), 'B', ModItems.ingot_beryllium });
 		CraftingManager.addShapelessAuto(new ItemStack(ModBlocks.geiger), new Object[] { ModItems.geiger_counter });
 		CraftingManager.addShapelessAuto(new ItemStack(ModItems.digamma_diagnostic), new Object[] { ModItems.geiger_counter, PO210.billet(), ASBESTOS.ingot() });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.defuser, 1), new Object[] { " PS", "P P", " P ", 'P', POLYMER.ingot(), 'S', STEEL.plate() });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.coltan_tool, 1), new Object[] { "ACA", "CXC", "ACA", 'A', ALLOY.ingot(), 'C', CINNABAR.crystal(), 'X', Items.compass });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.reacher, 1), new Object[] { "BIB", "P P", "B B", 'B', ModItems.bolt_tungsten, 'I', W.ingot(), 'P', ModItems.plate_polymer });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.bismuth_tool, 1), new Object[] { "TBT", "SRS", "SCS", 'T', TA.nugget(), 'B', ModItems.nugget_bismuth, 'S', TCALLOY.ingot(), 'R', ModItems.reacher, 'C', ModItems.circuit_aluminium });
-		CraftingManager.addRecipeAuto(new ItemStack(ModItems.sat_designator, 1), new Object[] { "RRD", "PIC", "  P", 'P', GOLD.plate(), 'R', Items.redstone, 'C', ModItems.circuit_gold, 'D', ModItems.sat_chip, 'I', GOLD.ingot() });
+		CraftingManager.addRecipeAuto(new ItemStack(ModItems.sat_designator, 1), new Object[] { "RRD", "PIC", "  P", 'P', AU.plate(), 'R', Items.redstone, 'C', ModItems.circuit_gold, 'D', ModItems.sat_chip, 'I', AU.ingot() });
 
-		CraftingManager.addRecipeAuto(new ItemStack(ModItems.mirror_tool), new Object[] { " A ", " IA", "I  ", 'A', AL.ingot(), 'I', IRON.ingot() });
-		CraftingManager.addRecipeAuto(new ItemStack(ModItems.rbmk_tool), new Object[] { " A ", " IA", "I  ", 'A', PB.ingot(), 'I', IRON.ingot() });
+		CraftingManager.addRecipeAuto(new ItemStack(ModItems.mirror_tool), new Object[] { " A ", " IA", "I  ", 'A', AL.ingot(), 'I', FE.ingot() });
+		CraftingManager.addRecipeAuto(new ItemStack(ModItems.rbmk_tool), new Object[] { " A ", " IA", "I  ", 'A', PB.ingot(), 'I', FE.ingot() });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.hand_drill), new Object[] { " D", "S ", " S", 'D', DURA.ingot(), 'S', KEY_STICK });
 		
 		//Bobmazon
@@ -146,109 +153,91 @@ public class ToolRecipes {
 			addShovel(	SA326.ingot(), ModItems.schrabidium_shovel);
 			addHoe(		SA326.ingot(), ModItems.schrabidium_hoe);
 		} else {
-			CraftingManager.addRecipeAuto(new ItemStack(ModItems.schrabidium_sword, 1), new Object[] { "I", "W", "S", 'I', SA326.block(), 'W', ModItems.desh_sword, 'S', POLYMER.ingot() });
-			CraftingManager.addRecipeAuto(new ItemStack(ModItems.schrabidium_pickaxe, 1), new Object[] { "SWS", " P ", " P ", 'S', ModItems.blades_schrabidium, 'W', ModItems.desh_pickaxe, 'P', POLYMER.ingot() });
-			CraftingManager.addRecipeAuto(new ItemStack(ModItems.schrabidium_axe, 1), new Object[] { "SW", "SP", " P", 'S', ModItems.blades_schrabidium, 'W', ModItems.desh_axe, 'P', POLYMER.ingot() });
-			CraftingManager.addRecipeAuto(new ItemStack(ModItems.schrabidium_shovel, 1), new Object[] { "S", "W", "P", 'S', ModItems.blades_schrabidium, 'W', ModItems.desh_shovel, 'P', POLYMER.ingot() });
-			CraftingManager.addRecipeAuto(new ItemStack(ModItems.schrabidium_hoe, 1), new Object[] { "IW", " S", " S", 'I', SA326.ingot(), 'W', ModItems.desh_hoe, 'S', POLYMER.ingot() });
+			CraftingManager.addRecipeAuto(new ItemStack(ModItems.schrabidium_sword, 1), new Object[] { "I", "W", "S", 'I', SA326.block(), 'W', ModItems.cmb_sword, 'S', POLYMER.ingot() });
+			CraftingManager.addRecipeAuto(new ItemStack(ModItems.schrabidium_pickaxe, 1), new Object[] { "SWS", " P ", " P ", 'S', ModItems.blades_schrabidium, 'W', ModItems.cmb_pickaxe, 'P', POLYMER.ingot() });
+			CraftingManager.addRecipeAuto(new ItemStack(ModItems.schrabidium_axe, 1), new Object[] { "SW", "SP", " P", 'S', ModItems.blades_schrabidium, 'W', ModItems.cmb_axe, 'P', POLYMER.ingot() });
+			CraftingManager.addRecipeAuto(new ItemStack(ModItems.schrabidium_shovel, 1), new Object[] { "S", "W", "P", 'S', ModItems.blades_schrabidium, 'W', ModItems.cmb_shovel, 'P', POLYMER.ingot() });
+			CraftingManager.addRecipeAuto(new ItemStack(ModItems.schrabidium_hoe, 1), new Object[] { "IW", " S", " S", 'I', SA326.ingot(), 'W', ModItems.cmb_hoe, 'S', POLYMER.ingot() });
 		}
 	}
-	/**
-	 * Register a tool set using vanilla style recipes
-	 * @param outs - Must be in the order: sword, pickaxe, axe, shovel, then hoe
-	 * @param headMaterial - The material of the head (ie iron)
-	 * @param handleMaterial - The material oreDict of the handle (vanilla uses sticks)
-	 */
-	public static void basicToolSet(Item[] outs, Item headMaterial, String handleMaterial)
+
+	public static void newStamp(Item stamp, Object material, boolean diamond)
 	{
-		if (outs.length != 5)
-			throw new IllegalArgumentException("Output array must be equal to 5!");
-		
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(outs[0]), new Object[] { "I", "I", "H", 'I', headMaterial, 'H', handleMaterial }));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(outs[1]), new Object[] { "III", " H ", " H ", 'I', headMaterial, 'H', handleMaterial }));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(outs[2]), new Object[] { "II ", "IH ", " H ", 'I', headMaterial, 'H', handleMaterial }));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(outs[3]), new Object[] { "I", "H", "H", 'I', headMaterial, 'H', handleMaterial }));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(outs[4]), new Object[] { "II", " H", " H", 'I', headMaterial, 'H', handleMaterial }));
+		if (diamond)
+			CraftingManager.addRecipeAuto(new ItemStack(stamp), patternStamp, 'R', Items.redstone, 'B', Items.diamond, 'M', material);
+		else
+		{
+			CraftingManager.addRecipeAuto(new ItemStack(stamp), patternStamp, 'R', Items.redstone, 'B', KEY_BRICK, 'M', material);
+			CraftingManager.addRecipeAuto(new ItemStack(stamp), patternStamp, 'R', Items.redstone, 'B', KEY_NETHERBRICK, 'M', material);
+		}
 	}
-	/**
-	 * Register a tool set using vanilla style recipes
-	 * @param outs - Must be in the order: sword, pickaxe, axe, shovel, then hoe
-	 * @param headMaterial - The material of the head (ie iron)
-	 * @param handleMaterial - The material of the handle (vanilla uses sticks)
-	 */
-	public static void basicToolSet(Item[] outs, Item headMaterial, Item handleMaterial)
+
+	
+	public static void addFullToolSet(Object headMaterial, Object handleMaterial, Item...tool)
 	{
-		if (outs.length != 5)
-			throw new IllegalArgumentException("Output array must be equal to 5!");
-		
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(outs[0]), new Object[] { "I", "I", "H", 'I', headMaterial, 'H', handleMaterial }));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(outs[1]), new Object[] { "III", " H ", " H ", 'I', headMaterial, 'H', handleMaterial }));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(outs[2]), new Object[] { "II ", "IH ", " H ", 'I', headMaterial, 'H', handleMaterial }));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(outs[3]), new Object[] { "I", "H", "H", 'I', headMaterial, 'H', handleMaterial }));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(outs[4]), new Object[] { "II", " H", " H", 'I', headMaterial, 'H', handleMaterial }));
-	}
-	/**
-	 * Register a tool that's an upgrade to a preexisting one, uses slightly less expensive method
-	 * @param outs - Must be in the order: sword, pickaxe, axe, shovel, then hoe
-	 * @param headMaterial - The material of the head (ie iron)
-	 * @param priorTier - Previous tier tools, same order as before
-	 * @param handleMaterial - The material of the handle (vanilla uses sticks)
-	 */
-	public static void upgradeToolSet1(Item[] outs, Item headMaterial, Item[] priorTier, Item handleMaterial)
-	{
-		if (outs.length != 5)
-			throw new IllegalArgumentException("Output array must be equal to 5!");
-		if (priorTier.length != 5)
-			throw new IllegalArgumentException("Input array must be equal to 5!");
-		
-		GameRegistry.addRecipe(new ItemStack(outs[0]), new Object[] { " I ", " I ", "HPH", 'I', headMaterial, 'H', handleMaterial, 'P', priorTier[0] });
-		GameRegistry.addRecipe(new ItemStack(outs[1]), new Object[] { "IPI", " H ", " H ", 'I', headMaterial, 'H', handleMaterial, 'P', priorTier[1] });
-		GameRegistry.addRecipe(new ItemStack(outs[2]), new Object[] { "IP", "IH", " H", 'I', headMaterial, 'H', handleMaterial, 'P', priorTier[2] });
-		GameRegistry.addRecipe(new ItemStack(outs[3]), new Object[] { "I", "P", "H", 'I', headMaterial, 'H', handleMaterial, 'P', priorTier[3] });
-		GameRegistry.addRecipe(new ItemStack(outs[4]), new Object[] { "IP", " H", " H", 'I', headMaterial, 'H', handleMaterial, 'P', priorTier[4] });
-	}
-	/**
-	 * Register a tool that's an upgrade to a preexisting one, uses slightly more expensive method
-	 * @param outs - Must be in the order: sword, pickaxe, axe, shovel, then hoe
-	 * @param headMaterial - The material of the head (ie iron)
-	 * @param priorTier - Previous tier tools, same order as before
-	 * @param handleMaterial - The material of the handle (vanilla uses sticks)
-	 */
-	public static void upgradeToolSet2(Item[] outs, Item headMaterial, Item[] priorTier, Item handleMaterial)
-	{
-		if (outs.length != 5)
-			throw new IllegalArgumentException("Output array must be equal to 5!");
-		if (priorTier.length != 5)
-			throw new IllegalArgumentException("Input array must be equal to 5!");
-		
-		GameRegistry.addRecipe(new ItemStack(outs[0]), new Object[] { " I ", " I ", "HPH", 'I', headMaterial, 'H', handleMaterial, 'P', priorTier[0] });
-		GameRegistry.addRecipe(new ItemStack(outs[1]), new Object[] { "III", "HPH", " H ", 'I', headMaterial, 'H', handleMaterial, 'P', priorTier[1] });
-		GameRegistry.addRecipe(new ItemStack(outs[2]), new Object[] { "IIP", "IH", " H", 'I', headMaterial, 'H', handleMaterial, 'P', priorTier[2] });
-		GameRegistry.addRecipe(new ItemStack(outs[3]), new Object[] { "I", "HPH", "H", 'I', headMaterial, 'H', handleMaterial, 'P', priorTier[3] });
-		GameRegistry.addRecipe(new ItemStack(outs[4]), new Object[] { "II", "HP", " H", 'I', headMaterial, 'H', handleMaterial, 'P', priorTier[4] });
-	}
-	/**
-	 * Create a new flat stamp
-	 * @param stamp - The stamp itself
-	 * @param mat - Material it's made of
-	 * @param diamond - Should it use diamonds, if not, uses bricks
-	 */
-	public static void newStamp(Item stamp, Item mat, boolean diamond)
-	{
-		GameRegistry.addRecipe(new ItemStack(stamp), new Object[] {" R ", "BBB", "MMM", 'R', Items.redstone, 'B', diamond ? Items.diamond : Items.brick, 'M', mat});
-	}
-	public static void newStamp(Item stamp, String mat, boolean diamond)
-	{
-		GameRegistry.addRecipe(new ShapedOreRecipe(stamp, new Object[] {" R ", "BBB", "MMM", 'R', Items.redstone, 'B', diamond ? Items.diamond : Items.brick, 'M', mat}));
+		assert tool.length == 5;
+		addTool(headMaterial, tool[0], handleMaterial, patternSword);
+		addTool(headMaterial, tool[1], handleMaterial, patternPick);
+		addTool(headMaterial, tool[2], handleMaterial, patternAxe);
+		addTool(headMaterial, tool[3], handleMaterial, patternShovel);
+		addTool(headMaterial, tool[4], handleMaterial, patternHoe);
 	}
 	
+	public static void addFullToolUpgrade(Object headMaterial, Object handleMaterial, Item[] newTool, Item[] oldTool)
+	{
+		assert newTool.length == 5;
+		assert oldTool.length == 5;
+		addToolUpgrade(headMaterial, handleMaterial, newTool[0], oldTool[0], patternSwordUpgrade);
+		addToolUpgrade(headMaterial, handleMaterial, newTool[1], oldTool[1], patternPickUpgrade);
+		addToolUpgrade(headMaterial, handleMaterial, newTool[2], oldTool[2], patternAxeUpgrade);
+		addToolUpgrade(headMaterial, handleMaterial, newTool[3], oldTool[3], patternShovelUpgrade);
+		addToolUpgrade(headMaterial, handleMaterial, newTool[4], oldTool[4], patternHoeUpgrade);
+	}
+	
+	public static void addFullToolSet(Object headMaterial, Item...tool)
+	{
+		addFullToolSet(headMaterial, KEY_STICK, tool);
+	}
+	
+	//Common wrappers
+	public static void addSword(Object ingot, Item sword) {
+		addTool(ingot, sword, patternSword);
+	}
+	public static void addPickaxe(Object ingot, Item pick) {
+		addTool(ingot, pick, patternPick);
+	}
+	public static void addAxe(Object ingot, Item axe) {
+		addTool(ingot, axe, patternAxe);
+	}
+	public static void addShovel(Object ingot, Item shovel) {
+		addTool(ingot, shovel, patternShovel);
+	}
+	public static void addHoe(Object ingot, Item hoe) {
+		addTool(ingot, hoe, patternHoe);
+	}
 	public static void addTool(Object ingot, Item tool, String[] pattern) {
 		CraftingManager.addRecipeAuto(new ItemStack(tool), new Object[] { pattern, 'X', ingot, '#', KEY_STICK });
+	}
+	public static void addTool(Object ingot, Item tool, Object handle, String[] pattern)
+	{
+		CraftingManager.addRecipeAuto(new ItemStack(tool), new Object[] { pattern, 'X', ingot, '#', handle });
+	}
+	public static void addToolUpgrade(Object headMaterial, Object handleMaterial, Item newTool, Item oldTool, String[] pattern)
+	{
+		CraftingManager.addRecipeAuto(new ItemStack(newTool), pattern, 'X', headMaterial, '#', handleMaterial, 'P', oldTool);
 	}
 	public static final String[] patternPick = new String[] {"XXX", " # ", " # "};
 	public static final String[] patternSword = new String[] {"X", "X", "#"};
 	public static final String[] patternAxe = new String[] {"XX", "X#", " #"};
 	public static final String[] patternShovel = new String[] {"X", "#", "#"};
 	public static final String[] patternHoe = new String[] {"XX", " #", " #"};
+	
+	public static final String[] patternPickUpgrade = {"XXX", "#P#", " # "};
+	public static final String[] patternSwordUpgrade = {" X ", " X ", "#P#"};
+	public static final String[] patternAxeUpgrade = {"XX ", "XP#", " # "};
+	public static final String[] patternShovelUpgrade = {" X ", "#P#", " # "};
+	public static final String[] patternHoeUpgrade = {"XX", "#P", " #"};
+	
+	public static final String[] patternStamp = {" R ", "BBB", "MMM"};
 	
 }

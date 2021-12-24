@@ -47,7 +47,7 @@ public class ItemCustomCore extends ItemHazard implements ICustomWarhead
 	@Override
 	public ICustomWarhead getInstance()
 	{
-		return (ICustomWarhead) this;
+		return this;
 	}
 	
 	@Override
@@ -76,15 +76,6 @@ public class ItemCustomCore extends ItemHazard implements ICustomWarhead
 		NBTTagCompound data = new NBTTagCompound();
 		toOut.stackTagCompound.setTag(NBT_GROUP, data);
 		return toOut;
-	}
-	
-	@Override
-	public void getSubItems(Item item, CreativeTabs tab, List list)
-	{
-		// TODO
-		final ItemStack[] cores = {new CustomWarheadWrapper(item).addFuel(FissileFuel.U235, FissileFuel.U235.getIngotMass() * 4).getStack(), new CustomWarheadWrapper(item).addFuel(FissileFuel.Pu239, FissileFuel.Pu239.getIngotMass() * 4).getStack(), new CustomWarheadWrapper(item).addFuel(FissileFuel.U233, FissileFuel.U233.getIngotMass() * 3.6F).addFuel(FissileFuel.U235, FissileFuel.U235.getNuggetMass() * 3).getStack(), new CustomWarheadWrapper(item).addFuel(FissileFuel.Pu239, FissileFuel.Pu239.getIngotMass() * 2).addFuel(FissileFuel.Sa326, FissileFuel.Sa326.getNuggetMass()).getStack()};
-		for (ItemStack core : cores)
-			list.add(core);
 	}
 	
 }

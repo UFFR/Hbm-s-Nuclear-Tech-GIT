@@ -478,8 +478,8 @@ public class BulletConfigSyncingUtil {
 		configSet.put(TWR_RAY_LARGE, GunEnergyFactory.getRegSingConfig());
 		configSet.put(TWR_RAY_SUPERHEATED, GunEnergyFactory.getSuperheatedSingConfig());
 		configSet.put(TWR_RAY_COUNTER_RESONANT, GunEnergyFactory.getCounterResonantSingConfig());
-		configSet.put(HLR_NORMAL, GunEnergyFactory.getHLRDefaultConfig());
-		configSet.put(HLR_ALT, GunEnergyFactory.getHLRAltConfig());
+		configSet.put(HLR_NORMAL, GunEnergyFactory.getHLRPrecisionConfig());
+		configSet.put(HLR_ALT, GunEnergyFactory.getHLRScatterConfig());
 
 		configSet.put(ZOMG_BOLT, GunEnergyFactory.getZOMGBoltConfig());
 

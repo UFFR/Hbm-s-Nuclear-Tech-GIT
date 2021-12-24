@@ -4,6 +4,7 @@ import java.util.Random;
 
 import com.hbm.blocks.ModBlocks;
 import com.hbm.handler.BossSpawnHandler;
+import com.hbm.handler.EnumGUI;
 import com.hbm.handler.MultiblockHandler;
 import com.hbm.interfaces.IMultiblock;
 import com.hbm.main.MainRegistry;
@@ -117,7 +118,7 @@ public class MachineReactorSmall extends BlockContainer implements IMultiblock {
 		if(MultiblockHandler.checkSpace(world, x, y, z, MultiblockHandler.reactorSmallDimension)) {
 
 			//
-			DummyBlockMachine.safeBreak = true;
+			DummyOldBase.safeBreak = true;
 			world.setBlock(x, y + 1, z, ModBlocks.dummy_block_reactor_small);
 			TileEntity te = world.getTileEntity(x, y + 1, z);
 			if(te instanceof TileEntityDummy) {
@@ -134,7 +135,7 @@ public class MachineReactorSmall extends BlockContainer implements IMultiblock {
 				dummy.targetY = y;
 				dummy.targetZ = z;
 			}
-			DummyBlockMachine.safeBreak = false;
+			DummyOldBase.safeBreak = false;
 			//
 			
 		} else
@@ -150,7 +151,7 @@ public class MachineReactorSmall extends BlockContainer implements IMultiblock {
 
 			TileEntityMachineReactorSmall entity = (TileEntityMachineReactorSmall) world.getTileEntity(x, y, z);
 			if(entity != null) {
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_reactor_small, world, x, y, z);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.REACTOR_GENERIC_SMALL.ordinal(), world, x, y, z);
 			}
 			return true;
 		} else {

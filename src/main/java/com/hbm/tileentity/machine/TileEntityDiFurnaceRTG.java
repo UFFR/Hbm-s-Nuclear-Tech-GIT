@@ -1,7 +1,7 @@
 package com.hbm.tileentity.machine;
 
 import com.hbm.blocks.machine.MachineDiFurnaceRTG;
-import com.hbm.inventory.recipes.MachineRecipes;
+import com.hbm.inventory.recipes.BlastFurnaceRecipes;
 import com.hbm.items.machine.ItemRTGPellet;
 import com.hbm.tileentity.IRTGUser;
 import com.hbm.tileentity.IRadioisotopeFuel;
@@ -27,7 +27,7 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase implements IRT
 		if ((slots[0] == null || slots[1] == null) && !hasPower())
 			return false;
 		
-		ItemStack recipeResult = MachineRecipes.getFurnaceProcessingResult(slots[0], slots[1]);
+		ItemStack recipeResult = BlastFurnaceRecipes.getOutput(slots[0], slots[1]);
 		if (recipeResult == null)
 			return false;
 		else if (slots[2] == null)
@@ -47,7 +47,6 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase implements IRT
 		
 		if(worldObj.isRemote)
 			return;
-		
 		if(canProcess() && hasPower()) {
 			progress += processSpeed;
 			if(progress >= timeRequired) {
@@ -75,7 +74,7 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase implements IRT
 	private void processItem() {
 		
 		if(canProcess()) {
-			ItemStack recipeOut = MachineRecipes.getFurnaceProcessingResult(slots[0], slots[1]);
+			ItemStack recipeOut = BlastFurnaceRecipes.getOutput(slots[0], slots[1]);
 			if(slots[2] == null)
 				slots[2] = recipeOut.copy();
 			else if(slots[2].isItemEqual(recipeOut))
@@ -125,12 +124,8 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase implements IRT
 	}
 
 	public boolean hasPower() {
-		processSpeed = (short) updateRTGs(slots, rtgIn);
+		processSpeed = (short) (updateRTGs(slots, rtgIn) / 10);
 		return processSpeed >= 15;
-	}
-
-	public int getPower() {
-		return processSpeed;
 	}
 
 	public boolean isProcessing() {

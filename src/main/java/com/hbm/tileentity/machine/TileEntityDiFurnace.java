@@ -1,7 +1,7 @@
 package com.hbm.tileentity.machine;
 
 import com.hbm.blocks.machine.MachineDiFurnace;
-import com.hbm.inventory.recipes.MachineRecipes;
+import com.hbm.inventory.recipes.BlastFurnaceRecipes;
 import com.hbm.items.ModItems;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -227,7 +227,7 @@ public class TileEntityDiFurnace extends TileEntity implements ISidedInventory {
 		{
 			return false;
 		}
-		ItemStack itemStack = MachineRecipes.getFurnaceProcessingResult(slots[0], slots[1]);
+		ItemStack itemStack = BlastFurnaceRecipes.getOutput(slots[0], slots[1]);
 		if(itemStack == null)
 		{
 			return false;
@@ -251,7 +251,7 @@ public class TileEntityDiFurnace extends TileEntity implements ISidedInventory {
 	
 	private void processItem() {
 		if(canProcess()) {
-			ItemStack itemStack = MachineRecipes.getFurnaceProcessingResult(slots[0], slots[1]);
+			ItemStack itemStack = BlastFurnaceRecipes.getOutput(slots[0], slots[1]);
 			
 			if(slots[3] == null)
 			{

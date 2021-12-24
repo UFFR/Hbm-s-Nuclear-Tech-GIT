@@ -54,13 +54,8 @@ public class ItemFuelRod extends Item {
         return true;
     }
     
-<<<<<<< HEAD
     @Override
-	public double getDurabilityForDisplay(ItemStack stack)
-    {
-=======
-    public double getDurabilityForDisplay(ItemStack stack) {
->>>>>>> master
+	public double getDurabilityForDisplay(ItemStack stack) {
         return (double)getLifeTime(stack) / (double)((ItemFuelRod)stack.getItem()).lifeTime;
     }
 }

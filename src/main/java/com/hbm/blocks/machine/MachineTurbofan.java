@@ -3,6 +3,7 @@ package com.hbm.blocks.machine;
 import java.util.Random;
 
 import com.hbm.blocks.ModBlocks;
+import com.hbm.handler.EnumGUI;
 import com.hbm.handler.MultiblockHandler;
 import com.hbm.interfaces.IMultiblock;
 import com.hbm.items.ModItems;
@@ -67,7 +68,7 @@ public class MachineTurbofan extends BlockContainer implements IMultiblock {
 				MultiblockHandler.fillUp(world, x, y, z, MultiblockHandler.turbofanDimensionEast, ModBlocks.dummy_block_turbofan);
 				
 				//
-				DummyBlockTurbofan.safeBreak = true;
+				DummyOldBase.safeBreak = true;
 				world.setBlock(x + 1, y + 1, z + 1, ModBlocks.dummy_port_turbofan);
 				TileEntity te = world.getTileEntity(x + 1, y + 1, z + 1);
 				if(te instanceof TileEntityDummy) {
@@ -100,7 +101,7 @@ public class MachineTurbofan extends BlockContainer implements IMultiblock {
 					dummy.targetY = y;
 					dummy.targetZ = z;
 				}
-				DummyBlockTurbofan.safeBreak = false;
+				DummyOldBase.safeBreak = false;
 				//
 				
 			} else
@@ -112,7 +113,7 @@ public class MachineTurbofan extends BlockContainer implements IMultiblock {
 				MultiblockHandler.fillUp(world, x, y, z, MultiblockHandler.turbofanDimensionSouth, ModBlocks.dummy_block_turbofan);
 				
 				//
-				DummyBlockTurbofan.safeBreak = true;
+				DummyOldBase.safeBreak = true;
 				world.setBlock(x + 1, y + 1, z + 1, ModBlocks.dummy_port_turbofan);
 				TileEntity te = world.getTileEntity(x + 1, y + 1, z + 1);
 				if(te instanceof TileEntityDummy) {
@@ -145,7 +146,7 @@ public class MachineTurbofan extends BlockContainer implements IMultiblock {
 					dummy.targetY = y;
 					dummy.targetZ = z;
 				}
-				DummyBlockTurbofan.safeBreak = false;
+				DummyOldBase.safeBreak = false;
 				//
 				
 			} else
@@ -157,7 +158,7 @@ public class MachineTurbofan extends BlockContainer implements IMultiblock {
 				MultiblockHandler.fillUp(world, x, y, z, MultiblockHandler.turbofanDimensionWest, ModBlocks.dummy_block_turbofan);
 				
 				//
-				DummyBlockTurbofan.safeBreak = true;
+				DummyOldBase.safeBreak = true;
 				world.setBlock(x + 1, y + 1, z + 1, ModBlocks.dummy_port_turbofan);
 				TileEntity te = world.getTileEntity(x + 1, y + 1, z + 1);
 				if(te instanceof TileEntityDummy) {
@@ -190,7 +191,7 @@ public class MachineTurbofan extends BlockContainer implements IMultiblock {
 					dummy.targetY = y;
 					dummy.targetZ = z;
 				}
-				DummyBlockTurbofan.safeBreak = false;
+				DummyOldBase.safeBreak = false;
 				//
 				
 			} else
@@ -202,7 +203,7 @@ public class MachineTurbofan extends BlockContainer implements IMultiblock {
 				MultiblockHandler.fillUp(world, x, y, z, MultiblockHandler.turbofanDimensionNorth, ModBlocks.dummy_block_turbofan);
 				
 				//
-				DummyBlockTurbofan.safeBreak = true;
+				DummyOldBase.safeBreak = true;
 				world.setBlock(x + 1, y + 1, z + 1, ModBlocks.dummy_port_turbofan);
 				TileEntity te = world.getTileEntity(x + 1, y + 1, z + 1);
 				if(te instanceof TileEntityDummy) {
@@ -235,7 +236,7 @@ public class MachineTurbofan extends BlockContainer implements IMultiblock {
 					dummy.targetY = y;
 					dummy.targetZ = z;
 				}
-				DummyBlockTurbofan.safeBreak = false;
+				DummyOldBase.safeBreak = false;
 				//
 				
 			} else
@@ -253,7 +254,7 @@ public class MachineTurbofan extends BlockContainer implements IMultiblock {
 		}else if (!player.isSneaking()) {
 			TileEntityMachineTurbofan entity = (TileEntityMachineTurbofan) world.getTileEntity(x, y, z);
 			if (entity != null) {
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_machine_turbofan, world, x,
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.GENERATOR_TURBOFAN.ordinal(), world, x,
 						y, z);
 			}
 			return true;

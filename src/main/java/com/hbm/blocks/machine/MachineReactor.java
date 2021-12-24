@@ -3,6 +3,7 @@ package com.hbm.blocks.machine;
 
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ModBlocks;
+import com.hbm.handler.EnumGUI;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.TileEntityProxyInventory;
 import com.hbm.tileentity.machine.TileEntityMachineReactor;
@@ -43,7 +44,7 @@ public class MachineReactor extends BlockDummyable {
 			TileEntityMachineReactor entity = (TileEntityMachineReactor) world.getTileEntity(pos[0], pos[1], pos[2]);
 			if(entity != null)
 			{
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_reactor, world, pos[0], pos[1], pos[2]);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.BREEDING_REACTOR.ordinal(), world, pos[0], pos[1], pos[2]);
 			}
 			return true;
 		} else {

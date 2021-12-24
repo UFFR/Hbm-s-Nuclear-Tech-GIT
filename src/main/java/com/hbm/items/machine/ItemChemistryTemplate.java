@@ -121,8 +121,7 @@ public class ItemChemistryTemplate extends Item {
 		FRACKSOL,
 		GASOLINE,
 		TEL,
-		SARIN;
-		FRACKSOL,
+		SARIN,
 		HELIUM3,
 		OSMIRIDIUM_DEATH,
 		ETHANOL,
@@ -192,24 +191,6 @@ public class ItemChemistryTemplate extends Item {
         EnumChemistryTemplate enum1 = EnumChemistryTemplate.getEnum(i);
         
         switch (enum1) {
-        case FP_HEAVYOIL:
-        	return 50;
-        case FP_SMEAR:
-        	return 50;
-        case FP_NAPHTHA:
-        	return 50;
-        case FP_LIGHTOIL:
-        	return 50;
-        case FR_REOIL:
-        	return 30;
-        case FR_PETROIL:
-        	return 30;
-        case OIL_SAND:
-        	return 200;
-        case FC_BITUMEN:
-        	return 100;
-        case FC_I_NAPHTHA:
-        	return 150;
         case FC_GAS_PETROLEUM:
         	return 100;
         case FC_DIESEL_KEROSENE:
@@ -375,8 +356,6 @@ public class ItemChemistryTemplate extends Item {
         case CO2:
         	return 60;
         case HEAVY_ELECTROLYSIS:
-        	return 150;
-        case DUCRETE:
         	return 150;
         default:
         	return 100;

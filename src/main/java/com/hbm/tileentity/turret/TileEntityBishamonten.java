@@ -10,13 +10,13 @@ import com.hbm.entity.effect.EntityCloudTom;
 import com.hbm.entity.effect.EntityNukeCloudSmall;
 import com.hbm.entity.logic.EntityNukeExplosionMK3;
 import com.hbm.entity.logic.EntityNukeExplosionMK4;
-import com.hbm.interfaces.IConsumer;
 import com.hbm.interfaces.IControlReceiver;
 import com.hbm.lib.Library;
 import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.I18nUtil;
 
 import api.hbm.block.ILaserable;
+import api.hbm.energy.IEnergyUser;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -26,7 +26,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityBishamonten extends TileEntityMachineBase implements IConsumer, ILaserable, IControlReceiver
+public class TileEntityBishamonten extends TileEntityMachineBase implements ILaserable, IControlReceiver, IEnergyUser
 {
 	private long power = 0;
 	private long buffer = 0;
@@ -214,6 +214,8 @@ public class TileEntityBishamonten extends TileEntityMachineBase implements ICon
 	public void handleButtonPacket(int value, int meta)
 	{
 		worldObj.playSoundEffect(xCoord, yCoord, zCoord, "gui.button.press", 1.0F, 1.0F);
+		if (value == 2)
+			powPercentage = (byte) (meta == -1 ? powPercentage : meta);
 		if (value == 0 && !bufferQueued)
 		{
 			worldObj.playSoundEffect(xCoord, yCoord, zCoord, "hbm:alarm.defconstage", 1.0F, 1.0F);
@@ -308,27 +310,10 @@ public class TileEntityBishamonten extends TileEntityMachineBase implements ICon
 		powPercentage = nbt.getByte("percentage");
 	}
 	
-	@Override
-	public void setPower(long i)
-	{
-		power = i;
-	}
-
-	@Override
-	public long getPower()
-	{
-		return power;
-	}
 	
 	public long getBuffer()
 	{
 		return buffer;
-	}
-
-	@Override
-	public long getMaxPower()
-	{
-		return maxPower;
 	}
 
 	@Override
@@ -405,5 +390,23 @@ public class TileEntityBishamonten extends TileEntityMachineBase implements ICon
 			cloud.posZ = z;
 			worldObj.spawnEntityInWorld(cloud);
 		}
+	}
+
+	@Override
+	public long getPower()
+	{
+		return power;
+	}
+
+	@Override
+	public long getMaxPower()
+	{
+		return maxPower;
+	}
+
+	@Override
+	public void setPower(long power)
+	{
+		this.power = power;
 	}
 }

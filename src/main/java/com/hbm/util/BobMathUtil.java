@@ -1,7 +1,7 @@
 package com.hbm.util;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,7 +45,8 @@ public class BobMathUtil {
 	public static ForgeDirection[] getShuffledDirs() {
 		
 		ForgeDirection[] dirs = new ForgeDirection[6];
-		List<Integer> indices = new ArrayList() {{ add(0); add(1); add(2); add(3); add(4); add(5); }};
+//		List<Integer> indices = new ArrayList() {{ add(0); add(1); add(2); add(3); add(4); add(5); }};
+		List<Integer> indices = Arrays.asList(0, 1, 2, 3, 4, 5);
 		Collections.shuffle(indices);
 		
 		for(int i = 0; i < 6; i++) {

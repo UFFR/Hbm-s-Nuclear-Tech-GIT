@@ -14,12 +14,13 @@ import com.hbm.calc.EasyLocation;
 import com.hbm.entity.effect.EntityNukeCloudSmall;
 import com.hbm.entity.logic.EntityBalefire;
 import com.hbm.handler.FluidTypeHandler.FluidType;
-import com.hbm.interfaces.IConsumer;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidSource;
 import com.hbm.interfaces.Untested;
 import com.hbm.inventory.FluidTank;
-import com.hbm.inventory.RecipesCommon.*;
+import com.hbm.inventory.RecipesCommon.AStack;
+import com.hbm.inventory.RecipesCommon.ComparableStack;
+import com.hbm.inventory.RecipesCommon.OreDictStack;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemCassette.TrackType;
 import com.hbm.lib.Library;
@@ -30,11 +31,12 @@ import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.I18nUtil;
 
 import api.hbm.energy.IBatteryItem;
+import api.hbm.energy.IEnergyUser;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import scala.actors.threadpool.Arrays;
 @Beta
-public class TileEntityReactorWarp extends TileEntityMachineBase implements IConsumer, IFluidAcceptor, IFluidSource
+public class TileEntityReactorWarp extends TileEntityMachineBase implements IEnergyUser, IFluidAcceptor, IFluidSource
 {
 	private FluidTank[] tanks = new FluidTank[3];
 	private List<IFluidAcceptor> cList = new ArrayList<IFluidAcceptor>();
@@ -124,7 +126,7 @@ public class TileEntityReactorWarp extends TileEntityMachineBase implements ICon
 		data.setLong("power", power);
 		data.setIntArray("stats", new int[] {temperature, bar, teradynes});
 		data.setByteArray("intermix", intermix);
-		data.setByte("delay", level);
+		data.setByte("level", level);
 		data.setBoolean("magnetsOn", magnets);
 		data.setBoolean("isActive", active);
 		if (currCore.isPresent())
@@ -304,7 +306,7 @@ public class TileEntityReactorWarp extends TileEntityMachineBase implements ICon
 		temperature = stats[0];
 		bar = stats[1];
 		teradynes = stats[2];
-		level = nbt.getByte("delay");
+		level = nbt.getByte("level");
 		magnets = nbt.getBoolean("magnetsOn");
 		active = nbt.getBoolean("isActive");
 		if (nbt.hasKey("core"))

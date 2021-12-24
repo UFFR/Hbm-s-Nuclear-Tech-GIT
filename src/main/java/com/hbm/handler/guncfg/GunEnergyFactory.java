@@ -4,22 +4,17 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import com.hbm.blocks.ModBlocks;
-import com.hbm.entity.projectile.EntityBulletBase;
 import com.hbm.explosion.ExplosionChaos;
 import com.hbm.explosion.ExplosionLarge;
 import com.hbm.handler.BulletConfigSyncingUtil;
 import com.hbm.handler.BulletConfiguration;
 import com.hbm.handler.GunConfiguration;
 import com.hbm.handler.GunConfigurationEnergy;
-import com.hbm.interfaces.IBulletHitBehavior;
-import com.hbm.interfaces.IBulletHurtBehavior;
-import com.hbm.interfaces.IBulletImpactBehavior;
-import com.hbm.interfaces.IBulletUpdateBehavior;
 import com.hbm.items.ModItems;
 import com.hbm.lib.HbmCollection;
 import com.hbm.lib.HbmCollection.EnumGunManufacturer;
-import com.hbm.main.MainRegistry;
 import com.hbm.lib.ModDamageSource;
+import com.hbm.main.MainRegistry;
 import com.hbm.packet.AuxParticlePacketNT;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.potion.HbmPotion;
@@ -30,7 +25,6 @@ import com.hbm.util.I18nUtil;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
@@ -230,7 +224,7 @@ public class GunEnergyFactory
 		return config;
 	}
 	/** Main fire gun mode **/
-	public static GunConfigurationEnergy getHLRMainConfig()
+	public static GunConfigurationEnergy getHLRPrimaryConfig()
 	{
 		GunConfigurationEnergy config = new GunConfigurationEnergy();
 		int randLore = rand.nextInt(4);
@@ -260,9 +254,9 @@ public class GunEnergyFactory
 		return config;
 	}
 	/** Alt fire gun mode **/
-	public static GunConfigurationEnergy getHLRSecondConfig()
+	public static GunConfigurationEnergy getHLRSecondaryConfig()
 	{
-		GunConfigurationEnergy config = getHLRMainConfig().clone();
+		GunConfigurationEnergy config = getHLRPrimaryConfig().clone();
 		config.ammoRate = 250000000;
 		config.rateOfFire = 3;
 		//config.firingSound = "hbm:weapon.zomgShoot";
@@ -292,6 +286,21 @@ public class GunEnergyFactory
 		config.manufacturer = EnumGunManufacturer.LUNA;
 		config.config = new ArrayList<Integer>();
 		config.config.add(BulletConfigSyncingUtil.HLR_NORMAL);
+		return config;
+	}
+	
+	public static GunConfigurationEnergy getLunaticShottyConfig()
+	{
+		GunConfigurationEnergy config = getLunaticConfig().clone();
+		
+		config.ammoRate *= 5;
+		config.ammoCap *= 1.5;
+		config.durability *= 1.5;
+		config.crosshair = Crosshair.L_CIRCLE;
+		config.name = "lunaShotty";
+		config.config.clear();
+		config.config.add(BulletConfigSyncingUtil.HLR_ALT);
+		
 		return config;
 	}
 	
@@ -381,21 +390,18 @@ public class GunEnergyFactory
 		bullet.dmgProj = false;
 		bullet.dmgFire = true;
 		
-		bullet.bImpact = new IBulletImpactBehavior() {
+		bullet.bImpact = (projectile, x, y, z) -> {
 
-			@Override
-			public void behaveBlockHit(EntityBulletBase bullet, int x, int y, int z) {
 				
-				if(!bullet.worldObj.isRemote) {
+				if(!projectile.worldObj.isRemote) {
 					NBTTagCompound data = new NBTTagCompound();
 					data.setString("type", "vanillaburst");
 					data.setString("mode", "flame");
 					data.setInteger("count", 15);
 					data.setDouble("motion", 0.1D);
 					
-					PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, bullet.posX, bullet.posY, bullet.posZ), new TargetPoint(bullet.dimension, bullet.posX, bullet.posY, bullet.posZ, 50));
+					PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, projectile.posX, projectile.posY, projectile.posZ), new TargetPoint(projectile.dimension, projectile.posX, projectile.posY, projectile.posZ, 50));
 				}
-			}
 		};
 		
 		return bullet;
@@ -480,7 +486,7 @@ public class GunEnergyFactory
 		return bullet;
 	}
 	
-	// TODO Finish, not technically a bullet, it's supposed to be a ray, not that it works in its current state anyway
+	// TODO Finish, not technically a bullet, it's supposed to be a ray
 	public static BulletConfiguration getSingConfig()
 	{
 		BulletConfiguration bullet = BulletConfigFactory.standardBulletConfig().clone();
@@ -551,7 +557,7 @@ public class GunEnergyFactory
 		return bullet;
 	}
 	/** Main fire bullet **/
-	public static BulletConfiguration getHLRDefaultConfig()
+	public static BulletConfiguration getHLRPrecisionConfig()
 	{
 		BulletConfiguration bullet = BulletConfigFactory.standardBulletConfig().clone();
 		
@@ -561,8 +567,8 @@ public class GunEnergyFactory
 		bullet.maxAge = 350;
 		bullet.wear = 10;
 		
-		bullet.dmgMax = 36F;
-		bullet.dmgMin = 30F;
+		bullet.dmgMax = 60F;
+		bullet.dmgMin = 50F;
 		
 		bullet.gravity = 0D;
 		bullet.doesRicochet = false;
@@ -573,16 +579,7 @@ public class GunEnergyFactory
 		bullet.effects.add(new PotionEffect(HbmPotion.hollow.id, 2 * 20));
 		bullet.effects.add(new PotionEffect(HbmPotion.fragile.id, 5 * 20));
 		
-		bullet.bHit = new IBulletHitBehavior()
-		{
-			
-			@Override
-			public void behaveEntityHit(EntityBulletBase bullet, Entity hit)
-			{
-				if (hit instanceof EntityLivingBase)
-					ContaminationUtil.applyDigammaData(hit, 0.0001F);
-			}
-		};
+		bullet.bHit = (projectile, hit) -> {if (hit instanceof EntityLivingBase) ContaminationUtil.applyDigammaData(hit, 0.005F);};
 		
 		bullet.spectralBlocks.addAll(HbmCollection.energyRoundBlock);
 		bullet.spectralMaterials.addAll(HbmCollection.energyRoundMaterial);
@@ -595,7 +592,7 @@ public class GunEnergyFactory
 		return bullet;
 	}
 	/** Alt fire bullet **/
-	public static BulletConfiguration getHLRAltConfig()
+	public static BulletConfiguration getHLRScatterConfig()
 	{
 		BulletConfiguration bullet = BulletConfigFactory.standardBuckshotConfig().clone();
 		
@@ -605,8 +602,8 @@ public class GunEnergyFactory
 		bullet.maxAge = 350;
 		bullet.wear = 25;
 		
-		bullet.dmgMax = 50F;
-		bullet.dmgMin = 40F;
+		bullet.dmgMax = 80F;
+		bullet.dmgMin = 70F;
 		bullet.bulletsMax = 18;
 		bullet.bulletsMin = 12;
 		
@@ -620,16 +617,7 @@ public class GunEnergyFactory
 		bullet.effects.add(new PotionEffect(HbmPotion.fragile.id, 7 * 20, 1));
 		bullet.effects.add(new PotionEffect(HbmPotion.perforated.id, 3 * 20));
 		
-		bullet.bHurt = new IBulletHurtBehavior()
-		{
-			
-			@Override
-			public void behaveEntityHurt(EntityBulletBase bullet, Entity hit)
-			{
-				if (hit instanceof EntityLivingBase)
-					ContaminationUtil.applyDigammaData(hit, 0.0005F);
-			}
-		};
+		bullet.bHurt = (projectile, hit) -> {if (hit instanceof EntityLivingBase) ContaminationUtil.applyDigammaData(hit, 0.01F);};
 		
 		bullet.spectralBlocks.addAll(HbmCollection.energyRoundBlock);
 		bullet.spectralMaterials.addAll(HbmCollection.energyRoundMaterial);
@@ -664,16 +652,13 @@ public class GunEnergyFactory
 		bullet.style = BulletConfiguration.STYLE_NONE;
 		bullet.plink = BulletConfiguration.PLINK_NONE;
 		
-		bullet.bImpact = new IBulletImpactBehavior() {
+		bullet.bImpact = (projectile, x, y, z) -> {
 
-			@Override
-			public void behaveBlockHit(EntityBulletBase bullet, int x, int y, int z) {
-				
-				if(!bullet.worldObj.isRemote) {
+				if(!projectile.worldObj.isRemote) {
 					
-					int ix = (int)Math.floor(bullet.posX);
-					int iy = (int)Math.floor(bullet.posY);
-					int iz = (int)Math.floor(bullet.posZ);
+					int ix = (int)Math.floor(projectile.posX);
+					int iy = (int)Math.floor(projectile.posY);
+					int iz = (int)Math.floor(projectile.posZ);
 					
 					boolean fizz = false;
 					
@@ -681,8 +666,8 @@ public class GunEnergyFactory
 						for(int j = -1; j <= 1; j++) {
 							for(int k = -1; k <= 1; k++) {
 								
-								if(bullet.worldObj.getBlock(ix + i, iy + j, iz + k) == Blocks.fire) {
-									bullet.worldObj.setBlock(ix + i, iy + j, iz + k, Blocks.air);
+								if(projectile.worldObj.getBlock(ix + i, iy + j, iz + k) == Blocks.fire) {
+									projectile.worldObj.setBlock(ix + i, iy + j, iz + k, Blocks.air);
 									fizz = true;
 								}
 							}
@@ -690,41 +675,36 @@ public class GunEnergyFactory
 					}
 					
 					if(fizz)
-						bullet.worldObj.playSoundEffect(bullet.posX, bullet.posY, bullet.posZ, "random.fizz", 1.0F, 1.5F + bullet.worldObj.rand.nextFloat() * 0.5F);
+						projectile.worldObj.playSoundEffect(projectile.posX, projectile.posY, projectile.posZ, "random.fizz", 1.0F, 1.5F + projectile.worldObj.rand.nextFloat() * 0.5F);
 				}
-			}
 		};
 		
-		bullet.bUpdate = new IBulletUpdateBehavior() {
+		bullet.bUpdate = (projectile) -> {
 
-			@Override
-			public void behaveUpdate(EntityBulletBase bullet) {
-				
-				if(bullet.worldObj.isRemote) {
+				if(projectile.worldObj.isRemote) {
 					
 					NBTTagCompound data = new NBTTagCompound();
 					data.setString("type", "vanillaExt");
 					data.setString("mode", "blockdust");
 					data.setInteger("block", Block.getIdFromBlock(Blocks.water));
-					data.setDouble("posX", bullet.posX);
-					data.setDouble("posY", bullet.posY);
-					data.setDouble("posZ", bullet.posZ);
-					data.setDouble("mX", bullet.motionX + bullet.worldObj.rand.nextGaussian() * 0.05);
-					data.setDouble("mY", bullet.motionY - 0.2 + bullet.worldObj.rand.nextGaussian() * 0.05);
-					data.setDouble("mZ", bullet.motionZ + bullet.worldObj.rand.nextGaussian() * 0.05);
+					data.setDouble("posX", projectile.posX);
+					data.setDouble("posY", projectile.posY);
+					data.setDouble("posZ", projectile.posZ);
+					data.setDouble("mX", projectile.motionX + projectile.worldObj.rand.nextGaussian() * 0.05);
+					data.setDouble("mY", projectile.motionY - 0.2 + projectile.worldObj.rand.nextGaussian() * 0.05);
+					data.setDouble("mZ", projectile.motionZ + projectile.worldObj.rand.nextGaussian() * 0.05);
 					MainRegistry.proxy.effectNT(data);
 				} else {
 
-					int x = (int)Math.floor(bullet.posX);
-					int y = (int)Math.floor(bullet.posY);
-					int z = (int)Math.floor(bullet.posZ);
+					int x = (int)Math.floor(projectile.posX);
+					int y = (int)Math.floor(projectile.posY);
+					int z = (int)Math.floor(projectile.posZ);
 					
-					if(bullet.worldObj.getBlock(x, y, z) == ModBlocks.volcanic_lava_block && bullet.worldObj.getBlockMetadata(x, y, z) == 0) {
-						bullet.worldObj.setBlock(x, y, z, Blocks.obsidian);
-						bullet.setDead();
+					if(projectile.worldObj.getBlock(x, y, z) == ModBlocks.volcanic_lava_block && projectile.worldObj.getBlockMetadata(x, y, z) == 0) {
+						projectile.worldObj.setBlock(x, y, z, Blocks.obsidian);
+						projectile.setDead();
 					}
 				}
-			}
 		};
 		
 		return bullet;
@@ -737,16 +717,13 @@ public class GunEnergyFactory
 		bullet.ammo = ModItems.ammo_fireext_foam;
 		bullet.spread = 0.05F;
 		
-		bullet.bImpact = new IBulletImpactBehavior() {
+		bullet.bImpact = (projectile, x, y, z) -> {
 
-			@Override
-			public void behaveBlockHit(EntityBulletBase bullet, int x, int y, int z) {
-				
-				if(!bullet.worldObj.isRemote) {
+				if(!projectile.worldObj.isRemote) {
 					
-					int ix = (int)Math.floor(bullet.posX);
-					int iy = (int)Math.floor(bullet.posY);
-					int iz = (int)Math.floor(bullet.posZ);
+					int ix = (int)Math.floor(projectile.posX);
+					int iy = (int)Math.floor(projectile.posY);
+					int iz = (int)Math.floor(projectile.posZ);
 					
 					boolean fizz = false;
 					
@@ -754,58 +731,54 @@ public class GunEnergyFactory
 						for(int j = -1; j <= 1; j++) {
 							for(int k = -1; k <= 1; k++) {
 								
-								Block b = bullet.worldObj.getBlock(ix + i, iy + j, iz + k);
+								Block b = projectile.worldObj.getBlock(ix + i, iy + j, iz + k);
 								
 								if(b.getMaterial() == Material.fire) {
-									bullet.worldObj.setBlock(ix + i, iy + j, iz + k, Blocks.air);
+									projectile.worldObj.setBlock(ix + i, iy + j, iz + k, Blocks.air);
 									fizz = true;
 								}
 							}
 						}
 					}
 					
-					Block b = bullet.worldObj.getBlock(ix, iy, iz);
+					Block b = projectile.worldObj.getBlock(ix, iy, iz);
 					
-					if(b.isReplaceable(bullet.worldObj, ix, iy, iz) && ModBlocks.foam_layer.canPlaceBlockAt(bullet.worldObj, ix, iy, iz)) {
+					if(b.isReplaceable(projectile.worldObj, ix, iy, iz) && ModBlocks.foam_layer.canPlaceBlockAt(projectile.worldObj, ix, iy, iz)) {
 						
 						if(b != ModBlocks.foam_layer) {
-							bullet.worldObj.setBlock(ix, iy, iz, ModBlocks.foam_layer);
+							projectile.worldObj.setBlock(ix, iy, iz, ModBlocks.foam_layer);
 						} else {
-							int meta = bullet.worldObj.getBlockMetadata(ix, iy, iz);
+							int meta = projectile.worldObj.getBlockMetadata(ix, iy, iz);
 							
 							if(meta < 6)
-								bullet.worldObj.setBlockMetadataWithNotify(ix, iy, iz, meta + 1, 3);
+								projectile.worldObj.setBlockMetadataWithNotify(ix, iy, iz, meta + 1, 3);
 							else
-								bullet.worldObj.setBlock(ix, iy, iz, ModBlocks.block_foam);
+								projectile.worldObj.setBlock(ix, iy, iz, ModBlocks.block_foam);
 						}
 					}
 					
 					if(fizz)
-						bullet.worldObj.playSoundEffect(bullet.posX, bullet.posY, bullet.posZ, "random.fizz", 1.0F, 1.5F + bullet.worldObj.rand.nextFloat() * 0.5F);
+						projectile.worldObj.playSoundEffect(projectile.posX, projectile.posY, projectile.posZ, "random.fizz", 1.0F, 1.5F + projectile.worldObj.rand.nextFloat() * 0.5F);
 				}
-			}
 		};
 		
-		bullet.bUpdate = new IBulletUpdateBehavior() {
+		bullet.bUpdate = (projectile) -> {
 
-			@Override
-			public void behaveUpdate(EntityBulletBase bullet) {
 				
-				if(bullet.worldObj.isRemote) {
+				if(projectile.worldObj.isRemote) {
 					
 					NBTTagCompound data = new NBTTagCompound();
 					data.setString("type", "vanillaExt");
 					data.setString("mode", "blockdust");
 					data.setInteger("block", Block.getIdFromBlock(ModBlocks.block_foam));
-					data.setDouble("posX", bullet.posX);
-					data.setDouble("posY", bullet.posY);
-					data.setDouble("posZ", bullet.posZ);
-					data.setDouble("mX", bullet.motionX + bullet.worldObj.rand.nextGaussian() * 0.05);
-					data.setDouble("mY", bullet.motionY - 0.2 + bullet.worldObj.rand.nextGaussian() * 0.05);
-					data.setDouble("mZ", bullet.motionZ + bullet.worldObj.rand.nextGaussian() * 0.05);
+					data.setDouble("posX", projectile.posX);
+					data.setDouble("posY", projectile.posY);
+					data.setDouble("posZ", projectile.posZ);
+					data.setDouble("mX", projectile.motionX + projectile.worldObj.rand.nextGaussian() * 0.05);
+					data.setDouble("mY", projectile.motionY - 0.2 + projectile.worldObj.rand.nextGaussian() * 0.05);
+					data.setDouble("mZ", projectile.motionZ + projectile.worldObj.rand.nextGaussian() * 0.05);
 					MainRegistry.proxy.effectNT(data);
 				}
-			}
 		};
 		
 		return bullet;
@@ -818,59 +791,53 @@ public class GunEnergyFactory
 		bullet.ammo = ModItems.ammo_fireext_sand;
 		bullet.spread = 0.1F;
 		
-		bullet.bImpact = new IBulletImpactBehavior() {
+		bullet.bImpact = (projectile, x, y, z) -> {
 
-			@Override
-			public void behaveBlockHit(EntityBulletBase bullet, int x, int y, int z) {
 				
-				if(!bullet.worldObj.isRemote) {
+				if(!projectile.worldObj.isRemote) {
 					
-					int ix = (int)Math.floor(bullet.posX);
-					int iy = (int)Math.floor(bullet.posY);
-					int iz = (int)Math.floor(bullet.posZ);
+					int ix = (int)Math.floor(projectile.posX);
+					int iy = (int)Math.floor(projectile.posY);
+					int iz = (int)Math.floor(projectile.posZ);
 					
-					Block b = bullet.worldObj.getBlock(ix, iy, iz);
+					Block b = projectile.worldObj.getBlock(ix, iy, iz);
 					
-					if((b.isReplaceable(bullet.worldObj, ix, iy, iz) || b == ModBlocks.sand_boron_layer) && ModBlocks.sand_boron_layer.canPlaceBlockAt(bullet.worldObj, ix, iy, iz)) {
+					if((b.isReplaceable(projectile.worldObj, ix, iy, iz) || b == ModBlocks.sand_boron_layer) && ModBlocks.sand_boron_layer.canPlaceBlockAt(projectile.worldObj, ix, iy, iz)) {
 						
 						if(b != ModBlocks.sand_boron_layer) {
-							bullet.worldObj.setBlock(ix, iy, iz, ModBlocks.sand_boron_layer);
+							projectile.worldObj.setBlock(ix, iy, iz, ModBlocks.sand_boron_layer);
 						} else {
-							int meta = bullet.worldObj.getBlockMetadata(ix, iy, iz);
+							int meta = projectile.worldObj.getBlockMetadata(ix, iy, iz);
 							
 							if(meta < 6)
-								bullet.worldObj.setBlockMetadataWithNotify(ix, iy, iz, meta + 1, 3);
+								projectile.worldObj.setBlockMetadataWithNotify(ix, iy, iz, meta + 1, 3);
 							else
-								bullet.worldObj.setBlock(ix, iy, iz, ModBlocks.sand_boron);
+								projectile.worldObj.setBlock(ix, iy, iz, ModBlocks.sand_boron);
 						}
 						
 						if(b.getMaterial() == Material.fire)
-							bullet.worldObj.playSoundEffect(bullet.posX, bullet.posY, bullet.posZ, "random.fizz", 1.0F, 1.5F + bullet.worldObj.rand.nextFloat() * 0.5F);
+							projectile.worldObj.playSoundEffect(projectile.posX, projectile.posY, projectile.posZ, "random.fizz", 1.0F, 1.5F + projectile.worldObj.rand.nextFloat() * 0.5F);
 					}
 				}
-			}
 		};
 		
-		bullet.bUpdate = new IBulletUpdateBehavior() {
+		bullet.bUpdate = (projectile) -> {
 
-			@Override
-			public void behaveUpdate(EntityBulletBase bullet) {
 				
-				if(bullet.worldObj.isRemote) {
+				if(projectile.worldObj.isRemote) {
 					
 					NBTTagCompound data = new NBTTagCompound();
 					data.setString("type", "vanillaExt");
 					data.setString("mode", "blockdust");
 					data.setInteger("block", Block.getIdFromBlock(ModBlocks.sand_boron));
-					data.setDouble("posX", bullet.posX);
-					data.setDouble("posY", bullet.posY);
-					data.setDouble("posZ", bullet.posZ);
-					data.setDouble("mX", bullet.motionX + bullet.worldObj.rand.nextGaussian() * 0.1);
-					data.setDouble("mY", bullet.motionY - 0.2 + bullet.worldObj.rand.nextGaussian() * 0.1);
-					data.setDouble("mZ", bullet.motionZ + bullet.worldObj.rand.nextGaussian() * 0.1);
+					data.setDouble("posX", projectile.posX);
+					data.setDouble("posY", projectile.posY);
+					data.setDouble("posZ", projectile.posZ);
+					data.setDouble("mX", projectile.motionX + projectile.worldObj.rand.nextGaussian() * 0.1);
+					data.setDouble("mY", projectile.motionY - 0.2 + projectile.worldObj.rand.nextGaussian() * 0.1);
+					data.setDouble("mZ", projectile.motionZ + projectile.worldObj.rand.nextGaussian() * 0.1);
 					MainRegistry.proxy.effectNT(data);
 				}
-			}
 		};
 		
 		return bullet;
@@ -903,17 +870,14 @@ public class GunEnergyFactory
 		bullet.effects = new ArrayList<PotionEffect>();
 		bullet.effects.add(new PotionEffect(HbmPotion.bang.id, 10 * 20, 0));
 		
-		bullet.bImpact = new IBulletImpactBehavior() {
+		bullet.bImpact = (projectile, x, y, z) -> {
 
-			@Override
-			public void behaveBlockHit(EntityBulletBase bullet, int x, int y, int z) {
 				
-				if(!bullet.worldObj.isRemote) {
-					ExplosionChaos.explodeZOMG(bullet.worldObj, (int)Math.floor(bullet.posX), (int)Math.floor(bullet.posY), (int)Math.floor(bullet.posZ), 5);
-					bullet.worldObj.playSoundEffect(bullet.posX, bullet.posY, bullet.posZ, "hbm:entity.bombDet", 5.0F, 1.0F);
-    				ExplosionLarge.spawnParticles(bullet.worldObj, bullet.posX, bullet.posY, bullet.posZ, 5);
+				if(!projectile.worldObj.isRemote) {
+					ExplosionChaos.explodeZOMG(projectile.worldObj, (int)Math.floor(projectile.posX), (int)Math.floor(projectile.posY), (int)Math.floor(projectile.posZ), 5);
+					projectile.worldObj.playSoundEffect(projectile.posX, projectile.posY, projectile.posZ, "hbm:entity.bombDet", 5.0F, 1.0F);
+    				ExplosionLarge.spawnParticles(projectile.worldObj, projectile.posX, projectile.posY, projectile.posZ, 5);
 				}
-			}
 		};
 		
 		bullet.damageType = ModDamageSource.s_zomg_prefix;

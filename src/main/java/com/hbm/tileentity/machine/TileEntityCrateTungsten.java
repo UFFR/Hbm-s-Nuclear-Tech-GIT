@@ -2,7 +2,10 @@ package com.hbm.tileentity.machine;
 
 import java.util.HashMap;
 
+import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.items.ModItems;
+import com.hbm.items.special.Orichalcum;
+import com.hbm.util.Tuple.Pair;
 
 import api.hbm.block.ILaserable;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,8 +16,17 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class TileEntityCrateTungsten extends TileEntityLockableBase implements ISidedInventory, ILaserable {
+	
+	private static final HashMap<ComparableStack, Pair<ItemStack, Integer>> recipes = new HashMap<>();
+	static
+	{
+		recipes.put(new ComparableStack(ModItems.billet_polonium), new Pair<ItemStack, Integer>(new ItemStack(ModItems.billet_yharonite), 10000000));
+		recipes.put(new ComparableStack(ModItems.crucible, 1, OreDictionary.WILDCARD_VALUE), new Pair<ItemStack, Integer>(new ItemStack(ModItems.crucible), 10000000));
+		recipes.put(new ComparableStack(ModItems.orichalcum, 1, Orichalcum.POWDER), new Pair<ItemStack, Integer>(new ItemStack(ModItems.orichalcum, 1, Orichalcum.INGOT_SMALL), 10000000));
+	}
 	
 	private ItemStack slots[];
 
@@ -221,18 +233,18 @@ public class TileEntityCrateTungsten extends TileEntityLockableBase implements I
 				continue;
 			
 			ItemStack result = FurnaceRecipes.smelting().getSmeltingResult(slots[i]);
+			ComparableStack input = new ComparableStack(slots[i]).makeSingular();
+			if (recipes.containsKey(input) && recipes.get(input).getValue() < energy)
+				result = recipes.get(input).getKey();
+//			if(slots[i].getItem() == ModItems.billet_polonium && energy > 10000000)
+//				result = new ItemStack(ModItems.billet_yharonite);
+//			
+//			if(slots[i].getItem() == ModItems.crucible && slots[i].getItemDamage() > 0 && energy > 10000000)
+//				result = new ItemStack(ModItems.crucible, 1, 0);
+//			
+//			if(slots[i].getItem() == ModItems.orichalcum && slots[i].getItemDamage() == Orichalcum.INGOT_SMALL && energy > 10000000)
+//				result = new ItemStack(ModItems.orichalcum, 1, Orichalcum.INGOT_SMALL_IRR);
 			
-			if(slots[i].getItem() == ModItems.billet_polonium && energy > 10000000)
-				result = new ItemStack(ModItems.billet_yharonite);
-			
-			if(slots[i].getItem() == ModItems.crucible && slots[i].getItemDamage() > 0 && energy > 10000000)
-				result = new ItemStack(ModItems.crucible, 1, 0);
-			
-			if(slots[i].getItem() == ModItems.orichalcum && slots[i].getItemDamage() == 3 && energy > 10000000)
-				result = new ItemStack(ModItems.orichalcum, 1, 2);
-//			System.out.println(String.format("Has energy: %s; Slot is: %s; Resulted recipe is: %s", energy, slots[i].getDisplayName(), MachineRecipes.getDFCTransmutation(slots[i])));
-//			if (MachineRecipes.getDFCTransmutation(slots[i]) != null && energy > 10000000)
-//				result = MachineRecipes.getDFCTransmutation(slots[i]);
 			
 			int size = slots[i].stackSize;
 			

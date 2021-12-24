@@ -23,6 +23,7 @@ public class RenderTesseract extends Render
 		
 		ResourceManager.tesseract.renderAll();
 		EntityTesseract tesseract = (EntityTesseract) entity;
+		GL11.glTranslated(x, y, z);
 		
 		GL11.glShadeModel(GL11.GL_FLAT);
 		GL11.glPopMatrix();

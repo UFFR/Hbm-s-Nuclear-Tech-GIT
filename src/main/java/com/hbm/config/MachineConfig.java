@@ -17,9 +17,6 @@ public class MachineConfig {
 	public static boolean scaleRTGPower = false;
 	public static boolean doRTGsDecay = false;
 	
-	public static boolean scaleRTGPower = false;
-	public static boolean doRTGsDecay = false;
-	
 	public static void loadFromConfig(Configuration config) {
 
 		final String CATEGORY_MACHINE = "09_machines";

@@ -58,10 +58,20 @@ public class AuxButtonPacket implements IMessage {
 	{
 		this(te.xCoord, te.yCoord, te.zCoord, value, id);
 	}
+	
+	public AuxButtonPacket(TileEntity te)
+	{
+		this(te, 0, 0);
+	}
 
 	public AuxButtonPacket(EasyLocation loc, int value, int id)
 	{
 		this((int) loc.posX, (int) loc.posY, (int) loc.posZ, value, id);
+	}
+	
+	public AuxButtonPacket(EasyLocation loc)
+	{
+		this(loc, 0, 0);
 	}
 	
 	@Override

@@ -51,7 +51,7 @@ public class GUIAtomicClock extends GuiInfoContainer
 	{
 		super.mouseClicked(mouseX, mouseY, i);
 		if (getButtonBool(mouseX, mouseY, 44, 43, 18, 18))
-			PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(clock, 0, 0));
+			PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(clock));
 	}
 	
 	@Override

@@ -3,12 +3,13 @@ package com.hbm.tileentity.machine;
 import java.math.BigInteger;
 
 import com.google.common.annotations.Beta;
-import com.hbm.interfaces.IConsumer;
 import com.hbm.tileentity.TileEntityMachineBase;
 
+import api.hbm.energy.IEnergyGenerator;
+import api.hbm.energy.IEnergyUser;
 import net.minecraft.nbt.NBTTagCompound;
 @Beta
-public class TileEntityChungusBattery extends TileEntityMachineBase implements IConsumer
+public class TileEntityChungusBattery extends TileEntityMachineBase implements IEnergyUser, IEnergyGenerator
 {
 	private BigInteger power = BigInteger.valueOf(0);
 	public static final BigInteger maxPower = new BigInteger(String.valueOf(Double.POSITIVE_INFINITY));

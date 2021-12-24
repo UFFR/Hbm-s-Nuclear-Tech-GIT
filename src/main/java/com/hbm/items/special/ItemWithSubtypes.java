@@ -20,7 +20,7 @@ import net.minecraft.util.MathHelper;
 public class ItemWithSubtypes extends ItemCustomLore
 {
 	@SideOnly(Side.CLIENT)
-	protected IIcon[] itemIcon;
+	protected IIcon[] itemIcons;
 	protected int iconSetSize;
 	protected String[] customNames;
 	public boolean hasCustomNames = false;
@@ -68,9 +68,9 @@ public class ItemWithSubtypes extends ItemCustomLore
 	@Override
 	public void registerIcons(IIconRegister registry)
 	{
-		itemIcon = new IIcon[iconSetSize];
-		for (int i = 0; i < itemIcon.length; i++)
-			itemIcon[i] = registry.registerIcon(hasCustomNames ? String.format("%s:%s", RefStrings.MODID, customNames[i]) : String.format("%s:%s_%s", RefStrings.MODID, this.getUnlocalizedName().substring(5), i));
+		itemIcons = new IIcon[iconSetSize];
+		for (int i = 0; i < itemIcons.length; i++)
+			itemIcons[i] = registry.registerIcon(hasCustomNames ? String.format("%s:%s", RefStrings.MODID, customNames[i]) : String.format("%s:%s_%s", RefStrings.MODID, this.getUnlocalizedName().substring(5), i));
 	}
 	
 	@Override
@@ -84,6 +84,6 @@ public class ItemWithSubtypes extends ItemCustomLore
 	public IIcon getIconFromDamage(int icon)
 	{
 		int i = MathHelper.clamp_int(icon, 0, iconSetSize);
-		return itemIcon[i];
+		return itemIcons[i];
 	}
 }

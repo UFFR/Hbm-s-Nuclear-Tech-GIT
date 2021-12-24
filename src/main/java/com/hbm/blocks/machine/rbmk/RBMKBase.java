@@ -2,6 +2,7 @@ package com.hbm.blocks.machine.rbmk;
 
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ILookOverlay;
+import com.hbm.handler.EnumGUI;
 import com.hbm.handler.MultiblockHandlerXR;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemRBMKLid;
@@ -56,7 +57,7 @@ public abstract class RBMKBase extends BlockDummyable implements IToolable, ILoo
 		return 0;
 	}
 	
-	public boolean openInv(World world, int x, int y, int z, EntityPlayer player, int gui) {
+	public boolean openInv(World world, int x, int y, int z, EntityPlayer player, EnumGUI gui) {
 		
 		if(world.isRemote) {
 			return true;
@@ -81,7 +82,7 @@ public abstract class RBMKBase extends BlockDummyable implements IToolable, ILoo
 		}
 		
 		if(!player.isSneaking()) {
-			FMLNetworkHandler.openGui(player, MainRegistry.instance, gui, world, pos[0], pos[1], pos[2]);
+			FMLNetworkHandler.openGui(player, MainRegistry.instance, gui.ordinal(), world, pos[0], pos[1], pos[2]);
 			return true;
 		} else {
 			return true;

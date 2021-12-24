@@ -51,6 +51,7 @@ public class TileEntityStorageDrum extends TileEntityMachineBase implements IFlu
 		tanks[1] = new FluidTank(FluidType.WASTEGAS, 16000, 1);
 		if (recipes.isEmpty())
 		{
+			recipes.putIfAbsent(new ComparableStack(ModItems.rod_zirnox_tha), new DrumDecayRecipe(new ItemStack(ModItems.rod_zirnox_thorium_fuel), VersatileConfig.getShortDecayChance() / 2));
 			recipes.putIfAbsent(new ComparableStack(ModItems.rod_tha), new DrumDecayRecipe(new ItemStack(ModItems.rod_thorium_fuel), VersatileConfig.getShortDecayChance() / 2));
 			recipes.putIfAbsent(new ComparableStack(ModItems.rod_dual_tha), new DrumDecayRecipe(new ItemStack(ModItems.rod_dual_thorium_fuel), VersatileConfig.getShortDecayChance() / 2));
 			recipes.putIfAbsent(new ComparableStack(ModItems.rod_quad_tha), new DrumDecayRecipe(new ItemStack(ModItems.rod_quad_thorium_fuel), VersatileConfig.getShortDecayChance() / 2));

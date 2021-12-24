@@ -5,21 +5,25 @@ import java.util.List;
 
 import com.google.common.annotations.Beta;
 import com.hbm.handler.FluidTypeHandler.FluidType;
-import com.hbm.interfaces.IConsumer;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.inventory.FluidTank;
+import com.hbm.inventory.UpgradeManager;
 import com.hbm.items.machine.ItemMachineUpgrade;
+import com.hbm.items.machine.ItemMachineUpgrade.UpgradeType;
 import com.hbm.lib.Library;
 import com.hbm.saveddata.TimeSavedData;
 import com.hbm.tileentity.TileEntityMachineBase;
 
+import api.hbm.energy.IEnergyUser;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
 @Beta
-public class TileEntityAtomicClock extends TileEntityMachineBase implements IConsumer, IFluidAcceptor
+public class TileEntityAtomicClock extends TileEntityMachineBase implements IEnergyUser, IFluidAcceptor
 {
 	private FluidTank tank = new FluidTank(FluidType.CRYOGEL, 64000, 0);
+	private static TimeSavedData timeData;
 	private long power = 0;
 	public static final long powerRate = 100000;
 	public static final long maxPower = 50000000;
@@ -35,18 +39,25 @@ public class TileEntityAtomicClock extends TileEntityMachineBase implements ICon
 	}
 
 	@Override
+	public void setWorldObj(World worldIn)
+	{
+		super.setWorldObj(worldIn);
+		
+	}
+	
+	@Override
 	public void updateEntity()
 	{
 		// TODO Auto-generated method stub
+		timeData = TimeSavedData.getData(worldObj);
 		if (!worldObj.isRemote)
 		{
 			tank.updateTank(this);
 			power = Library.chargeTEFromItems(slots, 0, power, maxPower);
 			updateUpgrades();
-			TimeSavedData data = TimeSavedData.getData(getWorldObj());
-			time = data.getTime();
-			day = data.getDay();
-			year = data.getYear();
+			time = timeData.getTime();
+			day = timeData.getDay();
+			year = timeData.getYear();
 			
 			if (isOn && canOperate())
 			{
@@ -98,21 +109,13 @@ public class TileEntityAtomicClock extends TileEntityMachineBase implements ICon
 			case "upgrade_clock_4":
 				upgrades[0] += 20;
 				break;
-			case "upgrade_power_1":
-				upgrades[1] += 10000;
-				break;
-			case "upgrade_power_2":
-				upgrades[1] += 25000;
-				break;
-			case "upgrade_power_3":
-				upgrades[1] += 50000;
-				break;
 			default:
+				UpgradeManager.eval(slots, 1, 4);
 				break;
 			}
 		}
 		upgrades[0] = MathHelper.clamp_int(upgrades[0], 0, 20);
-		upgrades[1] = MathHelper.clamp_int(upgrades[1], 0, 50000);
+		upgrades[1] = Math.min(UpgradeManager.getLevel(UpgradeType.POWER), 3) * 50;
 	}
 	
 	public long getConsumption()

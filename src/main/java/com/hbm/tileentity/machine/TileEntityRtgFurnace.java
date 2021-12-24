@@ -1,9 +1,9 @@
 package com.hbm.tileentity.machine;
 
 import com.hbm.blocks.machine.MachineRtgFurnace;
-import com.hbm.interfaces.IRTGUser;
-import com.hbm.interfaces.IRadioisotopeFuel;
 import com.hbm.items.machine.ItemRTGPellet;
+import com.hbm.tileentity.IRTGUser;
+import com.hbm.tileentity.IRadioisotopeFuel;
 import com.hbm.tileentity.TileEntityMachineBase;
 
 import net.minecraft.init.Items;

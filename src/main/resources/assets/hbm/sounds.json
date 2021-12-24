@@ -249,10 +249,6 @@
     "alarm.chime": {"category": "record", "sounds": [{"name": "alarm/chime", "stream": false}]},
     "alarm.defconstage": {"category": "record", "sounds": [{"name": "alarm/defconstage", "stream": false}]},
 
-    "block.rbmk_explosion": {"category": "block", "sounds": [{"name": "block/rbmk_explosion", "stream": false}]},
-    "block.rbmk_az5_cover": {"category": "block", "sounds": [{"name": "block/rbmk_az5_cover", "stream": false}]},
-    "block.chungusLever": {"category": "block", "sounds": [{"name": "block/chungusLever", "stream": false}]},
-    "weapon.extinguisher": {"category": "player", "sounds": [{"name": "weapon/extinguisher", "stream": false}]},
     "entity.ufoBeam": {"category": "hostile", "sounds": [{"name": "entity/ufoBeamShort", "stream": false}]},
     "entity.ufoBlast": {"category": "hostile", "sounds": [{"name": "entity/ufoBlast", "stream": false}]},
     "entity.siegeIdle": {"category": "hostile", "sounds": ["entity/siegeIdle1"]},

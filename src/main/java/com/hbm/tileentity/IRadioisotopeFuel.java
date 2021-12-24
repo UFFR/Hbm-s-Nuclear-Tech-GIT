@@ -6,7 +6,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import com.hbm.config.MachineConfig;
-import com.hbm.interfaces.ICustomWarhead.SaltedFuel.HalfLifeType;
+import com.hbm.interfaces.ICustomWarhead.SaltedFuel.TimeDurationType;
 import com.hbm.lib.Library;
 import com.hbm.util.BobMathUtil;
 import com.hbm.util.I18nUtil;
@@ -102,26 +102,12 @@ public interface IRadioisotopeFuel
 	/**
 	 * Gets the lifespan of an RTG based on half-life
 	 * @param halfLife The half-life
-	 * @param type Half-life units: {@link#HalfLifeType}
-	 * @param realYears Whether or not to use 365 days per year instead of 100 to calculate time
+	 * @param type Half-life units: {@link#TimeDurationType}
 	 * @return The half-life calculated into Minecraft ticks
 	 */
-	public static long getLifespan(float halfLife, HalfLifeType type, boolean realYears)
+	public static long getLifespan(float halfLife, TimeDurationType type)
 	{
-		float life = 0;
-		switch (type)
-		{
-		case LONG:
-			life = (48000 * (realYears ? 365 : 100) * 100) * halfLife;
-			break;
-		case MEDIUM:
-			life = (48000 * (realYears ? 365 : 100)) * halfLife;
-			break;
-		case SHORT:
-			life = 48000 * halfLife;
-			break;
-		}
-		return (long) life;
+		return (long) (Library.getLifespan(halfLife, type, true) * 1.5);
 	}
 	/**
 	 * Add extended tooltip information
@@ -135,7 +121,7 @@ public interface IRadioisotopeFuel
 		tooltip.add(I18nUtil.resolveKey("desc.item.rtgHeat", instance.getDoesDecay() && MachineConfig.scaleRTGPower ? getScaledPower(instance, stack) : instance.getHeat()));
 		if (instance.getDoesDecay())
 		{
-			tooltip.add(I18nUtil.resolveKey("desc.item.rtgDecay", I18nUtil.resolveKey(instance.getDecayItem().getUnlocalizedName() + ".name"), instance.getDecayItem().stackSize));
+			tooltip.add(I18nUtil.resolveKey("desc.item.rtgDecay", I18nUtil.resolveKey(instance.getDecayItem().getUnlocalizedName() + ".name")));
 			tooltip.add(BobMathUtil.toPercentage(instance.getLifespan(stack), instance.getMaxLifespan()));
 			if (showAdv)
 			{

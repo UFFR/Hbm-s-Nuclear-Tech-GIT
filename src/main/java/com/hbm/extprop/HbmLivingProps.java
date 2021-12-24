@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import org.apache.logging.log4j.Level;
-
 import com.hbm.hazard.HazardRegistry;
 import com.hbm.hazard.type.HazardTypeBase;
 import com.hbm.lib.ModDamageSource;
@@ -160,7 +158,6 @@ public class HbmLivingProps implements IExtendedEntityProperties
 		try {
 			attributeinstance.removeModifier(attributeinstance.getModifier(digamma_UUID));
 		} catch(Exception ex) {
-			MainRegistry.logger.catching(Level.WARN, ex);
 		}
 		
 		attributeinstance.applyModifier(new AttributeModifier(digamma_UUID, "digamma", healthMod, 2));

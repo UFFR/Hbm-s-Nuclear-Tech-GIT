@@ -4,19 +4,14 @@ import java.util.Random;
 
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.machine.BlockBasicMachine;
+import com.hbm.handler.EnumGUI;
 import com.hbm.interfaces.IBomb;
 import com.hbm.items.ModItems;
 import com.hbm.lib.Library;
-import com.hbm.main.MainRegistry;
 import com.hbm.packet.AuxButtonPacket;
 import com.hbm.packet.NBTControlPacket;
 import com.hbm.packet.PacketDispatcher;
-import com.hbm.tileentity.machine.TileEntityMachineSingGen;
-import com.hbm.tileentity.turret.TileEntityBishamonten;
-import com.hbm.tileentity.turret.TileEntityTsukuyomi;
 
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -25,11 +20,12 @@ import net.minecraft.world.World;
 
 public class TestMachine extends BlockBasicMachine implements IBomb
 {
-	public TestMachine(Material mat, Class<? extends TileEntity> teClass, int guiID)
-	{
-		super(mat, teClass, guiID);
-	}
 	
+	public TestMachine(Material mat, Class<? extends TileEntity> teClassIn, EnumGUI gui)
+	{
+		super(mat, teClassIn, gui);
+	}
+
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z,
 			EntityPlayer player, int side, float hitX, float hitY, float hitZ)

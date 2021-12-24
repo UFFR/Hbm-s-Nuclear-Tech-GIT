@@ -3,7 +3,7 @@ package com.hbm.items.block;
 import java.util.List;
 
 import com.hbm.blocks.ModBlocks;
-import com.hbm.blocks.machine.BlockCircuit;
+import com.hbm.blocks.machine.computer.BlockCircuit;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;

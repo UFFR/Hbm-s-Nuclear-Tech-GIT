@@ -4,6 +4,8 @@ import com.hbm.blocks.ModBlocks;
 import com.hbm.items.ModItems;
 import com.hbm.items.special.ItemWasteLong;
 import com.hbm.items.special.ItemWasteShort;
+import com.hbm.main.CraftingManager;
+
 import static com.hbm.inventory.OreDictManager.*;
 
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -89,23 +91,26 @@ public class MineralRecipes {
 
 		addMineralSet(ModItems.nugget_pu_mix, ModItems.ingot_pu_mix, ModBlocks.block_pu_mix);
 		add1To9Pair(ModItems.ingot_neptunium_fuel, ModItems.nugget_neptunium_fuel);
+		
+		add1To9Pair(ModItems.ingot_pa233, ModItems.nugget_pa233);
 
+		addBillet(ModItems.billet_pa233, 				ModItems.ingot_pa233, 				ModItems.nugget_pa233, PA233.nuggets());
 		addBillet(ModItems.billet_tha, 					ModItems.ingot_tha, 				ModItems.nugget_tha);
-		addBillet(ModItems.billet_uranium,				ModItems.ingot_uranium,				ModItems.nugget_uranium, "nuggetUranium");
-		addBillet(ModItems.billet_u233,					ModItems.ingot_u233,				ModItems.nugget_u233, "nuggetUranium233", "tinyU233");
-		addBillet(ModItems.billet_u235,					ModItems.ingot_u235,				ModItems.nugget_u235, "nuggetUranium235", "tinyU235");
-		addBillet(ModItems.billet_u238,					ModItems.ingot_u238,				ModItems.nugget_u238, "nuggetUranium238", "tinyU238");
-		addBillet(ModItems.billet_th232,				ModItems.ingot_th232,				ModItems.nugget_th232, "nuggetThorium232", "tinyTh232");
-		addBillet(ModItems.billet_plutonium,			ModItems.ingot_plutonium,			ModItems.nugget_plutonium, "nuggetPlutonium");
-		addBillet(ModItems.billet_pu238,				ModItems.ingot_pu238,				ModItems.nugget_pu238, "nuggetPlutonium238", "tinyPu238");
-		addBillet(ModItems.billet_pu239,				ModItems.ingot_pu239,				ModItems.nugget_pu239, "nuggetPlutonium239", "tinyPu239");
-		addBillet(ModItems.billet_pu240,				ModItems.ingot_pu240,				ModItems.nugget_pu240, "nuggetPlutonium240", "tinyPu240");
-		addBillet(ModItems.billet_pu241,				ModItems.ingot_pu241,				ModItems.nugget_pu241, "nuggetPlutonium241", "tinyPu241");
+		addBillet(ModItems.billet_uranium,				ModItems.ingot_uranium,				ModItems.nugget_uranium, U.nuggets());
+		addBillet(ModItems.billet_u233,					ModItems.ingot_u233,				ModItems.nugget_u233, U233.nuggets());
+		addBillet(ModItems.billet_u235,					ModItems.ingot_u235,				ModItems.nugget_u235, U235.nuggets());
+		addBillet(ModItems.billet_u238,					ModItems.ingot_u238,				ModItems.nugget_u238, U238.nuggets());
+		addBillet(ModItems.billet_th232,				ModItems.ingot_th232,				ModItems.nugget_th232, TH232.nuggets());
+		addBillet(ModItems.billet_plutonium,			ModItems.ingot_plutonium,			ModItems.nugget_plutonium, PU.nuggets());
+		addBillet(ModItems.billet_pu238,				ModItems.ingot_pu238,				ModItems.nugget_pu238, PU238.nuggets());
+		addBillet(ModItems.billet_pu239,				ModItems.ingot_pu239,				ModItems.nugget_pu239, PU239.nuggets());
+		addBillet(ModItems.billet_pu240,				ModItems.ingot_pu240,				ModItems.nugget_pu240, PU240.nuggets());
+		addBillet(ModItems.billet_pu241,				ModItems.ingot_pu241,				ModItems.nugget_pu241, PU241.nuggets());
 		addBillet(ModItems.billet_pu_mix,				ModItems.ingot_pu_mix,				ModItems.nugget_pu_mix);
-		addBillet(ModItems.billet_am241,				ModItems.ingot_am241,				ModItems.nugget_am241, "nuggetAmericium241", "tinyAm241");
-		addBillet(ModItems.billet_am242,				ModItems.ingot_am242,				ModItems.nugget_am242, "nuggetAmericium242", "tinyAm242");
+		addBillet(ModItems.billet_am241,				ModItems.ingot_am241,				ModItems.nugget_am241, AM241.nuggets());
+		addBillet(ModItems.billet_am242,				ModItems.ingot_am242,				ModItems.nugget_am242, AM242.nuggets());
 		addBillet(ModItems.billet_am_mix,				ModItems.ingot_am_mix,				ModItems.nugget_am_mix);
-		addBillet(ModItems.billet_neptunium,			ModItems.ingot_neptunium,			ModItems.nugget_neptunium, "nuggetNeptunium237", "tinyNp237");
+		addBillet(ModItems.billet_neptunium,			ModItems.ingot_neptunium,			ModItems.nugget_neptunium, NP237.nuggets());
 		addBillet(ModItems.billet_polonium,				ModItems.ingot_polonium,			ModItems.nugget_polonium, "nuggetPolonium");
 		addBillet(ModItems.billet_technetium,			ModItems.ingot_technetium,			ModItems.nugget_technetium, "nuggetTechnetium");
 		addBillet(ModItems.billet_au198,				ModItems.ingot_au198,				ModItems.nugget_au198, "nuggetGold198");
@@ -124,15 +129,16 @@ public class MineralRecipes {
 		addBillet(ModItems.billet_australium_greater,										ModItems.nugget_australium_greater);
 		addBillet(ModItems.billet_australium_lesser,										ModItems.nugget_australium_lesser);
 		addBillet(ModItems.billet_nuclear_waste,		ModItems.nuclear_waste,				ModItems.nuclear_waste_tiny);
-		addBillet(ModItems.billet_cf252, ModItems.ingot_cf252, ModItems.nugget_cf252, "nuggetCf252", "nuggetCalifornium252", "nuggetCf252", "tinyCalifornium252");
-		addBillet(ModItems.billet_actinium, ModItems.ingot_actinium, ModItems.nugget_actinium, "nuggetAc227", "tinyAc227", "nuggetActinium227", "tinyActinium227");
-		addBillet(ModItems.billet_co60, ModItems.ingot_co60, ModItems.nugget_co60);
+		addBillet(ModItems.billet_cf252, 				ModItems.ingot_cf252, 				ModItems.nugget_cf252, CF252.nuggets());
+		addBillet(ModItems.billet_actinium, 			ModItems.ingot_actinium,			ModItems.nugget_actinium, AC.nuggets());
+		addBillet(ModItems.billet_co60, 				ModItems.ingot_co60, 				ModItems.nugget_co60, CO60.nuggets());
+		addBillet(ModItems.billet_sr90, 				ModItems.ingot_sr90, 				ModItems.nugget_sr90, SR90.nuggets());
 		
-		addBillet(ModItems.billet_bismuth, ModItems.ingot_beryllium, ModItems.nugget_bismuth);
-		addBillet(ModItems.billet_euphemium, ModItems.ingot_euphemium, ModItems.nugget_euphemium);
+		addBillet(ModItems.billet_bismuth, 				ModItems.ingot_beryllium, 			ModItems.nugget_bismuth);
+		addBillet(ModItems.billet_euphemium, 			ModItems.ingot_euphemium, 			ModItems.nugget_euphemium);
 		
-		addBillet(ModItems.billet_beryllium,			ModItems.ingot_beryllium,			ModItems.nugget_beryllium, BE.nugget());
-		addBillet(ModItems.billet_zirconium,			ModItems.ingot_zirconium,			ModItems.nugget_zirconium, ZR.nugget());
+		addBillet(ModItems.billet_beryllium,			ModItems.ingot_beryllium,			ModItems.nugget_beryllium, BE.nuggets());
+		addBillet(ModItems.billet_zirconium,			ModItems.ingot_zirconium,			ModItems.nugget_zirconium, ZR.nuggets());
 
 		GameRegistry.addShapelessRecipe(new ItemStack(ModItems.billet_thorium_fuel, 3), new Object[] { ModItems.billet_th232, ModItems.billet_th232, ModItems.billet_u233 });
 		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.billet_thorium_fuel, 1), new Object[] { "nuggetThorium232", "nuggetThorium232", "nuggetThorium232", "nuggetThorium232", "nuggetUranium233", "nuggetUranium233" }));
@@ -227,8 +233,9 @@ public class MineralRecipes {
 		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.pellet_rtg_polonium), new Object[] { ModItems.billet_polonium, ModItems.billet_polonium, ModItems.billet_polonium, "plateIron" }));
 		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.pellet_rtg_gold), new Object[] { ModItems.billet_au198, ModItems.billet_au198, ModItems.billet_au198, "plateIron" }));
 		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.pellet_rtg_americium), new Object[] { ModItems.billet_am241, ModItems.billet_am241, ModItems.billet_am241, "plateIron" }));
-		GameRegistry.addRecipe(new ShapelessOreRecipe(ModItems.pellet_rtg_actinium, "billetActinium227", "billetActinium227", "billetActinium227", "plateIron"));
-		GameRegistry.addRecipe(new ShapelessOreRecipe(ModItems.pellet_rtg_berkelium, "billetBerkelium248", "billetBerkelium248", "billetBerkelium248", "plateIron"));
+		CraftingManager.addShapelessAuto(new ItemStack(ModItems.pellet_rtg_actinium), AC.billet(), AC.billet(), AC.billet(), FE.plate());
+		CraftingManager.addShapelessAuto(new ItemStack(ModItems.pellet_rtg_berkelium), BK248.billet(), BK248.billet(), BK248.billet(), FE.plate());
+		CraftingManager.addShapelessAuto(new ItemStack(ModItems.pellet_rtg_strontium), SR90.billet(), SR90.billet(), SR90.billet(), FE.plate());
 		
 		GameRegistry.addRecipe(new ItemStack(Item.getItemFromBlock(ModBlocks.block_copper), 1), new Object[] { "###", "###", "###", '#', ModItems.ingot_copper });
 		GameRegistry.addRecipe(new ItemStack(Item.getItemFromBlock(ModBlocks.block_fluorite), 1), new Object[] { "###", "###", "###", '#', ModItems.fluorite });

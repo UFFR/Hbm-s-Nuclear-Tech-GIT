@@ -111,7 +111,7 @@ public class BlockLoot extends BlockContainer {
 
 	public static class TileEntityLoot extends TileEntity {
 		
-		public List<Quartet<ItemStack, Double, Double, Double>> items = new ArrayList();
+		public List<Quartet<ItemStack, Double, Double, Double>> items = new ArrayList<Quartet<ItemStack, Double, Double, Double>>();
 
 		@Override
 		public boolean canUpdate() {
@@ -119,7 +119,7 @@ public class BlockLoot extends BlockContainer {
 		}
 		
 		public TileEntityLoot addItem(ItemStack stack, double x, double y, double z) {
-			items.add(new Quartet(stack, x, y, z));
+			items.add(new Quartet<ItemStack, Double, Double, Double>(stack, x, y, z));
 			return this;
 		}
 
@@ -146,7 +146,7 @@ public class BlockLoot extends BlockContainer {
 				double x = nbt.getDouble("x" + i);
 				double y = nbt.getDouble("y" + i);
 				double z = nbt.getDouble("z" + i);
-				items.add(new Quartet(stack, x, y, z));
+				items.add(new Quartet<ItemStack, Double, Double, Double>(stack, x, y, z));
 			}
 		}
 

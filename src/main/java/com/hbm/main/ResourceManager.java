@@ -149,6 +149,12 @@ public class ResourceManager {
 	//Deuterium Tower
 	public static final IModelCustom deuterium_tower = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/machines/machine_deuterium_tower.obj"));
 	
+	/**Watz Supercompressor**/
+	public static final IModelCustom sing_gen = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/machines/watz supercompressor.obj"));
+	
+	/**Bishamonten's Spear**/
+	public static final IModelCustom spear = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/weapons/goldspear.obj"));
+	
 	//Anti Mass Spectrometer
 	public static final IModelCustom ams_base = AdvancedModelLoader.loadModel(new ResourceLocation(RefStrings.MODID, "models/ams_base.obj"));
 	public static final IModelCustom ams_emitter = AdvancedModelLoader.loadModel(new ResourceLocation(RefStrings.MODID, "models/ams_emitter.obj"));
@@ -366,6 +372,9 @@ public class ResourceManager {
 	
 	//Deuterium Tower
 	public static final ResourceLocation deuterium_tower_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/machine_deuterium_tower.png");
+	
+	/**Watz supercompressor**/
+	public static final ResourceLocation sing_gen_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/watz supercompressor tex.png");
 	
 	//IGen
 	public static final ResourceLocation igen_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/igen.png");

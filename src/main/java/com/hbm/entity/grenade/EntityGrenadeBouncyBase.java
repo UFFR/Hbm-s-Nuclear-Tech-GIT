@@ -33,16 +33,16 @@ public abstract class EntityGrenadeBouncyBase extends Entity implements IProject
         super(world);
         this.thrower = living;
         this.setSize(0.25F, 0.25F);
-        this.setLocationAndAngles(living.posX, living.posY + (double)living.getEyeHeight(), living.posZ, living.rotationYaw, living.rotationPitch);
-        this.posX -= (double)(MathHelper.cos(this.rotationYaw / 180.0F * (float)Math.PI) * 0.16F);
+        this.setLocationAndAngles(living.posX, living.posY + living.getEyeHeight(), living.posZ, living.rotationYaw, living.rotationPitch);
+        this.posX -= MathHelper.cos(this.rotationYaw / 180.0F * (float)Math.PI) * 0.16F;
         this.posY -= 0.10000000149011612D;
-        this.posZ -= (double)(MathHelper.sin(this.rotationYaw / 180.0F * (float)Math.PI) * 0.16F);
+        this.posZ -= MathHelper.sin(this.rotationYaw / 180.0F * (float)Math.PI) * 0.16F;
         this.setPosition(this.posX, this.posY, this.posZ);
         this.yOffset = 0.0F;
         float f = 0.4F;
-        this.motionX = (double)(-MathHelper.sin(this.rotationYaw / 180.0F * (float)Math.PI) * MathHelper.cos(this.rotationPitch / 180.0F * (float)Math.PI) * f);
-        this.motionZ = (double)(MathHelper.cos(this.rotationYaw / 180.0F * (float)Math.PI) * MathHelper.cos(this.rotationPitch / 180.0F * (float)Math.PI) * f);
-        this.motionY = (double)(-MathHelper.sin((this.rotationPitch + this.func_70183_g()) / 180.0F * (float)Math.PI) * f);
+        this.motionX = -MathHelper.sin(this.rotationYaw / 180.0F * (float)Math.PI) * MathHelper.cos(this.rotationPitch / 180.0F * (float)Math.PI) * f;
+        this.motionZ = MathHelper.cos(this.rotationYaw / 180.0F * (float)Math.PI) * MathHelper.cos(this.rotationPitch / 180.0F * (float)Math.PI) * f;
+        this.motionY = -MathHelper.sin((this.rotationPitch + this.func_70183_g()) / 180.0F * (float)Math.PI) * f;
         this.setThrowableHeading(this.motionX, this.motionY, this.motionZ, this.func_70182_d(), 1.0F);
         this.rotationPitch = 0;
         this.prevRotationPitch = 0;
@@ -59,7 +59,8 @@ public abstract class EntityGrenadeBouncyBase extends Entity implements IProject
 	@Override
 	protected void entityInit() { }
 	
-    @SideOnly(Side.CLIENT)
+    @Override
+	@SideOnly(Side.CLIENT)
     public boolean isInRangeToRenderDist(double p_70112_1_)
     {
         double d1 = this.boundingBox.getAverageEdgeLength() * 4.0D;
@@ -82,25 +83,27 @@ public abstract class EntityGrenadeBouncyBase extends Entity implements IProject
         return 0.03F;
     }
     
-    public void setThrowableHeading(double motionX, double motionY, double motionZ, float f0, float f1)
+    @Override
+	public void setThrowableHeading(double motionX, double motionY, double motionZ, float f0, float f1)
     {
         float f2 = MathHelper.sqrt_double(motionX * motionX + motionY * motionY + motionZ * motionZ);
-        motionX /= (double)f2;
-        motionY /= (double)f2;
-        motionZ /= (double)f2;
-        motionX += this.rand.nextGaussian() * 0.007499999832361937D * (double)f1;
-        motionY += this.rand.nextGaussian() * 0.007499999832361937D * (double)f1;
-        motionZ += this.rand.nextGaussian() * 0.007499999832361937D * (double)f1;
-        motionX *= (double)f0;
-        motionY *= (double)f0;
-        motionZ *= (double)f0;
+        motionX /= f2;
+        motionY /= f2;
+        motionZ /= f2;
+        motionX += this.rand.nextGaussian() * 0.007499999832361937D * f1;
+        motionY += this.rand.nextGaussian() * 0.007499999832361937D * f1;
+        motionZ += this.rand.nextGaussian() * 0.007499999832361937D * f1;
+        motionX *= f0;
+        motionY *= f0;
+        motionZ *= f0;
         this.motionX = motionX;
         this.motionY = motionY;
         this.motionZ = motionZ;
         this.prevRotationYaw = this.rotationYaw = (float)(Math.atan2(motionX, motionZ) * 180.0D / Math.PI);
     }
     
-    @SideOnly(Side.CLIENT)
+    @Override
+	@SideOnly(Side.CLIENT)
     public void setVelocity(double motionX, double motionY, double motionZ)
     {
         this.motionX = motionX;
@@ -113,7 +116,8 @@ public abstract class EntityGrenadeBouncyBase extends Entity implements IProject
         }
     }
     
-    public void onUpdate()
+    @Override
+	public void onUpdate()
     {
         super.onUpdate();
         this.lastTickPosX = this.posX;
@@ -193,16 +197,16 @@ public abstract class EntityGrenadeBouncyBase extends Entity implements IProject
             for (int i = 0; i < 4; ++i)
             {
                 float f4 = 0.25F;
-                this.worldObj.spawnParticle("bubble", this.posX - this.motionX * (double)f4, this.posY - this.motionY * (double)f4, this.posZ - this.motionZ * (double)f4, this.motionX, this.motionY, this.motionZ);
+                this.worldObj.spawnParticle("bubble", this.posX - this.motionX * f4, this.posY - this.motionY * f4, this.posZ - this.motionZ * f4, this.motionX, this.motionY, this.motionZ);
             }
 
             f2 = 0.8F;
         }
 
-        this.motionX *= (double)f2;
-        this.motionY *= (double)f2;
-        this.motionZ *= (double)f2;
-        this.motionY -= (double)f3;
+        this.motionX *= f2;
+        this.motionY *= f2;
+        this.motionZ *= f2;
+        this.motionY -= f3;
         this.setPosition(this.posX, this.posY, this.posZ);
         
         timer++;
@@ -230,7 +234,8 @@ public abstract class EntityGrenadeBouncyBase extends Entity implements IProject
 		nbt.setInteger("timer", timer);
 	}
 
-    @SideOnly(Side.CLIENT)
+    @Override
+	@SideOnly(Side.CLIENT)
     public float getShadowSize()
     {
         return 0.0F;

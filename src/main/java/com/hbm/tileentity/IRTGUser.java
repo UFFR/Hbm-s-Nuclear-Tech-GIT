@@ -2,10 +2,12 @@ package com.hbm.tileentity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import com.google.common.annotations.Beta;
 import com.hbm.config.MachineConfig;
 import com.hbm.interfaces.Untested;
+import com.hbm.inventory.RecipesCommon.AStack;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -53,7 +55,7 @@ public interface IRTGUser
 			inventory[slot] = IRadioisotopeFuel.handleDecay(inventory[slot], pellet);
 		}
 		
-		return newHeat;
+		return newHeat * 10;
 	}
 	/**
 	 * Update all of the RTG pellets in the entire machine's inventory
@@ -73,7 +75,7 @@ public interface IRTGUser
 			newHeat += getPower(pellet, inventory[slot]);
 			inventory[slot] = IRadioisotopeFuel.handleDecay(inventory[slot], pellet);
 		}
-		return newHeat;
+		return newHeat * 10;
 	}
 	/**
 	 * Update all of the RTG pellets in a list of a machine
@@ -99,7 +101,7 @@ public interface IRTGUser
 			}
 		}
 		
-		return newHeat;
+		return newHeat * 10;
 	}
 	/**
 	 * Update all of the RTG pellets in a list of a machine and allows for decay items to accumulate
@@ -146,17 +148,22 @@ public interface IRTGUser
 			}
 		}
 		
-		return newHeat;
+		return newHeat * 10;
 	}
 	@Untested
 	@Beta
-	default int updateRTGs(ItemStack[] inventory, HashMap<Item, IRadioisotopeFuel> fuelMap)
+	default int updateRTGs(ItemStack[] inventory, HashMap<AStack, IRadioisotopeFuel> fuelMap)
 	{
 		int newHeat = 0;
 		
 		for (int slot = 0; slot < inventory.length; slot++)
 		{
-			if (inventory[slot] == null || IRadioisotopeFuel.getInstance(inventory[slot]) == null || !fuelMap.containsKey(inventory[slot].getItem()))
+			boolean flag = false;
+			for (Entry<AStack, IRadioisotopeFuel> fuelEntry : fuelMap.entrySet())
+				if (fuelEntry.getKey().isApplicable(inventory[slot]))
+					flag = true;
+			
+			if (!flag)
 				continue;
 			
 			final IRadioisotopeFuel fuel = IRadioisotopeFuel.getInstance(inventory[slot]);
@@ -164,6 +171,6 @@ public interface IRTGUser
 			inventory[slot] = IRadioisotopeFuel.handleDecay(inventory[slot], fuel);
 		}
 		
-		return newHeat;
+		return newHeat * 10;
 	}
 }

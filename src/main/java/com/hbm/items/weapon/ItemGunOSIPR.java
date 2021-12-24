@@ -21,6 +21,7 @@ public class ItemGunOSIPR extends ItemGunBase {
 		world.playSoundAtEntity(player, "hbm:weapon.osiprCharging", 1.0F, 1F);
 	}
 	
+	@Override
 	protected void updateServer(ItemStack stack, World world, EntityPlayer player, int slot, boolean isCurrentItem) {
 		super.updateServer(stack, world, player, slot, isCurrentItem);
 		
@@ -44,6 +45,7 @@ public class ItemGunOSIPR extends ItemGunBase {
 			setCharge(stack, i + 1);
 	}
 	
+	@Override
 	protected boolean tryShoot(ItemStack stack, World world, EntityPlayer player, boolean main) {
 		
 		return super.tryShoot(stack, world, player, main) && getCharge(stack) == 0;

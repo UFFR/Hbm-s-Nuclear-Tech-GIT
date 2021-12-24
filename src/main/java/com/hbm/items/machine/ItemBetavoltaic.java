@@ -5,9 +5,8 @@ import java.util.List;
 import javax.annotation.CheckForNull;
 
 import com.google.common.annotations.Beta;
-import com.hbm.interfaces.IRadioisotopeFuel;
 import com.hbm.items.special.ItemCustomLore;
-import com.hbm.util.I18nUtil;
+import com.hbm.tileentity.IRadioisotopeFuel;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -59,7 +58,7 @@ public class ItemBetavoltaic extends ItemCustomLore implements IRadioisotopeFuel
 	}
 
 	@Override
-	public short getPower()
+	public short getHeat()
 	{
 		return power;
 	}

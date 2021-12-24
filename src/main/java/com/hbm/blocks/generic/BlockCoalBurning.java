@@ -15,7 +15,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 public class BlockCoalBurning extends BlockOutgas {
 
 	public BlockCoalBurning(Material mat) {
-		super(mat, false, 1, false);
+		super(mat, false, 1, false, GasType.NONE);
 		this.setTickRandomly(true);
 	}
 
@@ -54,6 +54,7 @@ public class BlockCoalBurning extends BlockOutgas {
 		return null;
 	}
 
+	@Override
 	public void breakBlock(World world, int x, int y, int z, Block block, int i) {
 		super.breakBlock(world, x, y, z, block, i);
 

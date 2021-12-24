@@ -15,7 +15,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 public class BlockNetherCoal extends BlockOutgas {
 
 	public BlockNetherCoal(Material mat, boolean randomTick, int rate, boolean onBreak) {
-		super(mat, randomTick, rate, onBreak);
+		super(mat, randomTick, rate, onBreak, GasType.NONE);
 	}
 
 	@Override

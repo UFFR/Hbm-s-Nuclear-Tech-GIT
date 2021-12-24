@@ -178,14 +178,11 @@ public class TileEntityMachineMiningLaser extends TileEntityMachineBase implemen
 		}
 	}
 	
-<<<<<<< HEAD
-	@Override
-=======
 	private void updateConnections() {
 		this.trySubscribe(worldObj, xCoord, yCoord + 2, zCoord, ForgeDirection.UP);
 	}
 	
->>>>>>> master
+	@Override
 	public void networkUnpack(NBTTagCompound data) {
 
 		this.power = data.getLong("power");

@@ -13,7 +13,6 @@ import com.hbm.config.GeneralConfig;
 import com.hbm.config.MachineConfig;
 import com.hbm.handler.BulletConfigSyncingUtil;
 import com.hbm.handler.BulletConfiguration;
-import com.hbm.interfaces.IConsumer;
 import com.hbm.interfaces.IControlReceiver;
 import com.hbm.interfaces.Spaghetti;
 import com.hbm.items.ModItems;
@@ -25,11 +24,12 @@ import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.EntityDamageUtil;
 import com.hbm.util.I18nUtil;
 
+import api.hbm.energy.IEnergyUser;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 @Spaghetti("aaaaaa")
-public class TileEntityTsukuyomi extends TileEntityMachineBase implements IConsumer, IControlReceiver
+public class TileEntityTsukuyomi extends TileEntityMachineBase implements IEnergyUser, IControlReceiver
 {
 	private static int cooldown = 0;
 	private int ammoCount = 0;
@@ -460,14 +460,14 @@ public class TileEntityTsukuyomi extends TileEntityMachineBase implements IConsu
 	@Override
 	public void receiveControl(NBTTagCompound data)
 	{
-		worldObj.playSoundEffect(xCoord, yCoord, zCoord, "gui.button.press", 1.0F, 1.0F);
+		worldObj.playSoundEffect(xCoord, yCoord, zCoord, buttonPress, 1.0F, 1.0F);
 //		System.out.println("Got commands");
 		if (data.hasKey("name") && targets.size() <= 15 && !targets.contains(data.getString("name")) && !gotTargets)
 		{
 			if (addPlayer(data.getString("name")))
-				worldObj.playSoundEffect(xCoord, yCoord, zCoord, "hbm:gui.buttonYes", 1.0F, 1.0F);
+				worldObj.playSoundEffect(xCoord, yCoord, zCoord, buttonYes, 1.0F, 1.0F);
 			else
-				worldObj.playSoundEffect(xCoord, yCoord, zCoord, "hbm:gui.buttonNo", 1.0F, 1.0F);
+				worldObj.playSoundEffect(xCoord, yCoord, zCoord, buttonNo, 1.0F, 1.0F);
 		}
 	}
 }

@@ -8,10 +8,6 @@ import org.apache.logging.log4j.Level;
 
 import com.google.common.annotations.Beta;
 import com.hbm.hazard.HazardRegistry;
-import com.hbm.interfaces.ICustomWarhead.EnumCustomWarhead.EnumBioType;
-import com.hbm.interfaces.ICustomWarhead.EnumCustomWarhead.EnumChemicalType;
-import com.hbm.items.ModItems;
-import com.hbm.items.special.ItemHazard;
 import com.hbm.lib.Library;
 import com.hbm.main.MainRegistry;
 import com.hbm.util.BobMathUtil;
@@ -277,7 +273,7 @@ public interface ICustomWarhead
 		Pu239(10F, 207.1F, HazardRegistry.pu239, 19.86F),
 		Pu241(12, 210F, HazardRegistry.pu241, 19.86F),
 		Am241(66, 210F, HazardRegistry.am241, 13.67F),
-		Am242m(11F, 212F, HazardRegistry.am242, 13.67F),
+		Am242m(11F, 212F, HazardRegistry.am242m, 13.67F),
 		Sa326(1F, 250F, HazardRegistry.sa326, 39.7F);
 		public final float criticalMass;
 		public final float energyReleased;
@@ -320,28 +316,28 @@ public interface ICustomWarhead
 	}
 	public enum SaltedFuel
 	{
-		Co59(1.4902F * 0.75F, 5, HalfLifeType.MEDIUM, 8.86F),
-		Co60(1.4902F, 5, HalfLifeType.MEDIUM, 8.86F),
-		Sr90(0.546F, 28, HalfLifeType.MEDIUM, 2.64F),
-		Cs137(1.1737F, 30, HalfLifeType.MEDIUM, 1.93F),
-		Ta181(0.52F * 0.75F, 114, HalfLifeType.SHORT, 16.65F),
-		Ta182(0.52F, 114, HalfLifeType.SHORT, 16.654F),
-		Au197(1.3735F * 0.75F, 2, HalfLifeType.SHORT, 19.32F),
-		Au198(1.3735F, 2, HalfLifeType.SHORT, 19.32F),
-		Pu240(5.25575F, 65, HalfLifeType.LONG, 19.86F),
-		Sa327(0.5F, 100, HalfLifeType.LONG, 39.7F);
+		Co59(1.4902F * 0.75F, 5, TimeDurationType.MEDIUM, 8.86F),
+		Co60(1.4902F, 5, TimeDurationType.MEDIUM, 8.86F),
+		Sr90(0.546F, 28, TimeDurationType.MEDIUM, 2.64F),
+		Cs137(1.1737F, 30, TimeDurationType.MEDIUM, 1.93F),
+		Ta181(0.52F * 0.75F, 114, TimeDurationType.SHORT, 16.65F),
+		Ta182(0.52F, 114, TimeDurationType.SHORT, 16.654F),
+		Au197(1.3735F * 0.75F, 2, TimeDurationType.SHORT, 19.32F),
+		Au198(1.3735F, 2, TimeDurationType.SHORT, 19.32F),
+		Pu240(5.25575F, 65, TimeDurationType.LONG, 19.86F),
+		Sa327(0.5F, 100, TimeDurationType.LONG, 39.7F);
 		public final float decayEnergy;
 		public final int halfLife;
-		public final HalfLifeType type;
+		public final TimeDurationType type;
 		private final float mass;
-		SaltedFuel(float decayEnergy, int halfLife, HalfLifeType type, float mass)
+		SaltedFuel(float decayEnergy, int halfLife, TimeDurationType type, float mass)
 		{
 			this.decayEnergy = decayEnergy;
 			this.halfLife = halfLife;
 			this.type = type;
 			this.mass = mass;
 		}
-		public enum HalfLifeType
+		public enum TimeDurationType
 		{
 			/** Counted in days **/
 			SHORT,

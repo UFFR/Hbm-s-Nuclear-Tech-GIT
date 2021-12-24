@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
@@ -43,6 +44,7 @@ public class EntityRBMKDebris extends EntityDebrisBase {
 			case GRAPHITE: if(player.inventory.addItemStackToInventory(new ItemStack(ModItems.debris_graphite))) this.setDead(); break;
 			case LID: if(player.inventory.addItemStackToInventory(new ItemStack(ModItems.rbmk_lid))) this.setDead(); break;
 			case ROD: if(player.inventory.addItemStackToInventory(new ItemStack(ModItems.debris_metal))) this.setDead(); break;
+			default: break;
 			}
 			
 			player.inventoryContainer.detectAndSendChanges();
@@ -63,6 +65,7 @@ public class EntityRBMKDebris extends EntityDebrisBase {
 			case GRAPHITE: this.setSize(0.25F, 0.25F); break;
 			case LID: this.setSize(1F, 0.5F); break;
 			case ROD: this.setSize(0.75F, 0.5F); break;
+			default: break;
 			}
 			
 			hasSizeSet = true;
@@ -99,7 +102,7 @@ public class EntityRBMKDebris extends EntityDebrisBase {
 				Vec3 next = Vec3.createVectorHelper(posX + motionX * 2, posY + motionY * 2, posZ + motionZ * 2);
 				MovingObjectPosition mop = worldObj.func_147447_a(pos, next, false, false, false);
 				
-				if(mop != null && mop.typeOfHit == mop.typeOfHit.BLOCK) {
+				if(mop != null && mop.typeOfHit == MovingObjectType.BLOCK) {
 	
 					int x = mop.blockX;
 					int y = mop.blockY;
@@ -148,10 +151,12 @@ public class EntityRBMKDebris extends EntityDebrisBase {
 		}
 	}
 	
+	@Override
 	public void setType(DebrisType type) {
 		this.dataWatcher.updateObject(20, type.ordinal());
 	}
 	
+	@Override
 	public DebrisType getType() {
 		return DebrisType.values()[Math.abs(this.dataWatcher.getWatchableObjectInt(20)) % DebrisType.values().length];
 	}
@@ -166,12 +171,12 @@ public class EntityRBMKDebris extends EntityDebrisBase {
 		nbt.setInteger("debtype", this.dataWatcher.getWatchableObjectInt(20));
 	}
 	
-	public static enum DebrisType {
-		BLANK,		//just a metal beam
-		ELEMENT,	//the entire casing of a fuel assembly because fuck you
-		FUEL,		//spicy
-		ROD,		//solid boron rod
-		GRAPHITE,	//spicy rock
-		LID;		//the all destroying harbinger of annihilation
-	}
+//	public static enum DebrisType {
+//		BLANK,		//just a metal beam
+//		ELEMENT,	//the entire casing of a fuel assembly because fuck you
+//		FUEL,		//spicy
+//		ROD,		//solid boron rod
+//		GRAPHITE,	//spicy rock
+//		LID;		//the all destroying harbinger of annihilation
+//	}
 }

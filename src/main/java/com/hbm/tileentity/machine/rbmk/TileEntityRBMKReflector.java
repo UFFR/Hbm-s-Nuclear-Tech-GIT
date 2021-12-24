@@ -1,6 +1,6 @@
 package com.hbm.tileentity.machine.rbmk;
 
-import com.hbm.entity.projectile.EntityRBMKDebris.DebrisType;
+import com.hbm.entity.projectile.EntityDebrisBase.DebrisType;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKConsole.ColumnType;
 
 public class TileEntityRBMKReflector extends TileEntityRBMKBase {

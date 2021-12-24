@@ -18,6 +18,7 @@ abstract public class EntityDebrisBase extends Entity {
 	public float rot;
 	public float lastRot;
 	protected boolean hasSizeSet = false;
+	protected DebrisType type;
 
 	public EntityDebrisBase(World world) {
 		super(world);
@@ -34,6 +35,7 @@ abstract public class EntityDebrisBase extends Entity {
 		return true;
 	}
 
+	@Override
 	abstract public boolean interactFirst(EntityPlayer player);
 
 	abstract protected int getLifetime();
@@ -222,6 +224,21 @@ abstract public class EntityDebrisBase extends Entity {
 
 		int range = 128;
 		return dist < range * range;
+	}
+	
+	public abstract void setType(DebrisType type);
+	public abstract DebrisType getType();
+	
+	public static enum DebrisType {
+		BLANK,		//just a metal beam
+		ELEMENT,	//the entire casing of a fuel assembly because fuck you
+		FUEL,		//spicy
+		ROD,		//solid boron rod
+		GRAPHITE,	//spicy rock
+		LID,		//the all destroying harbinger of annihilation
+		SHRAPNEL,		//steel shrapnel from the pipes and walkways
+		CONCRETE,		//the all destroying harbinger of annihilation
+		EXCHANGER;		//the all destroying harbinger of annihilation: sideways edition
 	}
 
 }

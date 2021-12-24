@@ -9,13 +9,12 @@ import com.hbm.handler.ArmorModHandler;
 
 import api.hbm.item.IGasMask;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class ArmorRegistry {
 
-	public static HashMap<Item, ArrayList<HazardClass>> hazardClasses = new HashMap();
+	public static HashMap<Item, ArrayList<HazardClass>> hazardClasses = new HashMap<Item, ArrayList<HazardClass>>();
 	
 	public static void registerHazard(Item item, HazardClass... hazards) {
 		hazardClasses.put(item, new ArrayList<HazardClass>(Arrays.asList(hazards)));
@@ -62,7 +61,7 @@ public class ArmorRegistry {
 	
 	public static List<HazardClass> getProtectionFromItem(ItemStack stack, EntityLivingBase entity) {
 
-		List<HazardClass> prot = new ArrayList();
+		List<HazardClass> prot = new ArrayList<HazardClass>();
 		
 		Item item = stack.getItem();
 		

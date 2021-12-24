@@ -1,5 +1,7 @@
 package com.hbm.inventory.recipes;
 
+import static com.hbm.inventory.OreDictManager.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -16,12 +18,11 @@ import com.hbm.interfaces.Spaghetti;
 import com.hbm.inventory.FluidContainer;
 import com.hbm.inventory.FluidContainerRegistry;
 import com.hbm.inventory.FluidStack;
-import com.hbm.inventory.RecipesCommon.ComparableStack;
+import com.hbm.inventory.RecipesCommon.*;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemChemistryTemplate;
 import com.hbm.items.machine.ItemFluidIcon;
 import com.hbm.items.special.ItemHot;
-import com.hbm.items.special.ItemWasteLong;
 import com.hbm.items.special.ItemWasteShort;
 import com.hbm.items.weapon.ItemGunBase;
 import com.hbm.main.MainRegistry;
@@ -61,11 +62,11 @@ public class MachineRecipes
 	public static MachineRecipes instance() {
 		return new MachineRecipes();
 	}
-
+	@Deprecated
 	public static ItemStack getFurnaceProcessingResult(ItemStack item, ItemStack item2) {
 		return getFurnaceOutput(item, item2);
 	}
-
+	@Deprecated
 	@Spaghetti("i am an affront to god and i desire to be cremated")
 	public static ItemStack getFurnaceOutput(ItemStack item, ItemStack item2) {
 		
@@ -138,24 +139,24 @@ public class MachineRecipes
 				|| item.getItem() == ModItems.coke && item2.getItem() == ModItems.silicon_lump)
 			return new ItemStack(ModItems.ingot_silicon, 4);
 		
-		if (mODE(item, new String[] {"sand"}) && mODE(item2, new String[] {"gemCoal", "dustCoal"})
-				|| mODE(item, new String[] {"gemCoal", "dustCoal"}) && mODE(item2, new String[] {"sand"}))
+		if (mODE(item, new String[] {"sand"}) && mODE(item2, new String[] {COAL.gem(), COAL.dust()})
+				|| mODE(item, new String[] {COAL.gem(), COAL.dust()}) && mODE(item2, new String[] {"sand"}))
 			return new ItemStack(ModItems.nugget_silicon, 3);
 		
-		if (mODE(item, new String[] {"ingotSteel", "dustSteel"}) && mODE(item2, new String[] {"ingotUraniumDioxide", "dustUraniumDioxide"})
-				|| mODE(item, new String[] {"ingotUraniumDioxide", "dustUraniumDioxide"}) && mODE(item2, new String[] {"ingotSteel", "dustSteel"}))
+		if (mODE(item, new String[] {STEEL.ingot(), STEEL.dust()}) && mODE(item2, new String[] {U238.ingot(), U238.dust()})
+				|| mODE(item, new String[] {U238.ingot(), U238.dust()}) && mODE(item2, new String[] {STEEL.ingot(), STEEL.dust()}))
 			return new ItemStack(ModItems.ingot_ferrouranium);
 		
-		if (mODE(item, new String[] {"ingotTitanium", "dustTitanium"}) && mODE(item2, new String[] {"ingotUraniumDioxide", "dustUraniumDioxide"})
-				|| mODE(item, new String[] {"ingotUraniumDioxide", "dustUraniumDioxide"}) && mODE(item2, new String[] {"ingotTitanium", "dustTitanium"}))
+		if (mODE(item, new String[] {TI.ingot(), TI.dust()}) && mODE(item2, new String[] {U238.ingot(), U238.dust()})
+				|| mODE(item, new String[] {U238.ingot(), U238.dust()}) && mODE(item2, new String[] {TI.ingot(), TI.dust()}))
 			return new ItemStack(ModItems.ingot_staballoy);
 		
-		if (mODE(item, new String[] {"ingotTungsten", "dustTungsten"}) && mODE(item2, new String[] {"ingotCobalt", "dustCobalt"})
-				|| mODE(item, new String[] {"ingotCobalt", "dustCobalt"}) && mODE(item2, new String[] {"ingotTungsten", "dustTungsten"}))
+		if (mODE(item, new String[] {W.ingot(), W.dust()}) && mODE(item2, new String[] {CO.ingot(), CO.dust()})
+				|| mODE(item, new String[] {CO.ingot(), CO.dust()}) && mODE(item2, new String[] {W.ingot(), W.dust()}))
 			return new ItemStack(ModItems.component_ftl, 1, 4);
 		
-		if (mODE(item, new String[] {"ingotNiobium", "dustNiobium"}) && mODE(item2, new String[] {"ingotBeryllium", "dustBeryllium"})
-				|| mODE(item, new String[] {"ingotBeryllium", "dustBeryllium"}) && mODE(item2, new String[] {"ingotNiobium", "dustNiobium"}))
+		if (mODE(item, new String[] {NB.ingot(), NB.dust()}) && mODE(item2, new String[] {BE.ingot(), BE.dust()})
+				|| mODE(item, new String[] {BE.dust(), BE.ingot()}) && mODE(item2, new String[] {NB.ingot(), NB.dust()}))
 			return new ItemStack(ModItems.ingot_nbbe);
 		
 		List<ItemStack> electrum = OreDictionary.getOres("ingotElectrum");
@@ -166,8 +167,8 @@ public class MachineRecipes
 				return new ItemStack(electrum.get(0).getItem(), 2);
 		}
 		
-		if (mODE(item, new String[] {"ingotDineutronium", "dustDineutronium"}) && mODE(item2, new String[] {"ingotCMBSteel", "dustCMBSteel"})
-				|| mODE(item, new String[] {"ingotCMBSteel", "dustCMBSteel"}) && mODE(item2, new String[] {"ingotDineutronium", "dustDineutronium"}))
+		if (mODE(item, new String[] {DNT.ingot(), DNT.dust()}) && mODE(item2, new String[] {CMB.ingot(), CMB.dust()})
+				|| mODE(item, new String[] {CMB.ingot(), CMB.dust()}) && mODE(item2, new String[] {DNT.ingot(), DNT.dust()}))
 			return new ItemStack(ModItems.ingot_dineutronium_forged);
 		
 		if(GeneralConfig.enableBabyMode) {
@@ -331,6 +332,7 @@ public class MachineRecipes
 		
 		return null;
 	}
+	@Deprecated
 	public static ItemStack getCyclotronOutput(ItemStack part, ItemStack item) {
 
 		if(part == null || item == null)
@@ -550,7 +552,7 @@ public class MachineRecipes
 
 		return null;
 	}
-
+	@Deprecated
 	public Map<Object[], Object> getAlloyRecipes() {
 		Map<Object[], Object> recipes = new HashMap<Object[], Object>();
 		
@@ -585,10 +587,10 @@ public class MachineRecipes
 					getFurnaceOutput(new ItemStack(ModItems.silicon_lump), new ItemStack(ModItems.coke)).copy());
 			recipes.put(new ItemStack[] { new ItemStack(Blocks.sand), new ItemStack(Items.coal) },
 					getFurnaceOutput(new ItemStack(Blocks.sand), new ItemStack(Items.coal)).copy());
-			recipes.put(new ItemStack[] { new ItemStack(ModItems.ingot_steel), new ItemStack(ModItems.ingot_du_dioxide) },
-					getFurnaceOutput(new ItemStack(ModItems.ingot_steel), new ItemStack(ModItems.ingot_du_dioxide)).copy());
-			recipes.put(new ItemStack[] { new ItemStack(ModItems.ingot_titanium), new ItemStack(ModItems.ingot_du_dioxide) },
-					getFurnaceOutput(new ItemStack(ModItems.ingot_titanium), new ItemStack(ModItems.ingot_du_dioxide)).copy());
+			recipes.put(new ItemStack[] { new ItemStack(ModItems.ingot_steel), new ItemStack(ModItems.ingot_u238) },
+					getFurnaceOutput(new ItemStack(ModItems.ingot_steel), new ItemStack(ModItems.ingot_u238)).copy());
+			recipes.put(new ItemStack[] { new ItemStack(ModItems.ingot_titanium), new ItemStack(ModItems.ingot_u238) },
+					getFurnaceOutput(new ItemStack(ModItems.ingot_titanium), new ItemStack(ModItems.ingot_u238)).copy());
 			recipes.put(new ItemStack[] { new ItemStack(ModItems.ingot_tungsten), new ItemStack(ModItems.ingot_cobalt) },
 					getFurnaceOutput(new ItemStack(ModItems.ingot_tungsten), new ItemStack(ModItems.ingot_cobalt)).copy());
 			recipes.put(new ItemStack[] { new ItemStack(ModItems.ingot_niobium), new ItemStack(ModItems.ingot_beryllium) },
@@ -2324,5 +2326,11 @@ public class MachineRecipes
 	{
 		// TODO Auto-generated method stub
 		
+	}
+
+
+	public Map<ComparableStack, ItemStack> getArcFurnaceRecipes()
+	{
+		return arcFurnaceRecipes;
 	}
 }

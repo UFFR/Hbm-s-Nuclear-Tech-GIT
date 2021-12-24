@@ -1,11 +1,9 @@
 package com.hbm.tileentity.machine;
 
-import java.util.ArrayList;
-import java.util.List;
-import com.hbm.items.ModItems;
-import com.hbm.lib.Library;
+import com.hbm.items.machine.ItemRTGPellet;
 import com.hbm.packet.AuxElectricityPacket;
 import com.hbm.packet.PacketDispatcher;
+import com.hbm.tileentity.IRTGUser;
 
 import api.hbm.energy.IEnergyGenerator;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
@@ -17,14 +15,15 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityMachineRTG extends TileEntity implements ISidedInventory, IEnergyGenerator, IRTGUser {
+public class TileEntityMachineRTG extends TileEntity implements ISidedInventory, IEnergyGenerator, IRTGUser
+{
 
 	private ItemStack slots[];
 	
 	public short heat;
 	public static final short heatMax = 1500;
 	public long power;
-	public final long powerMax = 100000;
+	public final static long powerMax = 100000;
 	
 	private static final int[] slots_top = new int[] { 0 };
 	private static final int[] slots_bottom = new int[] { 0 };

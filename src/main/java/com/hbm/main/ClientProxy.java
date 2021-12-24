@@ -54,7 +54,6 @@ import com.hbm.entity.projectile.*;
 import com.hbm.handler.HbmKeybinds;
 import com.hbm.handler.HbmKeybinds.EnumKeybind;
 import com.hbm.items.ModItems;
-import com.hbm.items.tool.ItemSwordMeteorite;
 import com.hbm.particle.*;
 import com.hbm.render.anim.*;
 import com.hbm.render.anim.HbmAnimations.Animation;
@@ -211,6 +210,7 @@ public class ClientProxy extends ServerProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTowerSmall.class, new RenderSmallTower());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDeuteriumTower.class, new RenderDeuteriumTower());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMachineCatalyticCracker.class, new RenderCatalyticCracker());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySingGen.class, new RenderSingGen());
 		//AMS
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAMSBase.class, new RenderAMSBase());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAMSEmitter.class, new RenderAMSEmitter());
@@ -297,9 +297,9 @@ public class ClientProxy extends ServerProxy {
 		MinecraftForgeClient.registerItemRenderer(ModItems.schrabidium_sword, new ItemRenderTransformer(rtp, ttp_high, stp, rfp, tfp, sfp, rir, tir, sir));
 		MinecraftForgeClient.registerItemRenderer(ModItems.cmb_sword, new ItemRenderTransformer(rtp, ttp_high, stp, rfp, tfp, sfp, rir, tir, sir));
 		
-		for(ItemSwordMeteorite sword : ItemSwordMeteorite.swords) {
-		//	MinecraftForgeClient.registerItemRenderer(sword, new ItemRenderTransformer(rtp, ttp_high, stp, rfp, tfp, sfp, rir, tir, sir));
-		}
+//		for(ItemSwordMeteorite sword : ItemSwordMeteorite.swords) {
+//			MinecraftForgeClient.registerItemRenderer(sword, new ItemRenderTransformer(rtp, ttp_high, stp, rfp, tfp, sfp, rir, tir, sir));
+//		}
 		
 		
 		//test crap
@@ -1589,10 +1589,13 @@ public class ClientProxy extends ServerProxy {
 	}
 	
 	@Override
-	public void openLink(String url) {
+	public void openLink(String url)
+	{
 		try {
 			Desktop.getDesktop().browse(new URI(url));
-		} catch (Exception e) { }
+		} catch (Exception e) {
+			MainRegistry.logger.catching(e);
+		}
 	}
 }
 

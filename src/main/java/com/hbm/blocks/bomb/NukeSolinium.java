@@ -9,6 +9,7 @@ import com.hbm.config.BombConfig;
 import com.hbm.entity.effect.EntityCloudFleijaRainbow;
 import com.hbm.entity.effect.EntityCloudSolinium;
 import com.hbm.entity.logic.EntityNukeExplosionMK3;
+import com.hbm.handler.EnumGUI;
 import com.hbm.interfaces.IBomb;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.bomb.TileEntityNukeSolinium;
@@ -110,7 +111,7 @@ public class NukeSolinium extends BlockContainer implements IBomb {
 			TileEntityNukeSolinium entity = (TileEntityNukeSolinium) world.getTileEntity(x, y, z);
 			if(entity != null)
 			{
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_nuke_solinium, world, x, y, z);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.NUKE_SOLINIUM.ordinal(), world, x, y, z);
 			}
 			return true;
 		} else {

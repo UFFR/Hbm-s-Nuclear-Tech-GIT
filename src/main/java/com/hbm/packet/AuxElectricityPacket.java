@@ -1,8 +1,6 @@
 package com.hbm.packet;
 
 import com.hbm.calc.EasyLocation;
-import com.hbm.interfaces.IConsumer;
-import com.hbm.interfaces.ISource;
 
 import api.hbm.energy.IEnergyUser;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;

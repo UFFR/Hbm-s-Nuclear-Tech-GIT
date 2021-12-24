@@ -1,7 +1,6 @@
 package com.hbm.handler.nei;
 
 import java.awt.Rectangle;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -11,12 +10,9 @@ import java.util.Map;
 import com.hbm.interfaces.Untested;
 import com.hbm.inventory.RecipesCommon.AStack;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
-import com.hbm.inventory.RecipesCommon.OreDictStack;
 import com.hbm.inventory.gui.GUIMachineEPress;
 import com.hbm.inventory.gui.GUIMachinePress;
-import com.hbm.inventory.recipes.MachineRecipes;
 import com.hbm.inventory.recipes.PressRecipes;
-import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemStamp;
 import com.hbm.items.machine.ItemStamp.StampType;
 import com.hbm.lib.RefStrings;
@@ -26,7 +22,6 @@ import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 @Untested

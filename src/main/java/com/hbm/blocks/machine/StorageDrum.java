@@ -1,5 +1,6 @@
 package com.hbm.blocks.machine;
 
+import com.hbm.handler.EnumGUI;
 import com.hbm.tileentity.machine.TileEntityStorageDrum;
 
 import net.minecraft.block.material.Material;
@@ -10,7 +11,7 @@ import net.minecraft.world.World;
 
 public class StorageDrum extends BlockMachineBase {
 
-	public StorageDrum(Material mat, int guiID) {
+	public StorageDrum(Material mat, EnumGUI guiID) {
 		super(mat, guiID);
 	}
 

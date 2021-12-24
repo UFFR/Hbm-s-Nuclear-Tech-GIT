@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hbm.blocks.ModBlocks;
-import com.hbm.entity.projectile.EntityRBMKDebris.DebrisType;
+import com.hbm.entity.projectile.EntityDebrisBase.DebrisType;
 import com.hbm.handler.FluidTypeHandler.FluidType;
 import com.hbm.interfaces.IControlReceiver;
 import com.hbm.interfaces.IFluidAcceptor;

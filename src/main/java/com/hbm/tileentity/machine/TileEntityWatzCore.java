@@ -1,6 +1,7 @@
 package com.hbm.tileentity.machine;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -691,7 +692,7 @@ public class TileEntityWatzCore extends TileEntity implements ISidedInventory, I
 
 	@Override
 	public long getMaxPower() {
-		return this.maxPower;
+		return maxPower;
 	}
 
 	@Override

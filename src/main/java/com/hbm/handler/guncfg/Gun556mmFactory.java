@@ -216,7 +216,7 @@ public class Gun556mmFactory {
 		return config;
 	}
 
-	static final float inaccuracy = 2.5F;
+	static final float inaccuracy = 1.5F;
 	public static BulletConfiguration get556Config() {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardBulletConfig();

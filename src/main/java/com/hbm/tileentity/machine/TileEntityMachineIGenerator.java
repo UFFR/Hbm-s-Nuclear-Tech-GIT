@@ -11,6 +11,8 @@ import com.hbm.inventory.FluidTank;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemRTGPellet;
 import com.hbm.lib.Library;
+import com.hbm.tileentity.IRTGUser;
+import com.hbm.tileentity.IRadioisotopeFuel;
 import com.hbm.tileentity.TileEntityMachineBase;
 
 import api.hbm.energy.IEnergyGenerator;
@@ -24,13 +26,14 @@ import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityMachineIGenerator extends TileEntityMachineBase implements IFluidAcceptor, IEnergyGenerator {
+public class TileEntityMachineIGenerator extends TileEntityMachineBase implements IFluidAcceptor, IEnergyGenerator, IRTGUser {
 	
 	public long power;
 	public static final long maxPower = 1000000;
 	public int spin;
 	public int[] burn = new int[4];
 	public boolean hasRTG = false;
+	private static final int[] rtgSlots = {11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
 
 	@SideOnly(Side.CLIENT)
 	public float rotation;
@@ -40,7 +43,6 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 	public FluidTank[] tanks;
 	
 	public int age = 0;
-
 	public TileEntityMachineIGenerator() {
 		super(21);
 		tanks = new FluidTank[3];
@@ -123,14 +125,18 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 			}
 			
 			// RTG ///
-			this.hasRTG = false;
-			for(int i = 11; i < 21; i++) {
-				if(slots[i] != null && slots[i].getItem() instanceof ItemRTGPellet) {
-					ItemRTGPellet pellet = (ItemRTGPellet) slots[i].getItem();
-					this.spin += pellet.getHeat() * 10;
-					this.hasRTG = true;
-				}
-			}
+			final int rtgHeat = getHeat();
+			this.hasRTG = rtgHeat > 0;
+			
+//			for(int i = 11; i < 21; i++) {
+//					if(slots[i] != null && slots[i].getItem() instanceof ItemRTGPellet) {
+//						ItemRTGPellet pellet = (ItemRTGPellet) slots[i].getItem();
+//						this.spin += pellet.getHeat() * 10;
+//						this.hasRTG = true;
+//					}
+//			}
+			
+			spin += rtgHeat;
 			
 			if(this.spin > 0) {
 				
@@ -301,6 +307,18 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 
 	@Override
 	public long getMaxPower() {
-		return this.maxPower;
+		return maxPower;
+	}
+	
+	@Override
+	public int getHeat()
+	{
+		return updateRTGs(slots, rtgSlots);
+	}
+
+	@Override
+	public Class<? extends IRadioisotopeFuel> getDesiredClass()
+	{
+		return ItemRTGPellet.class;
 	}
 }

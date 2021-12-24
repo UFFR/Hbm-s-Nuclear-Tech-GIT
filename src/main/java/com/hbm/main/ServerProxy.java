@@ -32,4 +32,5 @@ public abstract class ServerProxy {
 	
 	public abstract boolean getIsKeyPressed(EnumKeybind key);
 	public abstract EntityPlayer me();
+	public abstract void openLink(String url);
 }
