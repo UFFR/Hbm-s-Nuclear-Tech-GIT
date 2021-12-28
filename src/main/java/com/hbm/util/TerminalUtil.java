@@ -1,10 +1,8 @@
 package com.hbm.util;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -28,11 +26,43 @@ import scala.actors.threadpool.Arrays;
 @Beta
 public class TerminalUtil
 {
+	private static final ArrayList<ProgramBase> registeredPrograms = new ArrayList<>();
+	/**
+	 * Codes programs or the system can return to show more detailed errors</br>
+	 * {@link #NO_ERROR} {@link #UNKNOWN} {@link #FATAL} {@link #NO_CPU} {@link #NO_RAM} {@link #NO_DISC} {@link #NO_SPACE} {@link #FILE_ERROR}
+	 */
+	public enum ReturnCode
+	{
+		/**No error, execution normal**/
+		NO_ERROR("Program execution complete"),
+		/**Unknown error, fatal**/
+		UNKNOWN("Unknown error; fatal"),
+		/**Generic fatal error**/
+		FATAL("Unrecoverable error!"),
+		/**Invalid/insufficient CPU**/
+		NO_CPU("Invalid/insufficient CPU"),
+		/**Invalid/insufficient RAM**/
+		NO_RAM("Invalid/insufficient RAM"),
+		/**Invalid disk drive, usually used by file accessing programs**/
+		NO_DISC("Invalid disk drive"),
+		/**Not enough disk space**/
+		NO_SPACE("Not enough disk space"),
+		/**Generic file related error**/
+		FILE_ERROR("File operation failed");
+		public final String defaultMessage;
+		private ReturnCode(String defaultMessage)
+		{
+			this.defaultMessage = defaultMessage;
+		}
+		private ReturnCode()
+		{
+			defaultMessage = new String();
+		}
+	}
 	private TerminalUtil() throws InstantiationException
 	{
 		throw new InstantiationException("Instantiation not allowed!");
 	}
-	public static final HashSet<Class<? extends ProgramBase>> registeredPrograms = new HashSet<>();
 	public static final String[] startupLogo =
 		{
 				"█████          █████         █████",
@@ -45,30 +75,14 @@ public class TerminalUtil
 				"Bobsoft Computational Services Inc.",
 				" BobOS v.4080 31 Edition (c) 2077"
 		};
-	static
+	private static Map<String, ProgramBase> getPrograms(Kernel kernel)
 	{
-		registeredPrograms.add(Echo.class);
-		registeredPrograms.add(Help.class);
-		registeredPrograms.add(DisplayFiles.class);
+		HashMap<String, ProgramBase> programs = new HashMap<>(registeredPrograms.size());
+		for (ProgramBase program : registeredPrograms)
+			programs.put(program.name(), program.setKernel(kernel).clone());
+		return null;
 	}
-	public static Map<String, ProgramBase> getPrograms(Kernel kern)
-	{
-		HashMap<String, ProgramBase> out = new HashMap<>(registeredPrograms.size());
-		try
-		{
-			for (Class<? extends ProgramBase> programClass : registeredPrograms)
-			{
-				ProgramBase program = programClass.getConstructor(Kernel.class).newInstance(kern);
-				out.put(program.name(), program);
-			}
-		}
-		catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException | NoSuchMethodException | SecurityException e)
-		{
-			e.printStackTrace();
-		}
-		return out;
-	}
+
 	/**
 	 * Will interact with the display and text input of the computer. Basically a glorified I/O
 	 * @author UFFR
@@ -105,6 +119,12 @@ public class TerminalUtil
 			else
 				print("Unknown command: ".concat(parsed[0]));
 		}
+		public void boot()
+		{
+			print("Starting BobOS...");
+			clearScreen();
+			print(startupLogo);
+		}
 		public Optional<ProgramBase> getCurrentProgram()
 		{
 			return currentProgram;
@@ -138,6 +158,19 @@ public class TerminalUtil
 			}
 			textBuffer.addAll(toAdd);
 		}
+		public void handleReturn(ReturnCode code)
+		{
+			handleReturn(code, code.defaultMessage);
+		}
+		public void handleReturn(ReturnCode code, String message)
+		{
+			if (message == null)
+				message = new String();
+			if (code == ReturnCode.NO_ERROR)
+				print(String.format("Program return code: %s, (%s); %s; No action required, program executed successfully.", code.toString(), code.ordinal(), message.isEmpty() ? "[No message recieved]" : message));
+			else
+				print(String.format("Program return code: %s, (%s); %s; Consult your manual for this error.", code.toString(), code.ordinal(), message.isEmpty() ? "[No message recieved]" : message));
+		}
 		public void print(int x, int y, String text)
 		{
 			floatingTextBuffer.add(new Triplet<Integer, Integer, String>(x, y, text));
@@ -167,6 +200,10 @@ public class TerminalUtil
 			List<String> temp = textBuffer.subList(lineCount > textBuffer.size() ? 0 : textBuffer.size() - lineCount, textBuffer.size() - 1);
 			toDisp = temp.toArray(toDisp);
 			return toDisp;
+		}
+		public List<Triplet<Integer, Integer, String>> getFloatingTextForDisp()
+		{
+			return floatingTextBuffer;
 		}
 		public void writeToNBT(NBTTagCompound nbt)
 		{
@@ -268,7 +305,7 @@ public class TerminalUtil
 			return registry.values();
 		}
 	}
-	public static final class File
+	public static final class File implements Cloneable
 	{
 		public static final String KEY_FILENAME = "FILE_NAME";
 		public static final String KEY_TEXTCONTENT = "TEXT_CONTENT";
@@ -310,13 +347,20 @@ public class TerminalUtil
 	 * @author UFFR
 	 *
 	 */
-	public abstract static class ProgramBase
+	public abstract static class ProgramBase implements Cloneable
 	{
-		private final Kernel kernel;
+		private Kernel kernel;
 		private boolean executionComplete = false;
-		public ProgramBase(Kernel kernel)
+		private final String name;
+		public ProgramBase(String name)
 		{
-			this.kernel = kernel;
+			this.name = name;
+			registeredPrograms.add(this);
+		}
+		public final ProgramBase setKernel(Kernel kern)
+		{
+			kernel = kern;
+			return this;
 		}
 		public final void print(String...strings)
 		{
@@ -338,23 +382,30 @@ public class TerminalUtil
 		{
 			return kernel.fileSystem;
 		}
-		public abstract String name();
+		public final String name()
+		{
+			return name;
+		}
+		@Override
+		public ProgramBase clone()
+		{
+			try
+			{
+				return (ProgramBase) super.clone();
+			} catch (CloneNotSupportedException e)
+			{
+				e.printStackTrace();
+				kernel.handleReturn(ReturnCode.FATAL, "Unable to register program: [" + name + "]!");
+				return null;
+			}
+		}
 		public abstract void execute();
 		public abstract void execute(String...args);
 		public abstract String[] helpCommand();
 		public abstract void keyTypeHook(char c, int i);
 	}
-	public static final class Echo extends ProgramBase
+	public static final ProgramBase Echo = new ProgramBase("echo")
 	{
-		public Echo(Kernel buffer)
-		{
-			super(buffer);
-		}
-		@Override
-		public String name()
-		{
-			return "echo";
-		}
 		@Override
 		public void execute()
 		{
@@ -376,18 +427,9 @@ public class TerminalUtil
 		{
 			// Not needed
 		}
-	}
-	public static final class Help extends ProgramBase
+	};
+	public static final ProgramBase Help = new ProgramBase("help")
 	{
-		public Help(Kernel buffer)
-		{
-			super(buffer);
-		}
-		@Override
-		public String name()
-		{
-			return "help";
-		}
 		@Override
 		public void execute()
 		{
@@ -415,23 +457,13 @@ public class TerminalUtil
 		{
 			// No need
 		}
-	}
-	public static final class DisplayFiles extends ProgramBase
+	};
+	public static final ProgramBase DisplayFiles = new ProgramBase("dir")
 	{
 		boolean refined;
 		String parameter = "";
 		int index = 0;
 		List<File> list;
-		public DisplayFiles(Kernel kernel)
-		{
-			super(kernel);
-		}
-		@Override
-		public String name()
-		{
-			return "cd";
-		}
-
 		@Override
 		public void execute()
 		{
@@ -493,6 +525,5 @@ public class TerminalUtil
 		{
 			// Not needed
 		}
-		
-	}
+	};
 }

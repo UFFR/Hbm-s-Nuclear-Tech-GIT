@@ -94,7 +94,7 @@ public class SingGenRecipes
 					new ComparableStack(ModItems.powder_spark_mix), new ComparableStack(ModItems.plate_dineutronium), new ComparableStack(ModItems.powder_spark_mix),
 					new ComparableStack(ModItems.plate_euphemium), new ComparableStack(ModItems.plate_euphemium),
 					new ComparableStack(ModItems.powder_spark_mix), new ComparableStack(ModItems.plate_dineutronium), new ComparableStack(ModItems.powder_spark_mix)
-				}, new ComparableStack(ModItems.battery_gun_advanced), true, false, FluidType.ASCHRAB, 2000).setLevel(3));
+				}, new ComparableStack(ModItems.battery_gun_advanced), true, false, FluidType.PLASMA_WARP, 2000).setLevel(3));
 		recipes.add(addRecipe(IBatteryItem.emptyBattery(ModItems.battery_gun_elite), new ComparableStack[]
 				{
 					new ComparableStack(ModItems.powder_spark_mix), new ComparableStack(ModItems.plate_euphemium), new ComparableStack(ModItems.powder_spark_mix),
@@ -195,7 +195,6 @@ public class SingGenRecipes
 			{
 				boolean inRecipe = false;
 				Iterator<AStack> recipeIterator = recipeStacks.iterator();
-				
 				while (recipeIterator.hasNext())
 				{
 					AStack rStack = recipeIterator.next();
