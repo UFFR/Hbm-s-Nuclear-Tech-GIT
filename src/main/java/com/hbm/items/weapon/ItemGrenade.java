@@ -3,8 +3,15 @@ package com.hbm.items.weapon;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import com.hbm.entity.grenade.EntityGrenadeBase;
-import com.hbm.entity.grenade.EntityGrenadeBouncyBase;
+import com.hbm.entity.grenade.EntityGrenadeASchrab;
+import com.hbm.entity.grenade.EntityGrenadeBlackHole;
+import com.hbm.entity.grenade.EntityGrenadeBreach;
+import com.hbm.entity.grenade.EntityGrenadeBurst;
+import com.hbm.entity.grenade.EntityGrenadeCloud;
+import com.hbm.entity.grenade.EntityGrenadeCluster;
+import com.hbm.entity.grenade.EntityGrenadeDynamite;
+import com.hbm.entity.grenade.EntityGrenadeElectric;
+import com.hbm.entity.grenade.EntityGrenadeFire;
 import com.hbm.entity.grenade.EntityGrenadeFlare;
 import com.hbm.items.ModItems;
 import com.hbm.items.special.ItemCustomLore;
@@ -76,11 +83,17 @@ public class ItemGrenade extends ItemCustomLore
 			}
 			if (this == ModItems.grenade_flare)
 				worldIn.spawnEntityInWorld(new EntityGrenadeFlare(worldIn, player));
+			if (this == ModItems.nuclear_waste_pearl) {
+				p_77659_2_.spawnEntityInWorld(new EntityWastePearl(p_77659_2_, p_77659_3_));
+			}
+			if (this == ModItems.stick_dynamite) {
+				p_77659_2_.spawnEntityInWorld(new EntityGrenadeDynamite(p_77659_2_, p_77659_3_));
+			}
 		}
 
-		return stack;
+		return p_77659_1_;
 	}
-	
+
 	private String translateFuse()
 	{
 		if(fuse == -1)

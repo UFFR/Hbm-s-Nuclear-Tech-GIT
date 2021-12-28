@@ -14,14 +14,8 @@ import com.hbm.hazard.transformer.*;
 import com.hbm.hazard.type.*;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.items.ModItems;
-import com.hbm.items.special.ItemWasteLong;
-import com.hbm.items.special.ItemWasteShort;
-import com.hbm.lib.HbmCollection;
-import com.hbm.main.MainRegistry;
-import com.hbm.util.ArmorRegistry;
-import com.hbm.util.ArmorRegistry.HazardClass;
-import com.hbm.util.ArmorUtil;
-import com.hbm.util.I18nUtil;
+import com.hbm.util.Compat;
+import com.hbm.util.Compat.ReikaIsotope;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -30,7 +24,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
 
 public class HazardRegistry {
 
@@ -123,6 +116,58 @@ public class HazardRegistry {
 	public static final float mes = realisticRads ? ((np237 * 3) + (sa326 * 3)) * 0.1F : 5.85F;
 	public static final float hes = ((np237 * 2) + (sa326 * 5)) * 0.1F;
 	public static final float les = ((np237 * 4) + sa326) * 0.1F;
+	//AM242		           141a		β−	009.50Rad/s
+
+	//simplified groups for ReC compat
+	public static final float gen_S = 10_000F;
+	public static final float gen_H = 2_000F;
+	public static final float gen_10D = 100F;
+	public static final float gen_100D = 80F;
+	public static final float gen_1Y = 50F;
+	public static final float gen_10Y = 30F;
+	public static final float gen_100Y = 10F;
+	public static final float gen_1K = 7.5F;
+	public static final float gen_10K = 6.25F;
+	public static final float gen_100K = 5F;
+	public static final float gen_1M = 2.5F;
+	public static final float gen_10M = 1.5F;
+	public static final float gen_100M = 1F;
+	public static final float gen_1B = 0.5F;
+	public static final float gen_10B = 0.1F;
+
+	public static final float co60 = 30.0F;
+	public static final float tc99 = 2.75F;
+	public static final float i131 = 150.0F;
+	public static final float xe135 = 1250.0F;
+	public static final float cs137 = 20.0F;
+	public static final float au198 = 500.0F;
+	public static final float at209 = 2000.0F;
+	public static final float po210 = 75.0F;
+	public static final float ra226 = 7.5F;
+	public static final float th232 = 0.1F;
+	public static final float thf = 1.75F;
+	public static final float u = 0.35F;
+	public static final float u233 = 5.0F;
+	public static final float u235 = 1.0F;
+	public static final float u238 = 0.25F;
+	public static final float uf = 0.5F;
+	public static final float np237 = 2.5F;
+	public static final float npf = 1.5F;
+	public static final float pu = 7.5F;
+	public static final float purg = 6.25F;
+	public static final float pu238 = 10.0F;
+	public static final float pu239 = 5.0F;
+	public static final float pu240 = 7.5F;
+	public static final float pu241 = 25.0F;
+	public static final float puf = 4.25F;
+	public static final float am241 = 8.5F;
+	public static final float am242 = 9.5F;
+	public static final float amrg = 9.0F;
+	public static final float amf = 4.75F;
+	public static final float mox = 2.5F;
+	public static final float sa326 = 15.0F;
+	public static final float sa327 = 17.5F;
+	public static final float saf = 5.85F;
 	public static final float sas3 = 5F;
 	public static final float radsource_mult = 0.5F;
 	public static final float pobe = po210 * radsource_mult;
@@ -250,6 +295,9 @@ public class HazardRegistry {
 		HazardSystem.register(Items.gunpowder, makeData(EXPLOSIVE, 1F));
 		HazardSystem.register(Blocks.tnt, makeData(EXPLOSIVE, 4F));
 		HazardSystem.register(Items.pumpkin_pie, makeData(EXPLOSIVE, 4F));
+		
+		HazardSystem.register(ModItems.ball_dynamite, makeData(EXPLOSIVE, 2F));
+		HazardSystem.register(ModItems.stick_dynamite, makeData(EXPLOSIVE, 1F));
 
 		HazardSystem.register("dustCoal", makeData(COAL, powder));
 		HazardSystem.register("dustTinyCoal", makeData(COAL, powder_tiny));
@@ -508,6 +556,17 @@ public class HazardRegistry {
 		HazardSystem.register(billet_cf252be, makeData(RADIATION, cf252 * billet / 2).alpha().gamma(2).neutron(7));
 		HazardSystem.register(billet_sa327be, makeData(RADIATION, sa327 * billet / 2).beta(2).gamma(2).neutron(6));
 
+		HazardSystem.register(billet_po210be, makeData(RADIATION, pobe * billet));
+		HazardSystem.register(billet_ra226be, makeData(RADIATION, rabe * billet));
+		HazardSystem.register(billet_pu238be, makeData(RADIATION, pube * billet));
+		
+		HazardSystem.register(pellet_rtg, new HazardData().addEntry(RADIATION, pu238 * billet * 3).addEntry(HOT, 5F));
+		HazardSystem.register(pellet_rtg_radium, makeData(RADIATION, ra226 * billet * 3));
+		HazardSystem.register(pellet_rtg_weak, makeData(RADIATION, (pu238 + (u238 * 2)) * billet));
+		HazardSystem.register(pellet_rtg_polonium, new HazardData().addEntry(RADIATION, po210 * billet * 3).addEntry(HOT, 5F));
+		HazardSystem.register(pellet_rtg_gold, new HazardData().addEntry(RADIATION, au198 * billet * 3).addEntry(HOT, 5F));
+		HazardSystem.register(pellet_rtg_americium, makeData(RADIATION, am241 * billet * 3));
+		
 		registerRodRadiation(rod_th232, rod_dual_th232, rod_quad_th232, th232);
 		registerRodRadiationExtra(rod_tha, rod_dual_tha, rod_quad_tha, tha, HOT, 5);
 		registerRodRadiation(rod_uranium, rod_dual_uranium, rod_quad_uranium, u);
@@ -595,7 +654,17 @@ public class HazardRegistry {
 		HazardSystem.register(ModBlocks.fallout, makeData(RADIATION, fo * powder * 2));
 		HazardSystem.register(ModBlocks.block_fallout, makeData(RADIATION, yc * block * powder_mult));
 		
-		//TODO
+		/*
+		 * ReC compat
+		 */
+		Item recWaste = Compat.tryLoadItem(Compat.MOD_REC, "reactorcraft_item_waste");
+		if(recWaste != null) {
+			for(ReikaIsotope i : ReikaIsotope.values()) {
+				if(i.getRad() > 0) {
+					HazardSystem.register(new ItemStack(recWaste, 1, i.ordinal()), makeData(RADIATION, i.getRad()));
+				}
+			}
+		}
 	}
 	
 	public static void registerTrafos() {

@@ -102,6 +102,7 @@ public class ItemRTGPellet extends Item implements IRadioisotopeFuel
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean bool)
 	{
 		super.addInformation(stack, player, list, bool);
+		list.add(I18nUtil.resolveKey(this.getUnlocalizedName() + ".desc"));
 		IRadioisotopeFuel.addTooltip(list, stack, bool);
 	}
 	

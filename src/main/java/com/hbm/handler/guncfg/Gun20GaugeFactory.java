@@ -130,6 +130,23 @@ public class Gun20GaugeFactory {
 		
 		config.name = "win20Inox";
 		config.manufacturer = EnumGunManufacturer.WINCHESTER;
+		config.animations.put(AnimType.CYCLE, new BusAnimation()
+				.addBus("RECOIL", new BusAnimationSequence()
+						.addKeyframe(new BusAnimationKeyframe(1, 0, 0, 25))
+						.addKeyframe(new BusAnimationKeyframe(0, 0, 0, 75))
+						)
+				.addBus("LEVER_PULL", new BusAnimationSequence()
+						.addKeyframe(new BusAnimationKeyframe(0, 0, 0, 375)) //wait out recoil and lever flick
+						.addKeyframe(new BusAnimationKeyframe(-1, 0, 0, 375)) //pull back bolt
+						.addKeyframe(new BusAnimationKeyframe(0, 0, 0, 375)) //release bolt
+						)
+				.addBus("LEVER_ROTATE", new BusAnimationSequence()
+						.addKeyframe(new BusAnimationKeyframe(0, 0, 0, 250)) //wait out recoil
+						.addKeyframe(new BusAnimationKeyframe(1, 0, 0, 125)) //flick up lever in  125ms
+						.addKeyframe(new BusAnimationKeyframe(1, 0, 0, 750)) //pull action
+						.addKeyframe(new BusAnimationKeyframe(0, 0, 0, 125)) //flick down lever again
+						)
+				);
 		
 		config.config = new ArrayList<Integer>();
 		config.config.add(BulletConfigSyncingUtil.G20_SLUG);

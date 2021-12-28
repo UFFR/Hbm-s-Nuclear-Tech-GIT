@@ -210,100 +210,6 @@ public class MachineRecipes
 
 		return null;
 	}
-
-	public static enum StampType
-	{
-		FLAT,
-		PLATE,
-		WIRE,
-		CIRCUIT,
-		DISC,
-		THREE_FIFTY_SEVEN,
-		FOURTY_FOUR,
-		FIFTY,
-		NINE;
-	}
-	
-	//bro, i don't care
-	@SuppressWarnings("incomplete-switch")
-	public static List<GasCentOutput> getGasCentOutput(FluidType fluid) {
-		
-		List<GasCentOutput> list = new ArrayList();
-		
-		switch(fluid) {
-		case UF6:
-			list.add(new GasCentOutput(3, new ItemStack(ModItems.nugget_u238), 1));
-			list.add(new GasCentOutput(3, new ItemStack(ModItems.nugget_u238), 2));
-			list.add(new GasCentOutput(2, new ItemStack(ModItems.nugget_u238), 3));
-			list.add(new GasCentOutput(1, new ItemStack(ModItems.nugget_u235), 4));
-			return list;
-		case PUF6:
-			list.add(new GasCentOutput(1, new ItemStack(ModItems.nugget_pu238), 1));
-			list.add(new GasCentOutput(2, new ItemStack(ModItems.nugget_pu238), 2));
-			list.add(new GasCentOutput(6, new ItemStack(ModItems.nugget_pu_mix), 3));
-			list.add(new GasCentOutput(6, new ItemStack(ModItems.nugget_pu_mix), 4));
-			return list;
-		case WATZ:
-			list.add(new GasCentOutput(1, new ItemStack(ModItems.nugget_solinium), 1));
-			list.add(new GasCentOutput(1, new ItemStack(ModItems.nugget_uranium), 2));
-			list.add(new GasCentOutput(5, new ItemStack(ModItems.powder_lead), 3));
-			list.add(new GasCentOutput(10, new ItemStack(ModItems.dust), 4));
-			return list;
-		case SAS3:
-			list.add(new GasCentOutput(4, new ItemStack(ModItems.nugget_schrabidium), 1));
-			list.add(new GasCentOutput(4, new ItemStack(ModItems.nugget_schrabidium), 2));
-			list.add(new GasCentOutput(1, new ItemStack(ModItems.sulfur), 3));
-			list.add(new GasCentOutput(1, new ItemStack(ModItems.sulfur), 4));
-			return list;
-		case NITAN:
-			list.add(new GasCentOutput(1, new ItemStack(ModItems.powder_nitan_mix), 1));
-			list.add(new GasCentOutput(1, new ItemStack(ModItems.powder_nitan_mix), 2));
-			list.add(new GasCentOutput(1, new ItemStack(ModItems.powder_nitan_mix), 3));
-			list.add(new GasCentOutput(1, new ItemStack(ModItems.powder_nitan_mix), 4));
-			return list;
-		}
-		
-		return null;
-	}
-	
-	public static class GasCentOutput {
-		public int weight;
-		public ItemStack output;
-		public int slot;
-		
-		public GasCentOutput(int w, ItemStack s, int i) {
-			weight = w;
-			output = s;
-			slot = i;
-		}
-	}
-
-	@SuppressWarnings("incomplete-switch")
-	public static int getFluidConsumedGasCent(FluidType fluid) {
-		
-		new ArrayList();
-		
-		switch(fluid) {
-		case LAVA:
-			return 1000;
-		case UF6:
-			return 100;
-		case PUF6:
-			return 100;
-		case WATZ:
-			return 1000;
-		case SAS3:
-			return 100;
-		case COOLANT:
-			return 2000;
-		case CRYOGEL:
-			return 1000;
-		case NITAN:
-			return 500;
-		}
-		
-		return 100;
-	}
 	
 	//return: FluidType, amount produced, amount required, heat required (°C * 100)
 	@SuppressWarnings("incomplete-switch")
@@ -622,43 +528,6 @@ public class MachineRecipes
 		fuels.add(new ItemStack(ModItems.solid_fuel));
 		fuels.add(new ItemStack(ModItems.powder_coal));
 		return fuels;
-	}
-
-	public Map<Object, Object[]> getGasCentrifugeRecipes() {
-		Map<Object, Object[]> recipes = new HashMap<Object, Object[]>();
-
-		for(int i = 0; i < FluidType.values().length; i++) {
-			
-			if(getGasCentOutput(FluidType.getEnum(i)) != null) {
-				
-				List<GasCentOutput> outputs = getGasCentOutput(FluidType.getEnum(i));
-				
-				int totalWeight = 0;
-				
-				for(GasCentOutput o : outputs) {
-					totalWeight += o.weight;
-				}
-				
-				ItemStack input = new ItemStack(ModItems.fluid_icon, 1, i);
-				ItemFluidIcon.addQuantity(input, getFluidConsumedGasCent(FluidType.getEnum(i)) * totalWeight);
-
-				ItemStack[] out = new ItemStack[4];
-				
-				for(int j = 0; j < outputs.size(); j++) {
-					
-					out[j] = outputs.get(j).output.copy();
-					out[j].stackSize *= outputs.get(j).weight;
-				}
-				
-				for(int j = 0; j < 4; j++)
-					if(out[j] == null)
-						out[j] = new ItemStack(ModItems.nothing);
-				
-				recipes.put(input, out);
-			}
-		}
-		
-		return recipes;
 	}
 
 	public ArrayList<ItemStack> getCentrifugeFuels() {
@@ -1462,12 +1331,12 @@ public class MachineRecipes
 			list.add(new ItemStack(ModItems.biomass, 16));
 			break;
         case YELLOWCAKE:
-			list.add(new ItemStack(ModItems.powder_uranium, 1));
+			list.add(new ItemStack(ModItems.billet_uranium, 2));
 			list.add(new ItemStack(ModItems.sulfur, 2));
 			break;
         case UF6:
 			list.add(new ItemStack(ModItems.powder_yellowcake, 1));
-			list.add(new ItemStack(ModItems.fluorite, 1));
+			list.add(new ItemStack(ModItems.fluorite, 4));
 			break;
         case PUF6:
 			list.add(new ItemStack(ModItems.powder_plutonium, 1));
@@ -1556,12 +1425,6 @@ public class MachineRecipes
 		case DU_DIOXIDE:
 			list.add(new ItemStack(ModItems.powder_u238));
 			break;
-		case DUCRETE:
-			list.add(new ItemStack(Blocks.sand));
-			list.add(new ItemStack(ModItems.powder_du_dioxide, 4));
-        	list.add(new ItemStack(ModItems.nugget_silicon, 16));
-        	list.add(new ItemStack(Items.clay_ball, 4));
-        	break;
 		case QUARTZ:
         	list.add(new ItemStack(ModItems.powder_silicon, 4));
         	break;
@@ -1604,6 +1467,10 @@ public class MachineRecipes
 			list.add(new ItemStack(Items.wheat, 1));
 			list.add(new ItemStack(Items.dye, 2, 3));
 			break;
+		case DUCRETE:
+			list.add(new ItemStack(Blocks.sand, 8));
+			list.add(new ItemStack(ModItems.billet_u238, 2));
+			list.add(new ItemStack(Items.clay_ball, 4));
 		default:
 			break;
 		}
@@ -2013,6 +1880,9 @@ public class MachineRecipes
         case YELLOWCAKE:
 			output[0] = new ItemStack(ModItems.powder_yellowcake, 1);
         	break;
+        case UF6:
+			output[0] = new ItemStack(ModItems.sulfur, 2);
+			break;
         case DYN_SCHRAB:
 			output[0] = new ItemStack(ModItems.ingot_schrabidium, 1);
 			output[1] = new ItemStack(ModItems.powder_desh, 12);
@@ -2074,12 +1944,6 @@ public class MachineRecipes
         case DU_DIOXIDE:
         	output[0] = new ItemStack(ModItems.powder_du_dioxide, 1);
         	break;
-        case DUCRETE:
-        	output[0] = new ItemStack(ModBlocks.ducrete_smooth, 4);
-        	output[1] = new ItemStack(ModBlocks.ducrete_smooth, 4);
-        	output[2] = new ItemStack(ModBlocks.ducrete_smooth, 4);
-        	output[3] = new ItemStack(ModBlocks.ducrete_smooth, 4);
-        	break;
         case OD_CD:
         	output[0] = new ItemStack(ModItems.storage_optical_cd, 1);
         	output[1] = new ItemStack(ModItems.storage_optical_cd, 1);
@@ -2098,6 +1962,11 @@ public class MachineRecipes
 			output[0] = new ItemStack(ModItems.chocolate, 2);
 			output[1] = new ItemStack(ModItems.chocolate, 2);
 			break;
+		case DUCRETE:
+			output[0] = new ItemStack(ModBlocks.ducrete_smooth, 2);
+			output[1] = new ItemStack(ModBlocks.ducrete_smooth, 2);
+			output[2] = new ItemStack(ModBlocks.ducrete_smooth, 2);
+			output[3] = new ItemStack(ModBlocks.ducrete_smooth, 2);
 		default:
 			break;
 		}
@@ -2191,7 +2060,7 @@ public class MachineRecipes
 			output[0] = new FluidStack(1000, FluidType.LPG);
         	break;
         case UF6:
-			output[0] = new FluidStack(900, FluidType.UF6);
+			output[0] = new FluidStack(1200, FluidType.UF6);
         	break;
         case PUF6:
 			output[0] = new FluidStack(900, FluidType.PUF6);

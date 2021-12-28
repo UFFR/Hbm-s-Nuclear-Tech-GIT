@@ -38,6 +38,7 @@ public class PressRecipeHandler extends TemplateRecipeHandler {
 		PositionedStack stamp;
 
 		public SmeltingSet(Object stamp, AStack input, ItemStack result) {
+			input.stacksize = 1;
 			this.input = new PositionedStack(input.extractForNEI(), 83 - 35, 5 + 36 + 1);
 			this.result = new PositionedStack(result, 83 + 28, 5 + 18 + 1);
 			this.stamp = new PositionedStack(stamp, 83 - 35, 6, false);

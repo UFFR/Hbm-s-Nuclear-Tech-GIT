@@ -16,6 +16,7 @@ import com.hbm.interfaces.Spaghetti;
 import com.hbm.main.MainRegistry;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
@@ -123,6 +124,9 @@ public class EntityNukeExplosionMK3 extends Entity {
         super.onUpdate();
         if(!this.did)
         {
+        	for(Object player : this.worldObj.playerEntities)
+    			((EntityPlayer)player).triggerAchievement(MainRegistry.achManhattan);
+        	
     		if(GeneralConfig.enableExtendedLogging && !worldObj.isRemote)
     			MainRegistry.logger.log(Level.INFO, "[NUKE] Initialized mk3 explosion at " + posX + " / " + posY + " / " + posZ + " with strength " + destructionRange + "!");
     		

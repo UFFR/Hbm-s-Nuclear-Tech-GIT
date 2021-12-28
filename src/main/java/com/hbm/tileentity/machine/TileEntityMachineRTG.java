@@ -1,6 +1,10 @@
 package com.hbm.tileentity.machine;
 
+import java.util.ArrayList;
+import java.util.List;
+import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemRTGPellet;
+import com.hbm.lib.Library;
 import com.hbm.packet.AuxElectricityPacket;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.tileentity.IRTGUser;
@@ -209,7 +213,7 @@ public class TileEntityMachineRTG extends TileEntity implements ISidedInventory,
 		if(!worldObj.isRemote) {
 			
 			for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
-				this.sendPower(worldObj, xCoord, yCoord, zCoord, dir);
+				this.sendPower(worldObj, xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ, dir.getOpposite());
 			
 			heat = 0;
 			

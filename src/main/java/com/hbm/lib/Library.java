@@ -582,6 +582,12 @@ public class Library
 	 * @param maxPower Unused 
 	 */
 	public static long chargeItemsFromTE(ItemStack[] slots, int index, long power, long maxPower) {
+		
+		if(power < 0)
+			return 0;
+		
+		if(power > maxPower)
+			return maxPower;
 
 		if(slots[index] != null && slots[index].getItem() instanceof IBatteryItem) {
 			
