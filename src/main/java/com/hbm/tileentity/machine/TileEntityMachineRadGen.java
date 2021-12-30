@@ -215,12 +215,13 @@ public class TileEntityMachineRadGen extends TileEntityMachineBase implements IE
 			fuels.put(	new ComparableStack(ModItems.nuclear_waste_long, 1, i),			new Triplet<Integer, Integer, ItemStack>(50,	2 * 60 * 60 * 20,	new ItemStack(ModItems.nuclear_waste_long_depleted, 1, i)));
 			fuels.put(	new ComparableStack(ModItems.nuclear_waste_long_tiny, 1, i),	new Triplet<Integer, Integer, ItemStack>(5,		12 * 60 * 20,		new ItemStack(ModItems.nuclear_waste_long_depleted_tiny, 1, i)));
 		}
-		
+		fuels.put(		new ComparableStack(ModItems.ingot_au198), 						new Triplet<Integer, Integer, ItemStack>(5000, 1200, new ItemStack(ModItems.nugget_mercury)));
+		fuels.put(		new ComparableStack(ModItems.powder_au198), 					new Triplet<Integer, Integer, ItemStack>(5000, 1200, new ItemStack(ModItems.nugget_mercury)));
 		fuels.put(		new ComparableStack(ModItems.scrap_nuclear),					new Triplet<Integer, Integer, ItemStack>(5,		5 * 60 * 20,		null));
-		fuels.put(		new ComparableStack(ModItems.nugget_ra226), 					new Triplet<Integer, Integer, ItemStack>(5,		3 * 60 * 20, 		new ItemStack(ModItems.nugget_polonium)));
-		fuels.put(		new ComparableStack(ModItems.billet_ra226), 					new Triplet<Integer, Integer, ItemStack>(50, 	3 * 60 * 20, 		new ItemStack(ModItems.billet_polonium)));
-		fuels.put(		new ComparableStack(ModItems.ingot_ra226), 						new Triplet<Integer, Integer, ItemStack>(50, 	3 * 60 * 20, 		new ItemStack(ModItems.ingot_polonium)));
-		fuels.put(		new ComparableStack(ModItems.powder_ra226), 					new Triplet<Integer, Integer, ItemStack>(50, 	3 * 60 * 20, 		new ItemStack(ModItems.powder_polonium)));
+		fuels.put(		new ComparableStack(ModItems.nugget_ra226), 					new Triplet<Integer, Integer, ItemStack>(5,		12 * 60 * 20, 		new ItemStack(ModItems.nugget_polonium)));
+		fuels.put(		new ComparableStack(ModItems.billet_ra226), 					new Triplet<Integer, Integer, ItemStack>(50, 	12 * 60 * 20, 		new ItemStack(ModItems.billet_polonium)));
+		fuels.put(		new ComparableStack(ModItems.ingot_ra226), 						new Triplet<Integer, Integer, ItemStack>(50, 	12 * 60 * 20, 		new ItemStack(ModItems.ingot_polonium)));
+		fuels.put(		new ComparableStack(ModItems.powder_ra226), 					new Triplet<Integer, Integer, ItemStack>(50, 	12 * 60 * 20, 		new ItemStack(ModItems.powder_polonium)));
 		
 		if (!BetavoltaicFuels.isInitialized())
 			BetavoltaicFuels.initialize();

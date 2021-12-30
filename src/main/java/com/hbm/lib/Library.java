@@ -717,6 +717,7 @@ public class Library
 	//Flut-Füll gesteuerter Energieübertragungsalgorithmus
 	//Flood fill controlled energy transmission algorithm
 	//TODO: bring back the @Cursed annotation just for garbage like this
+	@Deprecated
 	public static void ffgeua(int x, int y, int z, boolean newTact, Object that, World worldObj) {
 		
 		/*

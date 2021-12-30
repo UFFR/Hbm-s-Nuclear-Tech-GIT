@@ -1,17 +1,19 @@
 package api.hbm.internet;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import com.google.common.annotations.Beta;
 import com.hbm.interfaces.Untested;
-import com.hbm.packet.NBTControlPacket;
-import com.hbm.packet.PacketDispatcher;
 
 import net.minecraft.tileentity.TileEntity;
 @Beta
 public class Internet implements IInternet
 {
+	private HashMap<UUID, IDataUser> idMap = new HashMap<UUID, IDataUser>();
+	private HashMap<String, IDataUser> nameMap = new HashMap<String, IDataUser>();
 	private boolean valid = false;
 	private ArrayList<IDataConductor> links = new ArrayList<>();
 	private ArrayList<IDataConnector> subscribers = new ArrayList<>();

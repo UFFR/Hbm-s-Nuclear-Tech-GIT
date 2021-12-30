@@ -1,34 +1,34 @@
 package com.hbm.items.food;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 import com.hbm.config.VersatileConfig;
-import com.hbm.extprop.HbmLivingProps;
 import com.hbm.interfaces.IHasLore;
-import com.hbm.interfaces.Spaghetti;
-import com.hbm.items.ModItems;
-import com.hbm.items.special.ItemCustomLore;
-import com.hbm.lib.ModDamageSource;
-import com.hbm.main.MainRegistry;
-import com.hbm.potion.HbmPotion;
-import com.hbm.util.I18nUtil;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
-@Spaghetti("if statement chain")
 public class ItemPill extends ItemFood implements IHasLore
 {
-
+	public interface PillConsumed
+	{
+		public void onConsume(ItemStack stack, World world, EntityPlayer player);
+	}
+	private Optional<PillConsumed> consumeAction = Optional.empty();
 	public ItemPill(int hunger) {
 		super(hunger, false);
 		this.setAlwaysEdible();
 	}
 
+	public ItemPill(int hunger, PillConsumed action)
+	{
+		this(hunger);
+		consumeAction = Optional.of(action);
+	}
+	
 	Random rand = new Random();
 
 	@Override
@@ -37,60 +37,9 @@ public class ItemPill extends ItemFood implements IHasLore
 			
 			VersatileConfig.applyPotionSickness(player, 5);
 			
-			if(this == ModItems.pill_iodine) {
-				player.removePotionEffect(Potion.blindness.id);
-				player.removePotionEffect(Potion.confusion.id);
-				player.removePotionEffect(Potion.digSlowdown.id);
-				player.removePotionEffect(Potion.hunger.id);
-				player.removePotionEffect(Potion.moveSlowdown.id);
-				player.removePotionEffect(Potion.poison.id);
-				player.removePotionEffect(Potion.weakness.id);
-				player.removePotionEffect(Potion.wither.id);
-				player.removePotionEffect(HbmPotion.radiation.id);
-			}
-
-			if(this == ModItems.plan_c) {
-				for(int i = 0; i < 10; i++)
-					player.attackEntityFrom(rand.nextBoolean() ? ModDamageSource.euthanizedSelf : ModDamageSource.euthanizedSelf2, 1000);
-			}
-
-			if(this == ModItems.radx) {
-				player.addPotionEffect(new PotionEffect(HbmPotion.radx.id, 3 * 60 * 20, 0));
-			}
-
-			if(this == ModItems.xanax) {
-				float digamma = HbmLivingProps.getDigamma(player);
-				HbmLivingProps.setDigamma(player, Math.max(digamma - 0.5F, 0F));
-			}
+			if (consumeAction.isPresent())
+				consumeAction.get().onConsume(stack, world, player);
 			
-			if(this == ModItems.chocolate) {
-				if(rand.nextInt(25) == 0) {
-					player.attackEntityFrom(ModDamageSource.overdose, 1000);
-				}
-				player.addPotionEffect(new PotionEffect(Potion.digSpeed.id, 60 * 20, 3));
-				player.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 60 * 20, 3));
-				player.addPotionEffect(new PotionEffect(Potion.jump.id, 60 * 20, 3));
-			}
-
-			if(this == ModItems.fmn) {
-				float digamma = HbmLivingProps.getDigamma(player);
-				HbmLivingProps.setDigamma(player, Math.min(digamma, 2F));
-				player.addPotionEffect(new PotionEffect(Potion.blindness.id, 60, 0));
-			}
-
-			if(this == ModItems.five_htp) {
-				HbmLivingProps.setDigamma(player, 0);
-				player.addPotionEffect(new PotionEffect(HbmPotion.stability.id, 10 * 60 * 20, 0));
-			}
-			if(this == ModItems.pirfenidone) {
-				float fibrosis = HbmLivingProps.getFibrosis(player);
-				HbmLivingProps.setFibrosis(player, (int) Math.min(fibrosis, 37800));
-			}
-			if(this == ModItems.siox) {
-				HbmLivingProps.setAsbestos(player, 0);
-				HbmLivingProps.setBlackLung(player, Math.min(HbmLivingProps.getBlackLung(player), HbmLivingProps.maxBlacklung / 5));
-			}
-
 		}
 	}
 

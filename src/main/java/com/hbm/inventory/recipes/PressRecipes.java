@@ -63,6 +63,9 @@ public class PressRecipes {
 		makeRecipe(StampType.PLATE, new OreDictStack(SA326.ingot()),	ModItems.plate_schrabidium);
 		makeRecipe(StampType.PLATE, new OreDictStack(CMB.ingot()),		ModItems.plate_combine_steel);
 		makeRecipe(StampType.PLATE, new OreDictStack(BIGMT.ingot()),	ModItems.plate_saturnite);
+		makeRecipe(StampType.PLATE, new OreDictStack(U233.ingot()),		ModItems.plate_u233);
+		makeRecipe(StampType.PLATE, new OreDictStack(U235.ingot()),		ModItems.plate_u235);
+		makeRecipe(StampType.PLATE, new OreDictStack(PU239.ingot()),	ModItems.plate_pu239);
 
 		makeRecipe(StampType.WIRE, new OreDictStack(AL.ingot()),		new ItemStack(ModItems.wire_aluminium, 8));
 		makeRecipe(StampType.WIRE, new OreDictStack(CU.ingot()),		new ItemStack(ModItems.wire_copper, 8));
@@ -75,7 +78,9 @@ public class PressRecipes {
 
 		makeRecipe(StampType.CIRCUIT, new ComparableStack(ModItems.circuit_raw),				ModItems.circuit_aluminium);
 		makeRecipe(StampType.CIRCUIT, new ComparableStack(ModItems.circuit_bismuth_raw),		ModItems.circuit_bismuth);
-		makeRecipe(StampType.CIRCUIT, new ComparableStack(ModItems.circuit_tantalium_raw),	ModItems.circuit_tantalium);
+		makeRecipe(StampType.CIRCUIT, new ComparableStack(ModItems.circuit_tantalium_raw),		ModItems.circuit_tantalium);
+		
+		makeRecipe(StampType.DISC, new OreDictStack(ACRYLIC.ingot()), ModItems.storage_optical_raw);
 
 		makeRecipe(StampType.C357, new ComparableStack(ModItems.assembly_iron),			ModItems.gun_revolver_iron_ammo);
 		makeRecipe(StampType.C357, new ComparableStack(ModItems.assembly_steel),		ModItems.gun_revolver_ammo);
@@ -86,16 +91,17 @@ public class PressRecipes {
 		makeRecipe(StampType.C357, new ComparableStack(ModItems.assembly_desh),			ModItems.ammo_357_desh);
 		makeRecipe(StampType.C357, new OreDictStack(STEEL.ingot()),						ModItems.gun_revolver_cursed_ammo);
 		
-		makeRecipe(StampType.C44, new ComparableStack(ModItems.assembly_nopip),	ModItems.ammo_44);
+		makeRecipe(StampType.C44, new ComparableStack(ModItems.assembly_nopip),		ModItems.ammo_44);
 
 		makeRecipe(StampType.C9, new ComparableStack(ModItems.assembly_smg),		ModItems.ammo_9mm);
 		makeRecipe(StampType.C9, new ComparableStack(ModItems.assembly_uzi),		ModItems.ammo_22lr);
-		makeRecipe(StampType.C9, new OreDictStack(AU.ingot()),					ModItems.ammo_566_gold);
+		makeRecipe(StampType.C9, new OreDictStack(AU.ingot()),						ModItems.ammo_566_gold);
 		makeRecipe(StampType.C9, new ComparableStack(ModItems.assembly_lacunae),	ModItems.ammo_5mm);
 		makeRecipe(StampType.C9, new ComparableStack(ModItems.assembly_556),		ModItems.ammo_556);
 
 		makeRecipe(StampType.C50, new ComparableStack(ModItems.assembly_calamity),		ModItems.ammo_50bmg);
 		makeRecipe(StampType.C50, new ComparableStack(ModItems.assembly_actionexpress),	ModItems.ammo_50ae);
+		makeRecipe(StampType.C50, new ComparableStack(ModItems.assembly_luna_sniper), 	ModItems.ammo_luna_sniper);
 	}
 
 	public static void makeRecipe(StampType type, AStack in, Item out) {

@@ -333,7 +333,7 @@ public class SingGenRecipes
 		@Override
 		public String getKey()
 		{
-			return "NTM_SING_GEN";
+			return output.getUnlocalizedName();
 		}
 	}
 }

@@ -125,8 +125,14 @@ public class ConsumableRecipes {
 		CraftingManager.addShapelessAuto(new ItemStack(ModItems.cigarette, 16), new Object[] { ASBESTOS.ingot(), ModItems.oil_tar, PO210.nugget() });
 		CraftingManager.addShapelessAuto(new ItemStack(ModItems.pill_strontium), ST.dust(), FluidTypeHandler.newFluidTank(FluidType.ALCOHOL), KNO.dust());
 		String[] radiotherapySuperStrong = {AT209.dust(), AT.dust(), TS.dust()};
+		for (String ore : radiotherapySuperStrong)
+			CraftingManager.addShapelessAuto(new ItemStack(ModItems.pill_radiotherapy_ultra, 4), ore, BR.dust(), AC.nugget(), CS.dust());
 		String[] radiotherapyStrong = {CO60.nugget(), CS137.dustTiny(), I131.dustTiny(), AU198.nugget(), SR90.dustTiny(), SR90.nugget(), PO210.nugget()};
+		for (String ore : radiotherapyStrong)
+			CraftingManager.addShapelessAuto(new ItemStack(ModItems.pill_radiotherapy_strong, 4), ore, ST.dust(), I.dust(), ModItems.nugget_mercury);
 		String[] radiotherapyWeak = {RA226.nugget(), TC99.nugget()};
+		for (String ore : radiotherapyWeak)
+			CraftingManager.addShapelessAuto(new ItemStack(ModItems.pill_radiotherapy_weak, 4), ore, Items.sugar, KNO.dust(), F.dust());
 		
 		//Med bags
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.med_bag, 1), new Object[] { "LLL", "SIS", "LLL", 'L', Items.leather, 'S', ModItems.syringe_metal_stimpak, 'I', ModItems.syringe_antidote });

@@ -3,7 +3,6 @@ package com.hbm.tileentity.machine;
 import com.google.common.annotations.Beta;
 import com.hbm.inventory.RecipesCommon.AStack;
 import com.hbm.inventory.recipes.BetavoltaicFuels;
-import com.hbm.items.machine.ItemBetavoltaic;
 import com.hbm.tileentity.IRTGUser;
 import com.hbm.tileentity.IRadioisotopeFuel;
 import com.hbm.tileentity.TileEntityMachineBase;
@@ -41,7 +40,7 @@ public class TileEntityBetavoltaic extends TileEntityMachineBase implements IRTG
 	@Override
 	public Class<? extends IRadioisotopeFuel> getDesiredClass()
 	{
-		return ItemBetavoltaic.class;
+		return IRadioisotopeFuel.class;
 	}
 
 	@Override

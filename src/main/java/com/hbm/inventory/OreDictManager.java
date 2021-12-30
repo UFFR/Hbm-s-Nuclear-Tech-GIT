@@ -234,6 +234,7 @@ public class OreDictManager {
 	public static final DictFrame OSMIRIDIUM = new DictFrame("Osmiridium");
 	public static final DictFrame FERROURANIUM = new DictFrame("Ferrouranium");
 	public static final DictFrame STABALLOY = new DictFrame("Staballoy");
+	public static final DictFrame ACRYLIC = new DictFrame("Acrylic");
 	/*
 	 * DUST AND GEM ORES
 	 */
@@ -332,17 +333,17 @@ public class OreDictManager {
 		/*
 		 * RADIOACTIVE
 		 */
-		PA233	.rad(HazardRegistry.pa233)					.nugget(nugget_pa233)		.billet(billet_pa233)		.ingot(ingot_pa233);
+		PA233	.rad(HazardRegistry.pa233).hot(15)			.nugget(nugget_pa233)		.billet(billet_pa233)		.ingot(ingot_pa233);
 		U		.rad(HazardRegistry.u).alpha()				.nugget(nugget_uranium)		.billet(billet_uranium)		.ingot(ingot_uranium)		.dust(powder_uranium)									.block(block_uranium)		.ore(ore_uranium, ore_uranium_scorched, ore_gneiss_uranium, ore_gneiss_uranium_scorched, ore_nether_uranium, ore_nether_uranium_scorched, ore_meteor_uranium);
-		U233	.rad(HazardRegistry.u233).alpha()			.nugget(nugget_u233)		.billet(billet_u233)		.ingot(ingot_u233)																	.block(block_u233);
-		U235	.rad(HazardRegistry.u235).alpha()			.nugget(nugget_u235)		.billet(billet_u235)		.ingot(ingot_u235)																	.block(block_u235);
+		U233	.rad(HazardRegistry.u233).alpha()			.nugget(nugget_u233)		.billet(billet_u233)		.ingot(ingot_u233)			.plate(plate_u233)										.block(block_u233);
+		U235	.rad(HazardRegistry.u235).alpha()			.nugget(nugget_u235)		.billet(billet_u235)		.ingot(ingot_u235)			.plate(plate_u235)										.block(block_u235);
 		U238	.rad(HazardRegistry.u238).alpha()			.nugget(nugget_u238)		.billet(billet_u238)		.ingot(ingot_u238)																	.block(block_u238);
 		TH232	.rad(HazardRegistry.th232).alpha()			.nugget(nugget_th232)		.billet(billet_th232)		.ingot(ingot_th232)			.dust(powder_thorium)									.block(block_thorium)		.ore(ore_thorium, ore_meteor_thorium);
 		THA		.rad(HazardRegistry.tha).alpha(2).beta(4).gamma(4).hot(5).nugget(nugget_tha).billet(billet_tha)		.ingot(ingot_tha)																	.block(block_tha);
 		PU		.rad(HazardRegistry.pu).alpha(3).gamma()	.nugget(nugget_plutonium)	.billet(billet_plutonium)	.ingot(ingot_plutonium)		.dust(powder_plutonium)									.block(block_plutonium)		.ore(ore_nether_plutonium);
 		PURG	.rad(HazardRegistry.purg).alpha(8).gamma().neutron().nugget(nugget_pu_mix).billet(billet_pu_mix)	.ingot(ingot_pu_mix)																.block(block_pu_mix);
 		PU238	.rad(HazardRegistry.pu238).alpha().hot(3F)	.nugget(nugget_pu238)		.billet(billet_pu238)		.ingot(ingot_pu238)																	.block(block_pu238);
-		PU239	.rad(HazardRegistry.pu239).alpha()			.nugget(nugget_pu239)		.billet(billet_pu239)		.ingot(ingot_pu239)																	.block(block_pu239);
+		PU239	.rad(HazardRegistry.pu239).alpha()			.nugget(nugget_pu239)		.billet(billet_pu239)		.ingot(ingot_pu239)			.plate(plate_pu239)										.block(block_pu239);
 		PU240	.rad(HazardRegistry.pu240).alpha(6).gamma(3).neutron().nugget(nugget_pu240).billet(billet_pu240)	.ingot(ingot_pu240)																	.block(block_pu240);
 		PU241	.rad(HazardRegistry.pu241)					.nugget(nugget_pu241)		.billet(billet_pu241)		.ingot(ingot_pu241);																//.block(block_pu241);
 		AM241	.rad(HazardRegistry.am241).alpha(9).gamma()	.nugget(nugget_am241)		.billet(billet_am241)		.ingot(ingot_am241);
@@ -412,6 +413,7 @@ public class OreDictManager {
 		OSMIRIDIUM	.nugget(nugget_osmiridium)								.ingot(ingot_osmiridium);
 		FERROURANIUM														.ingot(ingot_ferrouranium)																											.block(block_ferrouranium);
 		STABALLOY															.ingot(ingot_staballoy)																												.block(block_staballoy);
+		ACRYLIC																.ingot(acrylic)														.dust(powder_acrylic);
 		/*
 		 * DUST AND GEM ORES
 		 */
@@ -449,7 +451,7 @@ public class OreDictManager {
 		 * RARE EARTHS
 		 */
 		LA.hydro(1).hot(1).nugget(fragment_lanthanium)	.ingot(ingot_lanthanium)										.dustSmall(powder_lanthanium_tiny)	.dust(powder_lanthanium)	.block(block_lanthanium);
-		AC.rad(HazardRegistry.ac227).hot(2).nugget(fragment_actinium, nugget_actinium)		.ingot(ingot_actinium)											.dustSmall(powder_actinium_tiny)	.dust(powder_actinium)		.block(block_actinium);
+		AC.rad(HazardRegistry.ac227).alpha(8).beta(2).hot(2).nugget(fragment_actinium, nugget_actinium)		.ingot(ingot_actinium)											.dustSmall(powder_actinium_tiny)	.dust(powder_actinium)		.block(block_actinium);
 		ZR	.nugget(nugget_zirconium)		.ingot(ingot_zirconium)		.billet(billet_zirconium)												.dust(powder_zirconium)		.block(block_zirconium)		.ore(ore_depth_zirconium);
 		ND	.nugget(fragment_neodymium)																		.dustSmall(powder_neodymium_tiny)	.dust(powder_neodymium)									.ore(ore_depth_nether_neodymium);
 		CE	.nugget(fragment_cerium)																		.dustSmall(powder_cerium_tiny)		.dust(powder_cerium);
@@ -462,13 +464,13 @@ public class OreDictManager {
 		CS.hydro(3).hot(2).dust(powder_caesium);
 		ST.hydro(1).dust(powder_strontium);
 		BR	.dust(powder_bromine);
-		TS	.dust(powder_tennessine);
+		TS.rad(HazardRegistry.ts294).alpha().dust(powder_tennessine);
 
 		/*
 		 * FISSION FRAGMENTS
 		 */
 		SR90	.rad(HazardRegistry.sr90)	.hydro(1).hot(1)		.dustSmall(powder_sr90_tiny)	.dust(powder_sr90).ingot(ingot_sr90).billet(billet_sr90).nugget(nugget_sr90);
-		I131	.rad(HazardRegistry.i131)	.hot(1F)				.dustSmall(powder_i131_tiny)	.dust(powder_i131);
+		I131	.rad(HazardRegistry.i131).beta(9).gamma().hot(1F)	.dustSmall(powder_i131_tiny)	.dust(powder_i131);
 		XE135	.rad(HazardRegistry.xe135)	.hot(10F)				.dustSmall(powder_xe135_tiny)	.dust(powder_xe135);
 		CS137	.rad(HazardRegistry.cs137)	.hot(3F)	.hydro(3F)	.dustSmall(powder_cs137_tiny)	.dust(powder_cs137);
 		AT209	.rad(HazardRegistry.at209).alpha().beta(9).hot(20F)									.dust(powder_at209);
@@ -663,6 +665,11 @@ public class OreDictManager {
 		public DictFrame makeBlocks(String tag, Block... blocks) {
 			for(Block b : blocks) registerStack(tag, new ItemStack(b));
 			return this;
+		}
+		
+		public float[] getRadTypes()
+		{
+			return rTypes.clone();
 		}
 		
 		public void registerStack(String tag, ItemStack stack) {

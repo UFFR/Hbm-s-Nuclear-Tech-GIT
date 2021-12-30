@@ -94,6 +94,10 @@ public class SmeltingRecipes {
 		GameRegistry.addSmelting(ModItems.powder_sr90, new ItemStack(ModItems.ingot_sr90), 1f);
 		GameRegistry.addSmelting(ModItems.powder_sr90_tiny, new ItemStack(ModItems.nugget_sr90), 0.1f);
 
+		GameRegistry.addSmelting(ModItems.plate_u233, new ItemStack(ModItems.ingot_u233), 1);
+		GameRegistry.addSmelting(ModItems.plate_u235, new ItemStack(ModItems.ingot_u235), 1);
+		GameRegistry.addSmelting(ModItems.plate_pu239, new ItemStack(ModItems.ingot_pu239), 1);
+		
 		GameRegistry.addSmelting(ModItems.powder_coal, new ItemStack(ModItems.coke), 1.0F);
 		GameRegistry.addSmelting(ModItems.briquette_lignite, new ItemStack(ModItems.coke), 1.0F);
 		GameRegistry.addSmelting(ModItems.oil_tar, new ItemStack(ModItems.powder_coal), 1.0F);

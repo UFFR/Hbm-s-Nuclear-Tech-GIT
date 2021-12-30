@@ -134,7 +134,7 @@ public class MineralRecipes {
 		addBillet(ModItems.billet_co60, 				ModItems.ingot_co60, 				ModItems.nugget_co60, CO60.nuggets());
 		addBillet(ModItems.billet_sr90, 				ModItems.ingot_sr90, 				ModItems.nugget_sr90, SR90.nuggets());
 		
-		addBillet(ModItems.billet_bismuth, 				ModItems.ingot_beryllium, 			ModItems.nugget_bismuth);
+		addBillet(ModItems.billet_bismuth, 				ModItems.ingot_bismuth, 			ModItems.nugget_bismuth);
 		addBillet(ModItems.billet_euphemium, 			ModItems.ingot_euphemium, 			ModItems.nugget_euphemium);
 		
 		addBillet(ModItems.billet_beryllium,			ModItems.ingot_beryllium,			ModItems.nugget_beryllium, BE.nuggets());

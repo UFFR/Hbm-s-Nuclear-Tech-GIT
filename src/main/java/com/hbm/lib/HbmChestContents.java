@@ -211,7 +211,7 @@ public class HbmChestContents {
 			new WeightedRandomChestContent(ModItems.bomb_caller, 0, 1, 1, 1),
 			new WeightedRandomChestContent(ModItems.bomb_caller, 3, 1, 1, 1),
 			new WeightedRandomChestContent(IDataStorageUser.getFullMedium(ModItems.storage_magnetic_fdd), 1, 2, 4),
-			new WeightedRandomChestContent(IDataStorageUser.getBlankMedium(ModItems.storage_hdd), 1, 1, 1)};
+			new WeightedRandomChestContent(IDataStorageUser.getBlankMedium(ModItems.storage_hdd), 1, 1, 1),
 			new WeightedRandomChestContent(ModItems.bottle_nuka, 0, 1, 3, 10) };
 
 	private static WeightedRandomChestContent[] spaceship = new WeightedRandomChestContent[] {

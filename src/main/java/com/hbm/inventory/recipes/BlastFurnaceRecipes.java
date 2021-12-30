@@ -4,14 +4,17 @@ import static com.hbm.inventory.OreDictManager.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.annotation.CheckForNull;
 
 import com.hbm.blocks.ModBlocks;
 import com.hbm.config.GeneralConfig;
+import com.hbm.handler.imc.IMCBlastFurnace;
 import com.hbm.inventory.OreDictManager.DictFrame;
 import com.hbm.inventory.RecipesCommon.*;
 import com.hbm.items.ModItems;
+import com.hbm.main.MainRegistry;
 import com.hbm.util.Tuple.Triplet;
 
 import net.minecraft.block.Block;
@@ -52,6 +55,14 @@ public class BlastFurnaceRecipes
 		addRecipe(DNT, OSMIRIDIUM, new ItemStack(ModItems.ingot_dineutronium_forged));
 		addRecipe(ModBlocks.block_meteor, CO, new ItemStack(ModItems.ingot_meteorite));
 		addRecipe(ModItems.meteorite_sword_hardened, CO, new ItemStack(ModItems.meteorite_sword_alloyed));
+		addRecipe(ST, ModBlocks.glass_lead, new ItemStack(ModBlocks.glass_strontium));
+		
+		if (!IMCBlastFurnace.buffer.isEmpty())
+		{
+			blastFurnaceRecipes.addAll(IMCBlastFurnace.buffer);
+			MainRegistry.logger.info("Fetched " + IMCBlastFurnace.buffer.size() + " IMC blast furnace recipes!");
+			IMCBlastFurnace.buffer.clear();
+		}
 		
 		hiddenRecipes.add(new ItemStack(ModItems.meteorite_sword_alloyed));
 	}
@@ -98,6 +109,13 @@ public class BlastFurnaceRecipes
 			recipeItem1 = new AStack[] {new OreDictStack((String) in)};
 		else if (in instanceof Block)
 			recipeItem1 = new AStack[] {new ComparableStack((Block) in)};
+		else if (in instanceof List<?>)
+		{
+			List<?> oreList = (List<?>) in;
+			recipeItem1 = new AStack[oreList.size()];
+			for (int i = 0; i < oreList.size(); i++)
+				recipeItem1[i] = new OreDictStack((String) oreList.get(i));
+		}
 		else
 			recipeItem1 = new AStack[] {new ComparableStack((Item) in)};
 		

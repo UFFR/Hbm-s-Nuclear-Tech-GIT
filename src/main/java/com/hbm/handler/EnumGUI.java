@@ -168,21 +168,22 @@ public enum EnumGUI
 			{
 				@Override public Object getContainer(TileEntity entity, EntityPlayer player, World world, int x, int y, int z) {return null;}
 				@Override public Object getGUI(TileEntity entity, EntityPlayer player, World world, int x, int y, int z) {return new GUILeadBox(new ContainerLeadBox(player, player.inventory, new InventoryLeadBox(player.getHeldItem())));}
-		
 			}),
 	ITEM_BOBMAZON(new CustomGUIBehavior()
 			{
 				@Override public Object getContainer(TileEntity entity, EntityPlayer player, World world, int x, int y, int z) {return null;}
 				@Override public Object getGUI(TileEntity entity, EntityPlayer player, World world, int x, int y, int z) {return BobmazonOfferFactory.getOffers(player.getHeldItem()) != null ? new GUIScreenBobmazon(player, BobmazonOfferFactory.getOffers(player.getHeldItem())) : null;}
-		
 			}),
-	ITEM_BLACK_BOOK(GUIBook.class),
+	ITEM_BLACK_BOOK(new CustomGUIBehavior()
+			{
+				@Override public Object getContainer(TileEntity entity, EntityPlayer player, World world, int x, int y, int z) {return new ContainerBook(player.inventory);}
+				@Override public Object getGUI(TileEntity entity, EntityPlayer player, World world, int x, int y, int z) {return new GUIBook(player);}
+			}),
 	ITEM_GUIDE(GUIScreenGuide.class),
 	BOBBLE(new CustomGUIBehavior()
 			{
 				@Override public Object getContainer(TileEntity entity, EntityPlayer player, World world, int x, int y, int z) {return null;}
 				@Override public Object getGUI(TileEntity entity, EntityPlayer player, World world, int x, int y, int z) {return new GUIScreenBobble((TileEntityBobble) entity);}
-		
 			}),
 	CAPSULE(ContainerSoyuzCapsule.class, GUISoyuzCapsule.class, TileEntitySoyuzCapsule.class),
 	LAUNCH_PAD(ContainerLaunchPadTier1.class, GUILaunchPadTier1.class, TileEntityLaunchPad.class),

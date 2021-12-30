@@ -6,7 +6,6 @@ import com.hbm.entity.projectile.EntityBulletBase;
 import com.hbm.handler.BulletConfigSyncingUtil;
 import com.hbm.handler.BulletConfiguration;
 import com.hbm.handler.GunConfiguration;
-import com.hbm.interfaces.IBulletHitBehavior;
 import com.hbm.interfaces.IBulletImpactBehavior;
 import com.hbm.items.ModItems;
 import com.hbm.lib.HbmCollection.EnumGunManufacturer;
@@ -23,7 +22,6 @@ import com.hbm.util.ContaminationUtil.ContaminationType;
 import com.hbm.util.ContaminationUtil.HazardType;
 
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
@@ -63,8 +61,8 @@ public class Gun50BMGFactory {
 						)
 				);
 		
-		config.name = "Universal-Maschinengewehr Modell 42 - .50 Mod";
-		config.manufacturer = "Wilhelm-Gustloff-Werke";
+		config.name = "mg42";
+		config.manufacturer = EnumGunManufacturer.WGW;
 		
 		config.config = new ArrayList<Integer>();
 		config.config.add(BulletConfigSyncingUtil.BMG50_NORMAL);
@@ -276,10 +274,8 @@ public class Gun50BMGFactory {
 		bullet.effects = new ArrayList<PotionEffect>();
 		bullet.effects.add(new PotionEffect(eff));
 		
-		bullet.bImpact = new IBulletImpactBehavior() {
+		bullet.bImpact = (projectile, x, y, z) -> {
 
-			@Override
-			public void behaveBlockHit(EntityBulletBase bullet, int x, int y, int z) {
 				
 				NBTTagCompound data = new NBTTagCompound();
 				data.setString("type", "vanillaburst");
@@ -287,8 +283,7 @@ public class Gun50BMGFactory {
 				data.setInteger("count", 15);
 				data.setDouble("motion", 0.05D);
 				
-				PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, bullet.posX, bullet.posY, bullet.posZ), new TargetPoint(bullet.dimension, bullet.posX, bullet.posY, bullet.posZ, 50));
-			}
+				PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, projectile.posX, projectile.posY, projectile.posZ), new TargetPoint(projectile.dimension, projectile.posX, projectile.posY, projectile.posZ, 50));
 		};
 		
 		return bullet;
@@ -362,39 +357,31 @@ public class Gun50BMGFactory {
 		bullet.leadChance = 100;
 		bullet.doesPenetrate = false;
 		
-		bullet.bHit = new IBulletHitBehavior() {
+		bullet.bHit = (projectile, hit) -> {
 
-			@Override
-			public void behaveEntityHit(EntityBulletBase bullet, Entity hit) {
-				
-				if(bullet.worldObj.isRemote)
+				if(projectile.worldObj.isRemote)
 					return;
 				
-				EntityBulletBase meteor = new EntityBulletBase(bullet.worldObj, BulletConfigSyncingUtil.MASKMAN_METEOR);
+				EntityBulletBase meteor = new EntityBulletBase(projectile.worldObj, BulletConfigSyncingUtil.MASKMAN_METEOR);
 				meteor.setPosition(hit.posX, hit.posY + 30 + meteor.worldObj.rand.nextInt(10), hit.posZ);
 				meteor.motionY = -1D;
-				meteor.shooter = bullet.shooter;
-				bullet.worldObj.spawnEntityInWorld(meteor);
-			}
+				meteor.shooter = projectile.shooter;
+				projectile.worldObj.spawnEntityInWorld(meteor);
 		};
 		
-		bullet.bImpact = new IBulletImpactBehavior() {
+		bullet.bImpact = (projectile, x, y, z) -> {
 
-			@Override
-			public void behaveBlockHit(EntityBulletBase bullet, int x, int y, int z) {
-				
-				if(bullet.worldObj.isRemote)
+				if(projectile.worldObj.isRemote)
 					return;
 				
 				if(y == -1)
 					return;
 				
-				EntityBulletBase meteor = new EntityBulletBase(bullet.worldObj, BulletConfigSyncingUtil.MASKMAN_METEOR);
-				meteor.setPosition(bullet.posX, bullet.posY + 30 + meteor.worldObj.rand.nextInt(10), bullet.posZ);
+				EntityBulletBase meteor = new EntityBulletBase(projectile.worldObj, BulletConfigSyncingUtil.MASKMAN_METEOR);
+				meteor.setPosition(projectile.posX, projectile.posY + 30 + meteor.worldObj.rand.nextInt(10), projectile.posZ);
 				meteor.motionY = -1D;
-				meteor.shooter = bullet.shooter;
-				bullet.worldObj.spawnEntityInWorld(meteor);
-			}
+				meteor.shooter = projectile.shooter;
+				projectile.worldObj.spawnEntityInWorld(meteor);
 		};
 		
 		return bullet;
@@ -408,7 +395,7 @@ public class Gun50BMGFactory {
 		bullet.spread *= inaccuracy;
 		bullet.dmgMin = 50;
 		bullet.dmgMax = 54;
-		bullet.style = bullet.STYLE_FLECHETTE;
+		bullet.style = BulletConfiguration.STYLE_FLECHETTE;
 		
 		return bullet;
 	}
@@ -421,20 +408,16 @@ public class Gun50BMGFactory {
 		bullet.spread *= inaccuracy;
 		bullet.dmgMin = 60;
 		bullet.dmgMax = 64;
-		bullet.style = bullet.STYLE_FLECHETTE;
+		bullet.style = BulletConfiguration.STYLE_FLECHETTE;
 		
-		bullet.bHit = new IBulletHitBehavior() {
+		bullet.bHit = (projectile, hit) -> {
 
-			@Override
-			public void behaveEntityHit(EntityBulletBase bullet, Entity hit) {
-				
-				if(bullet.worldObj.isRemote)
+				if(projectile.worldObj.isRemote)
 					return;
 				
 				if(hit instanceof EntityLivingBase) {
 					ContaminationUtil.contaminate((EntityLivingBase) hit, HazardType.RADIATION, ContaminationType.RAD_BYPASS, 100F);
 				}
-			}
 		};
 		
 		return bullet;
@@ -448,20 +431,16 @@ public class Gun50BMGFactory {
 		bullet.spread *= inaccuracy;
 		bullet.dmgMin = 60;
 		bullet.dmgMax = 64;
-		bullet.style = bullet.STYLE_FLECHETTE;
+		bullet.style = BulletConfiguration.STYLE_FLECHETTE;
 		
-		bullet.bHit = new IBulletHitBehavior() {
+		bullet.bHit = (projectile, hit) -> {
 
-			@Override
-			public void behaveEntityHit(EntityBulletBase bullet, Entity hit) {
-				
-				if(bullet.worldObj.isRemote)
+				if(projectile.worldObj.isRemote)
 					return;
 				
 				if(hit instanceof EntityLivingBase) {
 					ContaminationUtil.contaminate((EntityLivingBase) hit, HazardType.RADIATION, ContaminationType.RAD_BYPASS, 50F);
 				}
-			}
 		};
 		
 		return bullet;

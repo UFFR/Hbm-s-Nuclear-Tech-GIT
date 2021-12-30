@@ -18,6 +18,7 @@ import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemCapacitor;
 import com.hbm.items.special.WatzFuel;
 import com.hbm.lib.Library;
+import com.hbm.main.MainRegistry;
 import com.hbm.packet.AuxElectricityPacket;
 import com.hbm.packet.PacketDispatcher;
 
@@ -53,7 +54,7 @@ public class TileEntityWatzCore extends TileEntity implements ISidedInventory, I
 	
 	private ItemStack slots[];
 	public int age = 0;
-	public List<IFluidAcceptor> list1 = new ArrayList();
+	public List<IFluidAcceptor> list1 = new ArrayList<IFluidAcceptor>();
 	public FluidTank tank;
 	
 	private String customName;

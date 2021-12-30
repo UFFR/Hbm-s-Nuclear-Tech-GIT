@@ -239,6 +239,14 @@ public final class BetavoltaicFuels
 			@Override public boolean getDoesDecay() {return true;}
 			@Override public ItemStack getDecayItem() {return new ItemStack(ModItems.billet_u233);}
 		});
+		addFuel(ModItems.rod_zirnox_tha, new IRadioisotopeFuel()
+		{
+			@Override public IRadioisotopeFuel setDecays(ItemStack stack, long lifespan) {return this;}
+			@Override public long getMaxLifespan() {return lifeShort;}
+			@Override public short getHeat() {return thaPower * 2;}
+			@Override public boolean getDoesDecay() {return true;}
+			@Override public ItemStack getDecayItem() {return new ItemStack(ModItems.rod_zirnox_thorium_fuel);}
+		});
 	}
 	private static void addFuel(Item fuel, IRadioisotopeFuel data)
 	{

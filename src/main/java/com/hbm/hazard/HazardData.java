@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.hbm.hazard.type.HazardTypeBase;
 import com.hbm.interfaces.Untested;
-import com.hbm.lib.Library;
 
 public class HazardData {
 	
@@ -60,13 +59,6 @@ public class HazardData {
 	{
 		if (types.length != 4)
 			throw new IllegalArgumentException("Rad type length is not 4! Length: " + types.length);
-		float total = 0;
-		for (float t : types)
-			total += t;
-		
-		for (byte i = 0; i < 4; i++)
-			types[i] = (float) Library.convertScale(types[i], 0, total, 0, 1);
-		
 		radTypes = types;
 		return this;
 	}

@@ -1,24 +1,22 @@
 package com.hbm.items.weapon;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import com.hbm.entity.grenade.EntityGrenadeASchrab;
-import com.hbm.entity.grenade.EntityGrenadeBlackHole;
-import com.hbm.entity.grenade.EntityGrenadeBreach;
-import com.hbm.entity.grenade.EntityGrenadeBurst;
-import com.hbm.entity.grenade.EntityGrenadeCloud;
-import com.hbm.entity.grenade.EntityGrenadeCluster;
-import com.hbm.entity.grenade.EntityGrenadeDynamite;
-import com.hbm.entity.grenade.EntityGrenadeElectric;
-import com.hbm.entity.grenade.EntityGrenadeFire;
+import com.hbm.entity.grenade.EntityGrenadeBase;
+import com.hbm.entity.grenade.EntityGrenadeBouncyBase;
 import com.hbm.entity.grenade.EntityGrenadeFlare;
 import com.hbm.items.ModItems;
 import com.hbm.items.special.ItemCustomLore;
 import com.hbm.lib.RefStrings;
 import com.hbm.main.MainRegistry;
 import com.hbm.util.I18nUtil;
+import com.hbm.util.Tuple.Pair;
 
+import cpw.mods.fml.common.registry.IThrowableEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -27,9 +25,10 @@ import net.minecraft.world.World;
 
 public class ItemGrenade extends ItemCustomLore
 {
+	public static final ArrayList<Pair<Item, Class<? extends Entity>>> allGrenades = new ArrayList<>();
 	public int fuse = 4;
-	public Class<? extends EntityGrenadeBase> grenadeEntityImpact = null;
-	public Class<? extends EntityGrenadeBouncyBase> grenadeEntityBouncy = null;
+	public Optional<Class<? extends EntityGrenadeBase>> grenadeEntityImpact = Optional.empty();
+	public Optional<Class<? extends EntityGrenadeBouncyBase>> grenadeEntityBouncy = Optional.empty();
 	/** 
 	 * Constructor for impact grenades
 	 * @param nade - Grenade class to be used, must extend EntityGrenadeBase
@@ -39,7 +38,8 @@ public class ItemGrenade extends ItemCustomLore
 		this(-1);
 		assert nade != null : "Class cannot be null";
 		assert EntityGrenadeBase.class.isAssignableFrom(nade) : "Class must extend EntityGrenadeBase";
-		grenadeEntityImpact = nade;
+		allGrenades.add(new Pair<Item, Class<? extends Entity>>(this, nade));
+		grenadeEntityImpact = Optional.of(nade);
 	}
 	/** 
 	 * Constructor for "bouncy" grenades
@@ -51,7 +51,8 @@ public class ItemGrenade extends ItemCustomLore
 		this(fuse);
 		assert nade != null : "Class cannot be null";
 		assert EntityGrenadeBouncyBase.class.isAssignableFrom(nade) : "Class must extend EntityGrenadeBouncyBase";
-		grenadeEntityBouncy = nade;
+		allGrenades.add(new Pair<Item, Class<? extends Entity>>(this, nade));
+		grenadeEntityBouncy = Optional.of(nade);
 	}
 	/** Special grenades **/
 	public ItemGrenade(int fuse)
@@ -71,10 +72,10 @@ public class ItemGrenade extends ItemCustomLore
 		if (!worldIn.isRemote) {
 			try
 			{
-				if (grenadeEntityBouncy != null)
-					worldIn.spawnEntityInWorld(grenadeEntityBouncy.getConstructor(World.class, EntityLivingBase.class).newInstance(worldIn, player));
-				if (grenadeEntityImpact != null)
-					worldIn.spawnEntityInWorld(grenadeEntityImpact.getConstructor(World.class, EntityLivingBase.class).newInstance(worldIn, player));
+				if (grenadeEntityBouncy.isPresent())
+					worldIn.spawnEntityInWorld(grenadeEntityBouncy.get().getConstructor(World.class, EntityLivingBase.class).newInstance(worldIn, player));
+				if (grenadeEntityImpact.isPresent())
+					worldIn.spawnEntityInWorld(grenadeEntityImpact.get().getConstructor(World.class, EntityLivingBase.class).newInstance(worldIn, player));
 			}
 			catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | NoSuchMethodException | SecurityException e)
@@ -83,15 +84,9 @@ public class ItemGrenade extends ItemCustomLore
 			}
 			if (this == ModItems.grenade_flare)
 				worldIn.spawnEntityInWorld(new EntityGrenadeFlare(worldIn, player));
-			if (this == ModItems.nuclear_waste_pearl) {
-				p_77659_2_.spawnEntityInWorld(new EntityWastePearl(p_77659_2_, p_77659_3_));
-			}
-			if (this == ModItems.stick_dynamite) {
-				p_77659_2_.spawnEntityInWorld(new EntityGrenadeDynamite(p_77659_2_, p_77659_3_));
-			}
 		}
 
-		return p_77659_1_;
+		return stack;
 	}
 
 	private String translateFuse()

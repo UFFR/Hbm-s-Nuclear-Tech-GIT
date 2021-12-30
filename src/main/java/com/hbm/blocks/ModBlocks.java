@@ -102,6 +102,9 @@ public class ModBlocks {
 	
 	public static Block ore_bedrock_coltan;
 	public static Block ore_bedrock_coltan_spawner;
+	
+	public static Block ore_bedrock_australium;
+	public static Block ore_bedrock_australium_spawner;
 
 	public static Block ore_nether_coal;
 	public static Block ore_nether_smoldering;
@@ -178,6 +181,7 @@ public class ModBlocks {
 	public static Block ore_oil_empty;
 	public static Block ore_oil_sand;
 	public static Block ore_bedrock_oil;
+	public static Block ore_bedrock_oil_spawner;
 	public static Block ore_lignite;
 	public static Block ore_asbestos;
 	public static Block ore_coal_oil;
@@ -479,6 +483,7 @@ public class ModBlocks {
 	public static Block ash_digamma;
 	public static Block glass_boron;
 	public static Block glass_lead;
+	public static Block glass_strontium;
 	public static Block glass_uranium;
 	public static Block glass_trinitite;
 	public static Block glass_polonium;
@@ -1426,12 +1431,16 @@ public class ModBlocks {
 		ore_coltan = new BlockOre(Material.rock).setBlockName("ore_coltan").setCreativeTab(MainRegistry.blockTab).setHardness(15.0F).setResistance(10.0F).setBlockTextureName(RefStrings.MODID + ":ore_coltan");
 		
 		ore_bedrock_coltan = new BlockBedrockOre().setBlockName("ore_bedrock_coltan").setCreativeTab(MainRegistry.blockTab).setBlockUnbreakable().setResistance(1_000_000).setBlockTextureName(RefStrings.MODID + ":ore_bedrock_coltan");
-		ore_bedrock_coltan_spawner = new BlockBedrockOreSpawner(ore_bedrock_coltan).setBlockName("ore_bedrock_coltan_spawner").setCreativeTab(MainRegistry.blockTab);
+		ore_bedrock_coltan_spawner = new BlockBedrockOreSpawner(ore_bedrock_coltan);
+		
+		ore_bedrock_australium = new BlockBedrockOre().setBlockName("ore_bedrock_australium").setCreativeTab(MainRegistry.blockTab).setBlockTextureName(RefStrings.MODID + ":ore_bedrock_australium");
+		ore_bedrock_australium_spawner = new BlockBedrockOreSpawner(ore_bedrock_australium);
 		
 		ore_oil = new BlockOre(Material.rock).setBlockName("ore_oil").setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F).setBlockTextureName(RefStrings.MODID + ":ore_oil");
 		ore_oil_empty = new BlockGeneric(Material.rock).setBlockName("ore_oil_empty").setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F).setBlockTextureName(RefStrings.MODID + ":ore_oil_empty");
 		ore_oil_sand = new BlockFalling(Material.sand).setBlockName("ore_oil_sand").setCreativeTab(MainRegistry.blockTab).setStepSound(Block.soundTypeSand).setHardness(0.5F).setResistance(1.0F).setBlockTextureName(RefStrings.MODID + ":ore_oil_sand_alt");
 		ore_bedrock_oil = new BlockGeneric(Material.rock).setBlockName("ore_bedrock_oil").setCreativeTab(MainRegistry.blockTab).setBlockUnbreakable().setResistance(1_000_000).setBlockTextureName(RefStrings.MODID + ":ore_bedrock_oil");
+		ore_bedrock_oil_spawner = new BlockBedrockOreSpawner(ore_bedrock_oil);
 		
 		ore_tikite = new BlockGeneric(Material.rock).setBlockName("ore_tikite").setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F).setBlockTextureName(RefStrings.MODID + ":ore_tikite_alt");
 
@@ -1717,6 +1726,7 @@ public class ModBlocks {
 		sand_gold198 = new BlockGoldSand(Material.sand).setBlockName("sand_gold198").setStepSound(Block.soundTypeSand).setCreativeTab(MainRegistry.machineTab).setHardness(0.5F).setBlockTextureName(RefStrings.MODID + ":sand_gold");
 		glass_boron = new BlockNTMGlassCT(0, RefStrings.MODID + ":glass_boron", Material.glass).setBlockName("glass_boron").setStepSound(Block.soundTypeGlass).setCreativeTab(MainRegistry.machineTab).setHardness(0.3F);
 		glass_lead = new BlockNTMGlassCT(0, RefStrings.MODID + ":glass_lead", Material.glass).setBlockName("glass_lead").setStepSound(Block.soundTypeGlass).setCreativeTab(MainRegistry.machineTab).setHardness(0.3F);
+		glass_strontium = new BlockNTMGlassCT(0, RefStrings.MODID + ":glass_strontium", Material.glass).setBlockName("glass_strontium").setStepSound(Block.soundTypeGlass).setCreativeTab(MainRegistry.machineTab).setHardness(0.3f);
 		glass_uranium = new BlockNTMGlassCT(1, RefStrings.MODID + ":glass_uranium", Material.glass).setBlockName("glass_uranium").setLightLevel(5F/15F).setStepSound(Block.soundTypeGlass).setCreativeTab(MainRegistry.machineTab).setHardness(0.3F);
 		glass_trinitite = new BlockNTMGlassCT(1, RefStrings.MODID + ":glass_trinitite", Material.glass).setBlockName("glass_trinitite").setLightLevel(5F/15F).setStepSound(Block.soundTypeGlass).setCreativeTab(MainRegistry.machineTab).setHardness(0.3F);
 		glass_polonium = new BlockNTMGlassCT(1, RefStrings.MODID + ":glass_polonium", Material.glass).setBlockName("glass_polonium").setLightLevel(5F/15F).setStepSound(Block.soundTypeGlass).setCreativeTab(MainRegistry.machineTab).setHardness(0.3F);
@@ -2393,6 +2403,9 @@ public class ModBlocks {
 		GameRegistry.registerBlock(ore_bedrock_coltan, ore_bedrock_coltan.getUnlocalizedName());
 		GameRegistry.registerBlock(ore_bedrock_coltan_spawner, ore_bedrock_coltan_spawner.getUnlocalizedName());
 		GameRegistry.registerBlock(ore_bedrock_oil, ore_bedrock_oil.getUnlocalizedName());
+		GameRegistry.registerBlock(ore_bedrock_oil_spawner, ore_bedrock_oil_spawner.getUnlocalizedName());
+		GameRegistry.registerBlock(ore_bedrock_australium, ore_bedrock_australium.getUnlocalizedName());
+		GameRegistry.registerBlock(ore_bedrock_australium_spawner, ore_bedrock_australium_spawner.getUnlocalizedName());
 		
 		//Nice Meme
 		GameRegistry.registerBlock(ore_coal_oil, ore_coal_oil.getUnlocalizedName());
@@ -2891,6 +2904,7 @@ public class ModBlocks {
 		GameRegistry.registerBlock(sand_gold198, sand_gold198.getUnlocalizedName());
 		GameRegistry.registerBlock(glass_boron, glass_boron.getUnlocalizedName());
 		GameRegistry.registerBlock(glass_lead, glass_lead.getUnlocalizedName());
+		GameRegistry.registerBlock(glass_strontium, glass_strontium.getUnlocalizedName());
 		GameRegistry.registerBlock(glass_uranium, glass_uranium.getUnlocalizedName());
 		GameRegistry.registerBlock(glass_trinitite, glass_trinitite.getUnlocalizedName());
 		GameRegistry.registerBlock(glass_polonium, glass_polonium.getUnlocalizedName());

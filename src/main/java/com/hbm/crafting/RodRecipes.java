@@ -5,7 +5,6 @@ import com.hbm.items.ModItems;
 import com.hbm.main.CraftingManager;
 
 import cpw.mods.fml.common.registry.GameRegistry;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -25,6 +24,7 @@ public class RodRecipes {
 		addRodBilletUnload(U235, ModItems.billet_u235, ModItems.rod_u235);
 		addRodBilletUnload(U238, ModItems.billet_u238, ModItems.rod_u238);
 		addRodBilletUnload(TH232, ModItems.billet_th232, ModItems.rod_th232);
+		addRodBilletUnload(THA, ModItems.billet_tha, ModItems.rod_tha);
 		addRodBilletUnload(PU, ModItems.billet_plutonium, ModItems.rod_plutonium);
 		addRodBilletUnload(PU238, ModItems.billet_pu238, ModItems.rod_pu238);
 		addRodBilletUnload(PU239, ModItems.billet_pu239, ModItems.rod_pu239);
@@ -55,6 +55,7 @@ public class RodRecipes {
 		addDualRodBilletUnload(U235, ModItems.billet_u235, ModItems.rod_dual_u235);
 		addDualRodBilletUnload(U238, ModItems.billet_u238, ModItems.rod_dual_u238);
 		addDualRodBilletUnload(TH232, ModItems.billet_th232, ModItems.rod_dual_th232);
+		addDualRodBilletUnload(THA, ModItems.billet_tha, ModItems.rod_dual_tha);
 		addDualRodBilletUnload(PU, ModItems.billet_plutonium, ModItems.rod_dual_plutonium);
 		addDualRodBilletUnload(PU238, ModItems.billet_pu238, ModItems.rod_dual_pu238);
 		addDualRodBilletUnload(PU239, ModItems.billet_pu239, ModItems.rod_dual_pu239);
@@ -84,6 +85,7 @@ public class RodRecipes {
 		addQuadRodBilletUnload(U235, ModItems.billet_u235, ModItems.rod_quad_u235);
 		addQuadRodBilletUnload(U238, ModItems.billet_u238, ModItems.rod_quad_u238);
 		addQuadRodBilletUnload(TH232, ModItems.billet_th232, ModItems.rod_quad_th232);
+		addQuadRodBilletUnload(THA, ModItems.billet_tha, ModItems.rod_quad_tha);
 		addQuadRodBilletUnload(PU, ModItems.billet_plutonium, ModItems.rod_quad_plutonium);
 		addQuadRodBilletUnload(PU238, ModItems.billet_pu238, ModItems.rod_quad_pu238);
 		addQuadRodBilletUnload(PU239, ModItems.billet_pu239, ModItems.rod_quad_pu239);

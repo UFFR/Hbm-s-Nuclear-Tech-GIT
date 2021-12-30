@@ -16,6 +16,7 @@ import com.hbm.inventory.FluidTank;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemFluidIcon;
+import com.hbm.items.special.Orichalcum;
 import com.hbm.lib.Library;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKConsole.ColumnType;
 
@@ -50,7 +51,6 @@ public class TileEntityRBMKOutgasser extends TileEntityRBMKSlottedBase implement
 			
 			if(worldObj.getTotalWorldTime() % 10 == 0)
 				fillFluidInit(gas.getTankType());
-			
 			if(!canProcess()) {
 				this.progress = 0;
 				currentRecipe = Optional.empty();
@@ -62,7 +62,6 @@ public class TileEntityRBMKOutgasser extends TileEntityRBMKSlottedBase implement
 
 	@Override
 	public void receiveFlux(NType type, double flux) {
-		
 		if(canProcess()) {
 			if (!currentRecipe.isPresent())
 				currentRecipe = Optional.of(getRecipe(getStackInSlot(0)));
@@ -111,6 +110,7 @@ public class TileEntityRBMKOutgasser extends TileEntityRBMKSlottedBase implement
 		recipes.put(CO.nugget(), newRecipe(new ItemStack(ModItems.nugget_co60)));
 		recipes.put(CO.ingot(), newRecipe(new ItemStack(ModItems.ingot_co60)));
 		recipes.put(CO.dust(), newRecipe(new ItemStack(ModItems.powder_co60)));
+		recipes.put(new ComparableStack(ModItems.orichalcum, 1, Orichalcum.INGOT_SMALL), new IrradiationRecipe(new ItemStack(ModItems.orichalcum, 1, Orichalcum.INGOT_SMALL_IRR), 100, duration * 2));
 	}
 	
 	private boolean canProcess() {
@@ -118,19 +118,19 @@ public class TileEntityRBMKOutgasser extends TileEntityRBMKSlottedBase implement
 		if(slots[0] == null)
 			return false;
 		
-		ItemStack output = getRecipe(slots[0]).getOutput();
+		IrradiationRecipe recipe = getRecipe(slots[0]);
 		
-		if(output == null)
+		if(recipe == null)
 			return false;
 		
-		if(output.getItem() == ModItems.fluid_icon) {
-			return output.getItemDamage() == gas.getTankType().ordinal() && gas.getFill() + ItemFluidIcon.getQuantity(output) <= gas.getMaxFill();
+		if(recipe.output.getItem() == ModItems.fluid_icon) {
+			return recipe.output.getItemDamage() == gas.getTankType().ordinal() && gas.getFill() + ItemFluidIcon.getQuantity(recipe.output) <= gas.getMaxFill();
 		}
 		
 		if(slots[1] == null)
 			return true;
 		
-		return slots[1].getItem() == output.getItem() && slots[1].getItemDamage() == output.getItemDamage() && slots[1].stackSize + output.stackSize <= slots[1].getMaxStackSize();
+		return slots[1].getItem() == recipe.output.getItem() && slots[1].getItemDamage() == recipe.output.getItemDamage() && slots[1].stackSize + recipe.output.stackSize <= slots[1].getMaxStackSize();
 	}
 	
 	public static IrradiationRecipe getRecipe(ItemStack stack) {
@@ -138,7 +138,7 @@ public class TileEntityRBMKOutgasser extends TileEntityRBMKSlottedBase implement
 		if(stack == null || stack.getItem() == null)
 			return null;
 		
-		ComparableStack comp = new ComparableStack(stack);
+		ComparableStack comp = new ComparableStack(stack).makeSingular();
 		
 		if(recipes.containsKey(comp))
 			return recipes.get(comp);

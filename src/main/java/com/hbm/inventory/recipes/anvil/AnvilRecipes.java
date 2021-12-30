@@ -128,7 +128,7 @@ public class AnvilRecipes {
 						new ComparableStack(ModItems.screwdriver),
 						new OreDictStack(DESH.ingot(), 4),
 						new ComparableStack(ModItems.ingot_dura_steel, 8)
-				}, new AnvilOutput(new ItemStack(ModItems.screwdriver_chad))));
+				}, new AnvilOutput(new ItemStack(ModItems.screwdriver_chad))).setTier(2));
 		
 		constructionRecipes.add(new AnvilConstructionRecipe(new AStack[]
 				{
@@ -156,7 +156,7 @@ public class AnvilRecipes {
 							{
 									new AnvilOutput(depletedRTGItems[i]),
 									new AnvilOutput(new ItemStack(ModItems.plate_iron))
-							}));
+							}).setTier(1));
 		}
 		
 		Item[] miningWarheads = {ModItems.warhead_nuclear, Item.getItemFromBlock(ModBlocks.det_nuke), ModItems.mp_warhead_10_nuclear_large};
@@ -504,6 +504,13 @@ public class AnvilRecipes {
 						new AnvilOutput(new ItemStack((Item)objs[2], (int)objs[3]))).setTier((int)objs[4]));
 			}
 		}
+		constructionRecipes.add(new AnvilConstructionRecipe(new AStack[]
+				{
+						new ComparableStack(ModItems.powder_nitan_mix, 4),
+						new ComparableStack(ModItems.bolt_staballoy, 2),
+						new ComparableStack(ModItems.powder_power),
+						new OreDictStack(BIGMT.plate(), 2),
+				}, new AnvilOutput(new ItemStack(ModItems.assembly_luna_sniper, 4))).setTier(2));
 	}
 	
 	public static void registerConstructionUpgrades() {

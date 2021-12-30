@@ -70,7 +70,6 @@ public class BreederRecipes {
 		recipes.put(new ComparableStack(ModItems.rod_balefire), new BreederRecipe(ModItems.rod_balefire_blazing, 4));
 		recipes.put(new ComparableStack(ModItems.rod_dual_balefire), new BreederRecipe(ModItems.rod_dual_balefire_blazing, 4));
 		recipes.put(new ComparableStack(ModItems.rod_quad_balefire), new BreederRecipe(ModItems.rod_quad_balefire_blazing, 4));
-		recipes.put(new ComparableStack(ModItems.orichalcum, 1, Orichalcum.INGOT_SMALL), new BreederRecipe(new ItemStack(ModItems.orichalcum, 1, Orichalcum.INGOT_SMALL_IRR), 4));
 
 		//rocks
 		recipes.put(new ComparableStack(Blocks.stone), new BreederRecipe(new ItemStack(ModBlocks.sellafield_0), 2));

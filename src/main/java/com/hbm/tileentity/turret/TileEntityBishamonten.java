@@ -1,6 +1,7 @@
 package com.hbm.tileentity.turret;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.hbm.blocks.ModBlocks;
 import com.hbm.calc.EasyLocation;
@@ -40,9 +41,9 @@ public class TileEntityBishamonten extends TileEntityMachineBase implements ILas
 	private byte powPercentage = 0;
 	private long yield = 0;
 	public Mode currMode = Mode.DISABLED;
-	public EntityLivingBase currEntity = null;
+	public Optional<EntityLivingBase> currEntity = Optional.empty();
 	private int[] custCoord = new int[3];
-	private EasyLocation loc = null;
+	private Optional<EasyLocation> loc = Optional.empty();
 	private boolean bufferQueued = false;
 	private boolean laserOn = false;
 	public static enum Mode
@@ -70,10 +71,10 @@ public class TileEntityBishamonten extends TileEntityMachineBase implements ILas
 			if (!bufferQueued)
 				buffer = 0;
 			yield = maxBuffer * powPercentage / 100;
-			if (currMode == Mode.TARG_ENTITY && currEntity != null)
-				loc = new EasyLocation(currEntity);
+			if (currMode == Mode.TARG_ENTITY && currEntity.isPresent())
+				loc = Optional.of(new EasyLocation(currEntity.get()));
 			if (currMode == Mode.TARG_MISC && custCoord != null)
-				loc = new EasyLocation(custCoord);
+				loc = Optional.of(new EasyLocation(custCoord));
 			
 			if (bufferQueued && fillBuffer())
 			{
@@ -92,10 +93,10 @@ public class TileEntityBishamonten extends TileEntityMachineBase implements ILas
 		data.setByte("percentage", powPercentage);
 		data.setBoolean("charging", bufferQueued);
 		data.setBoolean("laserOn", laserOn);
-		if (currEntity != null)
-			data.setInteger("entityID", currEntity.getEntityId());
-		if (loc != null)
-			data.setIntArray("custCoord", loc.getCoordInt());
+		if (currEntity.isPresent())
+			data.setInteger("entityID", currEntity.get().getEntityId());
+		if (loc.isPresent())
+			data.setIntArray("custCoord", loc.get().getCoordInt());
 		networkPack(data, 100);
 	}
 	
@@ -128,7 +129,7 @@ public class TileEntityBishamonten extends TileEntityMachineBase implements ILas
 		{
 		case TARG_ENTITY:
 		case TARG_MISC:
-			cutThrough(loc);
+			cutThrough(loc.get());
 			break;
 		case FLOOD:
 			int fYield = (int) (yield / 1000000000) * 5;
@@ -159,17 +160,17 @@ public class TileEntityBishamonten extends TileEntityMachineBase implements ILas
 	
 	public String getEntityName()
 	{
-		return currEntity != null ? currEntity.getCommandSenderName() : I18nUtil.resolveKey("twr.target.none");
+		return currEntity.isPresent() ? currEntity.get().getCommandSenderName() : I18nUtil.resolveKey("twr.target.none");
 	}
 	
 	public String getEntityCoordinates()
 	{
-		if (currEntity != null && currMode == Mode.TARG_ENTITY)
+		if (currEntity.isPresent() && currMode == Mode.TARG_ENTITY)
 		{
 			double[] coord = new double[3];
-			coord[0] = currEntity.posX;
-			coord[1] = currEntity.posY;
-			coord[2] = currEntity.posZ;
+			coord[0] = currEntity.get().posX;
+			coord[1] = currEntity.get().posY;
+			coord[2] = currEntity.get().posZ;
 			return String.format("x: %s, y: %s, z: %s", coord[0], coord[1], coord[2]);// Don't ask why
 		}
 		else if (custCoord != null && currMode == Mode.TARG_MISC)
@@ -215,7 +216,10 @@ public class TileEntityBishamonten extends TileEntityMachineBase implements ILas
 	{
 		worldObj.playSoundEffect(xCoord, yCoord, zCoord, "gui.button.press", 1.0F, 1.0F);
 		if (value == 2)
+		{
 			powPercentage = (byte) (meta == -1 ? powPercentage : meta);
+			return;
+		}
 		if (value == 0 && !bufferQueued)
 		{
 			worldObj.playSoundEffect(xCoord, yCoord, zCoord, "hbm:alarm.defconstage", 1.0F, 1.0F);
@@ -264,9 +268,9 @@ public class TileEntityBishamonten extends TileEntityMachineBase implements ILas
 		bufferQueued = nbt.getBoolean("charging");
 		laserOn = nbt.getBoolean("laserOn");
 		if (nbt.hasKey("entityID"))
-			currEntity = (EntityLivingBase) worldObj.getEntityByID(nbt.getInteger("entityID"));
+			currEntity = Optional.of((EntityLivingBase) worldObj.getEntityByID(nbt.getInteger("entityID")));
 		if (nbt.hasKey("custCoord"))
-			loc = new EasyLocation(nbt.getIntArray("custCoord"));
+			loc = Optional.of(new EasyLocation(nbt.getIntArray("custCoord")));
 	}
 	/**
 	 * Charge up sequence

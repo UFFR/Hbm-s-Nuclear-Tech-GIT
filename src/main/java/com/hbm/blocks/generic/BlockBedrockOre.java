@@ -16,6 +16,9 @@ public class BlockBedrockOre extends Block implements IDrillInteraction
 
 	public BlockBedrockOre() {
 		super(Material.rock);
+		setBlockUnbreakable();
+		setResistance(Float.MAX_VALUE);
+		setHardness(Float.MAX_VALUE);
 	}
 
 	@Override
@@ -41,12 +44,13 @@ public class BlockBedrockOre extends Block implements IDrillInteraction
 	public float getRelativeHardness(World world, int x, int y, int z, int meta, IMiningDrill drill) {
 		return 30;
 	}
-	
+	// grrr
 	private Item getDrop() {
 
 		if (this == ModBlocks.ore_bedrock_coltan)
 			return ModItems.fragment_coltan;
-		
+		if (this == ModBlocks.ore_bedrock_australium)
+			return ModItems.powder_australium;
 		return null;
 	}
 }

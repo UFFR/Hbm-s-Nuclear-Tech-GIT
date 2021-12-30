@@ -5,8 +5,7 @@ import javax.annotation.Nonnull;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-@Deprecated
-public interface IDataStorageUser
+public interface IDataStorageUser extends IDataUser
 {
 	public static final int KB = 1000;
 	public static final int MB = 1000000;
@@ -15,7 +14,6 @@ public interface IDataStorageUser
 	public static final long PB = 100000000000000L;
 	public static final long ZB = 100000000000000000L;
 	
-	public long getMaxCapacity();
 	public long getReadSpeed();
 	public long getWriteSpeed();
 	public NBTTagCompound getStoredData(ItemStack stack);

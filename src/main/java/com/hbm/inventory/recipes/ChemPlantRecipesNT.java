@@ -21,7 +21,6 @@ import com.hbm.lib.Library;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 @Untested
 @Beta
@@ -38,7 +37,7 @@ public class ChemPlantRecipesNT
 		recipes.add(new ChemPlantRecipe("LF_BASE", 400)
 				.setFluidInput(new FluidStack(8000, FluidType.COOLANT), new FluidStack(1200, FluidType.OXYGEN))
 				.setItemInput(new OreDictStack(AL.dust(), 2), new OreDictStack(BR.dust()), new OreDictStack(LI.dust(), 3), new OreDictStack(F.dust(), 3))
-				.setFluidOutput(new FluidStack(2000, FluidType.SALT), null));
+				.setFluidOutput(new FluidStack(1000, FluidType.SALT), null));
 		recipes.add(new ChemPlantRecipe("LF_U", 200)
 				.setFluidInput(new FluidStack(1000, FluidType.SALT), null)
 				.setItemInput(new OreDictStack(U235.dust()), new OreDictStack(BE.nugget(), 3))
@@ -137,7 +136,7 @@ public class ChemPlantRecipesNT
 		@Override
 		public String getKey()
 		{
-			return "NTM_CHEM_PLANT";
+			return name;
 		}
 //		@Override
 //		public void writeToNBT(NBTTagCompound nbt)

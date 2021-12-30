@@ -21,7 +21,7 @@ public class GasCentrifugeRecipes {
 		MEUF6	(200,	100,	"HEUF6",	"Medium Enriched UF6",	false,	new ItemStack(ModItems.nugget_u238, 1)),
 		HEUF6	(300,	0,		"NONE",		"High Enriched UF6",	true,	new ItemStack(ModItems.nugget_u238, 2), new ItemStack(ModItems.nugget_u235, 1), new ItemStack(ModItems.fluorite, 1)),
 		
-		PF6		(300,	0,		"NONE",		"Plutonium Hexafluoride",	true,	new ItemStack(ModItems.nugget_pu238, 1), new ItemStack(ModItems.nugget_pu_mix, 2), new ItemStack(ModItems.fluorite, 1));
+		PF6		(300,	0,		"NONE",		"Plutonium hexafluoride",	true,	new ItemStack(ModItems.nugget_pu238, 1), new ItemStack(ModItems.nugget_pu_mix, 2), new ItemStack(ModItems.fluorite, 1));
 		
 		int fluidConsumed;
 		int fluidProduced;
@@ -48,7 +48,7 @@ public class GasCentrifugeRecipes {
 		}
 		
 		public PseudoFluidType getOutputFluid() {
-			return this.valueOf(this.outputFluid);
+			return valueOf(this.outputFluid);
 		}
 		
 		public String getName() {
@@ -63,11 +63,11 @@ public class GasCentrifugeRecipes {
 			return this.output;
 		}
 		
-	};
+	}
 	
 	//Recipes for NEI
 	public static List<ItemStack> getGasCentOutputs(FluidType fluid) {
-		List<ItemStack> outputs = new ArrayList(4);
+		List<ItemStack> outputs = new ArrayList<ItemStack>(4);
 		
 		switch(fluid) {
 		case UF6:

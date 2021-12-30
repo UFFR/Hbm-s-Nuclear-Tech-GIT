@@ -32,7 +32,9 @@ public class ItemMachineUpgrade extends Item {
 	@Override
 	public void addInformation(ItemStack itemstack, EntityPlayer player, List list, boolean bool) {
 		
-		if(this.type == UpgradeType.SPEED) {
+		switch (type)
+		{
+		case SPEED:
 			list.add(EnumChatFormatting.RED + "Mining Drill:");
 			list.add("Delay -" + (15 * this.tier) + "% / Consumption +" + (300 * this.tier) + "HE/t");
 			list.add(EnumChatFormatting.RED + "Laser Miner:");
@@ -48,10 +50,9 @@ public class ItemMachineUpgrade extends Item {
 			list.add(EnumChatFormatting.RED + "Cyclotron:");
 			list.add("Speed x" + (1 + this.tier));
 			list.add(EnumChatFormatting.RED + "Maxwell:");
-			list.add("Damage +" + (0.25 * (double)this.tier) + "dmg/t");
-		}
-		
-		if(this.type == UpgradeType.EFFECT) {
+			list.add("Damage +" + (0.25 * this.tier) + "dmg/t");
+		break;
+		case EFFECT:
 			list.add(EnumChatFormatting.RED + "Mining Drill:");
 			list.add("Radius +" + this.tier + "m / Consumption +" + (80 * this.tier) + "HE/t");
 			list.add(EnumChatFormatting.RED + "Crystallizer:");
@@ -60,9 +61,8 @@ public class ItemMachineUpgrade extends Item {
 			list.add("-" + (100 - 100 / (this.tier + 1)) + "% chance of incrementing overheat counter");
 			list.add(EnumChatFormatting.RED + "Maxwell:");
 			list.add("Range +" + (3 * this.tier) + "m");
-		}
-		
-		if(this.type == UpgradeType.POWER) {
+		break;
+		case POWER:
 			list.add(EnumChatFormatting.RED + "Mining Drill:");
 			list.add("Consumption -" + (30 * this.tier) + "HE/t / Delay +" + (5 * this.tier) + "%");
 			list.add(EnumChatFormatting.RED + "Assembly Machine:");
@@ -76,99 +76,107 @@ public class ItemMachineUpgrade extends Item {
 			list.add(EnumChatFormatting.RED + "Maxwell:");
 			list.add("Consumption -" + (150 * this.tier) + "HE/t");
 			list.add("Consumption when firing -" + (1500 * this.tier) + "HE/t");
-		}
-		
-		if(this == ModItems.upgrade_fortune_1) {
-			list.add(EnumChatFormatting.RED + "Mining Drill:");
-			list.add("Fortune +1 / Delay +15");
-		}
-		
-		if(this == ModItems.upgrade_fortune_2) {
-			list.add(EnumChatFormatting.RED + "Mining Drill:");
-			list.add("Fortune +2 / Delay +30");
-		}
-		
-		if(this == ModItems.upgrade_fortune_3) {
-			list.add(EnumChatFormatting.RED + "Mining Drill:");
-			list.add("Fortune +3 / Delay +45");
-		}
-		
-		if(this == ModItems.upgrade_afterburn_1) {
-			list.add(EnumChatFormatting.RED + "Turbofan:");
-			list.add("Production x2 / Consumption x2.5");
-			list.add(EnumChatFormatting.RED + "Maxwell:");
-			list.add("Afterburn +3s");
-			list.add(EnumChatFormatting.RED + "Oil Wells:");
-			list.add("Burn 10mB of gas for 50HE/t");
-		}
-		
-		if(this == ModItems.upgrade_afterburn_2) {
-			list.add(EnumChatFormatting.RED + "Turbofan:");
-			list.add("Production x3 / Consumption x5");
-			list.add(EnumChatFormatting.RED + "Maxwell:");
-			list.add("Afterburn +6s");
-			list.add(EnumChatFormatting.RED + "Oil Wells:");
-			list.add("Burn 20mB of gas for 100HE/t");
-		}
-		
-		if(this == ModItems.upgrade_afterburn_3) {
-			list.add(EnumChatFormatting.RED + "Turbofan:");
-			list.add("Production x4 / Consumption x7.5");
-			list.add(EnumChatFormatting.RED + "Maxwell:");
-			list.add("Afterburn +9s");
-			list.add(EnumChatFormatting.RED + "Oil Wells:");
-			list.add("Burn 30mB of gas for 150HE/t");
-		}
-		
-		if(this == ModItems.upgrade_radius) {
-			list.add(EnumChatFormatting.RED + "Forcefield Range Upgrade");
-			list.add("Radius +16 / Consumption +500");
-			list.add("Stacks to 16");
-		}
-		
-		if(this == ModItems.upgrade_health) {
-			list.add(EnumChatFormatting.RED + "Forcefield Health Upgrade");
-			list.add("Max. Health +50 / Consumption +250");
-			list.add("Stacks to 16");
-		}
-		
-		if(this == ModItems.upgrade_smelter) {
-			list.add(EnumChatFormatting.RED + "Mining Laser Upgrade");
-			list.add("Smelts blocks. Easy enough.");
-		}
-		
-		if(this == ModItems.upgrade_shredder) {
-			list.add(EnumChatFormatting.RED + "Mining Laser Upgrade");
-			list.add("Crunches ores");
-		}
-		
-		if(this == ModItems.upgrade_centrifuge) {
-			list.add(EnumChatFormatting.RED + "Mining Laser Upgrade");
-			list.add("Hopefully self-explanatory");
-		}
-		
-		if(this == ModItems.upgrade_crystallizer) {
-			list.add(EnumChatFormatting.RED + "Mining Laser Upgrade");
-			list.add("Your new best friend");
-		}
-		
-		if(this == ModItems.upgrade_screm) {
-			list.add(EnumChatFormatting.RED + "Mining Laser Upgrade");
-			list.add("It's like in Super Mario where all blocks are");
-			list.add("actually Toads, but here it's Half-Life scientists");
-			list.add("and they scream. A lot.");
-		}
-		
-		if(this == ModItems.upgrade_nullifier) {
-			list.add(EnumChatFormatting.RED + "Mining Laser Upgrade");
-			list.add("50% chance to override worthless items with /dev/zero");
-			list.add("50% chance to move worthless items to /dev/null");
-		}
-		
-		if(this == ModItems.upgrade_gc_speed) {
-			list.add(EnumChatFormatting.RED + "Gas Centrifuge Upgrade");
-			list.add("Allows for total isotopic separation of HEUF6");
-			list.add(EnumChatFormatting.YELLOW + "also your centrifuge goes sicko mode");
+		break;
+		default:
+			if(this == ModItems.upgrade_fortune_1) {
+				list.add(EnumChatFormatting.RED + "Mining Drill:");
+				list.add("Fortune +1 / Delay +15");
+			}
+			
+			if(this == ModItems.upgrade_fortune_2) {
+				list.add(EnumChatFormatting.RED + "Mining Drill:");
+				list.add("Fortune +2 / Delay +30");
+			}
+			
+			if(this == ModItems.upgrade_fortune_3) {
+				list.add(EnumChatFormatting.RED + "Mining Drill:");
+				list.add("Fortune +3 / Delay +45");
+			}
+			
+			if(this == ModItems.upgrade_afterburn_1) {
+				list.add(EnumChatFormatting.RED + "Turbofan:");
+				list.add("Production x2 / Consumption x2.5");
+				list.add(EnumChatFormatting.RED + "Maxwell:");
+				list.add("Afterburn +3s");
+				list.add(EnumChatFormatting.RED + "Oil Wells:");
+				list.add("Burn 10mB of gas for 50HE/t");
+			}
+			
+			if(this == ModItems.upgrade_afterburn_2) {
+				list.add(EnumChatFormatting.RED + "Turbofan:");
+				list.add("Production x3 / Consumption x5");
+				list.add(EnumChatFormatting.RED + "Maxwell:");
+				list.add("Afterburn +6s");
+				list.add(EnumChatFormatting.RED + "Oil Wells:");
+				list.add("Burn 20mB of gas for 100HE/t");
+			}
+			
+			if(this == ModItems.upgrade_afterburn_3) {
+				list.add(EnumChatFormatting.RED + "Turbofan:");
+				list.add("Production x4 / Consumption x7.5");
+				list.add(EnumChatFormatting.RED + "Maxwell:");
+				list.add("Afterburn +9s");
+				list.add(EnumChatFormatting.RED + "Oil Wells:");
+				list.add("Burn 30mB of gas for 150HE/t");
+			}
+			
+			if(this == ModItems.upgrade_radius) {
+				list.add(EnumChatFormatting.RED + "Forcefield Range Upgrade");
+				list.add("Radius +16 / Consumption +500");
+				list.add("Stacks to 16");
+			}
+			
+			if(this == ModItems.upgrade_health) {
+				list.add(EnumChatFormatting.RED + "Forcefield Health Upgrade");
+				list.add("Max. Health +50 / Consumption +250");
+				list.add("Stacks to 16");
+			}
+			
+			if(this == ModItems.upgrade_smelter) {
+				list.add(EnumChatFormatting.RED + "Mining Laser Upgrade");
+				list.add("Smelts blocks. Easy enough.");
+			}
+			
+			if(this == ModItems.upgrade_shredder) {
+				list.add(EnumChatFormatting.RED + "Mining Laser Upgrade");
+				list.add("Crunches ores");
+			}
+			
+			if(this == ModItems.upgrade_centrifuge) {
+				list.add(EnumChatFormatting.RED + "Mining Laser Upgrade");
+				list.add("Hopefully self-explanatory");
+			}
+			
+			if(this == ModItems.upgrade_crystallizer) {
+				list.add(EnumChatFormatting.RED + "Mining Laser Upgrade");
+				list.add("Your new best friend");
+			}
+			
+			if(this == ModItems.upgrade_screm) {
+				list.add(EnumChatFormatting.RED + "Mining Laser Upgrade");
+				list.add("It's like in Super Mario where all blocks are");
+				list.add("actually Toads, but here it's Half-Life scientists");
+				list.add("and they scream. A lot.");
+			}
+			
+			if(this == ModItems.upgrade_nullifier) {
+				list.add(EnumChatFormatting.RED + "Mining Laser Upgrade");
+				list.add("50% chance to override worthless items with /dev/zero");
+				list.add("50% chance to move worthless items to /dev/null");
+			}
+			
+			if(this == ModItems.upgrade_gc_speed) {
+				list.add(EnumChatFormatting.RED + "Gas Centrifuge Upgrade");
+				list.add("Allows for total isotopic separation of HEUF6");
+				list.add(EnumChatFormatting.YELLOW + "also your centrifuge goes sicko mode");
+			}
+			if (getUnlocalizedName().contains("clock"))
+			{
+				list.add(EnumChatFormatting.RED + "Atomic Clock Upgrade");
+				list.add("Increases accuracy and prevents time drifting");
+			}
+			
+			break;
 		}
 	}
 	

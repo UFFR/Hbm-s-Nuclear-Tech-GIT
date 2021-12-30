@@ -25,16 +25,6 @@ public class MachineSingGen extends BlockDummyable
 	protected void fillSpace(World world, int x, int y, int z, ForgeDirection dir, int o)
 	{
 		super.fillSpace(world, x, y, z, dir, o);
-
-		MultiblockHandlerXR.fillSpace(world, x + dir.offsetX * o, y + dir.offsetY * o, z + dir.offsetZ * o, new int[] {12, -6, 1, 1, 1, 1}, this, dir);
-		MultiblockHandlerXR.fillSpace(world, x + dir.offsetX * o, y + dir.offsetY * o, z + dir.offsetZ * o, new int[] {12, -6, 0, 0, 6, -6}, this, dir);
-		MultiblockHandlerXR.fillSpace(world, x + dir.offsetX * o, y + dir.offsetY * o, z + dir.offsetZ * o, new int[] {12, -6, 0, 0, -6, 6}, this, dir);
-
-//		ForgeDirection rot = dir.getRotation(ForgeDirection.UP);
-//		this.makeExtra(world, x + dir.offsetX * o + rot.offsetX * 7, y + 1, z + dir.offsetZ * o + rot.offsetZ * 7);
-//		this.makeExtra(world, x + dir.offsetX * o + rot.offsetX * 7, y + 3, z + dir.offsetZ * o + rot.offsetZ * 7);
-//		this.makeExtra(world, x + dir.offsetX * o + rot.offsetX * -7, y + 1, z + dir.offsetZ * o + rot.offsetZ * -7);
-//		this.makeExtra(world, x + dir.offsetX * o + rot.offsetX * -7, y + 3, z + dir.offsetZ * o + rot.offsetZ * -7);
 	}
 	
 	@Override
@@ -69,7 +59,7 @@ public class MachineSingGen extends BlockDummyable
 	@Override
 	public int[] getDimensions()
 	{
-		return new int[] {6, 0, 6, 6, 6, 6};
+		return new int[] {9, 0, 6, 6, 6, 6};
 	}
 
 	@Override

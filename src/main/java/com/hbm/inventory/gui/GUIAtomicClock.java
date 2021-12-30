@@ -84,7 +84,7 @@ public class GUIAtomicClock extends GuiInfoContainer
 			drawTexturedModalRect(guiLeft + 44, guiTop + 43, 67, 187, 18, 18);
 			if (clock.getTanks().get(0).getFill() > 0 && clock.getPower() >= clock.consumption)
 				for (byte i = 0; i < 3; i++)
-					displays[i].drawNumber(clock.getTimeData()[i].doubleValue());
+					displays[i].drawNumber(clock.getTimeData()[i]);
 		}
 		clockTank.updateTank(clock.getTanks().get(0));
 		clockTank.renderTank();

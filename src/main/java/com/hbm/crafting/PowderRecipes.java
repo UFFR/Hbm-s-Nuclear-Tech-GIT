@@ -40,7 +40,7 @@ public class PowderRecipes {
 		CraftingManager.addShapelessAuto(new ItemStack(ModItems.powder_desh_mix, 1), new Object[] { B.dustTiny(), B.dustTiny(), LA.dustTiny(), LA.dustTiny(), CE.dustTiny(), CO.dustTiny(), LI.dustTiny(), ND.dustTiny(), NB.dustTiny() });
 		CraftingManager.addShapelessAuto(new ItemStack(ModItems.powder_desh_mix, 9), new Object[] { B.dust(), B.dust(), LA.dust(), LA.dust(), CE.dust(), CO.dust(), LI.dust(), ND.dust(), NB.dust() });
 		CraftingManager.addShapelessAuto(new ItemStack(ModItems.powder_desh_ready, 1), new Object[] { ModItems.powder_desh_mix, ModItems.nugget_mercury, ModItems.nugget_mercury, COAL.dust() });
-		CraftingManager.addShapelessAuto(new ItemStack(ModItems.orichalcum, 1, Orichalcum.POWDER), TA.dust(), TA.dust(), TA.dust(), NB.dust(), DNT.dust(), ModItems.powder_chlorophyte, ModItems.powder_chlorophyte, ModItems.powder_spark_mix, ModItems.powder_spark_mix);
+		CraftingManager.addShapelessAuto(new ItemStack(ModItems.orichalcum, 1, Orichalcum.POWDER), ModItems.powder_chlorophyte, ModItems.powder_chlorophyte, ModItems.powder_chlorophyte, DNT.dust(), DNT.dust(), DNT.dust(), AUSTRALIUM.dust(), AUSTRALIUM.dust(), AUSTRALIUM.dust());
 		//Metal powders
 		CraftingManager.addShapelessAuto(new ItemStack(ModItems.powder_advanced_alloy, 4), new Object[] { REDSTONE.dust(), FE.dust(), COAL.dust(), CU.dust() });
 		CraftingManager.addShapelessAuto(new ItemStack(ModItems.powder_advanced_alloy, 3), new Object[] { FE.dust(), COAL.dust(), MINGRADE.dust() });

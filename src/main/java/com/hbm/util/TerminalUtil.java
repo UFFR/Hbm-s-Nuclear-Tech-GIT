@@ -12,6 +12,7 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nullable;
 
 import com.google.common.annotations.Beta;
+import com.hbm.lib.Library;
 import com.hbm.util.Tuple.Triplet;
 
 import api.hbm.internet.IDataUser;
@@ -122,6 +123,7 @@ public class TerminalUtil
 		public void boot()
 		{
 			print("Starting BobOS...");
+			print("Checking if file system exists..." + fileSystem.isPresent());
 			clearScreen();
 			print(startupLogo);
 		}
@@ -135,7 +137,7 @@ public class TerminalUtil
 		}
 		public void setCurrentProgram(@Nullable ProgramBase newProgram)
 		{
-			this.currentProgram = newProgram == null ? Optional.empty() : Optional.of(newProgram);
+			this.currentProgram = Optional.ofNullable(newProgram);
 		}
 		public void setFileSystem(FileManager fSys)
 		{
@@ -366,6 +368,10 @@ public class TerminalUtil
 		{
 			kernel.print(strings);
 		}
+		public void handleReturn(ReturnCode code, String msg)
+		{
+			kernel.handleReturn(code, msg);
+		}
 		public final Map<String, ProgramBase> getPrograms()
 		{
 			return kernel.availPrograms;
@@ -472,7 +478,7 @@ public class TerminalUtil
 			else
 			{
 				File file = list.get(index);
-				print(file.getName() + " (" + file.getSize() + " b)");
+				print(file.getName() + " (" + Library.getShortNumber(file.getSize()) + "b)");
 				index++;
 			}
 		}
@@ -482,7 +488,7 @@ public class TerminalUtil
 		{
 			if (!getFileManager().isPresent())
 			{
-				print("No file system present!");
+				handleReturn(ReturnCode.NO_DISC, "No file system present!");
 				complete();
 				return;
 			}

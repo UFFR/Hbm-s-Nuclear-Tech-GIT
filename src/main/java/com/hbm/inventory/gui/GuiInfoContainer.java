@@ -257,7 +257,7 @@ public abstract class GuiInfoContainer extends GuiContainer {
 		/** Max number of digits the display has, default 3 **/
 		@Nonnegative
 		private byte digitLength = 3;
-		private double numIn = 0;
+		private Number numIn = 0;
 		private char[] toDisp = {'0', '0', '0'};
 		@Nonnegative
 		private short dispOffset = 0;
@@ -333,7 +333,7 @@ public abstract class GuiInfoContainer extends GuiContainer {
 				formatForFloat();
 			drawNumber(toDisp);
 		}
-		public void drawNumber(double num)
+		public void drawNumber(Number num)
 		{
 			setNumber(num);
 			drawNumber();
@@ -479,16 +479,16 @@ public abstract class GuiInfoContainer extends GuiContainer {
 			tess.draw();
 		}
 
-		public void setNumber(double in)
+		public void setNumber(Number num)
 		{
-			numIn = in;
+			numIn = num;
 			if (customBounds)
-				numIn = MathHelper.clamp_double(in, minNum, maxNum);
+				numIn = MathHelper.clamp_double(num.doubleValue(), minNum, maxNum);
 			if (isFloat)
 				formatForFloat();
 			else
 			{
-				toDisp = new Long(Math.round(new Double(numIn))).toString().toCharArray();
+				toDisp = new Long(Math.round(numIn.doubleValue())).toString().toCharArray();
 				toDisp = truncOrExpand();
 			}
 		}
@@ -554,12 +554,12 @@ public abstract class GuiInfoContainer extends GuiContainer {
 		}
 		private void formatForFloat()
 		{
-			BigDecimal bd = new BigDecimal(new Double(numIn).toString());
+			BigDecimal bd = new BigDecimal(numIn.toString());
 			bd = bd.setScale(floatPad, RoundingMode.HALF_UP);
 			
 //			char[] proc = new Double(bd.doubleValue()).toString().toCharArray();
 			char[] proc = bd.toString().toCharArray();
-			proc = Double.valueOf(Library.roundDecimal(numIn, floatPad)).toString().toCharArray();
+			proc = Double.valueOf(Library.roundDecimal(numIn.doubleValue(), floatPad)).toString().toCharArray();
 			
 			if (proc.length == digitLength)
 				toDisp = proc;

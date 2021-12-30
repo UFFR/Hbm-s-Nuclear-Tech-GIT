@@ -261,6 +261,8 @@ public final class HbmCollection
 		UAC,
 		/**Unknown manufacturer, puts "???"**/
 		UNKNOWN,
+		/**Wilhelm-Gustloff-Werke**/
+		WGW,
 		/**Winchester Repeating Arms Company**/
 		WINCHESTER,
 		/**Winchester Repeating Arms Company / Big MT**/

@@ -4,6 +4,7 @@ import net.minecraft.block.BlockDispenser;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.dispenser.BehaviorProjectileDispense;
 import net.minecraft.dispenser.IPosition;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -29,6 +30,7 @@ import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.Mod.Metadata;
 import cpw.mods.fml.common.ModMetadata;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -63,10 +65,7 @@ import com.hbm.entity.projectile.*;
 import com.hbm.entity.qic.EntitySPV;
 import com.hbm.handler.*;
 import com.hbm.handler.FluidTypeHandler.FluidType;
-import com.hbm.handler.imc.IMCCentrifuge;
-import com.hbm.handler.imc.IMCCrystallizer;
-import com.hbm.handler.imc.IMCHandler;
-import com.hbm.handler.radiation.ChunkRadiationManager;
+import com.hbm.handler.imc.*;
 import com.hbm.hazard.HazardRegistry;
 import com.hbm.hazard.HazardSystem;
 import com.hbm.interfaces.IItemHazard;
@@ -74,6 +73,7 @@ import com.hbm.inventory.*;
 import com.hbm.inventory.recipes.*;
 import com.hbm.inventory.recipes.anvil.AnvilRecipes;
 import com.hbm.items.ModItems;
+import com.hbm.items.weapon.ItemGrenade;
 import com.hbm.lib.HbmWorld;
 import com.hbm.lib.Library;
 import com.hbm.lib.RefStrings;
@@ -85,15 +85,10 @@ import com.hbm.tileentity.bomb.TileEntityNukeCustom;
 import com.hbm.tileentity.machine.TileEntityMachineReactorLarge;
 import com.hbm.tileentity.machine.rbmk.RBMKDials;
 import com.hbm.util.ArmorUtil;
+import com.hbm.util.Tuple.Pair;
 import com.hbm.world.feature.SchistStratum;
 import com.hbm.world.generator.CellularDungeonFactory;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.Mod.Metadata;
-import cpw.mods.fml.common.ModMetadata;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
@@ -104,7 +99,6 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
 
 @Mod(modid = RefStrings.MODID, name = RefStrings.NAME, version = RefStrings.VERSION)
 public class MainRegistry {
@@ -207,16 +201,12 @@ public class MainRegistry {
 	public static Achievement digammaKnow;
 	public static Achievement digammaKauaiMoho;
 	public static Achievement digammaUpOnTop;
-<<<<<<< HEAD
 	public static Achievement psycheEgo;
 	public static Achievement psycheSuperego;
 	public static Achievement psycheId;
 	public static Achievement psycheHeartOfDarkness;
 	public static Achievement psycheAbyss;
 	public static Achievement warpDrive;
-
-=======
-	
 	public static Achievement achBurnerPress;
 	public static Achievement achBlastFurnace;
 	public static Achievement achAssembly;
@@ -249,8 +239,7 @@ public class MainRegistry {
 	public static Achievement achFusion;
 	public static Achievement achMeltdown;
 	
->>>>>>> master
-	public static int generalOverride = 0;
+	public static int generalOverride = 11;
 	public static int polaroidID = 1;
 	public static boolean isPolaroid11;
 
@@ -559,6 +548,26 @@ public class MainRegistry {
 			}
 		});
 
+		for (Pair<Item, Class<? extends Entity>> nade : ItemGrenade.allGrenades)
+		{
+			BlockDispenser.dispenseBehaviorRegistry.putObject(nade.getKey(), new BehaviorProjectileDispense()
+			{
+				@Override
+				protected IProjectile getProjectileEntity(World world, IPosition pos)
+				{
+					try
+					{
+						return (IProjectile) nade.getValue().getConstructor(World.class, int.class, int.class, int.class).newInstance(world, pos.getX(), pos.getY(), pos.getZ());
+					} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+							| InvocationTargetException | NoSuchMethodException | SecurityException e)
+					{
+						e.printStackTrace();
+						return null;
+					}
+				}
+			});
+		}
+		
 		BlockDispenser.dispenseBehaviorRegistry.putObject(ModItems.grenade_generic, new BehaviorProjectileDispense() {
 
 			@Override
@@ -853,7 +862,6 @@ public class MainRegistry {
 				return new EntityWastePearl(world, position.getX(), position.getY(), position.getZ());
 			}
 		});
-<<<<<<< HEAD
 		BlockDispenser.dispenseBehaviorRegistry.putObject(ModItems.grenade_lunatic, new BehaviorProjectileDispense() {
 			
 			@Override
@@ -868,12 +876,13 @@ public class MainRegistry {
 			protected IProjectile getProjectileEntity(World worldIn, IPosition pos)
 			{
 				return new EntityGrenadeStunning(worldIn, pos.getX(), pos.getY(), pos.getZ());
-=======
+			}
+		});
 		BlockDispenser.dispenseBehaviorRegistry.putObject(ModItems.stick_dynamite, new BehaviorProjectileDispense() {
 
+			@Override
 			protected IProjectile getProjectileEntity(World world, IPosition position) {
 				return new EntityGrenadeDynamite(world, position.getX(), position.getY(), position.getZ());
->>>>>>> master
 			}
 		});
 	}
@@ -891,19 +900,16 @@ public class MainRegistry {
 		achFiend = new Achievement("achievement.fiend", "fiend", -6, 8, ModItems.shimmer_sledge, null).initIndependentStat().setSpecial().registerStat();
 		achFiend2 = new Achievement("achievement.fiend2", "fiend2", -4, 9, ModItems.shimmer_axe, null).initIndependentStat().setSpecial().registerStat();
 		achStratum = new Achievement("achievement.stratum", "stratum", -4, -2, new ItemStack(ModBlocks.stone_gneiss), null).initIndependentStat().setSpecial().registerStat();
-<<<<<<< HEAD
-		achMeltdown = new Achievement("achievement.meltdown", "meltdown", -4, 0, new ItemStack(ModBlocks.iter), null).initIndependentStat().setSpecial().registerStat();
 		achOmega12 = new Achievement("achievement.omega12", "omega12", -4, 2, ModItems.particle_digamma, null).initIndependentStat().setSpecial().registerStat();
-		achRadium = new Achievement("achievement.radium", "radium", -4, 4, ModItems.coffee_radium, null).initIndependentStat().setSpecial().registerStat();
 
 		warpDrive = new Achievement("achievement.warpDrive", "warpDrive", -4, 3, new ItemStack(ModItems.scrumpy), null).initIndependentStat().registerStat();
 		
-		bobMetalworks = new Achievement("achievement.metalworks", "metalworks", -2, 2, ModItems.bob_metalworks, null).initIndependentStat().registerStat();
-		bobAssembly = new Achievement("achievement.assembly", "assembly", 0, 2, ModItems.bob_assembly, bobMetalworks).initIndependentStat().registerStat();
-		bobChemistry = new Achievement("achievement.chemistry", "chemistry", 2, 2, ModItems.bob_chemistry, bobAssembly).initIndependentStat().registerStat();
-		bobOil = new Achievement("achievement.oil", "oil", 4, 2, ModItems.bob_oil, bobChemistry).initIndependentStat().registerStat();
-		bobNuclear = new Achievement("achievement.nuclear", "nuclear", 6, 2, ModItems.bob_nuclear, bobOil).initIndependentStat().registerStat();
-		bobHidden = new Achievement("achievement.hidden", "hidden", 8, 2, ModItems.gun_dampfmaschine, bobNuclear).initIndependentStat().registerStat();
+//		bobMetalworks = new Achievement("achievement.metalworks", "metalworks", -2, 2, ModItems.bob_metalworks, null).initIndependentStat().registerStat();
+//		bobAssembly = new Achievement("achievement.assembly", "assembly", 0, 2, ModItems.bob_assembly, bobMetalworks).initIndependentStat().registerStat();
+//		bobChemistry = new Achievement("achievement.chemistry", "chemistry", 2, 2, ModItems.bob_chemistry, bobAssembly).initIndependentStat().registerStat();
+//		bobOil = new Achievement("achievement.oil", "oil", 4, 2, ModItems.bob_oil, bobChemistry).initIndependentStat().registerStat();
+//		bobNuclear = new Achievement("achievement.nuclear", "nuclear", 6, 2, ModItems.bob_nuclear, bobOil).initIndependentStat().registerStat();
+		bobHidden = new Achievement("achievement.hidden", "hidden", 8, 2, ModItems.gun_dampfmaschine, null).initIndependentStat().registerStat();
 
 		horizonsStart = new Achievement("achievement.horizonsStart", "horizonsStart", -2, 4, ModItems.sat_gerald, null).initIndependentStat().registerStat();
 		horizonsEnd = new Achievement("achievement.horizonsEnd", "horizonsEnd", 0, 4, ModItems.sat_gerald, horizonsStart).initIndependentStat().registerStat();
@@ -914,41 +920,18 @@ public class MainRegistry {
 		bossMaskman = new Achievement("achievement.bossMaskman", "bossMaskman", 9, 1, ModItems.coin_maskman, bossCreeper).initIndependentStat().registerStat();
 		bossWorm = new Achievement("achievement.bossWorm", "bossWorm", 11, 1, ModItems.coin_worm, bossMaskman).initIndependentStat().registerStat().setSpecial();
 		bossUFO = new Achievement("achievement.bossUFO", "bossUFO", 13, 1, ModItems.coin_ufo, bossWorm).initIndependentStat().registerStat().setSpecial();
-=======
-		achOmega12 = new Achievement("achievement.omega12", "omega12", 17, -1, ModItems.particle_digamma, null).initIndependentStat().setSpecial().registerStat();
-
-		bobHidden = new Achievement("achievement.hidden", "hidden", 15, -4, ModItems.gun_dampfmaschine, null).initIndependentStat().registerStat();
-
-		horizonsStart = new Achievement("achievement.horizonsStart", "horizonsStart", -5, 4, ModItems.sat_gerald, null).initIndependentStat().registerStat();
-		horizonsEnd = new Achievement("achievement.horizonsEnd", "horizonsEnd", -3, 4, ModItems.sat_gerald, horizonsStart).initIndependentStat().registerStat();
-		horizonsBonus = new Achievement("achievement.horizonsBonus", "horizonsBonus", -1, 4, ModItems.sat_gerald, horizonsEnd).initIndependentStat().registerStat().setSpecial();
-
-		bossCreeper = new Achievement("achievement.bossCreeper", "bossCreeper", -7, 1, ModItems.coin_creeper, null).initIndependentStat().registerStat();
-		bossMeltdown = new Achievement("achievement.bossMeltdown", "bossMeltdown", -8, 3, ModItems.coin_radiation, bossCreeper).initIndependentStat().registerStat();
-		bossMaskman = new Achievement("achievement.bossMaskman", "bossMaskman", -8, -1, ModItems.coin_maskman, bossCreeper).initIndependentStat().registerStat();
-		bossWorm = new Achievement("achievement.bossWorm", "bossWorm", -8, -3, ModItems.coin_worm, bossMaskman).initIndependentStat().registerStat().setSpecial();
-		bossUFO = new Achievement("achievement.bossUFO", "bossUFO", -6, -3, ModItems.coin_ufo, bossWorm).initIndependentStat().registerStat().setSpecial();
->>>>>>> master
 
 		achRadPoison = new Achievement("achievement.radPoison", "radPoison", -2, 6, ModItems.geiger_counter, null).initIndependentStat().registerStat();
 		achRadDeath = new Achievement("achievement.radDeath", "radDeath", 0, 6, Items.skull, achRadPoison).initIndependentStat().registerStat().setSpecial();
 
 		achSomeWounds = new Achievement("achievement.someWounds", "someWounds", -2, 10, ModItems.injector_knife, null).initIndependentStat().registerStat();
 		
-<<<<<<< HEAD
-		digammaSee = new Achievement("achievement.digammaSee", "digammaSee", -2, 8, ModItems.digamma_see, null).initIndependentStat().registerStat();
-		digammaFeel = new Achievement("achievement.digammaFeel", "digammaFeel", 0, 8, ModItems.digamma_feel, digammaSee).initIndependentStat().registerStat();
-		digammaKnow = new Achievement("achievement.digammaKnow", "digammaKnow", 2, 8, ModItems.digamma_know, digammaFeel).initIndependentStat().registerStat().setSpecial();
-		digammaKauaiMoho = new Achievement("achievement.digammaKauaiMoho", "digammaKauaiMoho", 4, 8, ModItems.digamma_kauai_moho, digammaKnow).initIndependentStat().registerStat().setSpecial();
-		digammaUpOnTop = new Achievement("achievement.digammaUpOnTop", "digammaUpOnTop", 6, 8, ModItems.digamma_up_on_top, digammaKauaiMoho).initIndependentStat().registerStat().setSpecial();
-
 		// TODO Finish psyche achievements
 		psycheEgo = new Achievement("achievement.psycheEgo", "psycheEgo", -4, 4, ModItems.psyche_ego, null).initIndependentStat().registerStat();
 		psycheSuperego = new Achievement("achievement.psycheSuperego", "psycheSuperego", -4, 6, ModItems.psyche_superego, psycheEgo).initIndependentStat().registerStat();
 		psycheId = new Achievement("achievement.psycheId", "psycheId", -4, 8, ModItems.psyche_id, psycheSuperego).initIndependentStat().registerStat();
 		psycheHeartOfDarkness = new Achievement("achievement.psycheHeartOfDarkness", "psycheHeartOfDarkness", -4, 10, ModItems.psyche_heart_of_darkness, psycheId).initIndependentStat().registerStat().setSpecial();
 		psycheAbyss = new Achievement("achievement.psycheAbyss", "psycheAbyss", -4, 12, ModItems.psyche_abyss, psycheHeartOfDarkness).initIndependentStat().registerStat().setSpecial();
-=======
 		digammaSee = new Achievement("achievement.digammaSee", "digammaSee", -1, 8, ModItems.digamma_see, null).initIndependentStat().registerStat();
 		digammaFeel = new Achievement("achievement.digammaFeel", "digammaFeel", 1, 8, ModItems.digamma_feel, digammaSee).initIndependentStat().registerStat();
 		digammaKnow = new Achievement("achievement.digammaKnow", "digammaKnow", 3, 8, ModItems.digamma_know, digammaFeel).initIndependentStat().registerStat().setSpecial();
@@ -987,7 +970,6 @@ public class MainRegistry {
 		achMeltdown = new Achievement("achievement.meltdown", "meltdown", 15, -7, ModItems.crystal_energy, achFusion).initIndependentStat().setSpecial().registerStat();
 		achRedBalloons = new Achievement("achievement.redBalloons", "redBalloons", 11, 0, ModItems.missile_nuclear, achPolymer).initIndependentStat().setSpecial().registerStat();
 		achManhattan = new Achievement("achievement.manhattan", "manhattan", 11, -4, new ItemStack(ModBlocks.nuke_boy), achPolymer).initIndependentStat().setSpecial().registerStat();
->>>>>>> master
 		
 		AchievementPage.registerAchievementPage(new AchievementPage("Nuclear Tech", new Achievement[] {
 				achSacrifice,
@@ -1003,11 +985,11 @@ public class MainRegistry {
 				achOmega12,
 				achRadium,
 				warpDrive,
-				bobMetalworks,
-				bobAssembly,
-				bobChemistry,
-				bobOil,
-				bobNuclear,
+//				bobMetalworks,
+//				bobAssembly,
+//				bobChemistry,
+//				bobOil,
+//				bobNuclear,
 				bobHidden,
 				horizonsStart,
 				horizonsEnd,
@@ -1029,7 +1011,7 @@ public class MainRegistry {
 				psycheSuperego,
 				psycheId,
 				psycheHeartOfDarkness,
-				psycheAbyss
+				psycheAbyss,
 				
 				achBurnerPress,
 				achBlastFurnace,
@@ -1070,6 +1052,7 @@ public class MainRegistry {
 
 		IMCHandler.registerHandler("crystallizer", new IMCCrystallizer());
 		IMCHandler.registerHandler("centrifuge", new IMCCentrifuge());
+		IMCHandler.registerHandler("blastFurnace", new IMCBlastFurnace());
 	}
 	
 	@EventHandler

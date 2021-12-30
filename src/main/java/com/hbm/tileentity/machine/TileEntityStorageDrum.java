@@ -57,10 +57,13 @@ public class TileEntityStorageDrum extends TileEntityMachineBase implements IFlu
 			recipes.putIfAbsent(new ComparableStack(ModItems.rod_quad_tha), new DrumDecayRecipe(new ItemStack(ModItems.rod_quad_thorium_fuel), VersatileConfig.getShortDecayChance() / 2));
 			recipes.putIfAbsent(new ComparableStack(ModItems.nugget_tha), new DrumDecayRecipe(new ItemStack(ModItems.nugget_thorium_fuel), VersatileConfig.getShortDecayChance() / 2));
 			recipes.putIfAbsent(new ComparableStack(ModItems.billet_tha), new DrumDecayRecipe(new ItemStack(ModItems.billet_thorium_fuel), VersatileConfig.getShortDecayChance() / 2));
-			recipes.putIfAbsent(new ComparableStack(ModItems.ingot_tha), new DrumDecayRecipe(new ItemStack(ModItems.ingot_th232), VersatileConfig.getShortDecayChance() / 2));
+			recipes.putIfAbsent(new ComparableStack(ModItems.ingot_tha), new DrumDecayRecipe(new ItemStack(ModItems.ingot_thorium_fuel), VersatileConfig.getShortDecayChance() / 2));
 			recipes.putIfAbsent(new ComparableStack(ModBlocks.block_tha), new DrumDecayRecipe(new ItemStack(ModBlocks.block_thorium_fuel), VersatileConfig.getShortDecayChance() / 2));
 			recipes.putIfAbsent(new ComparableStack(ModItems.powder_sr90), new DrumDecayRecipe(new ItemStack(ModItems.powder_zirconium), VersatileConfig.getLongDecayChance() / 2));
 			recipes.putIfAbsent(new ComparableStack(ModItems.ingot_sr90), new DrumDecayRecipe(new ItemStack(ModItems.powder_zirconium), VersatileConfig.getLongDecayChance() / 2));
+			recipes.putIfAbsent(new ComparableStack(ModItems.ingot_pa233), new DrumDecayRecipe(new ItemStack(ModItems.ingot_u233), VersatileConfig.getShortDecayChance() / 2));
+			recipes.putIfAbsent(new ComparableStack(ModItems.nugget_pa233), new DrumDecayRecipe(new ItemStack(ModItems.nugget_u233), VersatileConfig.getShortDecayChance() / 2));
+			recipes.putIfAbsent(new ComparableStack(ModItems.billet_pa233), new DrumDecayRecipe(new ItemStack(ModItems.billet_u233), VersatileConfig.getShortDecayChance() / 2));
 		}
 	}
 

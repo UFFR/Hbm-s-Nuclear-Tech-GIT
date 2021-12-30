@@ -1,6 +1,7 @@
 package com.hbm.items.machine;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.annotation.CheckForNull;
@@ -13,6 +14,7 @@ import com.hbm.interfaces.Spaghetti;
 import com.hbm.items.special.ItemCustomLore;
 import com.hbm.lib.Library;
 import com.hbm.util.I18nUtil;
+import com.hbm.util.TerminalUtil.File;
 
 import api.hbm.internet.IDataStorageUser;
 import cpw.mods.fml.relauncher.Side;
@@ -351,6 +353,55 @@ public class ItemStorageMedium extends ItemCustomLore implements IDataStorageUse
 			else
 				return null;
 		}
+		return null;
+	}
+
+	@Override
+	public long getUsedSpace()
+	{
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public boolean writeFile(File file)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean deleteFile(String filename)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean overwriteFile(File file)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public File getFile(String filename)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public NBTTagCompound extractNBT()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<File> getFileList()
+	{
+		// TODO Auto-generated method stub
 		return null;
 	}
 }

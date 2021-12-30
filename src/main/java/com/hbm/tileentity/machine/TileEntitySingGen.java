@@ -28,6 +28,7 @@ import api.hbm.energy.IEnergyUser;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.AxisAlignedBB;
 
 @Spaghetti("Preemptive")
 public class TileEntitySingGen extends TileEntityMachineBase implements IFluidAcceptor, IEnergyUser
@@ -172,6 +173,7 @@ public class TileEntitySingGen extends TileEntityMachineBase implements IFluidAc
 			tank.loadTank(2, 3, slots);
 			if (getStackInSlot(13) != null && getStackInSlot(13).getItem() instanceof ItemFluidIdentifier)
 				tank.setTankType(ItemFluidIdentifier.getType(getStackInSlot(13)));
+			tank.updateTank(this);
 			if (isOn)
 			{
 				if (canProcess())
@@ -195,14 +197,14 @@ public class TileEntitySingGen extends TileEntityMachineBase implements IFluidAc
 			{
 				progress = 0;
 			}
-			tank.updateTank(this);
 			
-			NBTTagCompound data = new NBTTagCompound();
-			data.setLong("power", power);
-			data.setInteger("progress", progress);
-			data.setBoolean("isOn", isOn);
-			this.networkPack(data, 25);
 		}
+		NBTTagCompound data = new NBTTagCompound();
+		data.setLong("power", power);
+		data.setInteger("progress", progress);
+		data.setBoolean("isOn", isOn);
+		this.networkPack(data, 25);
+
 	}
 	/** Called when the machine is on but has no power,
 	 * if the config allows it, may explode with a
@@ -408,6 +410,12 @@ public class TileEntitySingGen extends TileEntityMachineBase implements IFluidAc
 	public String getName()
 	{
 		return "container.machineSingGen";
+	}
+	
+	@Override
+	public AxisAlignedBB getRenderBoundingBox()
+	{
+		return INFINITE_EXTENT_AABB;
 	}
 	
 	@Override
