@@ -75,6 +75,9 @@ public class TileMappings {
 		put(TileEntityGasDuct.class, "tileentity_gas_duct");
 		put(TileEntityGasDuctSolid.class, "tileentity_gas_duct_solid");
 		put(TileEntityMachineRTG.class, "tileentity_machine_rtg");
+		put(TileEntityConnector.class, "tileentity_connector_redwire");
+		put(TileEntityPylon.class, "tileentity_pylon_redwire");
+		put(TileEntityPylonLarge.class, "tileentity_pylon_large");
 		put(TileEntityStructureMarker.class, "tileentity_structure_marker");
 		put(TileEntityMachineMiningDrill.class, "tileentity_mining_drill");
 		put(TileEntityMachineAssembler.class, "tileentity_assembly_machine");

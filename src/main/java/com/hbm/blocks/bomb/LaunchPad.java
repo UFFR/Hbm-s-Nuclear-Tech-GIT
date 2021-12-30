@@ -9,6 +9,7 @@ import com.hbm.config.GeneralConfig;
 import com.hbm.entity.missile.*;
 import com.hbm.handler.EnumGUI;
 import com.hbm.interfaces.IBomb;
+import com.hbm.interfaces.Spaghetti;
 import com.hbm.items.ModItems;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.bomb.TileEntityLaunchPad;
@@ -168,6 +169,7 @@ public class LaunchPad extends BlockContainer implements IBomb {
 		return Item.getItemFromBlock(ModBlocks.launch_pad);
 	}
 
+	@Spaghetti("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA *takes breath* AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 	@Override
 	public void explode(World world, int x, int y, int z) {
 
@@ -177,6 +179,9 @@ public class LaunchPad extends BlockContainer implements IBomb {
 			return;
 		
 		if(entity.slots[1] != null && entity.slots[1].getItem() instanceof IDesignatorItem && entity.power >= 75000) {
+			
+			if(!((IDesignatorItem)entity.slots[1].getItem()).isReady(world, entity.slots[1], x, y, z))
+				return;
 			
 			int xCoord = entity.slots[1].stackTagCompound.getInteger("xCoord");
 			int zCoord = entity.slots[1].stackTagCompound.getInteger("zCoord");

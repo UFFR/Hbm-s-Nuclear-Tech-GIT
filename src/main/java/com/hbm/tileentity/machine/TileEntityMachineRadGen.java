@@ -252,7 +252,9 @@ public class TileEntityMachineRadGen extends TileEntityMachineBase implements IE
 		Triplet<Integer, Integer, ItemStack> result = grabResult(stack);
 		if(result == null)
 			return null;
-		return result.getZ();
+		if(result.getZ() == null)
+			return null;
+		return result.getZ().copy();
 	}
 
 	@Override
