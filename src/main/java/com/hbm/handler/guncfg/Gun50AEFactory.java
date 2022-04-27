@@ -1,10 +1,8 @@
 package com.hbm.handler.guncfg;
 
-import java.util.ArrayList;
-
-import com.hbm.handler.BulletConfigSyncingUtil;
 import com.hbm.handler.BulletConfiguration;
 import com.hbm.handler.GunConfiguration;
+import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.items.ModItems;
 import com.hbm.lib.HbmCollection;
 import com.hbm.lib.HbmCollection.EnumGunManufacturer;
@@ -43,51 +41,48 @@ public class Gun50AEFactory {
 		config.manufacturer = EnumGunManufacturer.MAGNUM_R_IMI;
 		
 		config.hasSights = true;
-		config.config = new ArrayList<Integer>();
-		config.config.add(BulletConfigSyncingUtil.AE50_NORMAL);
-		config.config.add(BulletConfigSyncingUtil.AE50_AP);
-		config.config.add(BulletConfigSyncingUtil.AE50_DU);
-		config.config.add(BulletConfigSyncingUtil.AE50_STAR);
-		config.config.add(BulletConfigSyncingUtil.CHL_AE50);
+		config.config = HbmCollection.fiftyAE;
 		
 		return config;
 	}
 	
 	public static GunConfiguration getUACDeagleConfig()
 	{
-		GunConfiguration config = getBaseConfig().clone();
+		GunConfiguration config = getDeagleConfig().clone();
 		
 		config.durability = 5000;
 		config.ammoCap = 12;
 		config.name = "uacDeagle";
 		config.manufacturer = EnumGunManufacturer.UAC;
-		config.config = new ArrayList<Integer>(HbmCollection.fiftyAE);
 		config.comment.add("Aka: UAC Desert Eagle Mark VII");
 		
 		return config;
 	}
 
 	static final float inaccuracy = 0.0005F;
+	static byte i = 0;
 	public static BulletConfiguration get50AEConfig() {
 		
-		BulletConfiguration bullet = BulletConfigFactory.standardBulletConfig();
+		BulletConfiguration bullet = BulletConfigFactory.standardPistolConfig();
 		
-		bullet.ammo = ModItems.ammo_50ae;
+		bullet.ammo = new ComparableStack(ModItems.ammo_50ae, 1, i++);
 		bullet.spread *= inaccuracy;
 		bullet.dmgMin = 28;
 		bullet.dmgMax = 32;
+		bullet.penetration = 35;
 		
 		return bullet;
 	}
 
 	public static BulletConfiguration get50APConfig() {
 		
-		BulletConfiguration bullet = BulletConfigFactory.standardBulletConfig();
+		BulletConfiguration bullet = BulletConfigFactory.standardPistolConfig();
 		
-		bullet.ammo = ModItems.ammo_50ae_ap;
+		bullet.ammo = new ComparableStack(ModItems.ammo_50ae, 1, i++);
 		bullet.spread *= inaccuracy;
 		bullet.dmgMin = 30;
 		bullet.dmgMax = 36;
+		bullet.penetration = 45;
 		bullet.leadChance = 10;
 		bullet.wear = 15;
 		
@@ -96,12 +91,13 @@ public class Gun50AEFactory {
 
 	public static BulletConfiguration get50DUConfig() {
 		
-		BulletConfiguration bullet = BulletConfigFactory.standardBulletConfig();
+		BulletConfiguration bullet = BulletConfigFactory.standardPistolConfig();
 		
-		bullet.ammo = ModItems.ammo_50ae_du;
+		bullet.ammo = new ComparableStack(ModItems.ammo_50ae, 1, i++);
 		bullet.spread *= inaccuracy;
 		bullet.dmgMin = 38;
 		bullet.dmgMax = 46;
+		bullet.penetration = 60;
 		bullet.leadChance = 50;
 		bullet.wear = 25;
 		
@@ -110,12 +106,13 @@ public class Gun50AEFactory {
 
 	public static BulletConfiguration get50StarConfig() {
 		
-		BulletConfiguration bullet = BulletConfigFactory.standardBulletConfig();
+		BulletConfiguration bullet = BulletConfigFactory.standardPistolConfig();
 		
-		bullet.ammo = ModItems.ammo_50ae_star;
+		bullet.ammo = new ComparableStack(ModItems.ammo_50ae, 1, i++);
 		bullet.spread *= inaccuracy;
 		bullet.dmgMin = 52;
 		bullet.dmgMax = 60;
+		bullet.penetration = 80;
 		bullet.leadChance = 100;
 		bullet.wear = 25;
 		

@@ -1,6 +1,7 @@
 package com.hbm.tileentity.machine;
 
 import com.hbm.lib.Library;
+import com.hbm.tileentity.machine.storage.TileEntityMachineBattery;
 
 import api.hbm.energy.IEnergyConductor;
 import api.hbm.energy.IEnergyConnector;
@@ -79,7 +80,7 @@ public class TileEntityMachineFENSU extends TileEntityMachineBattery {
 			IEnergyConductor con = (IEnergyConductor) te;
 			
 			if(con.getPowerNet() != null) {
-				if(mode == 1 || mode == 2) {
+				if(mode == 2 || mode == 3) {
 					if(con.getPowerNet().isSubscribed(this)) {
 						con.getPowerNet().unsubscribe(this);
 					}

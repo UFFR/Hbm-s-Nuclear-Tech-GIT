@@ -2,21 +2,22 @@ package com.hbm.blocks.machine;
 
 
 import com.hbm.blocks.BlockDummyable;
-import com.hbm.handler.EnumGUI;
+import com.hbm.blocks.ModBlocks;
+import com.hbm.handler.BossSpawnHandler;
 import com.hbm.handler.MultiblockHandlerXR;
-import com.hbm.interfaces.IMultiblock;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.TileEntityProxyCombo;
 import com.hbm.tileentity.machine.TileEntityReactorZirnox;
 
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraft.block.material.Material;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class ReactorZirnox extends BlockDummyable implements IMultiblock {
+public class ReactorZirnox extends BlockDummyable {
 
 	public ReactorZirnox(Material mat) {
 		super(mat);
@@ -35,17 +36,17 @@ public class ReactorZirnox extends BlockDummyable implements IMultiblock {
 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
-		if(world.isRemote)
-		{
+		if(world.isRemote) {
 			return true;
-		} else if(!player.isSneaking())
-		{
+		} else if(!player.isSneaking()) {
+			BossSpawnHandler.markFBI(player);
+			
 			int[] pos = this.findCore(world, x, y, z);
 
 			if(pos == null)
 				return false;
 
-			FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.REACTOR_ZIRNOX.ordinal(), world, pos[0], pos[1], pos[2]);
+			FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_reactor_zirnox, world, pos[0], pos[1], pos[2]);
 			return true;
 		} else {
 			return false;
@@ -62,7 +63,6 @@ public class ReactorZirnox extends BlockDummyable implements IMultiblock {
 		return 2;
 	}
 
-	@Override
 	protected void fillSpace(World world, int x, int y, int z, ForgeDirection dir, int o) {
 		super.fillSpace(world, x, y, z, dir, o);
 

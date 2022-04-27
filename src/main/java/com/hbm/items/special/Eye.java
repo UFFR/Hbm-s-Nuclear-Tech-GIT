@@ -1,14 +1,12 @@
 package com.hbm.items.special;
 
 import com.google.common.annotations.Beta;
+import com.hbm.extprop.HbmLivingProps;
 import com.hbm.main.KoishiBreachException;
 import com.hbm.main.MainRegistry;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.packet.PlayerInformPacket;
 import com.hbm.potion.HbmPotion;
-import com.hbm.util.ContaminationUtil;
-import com.hbm.util.ContaminationUtil.ContaminationType;
-import com.hbm.util.ContaminationUtil.HazardType;
 import com.hbm.util.I18nUtil;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,15 +27,12 @@ public final class Eye extends ItemCustomLore
 	public ItemStack onItemRightClick(ItemStack stack, World worldIn, EntityPlayer playerIn)
 	{
 		if (MainRegistry.isPolaroid11)
-			throw new RuntimeException(new KoishiBreachException());
-		if (!worldIn.isRemote)
-		{
-			PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(I18nUtil.resolveKey("eye.speakTo", I18nUtil.resolveKey("eye.speakTo.remember"))), (EntityPlayerMP) playerIn);
-			PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(I18nUtil.resolveKey("eye.respond.nothing")), (EntityPlayerMP) playerIn);
-		}
+			throw new RuntimeException(new KoishiBreachException(worldIn.isRemote));
+		PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(I18nUtil.resolveKey("eye.speakTo", I18nUtil.resolveKey("eye.speakTo.remember"))), (EntityPlayerMP) playerIn);
+		PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(I18nUtil.resolveKey("eye.respond.nothing")), (EntityPlayerMP) playerIn);
 		playerIn.addPotionEffect(new PotionEffect(HbmPotion.unconscious.id, 60*20));
 //		ContaminationUtil.applyDigammaDirect(playerIn, 0.5F);
-		ContaminationUtil.contaminate(playerIn, HazardType.DIGAMMA, ContaminationType.CREATIVE, 0.5f);
+		HbmLivingProps.incrementDigamma(playerIn, 0.5f);
 		return stack;
 	}
 	

@@ -1,12 +1,8 @@
 package com.hbm.handler.guncfg;
 
-import java.util.ArrayList;
-
-import com.hbm.entity.projectile.EntityBulletBase;
-import com.hbm.handler.BulletConfigSyncingUtil;
 import com.hbm.handler.BulletConfiguration;
 import com.hbm.handler.GunConfiguration;
-import com.hbm.interfaces.IBulletHurtBehavior;
+import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.items.ModItems;
 import com.hbm.lib.HbmCollection;
 import com.hbm.lib.HbmCollection.EnumGunManufacturer;
@@ -17,7 +13,6 @@ import com.hbm.render.anim.BusAnimationSequence;
 import com.hbm.render.anim.HbmAnimations.AnimType;
 import com.hbm.render.util.RenderScreenOverlay.Crosshair;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.potion.PotionEffect;
 
@@ -44,13 +39,7 @@ public class Gun12GaugeFactory {
 		config.name = "uboinik";
 		config.manufacturer = EnumGunManufacturer.METRO;
 		
-		config.config = new ArrayList<Integer>();
-		config.config.add(BulletConfigSyncingUtil.G12_NORMAL);
-		config.config.add(BulletConfigSyncingUtil.G12_INCENDIARY);
-		config.config.add(BulletConfigSyncingUtil.G12_SHRAPNEL);
-		config.config.add(BulletConfigSyncingUtil.G12_DU);
-		config.config.add(BulletConfigSyncingUtil.G12_AM);
-		config.config.add(BulletConfigSyncingUtil.G12_SLEEK);
+		config.config = HbmCollection.twelveGauge;
 		
 		return config;
 	}
@@ -101,13 +90,7 @@ public class Gun12GaugeFactory {
 		config.manufacturer = EnumGunManufacturer.UAC;
 		config.comment.add("God-damned ARCH-VILES!");
 		
-		config.config = new ArrayList<Integer>();
-		config.config.add(BulletConfigSyncingUtil.G12_NORMAL);
-		config.config.add(BulletConfigSyncingUtil.G12_INCENDIARY);
-		config.config.add(BulletConfigSyncingUtil.G12_SHRAPNEL);
-		config.config.add(BulletConfigSyncingUtil.G12_DU);
-		config.config.add(BulletConfigSyncingUtil.G12_AM);
-		config.config.add(BulletConfigSyncingUtil.G12_SLEEK);
+		config.config = HbmCollection.twelveGauge;
 		
 		return config;
 	}
@@ -159,6 +142,29 @@ public class Gun12GaugeFactory {
 		config.comment.add("Eat your heart out SPAS-12");
 		config.config = HbmCollection.twelveGauge;
 		
+		config.advLore.add("The Benelli M4 is a semi-automatic shotgun produced by Italian firearm manufacturer Benelli");
+		config.advLore.add("Armi SpA, and the last of the \"Benelli Super 90\" series of semi-automatic shotguns. The M4");
+		config.advLore.add("uses a proprietary action design called the \"auto-regulating gas-operated\" (ARGO) system,");
+		config.advLore.add("which was created specifically for the weapon. The weapon was designed in 1998, and was adopted");
+		config.advLore.add("by the armed forces of Italy, the United States, United Kingdom, among others, and has been used");
+		config.advLore.add("in a variety of conflicts, leading up to the present day.");
+		
+		config.advFuncLore.add("The M4 was the first gas-operated shotgun produced by Benelli. Its function is designed around an");
+		config.advFuncLore.add("entirely new design called the \"auto-regulating gas-operated\" (ARGO) system. The short-stroke design");
+		config.advFuncLore.add("uses two self-cleaning stainless steel pistons located just ahead of the chamber to function opposite");
+		config.advFuncLore.add("a rotating bolt, thereby eliminating the need for the complex mechanisms found on other gas-actuated");
+		config.advFuncLore.add("automatics. The ARGO incorporates only four parts: two symmetrical fore-end shrouds containing two small");
+		config.advFuncLore.add("steel pistons that push directly against the bolt.");
+		config.advFuncLore.add("Additionally, the weapon is self-regulating for use with shotshells of varying lengths and power levels.");
+		config.advFuncLore.add("It can fire 2.75 in (70 mm) and 3 in (76 mm) shells of differing propellant loads without any operator");
+		config.advFuncLore.add("adjustments and in any combination. Low-power rounds, such as less-lethal baton rounds, must be cycled");
+		config.advFuncLore.add("manually. The sights are military-style ghost ring and are adjustable in the field using only the rim");
+		config.advFuncLore.add("of a shell. The MIL-STD-1913 Picatinny rail on top of the receiver allows use of both conventional optical");
+		config.advFuncLore.add("sights and night-vision devices, while retaining use of the original iron sights.");
+		config.advFuncLore.add("The modular basis of the shotgun means many of its features can be reconfigured as needed. It allows a");
+		config.advFuncLore.add("user to quickly exchange the various assembly groups (barrel, buttstock, forend, etc.) without the use");
+		config.advFuncLore.add("of additional tools.");
+		
 		return config;
 	}
 	
@@ -180,9 +186,10 @@ public class Gun12GaugeFactory {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardBuckshotConfig();
 		
-		bullet.ammo = ModItems.ammo_12gauge;
+		bullet.ammo = new ComparableStack(ModItems.ammo_12gauge, 1, 0);
 		bullet.dmgMin = 5;
 		bullet.dmgMax = 7;
+		bullet.penetration = 17;
 		
 		return bullet;
 	}
@@ -191,7 +198,7 @@ public class Gun12GaugeFactory {
 		
 		BulletConfiguration bullet = get12GaugeConfig();
 		
-		bullet.ammo = ModItems.ammo_12gauge_incendiary;
+		bullet.ammo = new ComparableStack(ModItems.ammo_12gauge, 1, 1);
 		bullet.wear = 15;
 		bullet.dmgMin = 5;
 		bullet.dmgMax = 7;
@@ -204,10 +211,11 @@ public class Gun12GaugeFactory {
 		
 		BulletConfiguration bullet = get12GaugeConfig();
 		
-		bullet.ammo = ModItems.ammo_12gauge_shrapnel;
+		bullet.ammo = new ComparableStack(ModItems.ammo_12gauge, 1, 2);
 		bullet.wear = 15;
 		bullet.dmgMin = 10;
 		bullet.dmgMax = 17;
+		bullet.penetration = 20;
 		bullet.ricochetAngle = 15;
 		bullet.HBRC = 80;
 		bullet.LBRC = 95;
@@ -219,10 +227,11 @@ public class Gun12GaugeFactory {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardBuckshotConfig();
 		
-		bullet.ammo = ModItems.ammo_12gauge_du;
+		bullet.ammo = new ComparableStack(ModItems.ammo_12gauge, 1, 3);
 		bullet.wear = 20;
 		bullet.dmgMin = 18;
 		bullet.dmgMax = 22;
+		bullet.penetration = 30;
 		bullet.doesPenetrate = true;
 		bullet.leadChance = 50;
 		
@@ -233,20 +242,17 @@ public class Gun12GaugeFactory {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardBuckshotConfig();
 		
-		bullet.ammo = ModItems.ammo_12gauge_marauder;
+		bullet.ammo = new ComparableStack(ModItems.ammo_12gauge, 1, 4);
 		bullet.wear = 20;
 		bullet.dmgMin = 100;
 		bullet.dmgMax = 500;
+		bullet.penetration = Integer.MAX_VALUE;
 		bullet.leadChance = 50;
 		
-		bullet.bHurt = new IBulletHurtBehavior() {
+		bullet.bHurt = (projectile, hit) -> {
 
-			@Override
-			public void behaveEntityHurt(EntityBulletBase bullet, Entity hit) {
-				
 				if(hit instanceof EntityLivingBase)
 					((EntityLivingBase)hit).addPotionEffect(new PotionEffect(HbmPotion.bang.id, 20, 0));
-			}
 			
 		};
 		
@@ -257,7 +263,7 @@ public class Gun12GaugeFactory {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardAirstrikeConfig();
 		
-		bullet.ammo = ModItems.ammo_12gauge_sleek;
+		bullet.ammo = new ComparableStack(ModItems.ammo_12gauge, 1, 5);
 		
 		return bullet;
 	}

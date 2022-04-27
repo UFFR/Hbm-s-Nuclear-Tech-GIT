@@ -3,19 +3,29 @@ package com.hbm.tileentity.machine.oil;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.hbm.handler.FluidTypeHandler.FluidType;
+import org.lwjgl.opengl.GL11;
+
+import com.hbm.blocks.machine.MachineFractionTower;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidSource;
+import com.hbm.inventory.FluidStack;
 import com.hbm.inventory.FluidTank;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.recipes.RefineryRecipes;
 import com.hbm.lib.Library;
-import com.hbm.util.Tuple.Quartet;
+import com.hbm.util.Tuple.Pair;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.World;
+import net.minecraftforge.client.event.RenderGameOverlayEvent.Pre;
 import net.minecraftforge.common.util.ForgeDirection;
 import scala.actors.threadpool.Arrays;
 
@@ -27,9 +37,9 @@ public class TileEntityMachineFractionTower extends TileEntity implements IFluid
 	
 	public TileEntityMachineFractionTower() {
 		tanks = new FluidTank[3];
-		tanks[0] = new FluidTank(FluidType.HEAVYOIL, 4000, 0);
-		tanks[1] = new FluidTank(FluidType.BITUMEN, 4000, 1);
-		tanks[2] = new FluidTank(FluidType.SMEAR, 4000, 2);
+		tanks[0] = new FluidTank(Fluids.HEAVYOIL, 4000, 0);
+		tanks[1] = new FluidTank(Fluids.BITUMEN, 4000, 1);
+		tanks[2] = new FluidTank(Fluids.SMEAR, 4000, 2);
 	}
 	
 	@Override
@@ -76,26 +86,26 @@ public class TileEntityMachineFractionTower extends TileEntity implements IFluid
 	
 	private void setupTanks() {
 		
-		Quartet<FluidType, FluidType, Integer, Integer> quart = RefineryRecipes.getFractions(tanks[0].getTankType());
+		Pair<FluidStack, FluidStack> quart = RefineryRecipes.getFractions(tanks[0].getTankType());
 		
 		if(quart != null) {
-			tanks[1].setTankType(quart.getW());
-			tanks[2].setTankType(quart.getX());
+			tanks[1].setTankType(quart.getKey().type);
+			tanks[2].setTankType(quart.getValue().type);
 		} else {
-			tanks[0].setTankType(FluidType.NONE);
-			tanks[1].setTankType(FluidType.NONE);
-			tanks[2].setTankType(FluidType.NONE);
+			tanks[0].setTankType(Fluids.NONE);
+			tanks[1].setTankType(Fluids.NONE);
+			tanks[2].setTankType(Fluids.NONE);
 		}
 	}
 	
 	private void fractionate() {
 		
-		Quartet<FluidType, FluidType, Integer, Integer> quart = RefineryRecipes.getFractions(tanks[0].getTankType());
+		Pair<FluidStack, FluidStack> quart = RefineryRecipes.getFractions(tanks[0].getTankType());
 		
 		if(quart != null) {
 			
-			int left = quart.getY();
-			int right = quart.getZ();
+			int left = quart.getKey().fill;
+			int right = quart.getValue().fill;
 			
 			if(tanks[0].getFill() >= 100 && hasSpace(left, right)) {
 				tanks[0].setFill(tanks[0].getFill() - 100);
@@ -162,7 +172,7 @@ public class TileEntityMachineFractionTower extends TileEntity implements IFluid
 
 	@Override
 	public int getMaxFluidFill(FluidType type) {
-		if(type.name().equals(tanks[0].getTankType().name()))
+		if(type == tanks[0].getTankType())
 			return tanks[0].getMaxFill();
 		else
 			return 0;
@@ -189,19 +199,15 @@ public class TileEntityMachineFractionTower extends TileEntity implements IFluid
 
 	@Override
 	public List<IFluidAcceptor> getFluidList(FluidType type) {
-		if(type.name().equals(tanks[1].getTankType().name()))
-			return list1;
-		if(type.name().equals(tanks[2].getTankType().name()))
-			return list2;
+		if(type == tanks[1].getTankType()) return list1;
+		if(type == tanks[2].getTankType()) return list2;
 		return new ArrayList<IFluidAcceptor>();
 	}
 
 	@Override
 	public void clearFluidList(FluidType type) {
-		if(type.name().equals(tanks[1].getTankType().name()))
-			list1.clear();
-		if(type.name().equals(tanks[2].getTankType().name()))
-			list2.clear();
+		if(type == tanks[1].getTankType()) list1.clear();
+		if(type == tanks[2].getTankType()) list2.clear();
 	}
 	
 	AxisAlignedBB bb = null;
@@ -227,5 +233,39 @@ public class TileEntityMachineFractionTower extends TileEntity implements IFluid
 	@SideOnly(Side.CLIENT)
 	public double getMaxRenderDistanceSquared() {
 		return 65536.0D;
+	}
+	
+	public static void printData(Pre event, World world, int x, int y, int z)
+	{
+		Minecraft mc = Minecraft.getMinecraft();
+		ScaledResolution resolution = event.resolution;
+		
+		MachineFractionTower tower = (MachineFractionTower) world.getBlock(x, y, z);
+		int[] pos = tower.findCore(world, x, y, z);
+		if (pos == null)
+			return;
+		
+		TileEntityMachineFractionTower te = (TileEntityMachineFractionTower) world.getTileEntity(pos[0], pos[1], pos[2]);
+		List<FluidTank> tanks = te.getTanks();
+		
+		GL11.glPushMatrix();
+
+		int pX = resolution.getScaledWidth() / 2 + 8;
+		int pZ = resolution.getScaledHeight() / 2;
+		
+		String title = "Dump of Ordered Data Diagnostic (DODD)";
+		mc.fontRenderer.drawString(title, pX + 1, pZ - 19, 0x006000);
+		mc.fontRenderer.drawString(title, pX, pZ - 20, 0x00FF00);
+		
+		for (FluidTank tank : tanks)
+		{
+			mc.fontRenderer.drawString(String.format("%s: %s/%smb", tank.getTankType().getLocalizedName(), tank.getFill(), tank.getMaxFill()), pX, pZ, 0xFFFFFF);
+			pZ += 10;
+		}
+		
+		GL11.glDisable(GL11.GL_BLEND);
+
+		GL11.glPopMatrix();
+		Minecraft.getMinecraft().renderEngine.bindTexture(Gui.icons);
 	}
 }

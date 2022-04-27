@@ -9,10 +9,10 @@ import net.minecraft.inventory.Slot;
 
 public class ContainerBishamonten extends Container
 {
-	private TileEntityBishamonten luna;
+	private TileEntityBishamonten bishamonten;
 	public ContainerBishamonten(InventoryPlayer invPlayer, TileEntityBishamonten te)
 	{
-		luna = te;
+		bishamonten = te;
 		
 		for (int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)
@@ -25,7 +25,7 @@ public class ContainerBishamonten extends Container
 	@Override
 	public boolean canInteractWith(EntityPlayer playerIn)
 	{
-		return luna.isUseableByPlayer(playerIn);
+		return bishamonten.isUseableByPlayer(playerIn);
 	}
 
 }

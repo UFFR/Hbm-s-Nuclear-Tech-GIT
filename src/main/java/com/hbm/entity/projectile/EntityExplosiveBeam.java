@@ -2,7 +2,6 @@ package com.hbm.entity.projectile;
 
 import java.util.List;
 
-import com.hbm.config.BombConfig;
 import com.hbm.entity.effect.EntityCloudFleijaRainbow;
 import com.hbm.entity.grenade.EntityGrenadeZOMG;
 import com.hbm.entity.logic.EntityNukeExplosionMK3;

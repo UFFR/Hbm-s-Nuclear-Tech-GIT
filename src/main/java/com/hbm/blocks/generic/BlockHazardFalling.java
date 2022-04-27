@@ -3,19 +3,17 @@ package com.hbm.blocks.generic;
 import java.util.Random;
 
 import com.hbm.handler.radiation.ChunkRadiationManager;
-import com.hbm.hazard.HazardData;
 import com.hbm.hazard.HazardRegistry;
-import com.hbm.interfaces.IItemHazard;
+import com.hbm.hazard.HazardSystem;
 
 import net.minecraft.block.BlockFalling;
 import net.minecraft.block.material.Material;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockHazardFalling extends BlockFalling implements IItemHazard {
-	
-	HazardData module;
-	
+public class BlockHazardFalling extends BlockFalling {
+		
 	private float rad = 0.0F;
 
 	private boolean beaconable = false;
@@ -26,7 +24,6 @@ public class BlockHazardFalling extends BlockFalling implements IItemHazard {
 
 	public BlockHazardFalling(Material mat) {
 		super(mat);
-		this.module = new HazardData();
 	}
 
 	public BlockHazardFalling makeBeaconable() {
@@ -37,18 +34,6 @@ public class BlockHazardFalling extends BlockFalling implements IItemHazard {
 	@Override
 	public boolean isBeaconBase(IBlockAccess worldObj, int x, int y, int z, int beaconX, int beaconY, int beaconZ) {
 		return beaconable;
-	}
-
-	@Override
-	public HazardData getModule() {
-		return module;
-	}
-
-	@Override
-	public IItemHazard addRadiation(float radiation) {
-		getModule().addEntry(HazardRegistry.RADIATION, radiation);
-		this.rad = radiation * 0.1F;
-		return this;
 	}
 
 	@Override
@@ -71,10 +56,11 @@ public class BlockHazardFalling extends BlockFalling implements IItemHazard {
 		return super.tickRate(world);
 	}
 
-	@Override
 	public void onBlockAdded(World world, int x, int y, int z) {
 		super.onBlockAdded(world, x, y, z);
-
+		
+		rad = HazardSystem.getHazardLevelFromStack(new ItemStack(this), HazardRegistry.RADIATION) * 0.1F;
+		
 		if(this.rad > 0)
 			world.scheduleBlockUpdate(x, y, z, this, this.tickRate(world));
 	}

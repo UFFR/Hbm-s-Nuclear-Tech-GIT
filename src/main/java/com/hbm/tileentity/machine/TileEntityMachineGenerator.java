@@ -6,10 +6,11 @@ import java.util.Random;
 
 import com.hbm.blocks.machine.MachineGenerator;
 import com.hbm.explosion.ExplosionNukeGeneric;
-import com.hbm.handler.FluidTypeHandler.FluidType;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidContainer;
 import com.hbm.inventory.FluidTank;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemFuelRod;
 import com.hbm.lib.Library;
@@ -47,8 +48,8 @@ public class TileEntityMachineGenerator extends TileEntity implements ISidedInve
 	public TileEntityMachineGenerator() {
 		slots = new ItemStack[14];
 		tanks = new FluidTank[2];
-		tanks[0] = new FluidTank(FluidType.WATER, 32000, 0);
-		tanks[1] = new FluidTank(FluidType.COOLANT, 16000, 1);
+		tanks[0] = new FluidTank(Fluids.WATER, 32000, 0);
+		tanks[1] = new FluidTank(Fluids.COOLANT, 16000, 1);
 	}
 
 	@Override
@@ -131,10 +132,10 @@ public class TileEntityMachineGenerator extends TileEntity implements ISidedInve
 			if(itemStack.getItem() instanceof ItemFuelRod)
 				return true;
 		if(i == 9)
-			if(itemStack.getItem() == ModItems.rod_water || itemStack.getItem() == ModItems.rod_dual_water || itemStack.getItem() == ModItems.rod_quad_water || itemStack.getItem() == Items.water_bucket)
+			if(itemStack.getItem() == Items.water_bucket)
 				return true;
 		if(i == 10)
-			if(itemStack.getItem() == ModItems.rod_coolant || itemStack.getItem() == ModItems.rod_dual_coolant || itemStack.getItem() == ModItems.rod_quad_coolant)
+			if(itemStack.getItem() == ModItems.fluid_tank_full)
 				return true;
 		if(i == 11)
 			if(itemStack.getItem() instanceof IBatteryItem)
@@ -230,7 +231,7 @@ public class TileEntityMachineGenerator extends TileEntity implements ISidedInve
 				i == 6 ||
 				i == 7 ||
 				i == 8)
-			if(itemStack.getItem() == ModItems.rod_uranium_fuel_depleted ||
+			/*if(itemStack.getItem() == ModItems.rod_uranium_fuel_depleted ||
 					itemStack.getItem() == ModItems.rod_dual_uranium_fuel_depleted ||
 					itemStack.getItem() == ModItems.rod_quad_uranium_fuel_depleted ||
 					itemStack.getItem() == ModItems.rod_plutonium_fuel_depleted ||
@@ -241,7 +242,7 @@ public class TileEntityMachineGenerator extends TileEntity implements ISidedInve
 					itemStack.getItem() == ModItems.rod_quad_mox_fuel_depleted ||
 					itemStack.getItem() == ModItems.rod_schrabidium_fuel_depleted ||
 					itemStack.getItem() == ModItems.rod_dual_schrabidium_fuel_depleted ||
-					itemStack.getItem() == ModItems.rod_quad_schrabidium_fuel_depleted)
+					itemStack.getItem() == ModItems.rod_quad_schrabidium_fuel_depleted)*/
 				return true;
 		if(i == 9 || i == 10)
 			if(itemStack.getItem() == Items.bucket || itemStack.getItem() == ModItems.rod_empty || itemStack.getItem() == ModItems.rod_dual_empty || itemStack.getItem() == ModItems.rod_quad_empty)
@@ -283,7 +284,7 @@ public class TileEntityMachineGenerator extends TileEntity implements ISidedInve
 			//Batteries
 			power = Library.chargeItemsFromTE(slots, 11, power, powerMax);
 			
-			for(int i = 0; i < 9; i++)
+			/*for(int i = 0; i < 9; i++)
 			{
 				if(slots[i] != null && slots[i].getItem() == ModItems.rod_uranium_fuel)
 				{
@@ -429,7 +430,7 @@ public class TileEntityMachineGenerator extends TileEntity implements ISidedInve
 						this.slots[i] = new ItemStack(ModItems.rod_quad_schrabidium_fuel_depleted);
 					}
 				}
-			}
+			}*/
 			
 			if(this.power > powerMax)
 			{

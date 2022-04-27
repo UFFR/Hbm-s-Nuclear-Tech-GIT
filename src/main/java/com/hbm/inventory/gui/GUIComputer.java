@@ -1,136 +1,152 @@
 package com.hbm.inventory.gui;
 
-import static com.hbm.inventory.gui.GuiInfoContainer.*;
-
-import java.util.Arrays;
+import java.util.List;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
+import com.hbm.inventory.container.ContainerComputer;
 import com.hbm.lib.RefStrings;
 import com.hbm.packet.AuxButtonPacket;
 import com.hbm.packet.NBTControlPacket;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.tileentity.machine.computer.TileEntityComputer;
+import com.hbm.util.I18nUtil;
 
 import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
 @SuppressWarnings("deprecation")
-public class GUIComputer extends GuiScreen
+public class GUIComputer extends GuiInfoContainer
 {
 	private TileEntityComputer computer;
 	private InventoryPlayer playerInv;
-	private GuiTextField textIn;
-	
+	private GuiTextField textInput;
+	public static final byte maxRows = 36, maxColumns = 64;
 	private static final ResourceLocation texture = new ResourceLocation(RefStrings.MODID, "textures/gui/machine/gui_computer.png");
-	private static final short xSize = 216;
-	private static final short ySize = 237;
-	private static int guiLeft;
-	private static int guiTop;
+	private int prevCommandIndex = 0;
+//	private final FontRenderer consoleRenderer;
 	public GUIComputer(InventoryPlayer inv, TileEntityComputer te)
 	{
+		super(new ContainerComputer(inv, te));
 		playerInv = inv;
 		computer = te;
+		xSize = 216;
+		ySize = 236;
+//		consoleRenderer = new FontRenderer(mc.gameSettings, new ResourceLocation(RefStrings.MODID, "textures/font/ascii.png"), mc.getTextureManager(), false);
+		componentList.add(new GUIComponent(7, 218, 14, 14).setClickAction(gui -> PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(computer))));
 	}
 	
 	@Override
 	public void initGui()
 	{
-		guiLeft = (width - xSize) / 2;
-		guiTop = (height - ySize) / 2;
-		
+		super.initGui();
 		Keyboard.enableRepeatEvents(true);
-		textIn = new GuiTextField(fontRendererObj, guiLeft + 10, guiTop + 205, 196, 11);
-		textIn.setTextColor(color1);
-		textIn.setDisabledTextColour(color1);
-		textIn.setEnableBackgroundDrawing(true);
-		textIn.setMaxStringLength(20);
-		textIn.setEnabled(true);
+		textInput = new GuiTextField(fontRendererObj, guiLeft + 9, guiTop + 206, 198, 10);
+		textInput.setTextColor(-1);
+		textInput.setDisabledTextColour(-1);
+		textInput.setEnableBackgroundDrawing(false);
+		textInput.setMaxStringLength(128);
+		textInput.setFocused(true);
 	}
 	
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float f)
 	{
-		drawDefaultBackground();
-		drawGUIBackground(mouseX, mouseY, f);
-		GL11.glScalef(2, 2, 2);
-		String inputText = textIn.getText();
-		char c = getCursor();
-		inputText = inputText.substring(0, textIn.getCursorPosition()) + c + inputText.substring(textIn.getCursorPosition(), inputText.length());
-		fontRendererObj.drawString(inputText, 10, 205, color1);
-		
-		String[] toDisp = computer.kernel.getTextForDisp();
-		for (byte i = 0; i < 10 && i < toDisp.length; i++)
-			fontRendererObj.drawString(toDisp[i], 10, 100 + i * 5, color1);
-		
-		GL11.glScalef(0.5f, 0.5f, 0.5f);
-		drawCustomInfoStat(mouseX, mouseY, guiLeft + 29, guiTop + 218, 14, 14, mouseX, mouseY, "Computer power");
-		drawCustomInfoStat(mouseX, mouseY, guiLeft + 29, guiTop + 226, 14, 14, mouseX, mouseY, "Program running");
+		super.drawScreen(mouseX, mouseY, f);
+//		GL11.glScalef(2, 2, 2);
+//		
+//		GL11.glScalef(0.5f, 0.5f, 0.5f);
+		String[] labels = I18nUtil.resolveKeyArray("desc.gui.computer");
+		for (byte i = 0; i < labels.length; i++)
+			drawCustomInfoStat(mouseX, mouseY, guiLeft + 29 + (i * 15), guiTop + 221, 14, 14, mouseX, mouseY, labels[i]);
+//		drawCustomInfoStat(mouseX, mouseY, guiLeft + 29, guiTop + 218, 14, 14, mouseX, mouseY, "Computer power");
+//		drawCustomInfoStat(mouseX, mouseY, guiLeft + 29, guiTop + 226, 14, 14, mouseX, mouseY, "Program running");
 	}
-	
-	public void drawCustomInfoStat(int mouseX, int mouseY, int x, int y, int width, int height, int tPosX, int tPosY, String... text) {
-		
-		if(x <= mouseX && x + width > mouseX && y < mouseY && y + height >= mouseY)
-			this.func_146283_a(Arrays.asList(text), tPosX, tPosY);
-	}
-
 	
 	@Override
 	protected void mouseClicked(int mX, int mY, int i)
 	{
 		super.mouseClicked(mX, mY, i);
-		if (getButtonBool(mY, mX, guiLeft + 7, guiTop + 218, 14, 14, guiLeft, guiTop))
-			PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(computer));
+		defaultClickHandling(mX, mY);
 	}
 	
-	protected void drawGUIBackground(int mX, int mY, float f)
+	@Override
+	protected void drawGuiContainerForegroundLayer(int p_146979_1_, int p_146979_2_)
+	{
+		GL11.glScalef(0.5f, 0.5f, 0.5f);
+		
+		String currText = textInput.getText();
+		char cursor = getCursor(blockCursor);
+		if (textInput.isFocused())
+			currText = currText.substring(0, textInput.getCursorPosition()) + cursor + currText.substring(textInput.getCursorPosition(), currText.length());
+		List<String> consoleText = computer.getConsoleText(maxRows, maxColumns);
+		for (int i = 0; i < consoleText.size(); i++)
+			fontRendererObj.drawString(consoleText.get(i), 12 * 2, (20 + (i * 5)) * 2, color1);
+		
+		GL11.glScalef(2, 2, 2);
+		
+		fontRendererObj.drawString('>' + currText, 12, 206, color1);
+	}
+	
+	@Override
+	protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int p_146976_2_, int p_146976_3_)
 	{
 		GL11.glColor4f(1, 1, 1, 1);
 		mc.getTextureManager().bindTexture(texture);
 		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
-		
-		if (computer.isOn())
-			drawTexturedModalRect(guiLeft + 29, guiTop + 218, 7, 236, 14, 14);
-		
-		if (computer.kernel.getCurrentProgram().isPresent())
-			drawTexturedModalRect(guiLeft + 29, guiTop + 226, 7, 236, 14, 14);
-		
-		textIn.drawTextBox();
+		boolean[] statuses = computer.getStatuses();
+		for (byte i = 0; i < statuses.length; i++)
+			if (statuses[i])
+				drawTexturedModalRect(guiLeft + 29 + (i * 15), guiTop + 221, 7, 236, 14, 14);
 	}
 	
 	@Override
 	protected void keyTyped(char c, int i)
 	{
 		mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(keyboard, 1.0F));
-		if (i == 1 || i == mc.gameSettings.keyBindInventory.getKeyCode())
-		{
-			mc.thePlayer.closeScreen();
-			return;
-		}
-		
-		if (computer.kernel.getCurrentProgram().isPresent())
-			computer.kernel.getCurrentProgram().get().keyTypeHook(c, i);
+		if (computer.getCurrentProgram().isPresent() && !computer.getCurrentProgram().get().requestingConsoleInput())
+			PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(computer, c, i));
 		else
 		{
-			if (i == Keyboard.KEY_NUMPADENTER || i == Keyboard.KEY_RETURN)
+			List<String> prevCommands = computer.getPreviousCommands();
+			switch (i)
 			{
+			case 1:
+				super.keyTyped(c, i);
+				return;
+			case Keyboard.KEY_UP:
+				if (prevCommandIndex > 0)
+					prevCommandIndex--;
+				if (!prevCommands.isEmpty())
+					textInput.setText(prevCommands.get(prevCommandIndex));
+				break;
+			case Keyboard.KEY_DOWN:
+				if (!(prevCommandIndex >= prevCommands.size() - 1))
+					prevCommandIndex++;
+				else
+					prevCommandIndex = prevCommands.size();
+				if (!prevCommands.isEmpty() && !(prevCommandIndex >= prevCommands.size()))
+					textInput.setText(prevCommands.get(prevCommandIndex));
+				else
+					textInput.setText("");
+				break;
+			case Keyboard.KEY_NUMPADENTER:
+			case Keyboard.KEY_RETURN:
 				NBTTagCompound data = new NBTTagCompound();
-				data.setString("command", textIn.getText());
+				data.setString("TYPE", "COMMAND");
+				data.setString("command", textInput.getText());
 				PacketDispatcher.wrapper.sendToServer(new NBTControlPacket(data, computer));
+				textInput.setText("");
+				prevCommandIndex = prevCommands.size();
+				return;
+			default:
+				textInput.textboxKeyTyped(c, i);
+				break;
 			}
-			textIn.textboxKeyTyped(c, i);
 		}
-		super.keyTyped(c, i);
-	}
-
-	@Override
-	public boolean doesGuiPauseGame()
-	{
-		return false;
 	}
 }

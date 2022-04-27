@@ -8,8 +8,8 @@ import com.google.common.annotations.Beta;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.generic.BlockBobble.TileEntityBobble;
 import com.hbm.blocks.machine.NTMAnvil;
-import com.hbm.interfaces.Untested;
 import com.hbm.inventory.container.*;
+import com.hbm.inventory.container.warpcore.*;
 import com.hbm.inventory.gui.*;
 import com.hbm.inventory.gui.warpcore.*;
 import com.hbm.inventory.inv.*;
@@ -17,6 +17,7 @@ import com.hbm.tileentity.bomb.*;
 import com.hbm.tileentity.machine.*;
 import com.hbm.tileentity.machine.computer.*;
 import com.hbm.tileentity.machine.rbmk.*;
+import com.hbm.tileentity.machine.storage.*;
 import com.hbm.tileentity.machine.oil.*;
 import com.hbm.tileentity.turret.*;
 
@@ -30,12 +31,12 @@ import net.minecraft.world.World;
  * @author UFFR
  *
  */
-@Untested
 @Beta
 public enum EnumGUI
 {
+	// TODO: Alphabetical order
 	NUKE_TEST(ContainerTestNuke.class, GUITestNuke.class, TileEntityTestNuke.class),
-	COMPUTER(GUIComputer.class, TileEntityComputer.class),
+	COMPUTER(ContainerComputer.class, GUIComputer.class, TileEntityComputer.class),
 	ANVIL(new CustomGUIBehavior()
 			{
 				@Override public Object getContainer(TileEntity entity, EntityPlayer player, World world, int x, int y, int z) {return world.getBlock(x, y, z) instanceof NTMAnvil ? new ContainerAnvil(player.inventory, ((NTMAnvil) world.getBlock(x, y, z)).tier) : null;}
@@ -46,15 +47,15 @@ public enum EnumGUI
 				@Override public Object getContainer(TileEntity entity, EntityPlayer player, World world, int x, int y, int z) {return world.getBlock(x, y, z) == ModBlocks.machine_armor_table ? new ContainerArmorTable(player.inventory) : null;}
 				@Override public Object getGUI(TileEntity entity, EntityPlayer player, World world, int x, int y, int z) {return world.getBlock(x, y, z) == ModBlocks.machine_armor_table ? new GUIArmorTable(player.inventory) : null;}
 			}),
-	TURRET_MAXWELL(ContainerTurretBase.class, GUITurretMaxwell.class, TileEntityTurretMaxwell.class),
-	TURRET_HOWARD(ContainerTurretBase.class, GUITurretHoward.class, TileEntityTurretHoward.class),
-	TURRET_RICHARD(ContainerTurretBase.class, GUITurretRichard.class, TileEntityTurretRichard.class),
-	TURRET_TAUON(ContainerTurretBase.class, GUITurretTauon.class, TileEntityTurretTauon.class),
-	TURRET_JEREMY(ContainerTurretBase.class, GUITurretJeremy.class, TileEntityTurretJeremy.class),
-	TURRET_MR_FRIENDLY(ContainerTurretBase.class, GUITurretFriendly.class, TileEntityTurretFriendly.class),
-	TURRET_CHEKHOV(ContainerTurretBase.class, GUITurretChekhov.class, TileEntityTurretChekhov.class),
-	TURRET_BRANDON(ContainerTurretBase.class, GUITurretBase.class, TileEntityTurretBrandon.class),// TODO
-	TURRET_FRITZ(ContainerTurretBase.class, GUITurretFritz.class, TileEntityTurretFritz.class),
+	TURRET_MAXWELL(ContainerTurretBase.class, GUITurretMaxwell.class, TileEntityTurretBaseNT.class),
+	TURRET_HOWARD(ContainerTurretBase.class, GUITurretHoward.class, TileEntityTurretBaseNT.class),
+	TURRET_RICHARD(ContainerTurretBase.class, GUITurretRichard.class, TileEntityTurretBaseNT.class),
+	TURRET_TAUON(ContainerTurretBase.class, GUITurretTauon.class, TileEntityTurretBaseNT.class),
+	TURRET_JEREMY(ContainerTurretBase.class, GUITurretJeremy.class, TileEntityTurretBaseNT.class),
+	TURRET_MR_FRIENDLY(ContainerTurretBase.class, GUITurretFriendly.class, TileEntityTurretBaseNT.class),
+	TURRET_CHEKHOV(ContainerTurretBase.class, GUITurretChekhov.class, TileEntityTurretBaseNT.class),
+	TURRET_BRANDON(ContainerTurretBase.class, GUITurretBase.class, TileEntityTurretBaseNT.class),// TODO
+	TURRET_FRITZ(ContainerTurretBase.class, GUITurretFritz.class, TileEntityTurretBaseNT.class),
 	TURRET_TSUKUYOMI(ContainerTsukuyomi.class, GUITsukuyomi.class, TileEntityTsukuyomi.class),
 	TURRET_BISHAMONTEN(ContainerBishamonten.class, GUIBishamonten.class, TileEntityBishamonten.class),
 	RBMK_CONSOLE(GUIRBMKConsole.class, TileEntityRBMKConsole.class),
@@ -65,7 +66,10 @@ public enum EnumGUI
 	RBMK_STORAGE(ContainerRBMKStorage.class, GUIRBMKStorage.class, TileEntityRBMKStorage.class),
 	RBMK_OUTGASSER(ContainerRBMKOutgasser.class, GUIRBMKOutgasser.class, TileEntityRBMKOutgasser.class),
 	ATOMIC_CLOCK(ContainerAtomicClock.class, GUIAtomicClock.class, TileEntityAtomicClock.class),
-	WARP_CORE(ContainerReactorWarp.class, GUIReactorWarp.class, TileEntityReactorWarp.class),
+//	WARP_CORE(ContainerReactorWarp.class, GUIReactorWarp.class, TileEntityReactorWarp.class),
+	REACTOR_WARP_CORE(ContainerReactorWarpCore.class, GUIReactorWarpCore.class, TileEntityReactorWarp.class),
+	REACTOR_WARP_OUTPUT(ContainerReactorWarpOutput.class, GUIReactorWarpOutput.class, TileEntityReactorWarp.class),
+	REACTOR_WARP_TANK(ContainerReactorWarpTank.class, GUIReactorWarpTank.class, TileEntityReactorWarp.class),
 	SING_GEN(ContainerSingGen.class, GUISingGen.class, TileEntitySingGen.class),
 	RTG_BFURNACE(ContainerDiFurnaceRTG.class, GUIDiFurnaceRTG.class, TileEntityDiFurnaceRTG.class),
 	BFURNACE(ContainerDiFurnace.class, GUITestDiFurnace.class, TileEntityDiFurnace.class),
@@ -85,7 +89,7 @@ public enum EnumGUI
 	CENTRIFUGE_GAS(ContainerMachineGasCent.class, GUIMachineGasCent.class, TileEntityMachineGasCent.class),
 	UF6_TANK(ContainerUF6Tank.class, GUIMachineUF6Tank.class, TileEntityMachineUF6Tank.class),
 	PUF6_TANK(ContainerPuF6Tank.class, GUIMachinePuF6Tank.class, TileEntityMachinePuF6Tank.class),
-	BREEDING_REACTOR(ContainerReactor.class, GUIMachineReactor.class, TileEntityMachineReactor.class),
+	BREEDING_REACTOR(ContainerMachineReactorBreeding.class, GUIMachineReactorBreeding.class, TileEntityMachineReactorBreeding.class),
 	BOMB_MULTI(ContainerBombMulti.class, GUIBombMulti.class, TileEntityBombMulti.class),
 	FURNACE_NUCLEAR(ContainerNukeFurnace.class, GUINukeFurnace.class, TileEntityNukeFurnace.class),
 	FURNACE_RTG(ContainerRtgFurnace.class, GUIRtgFurnace.class, TileEntityRtgFurnace.class),
@@ -153,14 +157,17 @@ public enum EnumGUI
 	BOILER_ELECTRIC(ContainerMachineBoilerElectric.class, GUIMachineBoilerElectric.class, TileEntityMachineBoilerElectric.class),
 	PLASMA_HEATER(ContainerPlasmaHeater.class, GUIPlasmaHeater.class, TileEntityMachinePlasmaHeater.class),
 	REACTOR_FUSION(ContainerITER.class, GUIITER.class, TileEntityITER.class),
-	REACTOR_GENERIC_CONTROL(ContainerReactorControl.class, GUIReactorControl.class, TileEntityReactorControl.class),
+	REACTOR_RESEARCH_CONTROL(ContainerReactorControl.class, GUIReactorControl.class, TileEntityReactorControl.class),
 	REACTOR_ZIRNOX(ContainerReactorZirnox.class, GUIReactorZirnox.class, TileEntityReactorZirnox.class),
 	REACTOR_WATZ(ContainerWatzCore.class, GUIWatzCore.class, TileEntityWatzCore.class),
 	REACTOR_FWATZ(ContainerFWatzCore.class, GUIFWatzCore.class, TileEntityFWatzCore.class),
 	REACTOR_GENERIC_LARGE(ContainerReactorMultiblock.class, GUIReactorMultiblock.class, TileEntityMachineReactorLarge.class),
-	REACTOR_GENERIC_SMALL(ContainerMachineReactorSmall.class, GUIMachineReactorSmall.class, TileEntityMachineReactorSmall.class),
+	REACTOR_RESEARCH(ContainerReactorResearch.class, GUIReactorResearch.class, TileEntityReactorResearch.class),
+	LIQUEFACTOR(ContainerLiquefactor.class, GUILiquefactor.class, TileEntityMachineLiquefactor.class),
+	SOLIDIFIER(ContainerSolidifier.class, GUISolidifier.class, TileEntityMachineSolidifier.class),
 	WASTE_DRUM(ContainerWasteDrum.class, GUIWasteDrum.class, TileEntityWasteDrum.class),
 	ITEM_FOLDER(GUIScreenTemplateFolder.class),
+	ITEM_HOLOTAPE(GUIScreenHolotape.class),
 	ITEM_DESIGNATOR(GUIScreenDesignator.class),
 	ITEM_SAT_INTERFACE(GUIScreenSatInterface.class),
 	ITEM_SAT_COORD(GUIScreenSatCoord.class),

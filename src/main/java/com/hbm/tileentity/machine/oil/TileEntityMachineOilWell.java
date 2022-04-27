@@ -2,7 +2,7 @@ package com.hbm.tileentity.machine.oil;
 
 import com.hbm.blocks.ModBlocks;
 import com.hbm.explosion.ExplosionLarge;
-import com.hbm.handler.FluidTypeHandler.FluidType;
+import com.hbm.inventory.fluid.FluidType;
 import com.hbm.lib.Library;
 
 import net.minecraft.block.Block;

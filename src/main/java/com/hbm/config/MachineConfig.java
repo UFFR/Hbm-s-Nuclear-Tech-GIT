@@ -14,8 +14,9 @@ public class MachineConfig {
 	public static int twrTurretCooldown = 5000;
 	public static int twrTurretChance = 200;
 	public static EnumSingGenFail singGenFailType = EnumSingGenFail.CAP_CUSTOM;
-	public static boolean scaleRTGPower = false;
-	public static boolean doRTGsDecay = false;
+	
+	protected static boolean scaleRTGPower = false;
+	protected static boolean doRTGsDecay = true;
 	
 	public static void loadFromConfig(Configuration config) {
 
@@ -41,6 +42,7 @@ public class MachineConfig {
 		}
 		twrTurretCooldown = MathHelper.clamp_int(twrTurretCooldown, 0, 9999);
 		
+		doRTGsDecay = CommonConfig.createConfigBool(config, CATEGORY_MACHINE, "9.01_doRTGsDecay", "Should RTG/Betavoltaic fuel decay at all?", true);
 	}
 
 }

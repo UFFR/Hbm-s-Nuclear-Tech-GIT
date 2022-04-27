@@ -134,25 +134,13 @@ public class HbmPlayerProps implements IExtendedEntityProperties {
 		
 		if (props != null)
 		{
-			if (props.hasKey("age"))
-				age = props.getLong("age");
-			else
-				age = getNewAge();
+			age = props.hasKey("age") ? props.getLong("age") : getNewAge();
 			
-			if (props.hasKey("birthyear"))
-				birthyear = props.getLong("birthyear");
-			else
-				birthyear = player == null ? 2300 - age : TimeSavedData.getData(player.worldObj).getYear() - age;
+			birthyear = props.hasKey("birthyear") ? props.getLong("birthyear") : player == null ? 2300 - age : TimeSavedData.getData(player.worldObj).getYear() - age;
 			
-			if (props.hasKey("birthday"))
-				birthday = props.getByte("birthday");
-			else
-				birthday = 1;
+			birthday = props.hasKey("birthday") ? props.getByte("birthday") : 1;
 			
-			if (props.hasKey("ascended"))
-				hasAscended = props.getBoolean("ascended");
-			else
-				hasAscended = false;
+			hasAscended = props.hasKey("ascended") ? props.getBoolean("ascended") : false;
 		}
 	}
 }

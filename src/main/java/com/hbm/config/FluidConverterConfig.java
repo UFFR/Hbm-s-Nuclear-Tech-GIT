@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 
 import org.apache.logging.log4j.Level;
 
@@ -14,8 +15,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
-import com.hbm.handler.FluidTypeHandler.FluidType;
 import com.hbm.interfaces.Untested;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.machine.TileEntityFluidConverter;
 
@@ -28,7 +30,7 @@ public class FluidConverterConfig
 	private static File config;
 	private static File template;
 	public static final String fileName = "fluidCompat.json";
-	private static final boolean[] compats = new boolean[FluidType.values().length];
+	private static final boolean[] compats = new boolean[Fluids.getAll().length];
 	public static void preInit(File dir)
 	{
 		if (dir == null || !dir.isDirectory())
@@ -62,10 +64,10 @@ public class FluidConverterConfig
 						String name = fluidInfoArray.get("name").getAsString();
 						int viscosity = Math.max(1, fluidInfoArray.get("viscosity").getAsInt());
 						
-						FluidType bobFluid = FluidType.valueOf(fluidName);
+						FluidType bobFluid = Fluids.fromName(fluidName);
 						Fluid forgeFluid = new Fluid(name).setDensity(density).setGaseous(isGas).setLuminosity(light).setViscosity(viscosity);
 						TileEntityFluidConverter.conversions.put(bobFluid, forgeFluid);
-						compats[bobFluid.ordinal()] = true;
+						compats[bobFluid.getID()] = true;
 						FluidRegistry.registerFluid(forgeFluid);
 					}
 				}
@@ -113,7 +115,7 @@ public class FluidConverterConfig
 			writer.beginArray();
 			writer.setIndent("	");
 			
-			for (FluidType bobFluid : FluidType.values())
+			for (FluidType bobFluid : Fluids.getAll())
 			{
 				writer.name(bobFluid.toString()).beginObject();
 				writer.name("compat").value(false);
@@ -139,30 +141,21 @@ public class FluidConverterConfig
 	
 	public static boolean hasCompat(FluidType fluid)
 	{
-		return compats[fluid.ordinal()];
+		return compats[fluid.getID()];
+	}
+	
+	private static final HashMap<String, Fluid> basics = new HashMap<String, Fluid>();
+	static
+	{
+		basics.put(Fluids.LAVA.getUnlocalizedName(), FluidRegistry.LAVA);
+		basics.put(Fluids.WATER.getUnlocalizedName(), FluidRegistry.WATER);
+		basics.put(Fluids.DIESEL.getUnlocalizedName(), new Fluid(Fluids.DIESEL.getUnlocalizedName()).setDensity(850));
+		basics.put(Fluids.OIL.getUnlocalizedName(), new Fluid(Fluids.OIL.getUnlocalizedName()).setDensity(800).setViscosity(10));
+		basics.put(Fluids.GASOLINE.getUnlocalizedName(), new Fluid(Fluids.GASOLINE.getUnlocalizedName()).setDensity(800));
 	}
 	
 	private static Fluid constructBasic(FluidType f)
 	{
-		Fluid newFluid = new Fluid(f.toString());
-		switch (f)
-		{
-		case LAVA:
-			return FluidRegistry.LAVA;
-		case WATER:
-			return FluidRegistry.WATER;
-		case DIESEL:
-			newFluid.setDensity(850);
-			break;
-		case OIL:
-			newFluid.setDensity(800).setViscosity(10);
-			break;
-		case GASOLINE:
-			newFluid.setDensity(800);
-			break;
-		default:
-			break;
-		}
-		return newFluid;
+		return basics.containsKey(f.getUnlocalizedName()) ? basics.get(f.getUnlocalizedName()) : new Fluid(f.getUnlocalizedName());
 	}
 }

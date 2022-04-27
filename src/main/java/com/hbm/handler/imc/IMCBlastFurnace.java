@@ -33,7 +33,7 @@ public class IMCBlastFurnace extends IMCHandler
 			input1 = data.getString("input1");
 			break;
 		case "orelist":
-			NBTTagList list = data.getTagList("input1", 9);
+			NBTTagList list = data.getTagList("input1", 8);
 			ArrayList<String> ores = new ArrayList<String>(list.tagCount());
 			for (int i = 0; i < list.tagCount(); i++)
 				ores.add(list.getStringTagAt(i));

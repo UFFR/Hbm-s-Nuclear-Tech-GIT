@@ -4,10 +4,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import com.hbm.handler.FluidTypeHandler.FluidType;
 import com.hbm.interfaces.IFluidDuct;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.items.ModItems;
-import com.hbm.tileentity.conductor.TileEntityFluidDuct;
+import com.hbm.tileentity.conductor.TileEntityFluidDuctSimple;
 import com.hbm.util.I18nUtil;
 
 import cpw.mods.fml.relauncher.Side;
@@ -33,20 +34,17 @@ public class ItemFluidIdentifier extends Item {
 		this.setMaxDamage(0);
 	}
 
-	/*
-	 * @Override public String getUnlocalizedName(ItemStack stack) { int i =
-	 * stack.getItemDamage(); return super.getUnlocalizedName() + "." +
-	 * FluidType.getEnum(i).getName(); }
-	 */
-
+	@Override
 	public ItemStack getContainerItem(ItemStack stack) {
 		return stack.copy();
 	}
 
+	@Override
 	public boolean hasContainerItem() {
 		return true;
 	}
 
+	@Override
 	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack) {
 		return false;
 	}
@@ -54,10 +52,10 @@ public class ItemFluidIdentifier extends Item {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(Item item, CreativeTabs tabs, List list) {
-		
-		for(int i = 0; i < FluidType.values().length; ++i) {
-			if(!FluidType.values()[i].hasNoID()) {
-				list.add(new ItemStack(item, 1, i));
+		FluidType[] order = Fluids.getInNiceOrder();
+		for(int i = 1; i < order.length; ++i) {
+			if(!order[i].hasNoID()) {
+				list.add(new ItemStack(item, 1, order[i].getID()));
 			}
 		}
 	}
@@ -71,7 +69,7 @@ public class ItemFluidIdentifier extends Item {
 		list.add(EnumChatFormatting.YELLOW + I18nUtil.resolveKey("info.templatefolder", I18nUtil.resolveKey(ModItems.template_folder.getUnlocalizedName() + ".name")));
 		list.add("");
 		list.add(I18nUtil.resolveKey(getUnlocalizedName() + ".info"));
-		list.add("   " + I18n.format(FluidType.getEnum(stack.getItemDamage()).getUnlocalizedName()));
+		list.add("   " + I18n.format(Fluids.fromID(stack.getItemDamage()).getUnlocalizedName()));
 		list.add("");
 		list.add(I18nUtil.resolveKey(getUnlocalizedName() + ".usage0"));
 		list.add(I18nUtil.resolveKey(getUnlocalizedName() + ".usage1"));
@@ -80,21 +78,29 @@ public class ItemFluidIdentifier extends Item {
 
 	public static FluidType getType(ItemStack stack) {
 		if(stack != null && stack.getItem() instanceof ItemFluidIdentifier)
-			return FluidType.getEnum(stack.getItemDamage());
+			return Fluids.fromID(stack.getItemDamage());
 		else
-			return FluidType.NONE;
+			return Fluids.NONE;
 	}
 
 	@Override
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int i, float f1, float f2, float f3) {
 		TileEntity te = world.getTileEntity(x, y, z);
-		if(te instanceof TileEntityFluidDuct) {
+		if(te instanceof TileEntityFluidDuctSimple) {
+
+			TileEntityFluidDuctSimple duct = (TileEntityFluidDuctSimple) te;
+			
 			if(!world.isRemote) {
-				TileEntityFluidDuct duct = (TileEntityFluidDuct) te;
-				FluidType type = FluidType.getEnum(stack.getItemDamage());
-				if (player.isSneaking()) markDuctsRecursively(world, x, y, z, type);
-				else duct.type = type;
+				FluidType type = Fluids.fromID(stack.getItemDamage());
+				
+				if (player.isSneaking()) {
+					markDuctsRecursively(world, x, y, z, type);
+				} else {
+					duct.setType(type);
+				}
 			}
+			
+			//world.markBlockForUpdate(x, y, z);
 
 			player.swingItem();
 		}
@@ -107,27 +113,40 @@ public class ItemFluidIdentifier extends Item {
 
 	private void markDuctsRecursively(World world, int x, int y, int z, FluidType type, int maxRecursion) {
 		TileEntity start = world.getTileEntity(x, y, z);
-		if (!(start instanceof TileEntityFluidDuct)) return;
-		TileEntityFluidDuct startDuct = (TileEntityFluidDuct) start;
-		FluidType oldType = startDuct.type;
-		if (oldType == type) return; // prevent infinite loops
-		startDuct.type = type;
+		
+		if (!(start instanceof TileEntityFluidDuctSimple))
+			return;
+		
+		TileEntityFluidDuctSimple startDuct = (TileEntityFluidDuctSimple) start;
+		FluidType oldType = startDuct.getType();
+		
+		if (oldType == type)
+			return; // prevent infinite loops
+		
+		startDuct.setType(type);
 
 		directionLoop: for (ForgeDirection direction : ForgeDirection.values()) {
 			for (int currentRecursion = 1; currentRecursion <= maxRecursion; currentRecursion++) {
+				
 				int nextX = x + direction.offsetX * currentRecursion;
 				int nextY = y + direction.offsetY * currentRecursion;
 				int nextZ = z + direction.offsetZ * currentRecursion;
 
 				TileEntity te = world.getTileEntity(nextX, nextY, nextZ);
-				if (te instanceof IFluidDuct && ((IFluidDuct) te).getType() == oldType) {
-					TileEntityFluidDuct nextDuct = (TileEntityFluidDuct) te;
+				if (te instanceof TileEntityFluidDuctSimple && ((TileEntityFluidDuctSimple) te).getType() == oldType) {
+					
+					TileEntityFluidDuctSimple nextDuct = (TileEntityFluidDuctSimple) te;
 					long connectionsCount = Arrays.stream(nextDuct.connections).filter(Objects::nonNull).count();
+					
 					if (connectionsCount > 1) {
 						markDuctsRecursively(world, nextX, nextY, nextZ, type, maxRecursion - currentRecursion);
 						continue directionLoop;
-					} else nextDuct.type = type;
-				} else break;
+					} else {
+						nextDuct.setType(type);
+					}
+				} else {
+					break;
+				}
 			}
 		}
 	}
@@ -158,7 +177,7 @@ public class ItemFluidIdentifier extends Item {
 		if(p_82790_2_ == 0) {
 			return 16777215;
 		} else {
-			int j = FluidType.getEnum(stack.getItemDamage()).getMSAColor();
+			int j = Fluids.fromID(stack.getItemDamage()).getColor();
 
 			if(j < 0) {
 				j = 16777215;

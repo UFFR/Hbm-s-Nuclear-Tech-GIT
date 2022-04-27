@@ -3,7 +3,6 @@ package com.hbm.blocks.turret;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.TileEntityProxyCombo;
-import com.hbm.tileentity.turret.TileEntityTurretBaseNT;
 import com.hbm.tileentity.turret.TileEntityTurretBrandon;
 
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
@@ -14,10 +13,8 @@ import net.minecraft.world.World;
 
 public class TurretBrandon extends TurretBaseNT {
 
-
-	public TurretBrandon(Material mat, Class<? extends TileEntityTurretBaseNT> classIn, int gui) {
-		super(mat, classIn, gui);
-		// TODO Auto-generated constructor stub
+	public TurretBrandon(Material mat) {
+		super(mat);
 	}
 
 	@Override
@@ -28,6 +25,7 @@ public class TurretBrandon extends TurretBaseNT {
 		return new TileEntityProxyCombo(true, true, false);
 	}
 
+	@Override
 	public void openGUI(World world, EntityPlayer player, int x, int y, int z) {
 		FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_brandon, world, x, y, z);
 	}

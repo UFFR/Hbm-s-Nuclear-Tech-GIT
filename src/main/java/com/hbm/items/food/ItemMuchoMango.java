@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
-
+@Deprecated
 public class ItemMuchoMango extends ItemFood {
 
 	public ItemMuchoMango(int hunger) {

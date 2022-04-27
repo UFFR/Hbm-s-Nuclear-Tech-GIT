@@ -18,6 +18,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
+@SuppressWarnings("deprecation")
 public class GUITsukuyomi extends GuiInfoContainer
 {
 	private final static ResourceLocation texture = new ResourceLocation(RefStrings.MODID, "textures/gui/weapon/gui_turret_twr.png");
@@ -85,7 +86,7 @@ public class GUITsukuyomi extends GuiInfoContainer
 		if (TileEntityTsukuyomi.getCooldown() == 0)
 		{
 			fontRendererObj.drawString(currText, 15 * 2, 24 * 2, color1);
-			fontRendererObj.drawString(I18nUtil.resolveKey("twr.target", twr.currPlayer == null ? I18nUtil.resolveKey("twr.target.none") : twr.currPlayer.getDisplayName()), 72 * 2, 90 * 2, color1);
+			fontRendererObj.drawString(I18nUtil.resolveKey("twr.target", twr.currPlayer.isPresent() ? twr.currPlayer.get().getDisplayName() : I18nUtil.resolveKey("twr.target.none")), 72 * 2, 90 * 2, color1);
 			fontRendererObj.drawString(I18nUtil.resolveKey("twr.result", twr.isReady ? twr.getAttackResult() : "N/A"), 72 * 2, 95 * 2, color1);
 			fontRendererObj.drawString(I18nUtil.resolveKey("twr.sign", twr.currPlayer == null ? "N/A" : ""), 72 * 2, 100 * 2, color1);
 		}
@@ -93,7 +94,7 @@ public class GUITsukuyomi extends GuiInfoContainer
 			for (int i = 0; i < recal.length; i++)
 				fontRendererObj.drawString(recal[i], 72 * 2, (90 + (i * 5)) * 2, color1);
 
-		if (twr.currPlayer != null)
+		if (twr.currPlayer.isPresent())
 			mc.standardGalacticFontRenderer.drawString(twr.getPlayerHash(), 72 * 2, 105 * 2, color1);
 		fontRendererObj.drawString(">", 12 * 2, (38 + (twr.index * 5)) * 2, color1);
 		if (!twr.getTargets().isEmpty())

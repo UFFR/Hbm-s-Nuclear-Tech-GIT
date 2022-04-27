@@ -6,10 +6,12 @@ import java.util.Random;
 
 import com.hbm.entity.particle.EntitySSmokeFX;
 import com.hbm.entity.particle.EntityTSmokeFX;
-import com.hbm.handler.FluidTypeHandler.FluidType;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidContainer;
+import com.hbm.interfaces.Spaghetti;
 import com.hbm.inventory.FluidTank;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.items.ModItems;
 import com.hbm.lib.Library;
 import com.hbm.lib.ModDamageSource;
@@ -31,6 +33,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
+@Spaghetti("a")
 public class TileEntityMachineTurbofan extends TileEntity implements ISidedInventory, IEnergyGenerator, IFluidContainer, IFluidAcceptor {
 
 	private ItemStack slots[];
@@ -52,7 +55,7 @@ public class TileEntityMachineTurbofan extends TileEntity implements ISidedInven
 
 	public TileEntityMachineTurbofan() {
 		slots = new ItemStack[3];
-		tank = new FluidTank(FluidType.KEROSENE, 64000, 0);
+		tank = new FluidTank(Fluids.KEROSENE, 64000, 0);
 	}
 
 	@Override
@@ -505,17 +508,17 @@ public class TileEntityMachineTurbofan extends TileEntity implements ISidedInven
 
 	@Override
 	public int getMaxFluidFill(FluidType type) {
-		return type.name().equals(this.tank.getTankType().name()) ? tank.getMaxFill() : 0;
+		return type == this.tank.getTankType() ? tank.getMaxFill() : 0;
 	}
 
 	@Override
 	public int getFluidFill(FluidType type) {
-		return type.name().equals(this.tank.getTankType().name()) ? tank.getFill() : 0;
+		return type == this.tank.getTankType() ? tank.getFill() : 0;
 	}
 
 	@Override
 	public void setFluidFill(int i, FluidType type) {
-		if(type.name().equals(tank.getTankType().name()))
+		if(type == tank.getTankType())
 			tank.setFill(i);
 	}
 	

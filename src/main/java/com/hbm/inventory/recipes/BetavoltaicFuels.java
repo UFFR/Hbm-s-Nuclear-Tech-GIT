@@ -3,12 +3,14 @@ package com.hbm.inventory.recipes;
 import static com.hbm.inventory.OreDictManager.*;
 
 import java.util.HashMap;
+import java.util.Set;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.hbm.blocks.ModBlocks;
-import com.hbm.interfaces.ICustomWarhead.SaltedFuel.TimeDurationType;
 import com.hbm.inventory.RecipesCommon.*;
 import com.hbm.items.ModItems;
+import com.hbm.items.machine.ItemBreedingRod.BreedingRodType;
+import com.hbm.saveddata.TimeSavedData.TimeDurationType;
 import com.hbm.tileentity.IRadioisotopeFuel;
 
 import net.minecraft.item.Item;
@@ -25,10 +27,8 @@ public final class BetavoltaicFuels
 	private static final short sa327Power = 300;
 	private static final int lifeLong = 2 * 60 * 60 * 20;
 	private static final int lifeShort = 30 * 60 * 20;
-	private static boolean isInitialized = false;
-	public static void initialize()
+	static
 	{
-		isInitialized = true;
 		addFuel(ModItems.ingot_tha, new IRadioisotopeFuel()
 		{
 			@Override public IRadioisotopeFuel setDecays(ItemStack stack, long lifespan){return this;}
@@ -61,29 +61,29 @@ public final class BetavoltaicFuels
 			@Override public boolean getDoesDecay(){return true;}
 			@Override public ItemStack getDecayItem(){return new ItemStack(ModBlocks.block_thorium_fuel);}
 		});
-		addFuel(ModItems.rod_tha, new IRadioisotopeFuel()
+		addFuel(ModItems.rod, BreedingRodType.THA.ordinal(), new IRadioisotopeFuel()
 		{
 			@Override public IRadioisotopeFuel setDecays(ItemStack stack, long lifespan){return this;}
 			@Override public short getHeat(){return thaPower;}
 			@Override public long getMaxLifespan(){return lifeShort;}
 			@Override public boolean getDoesDecay(){return true;}
-			@Override public ItemStack getDecayItem(){return new ItemStack(ModItems.rod_thorium_fuel);}
+			@Override public ItemStack getDecayItem(){return new ItemStack(ModItems.rod, 1, BreedingRodType.THF.ordinal());}
 		});
-		addFuel(ModItems.rod_dual_tha, new IRadioisotopeFuel()
+		addFuel(ModItems.rod_dual, BreedingRodType.THA.ordinal(), new IRadioisotopeFuel()
 		{
 			@Override public IRadioisotopeFuel setDecays(ItemStack stack, long lifespan){return this;}
 			@Override public short getHeat(){return thaPower * 2;}
 			@Override public long getMaxLifespan(){return lifeShort;}
 			@Override public boolean getDoesDecay(){return true;}
-			@Override public ItemStack getDecayItem(){return new ItemStack(ModItems.rod_dual_thorium_fuel);}
+			@Override public ItemStack getDecayItem(){return new ItemStack(ModItems.rod_dual, 1, BreedingRodType.THF.ordinal());}
 		});
-		addFuel(ModItems.rod_quad_tha, new IRadioisotopeFuel()
+		addFuel(ModItems.rod_quad, BreedingRodType.THA.ordinal(), new IRadioisotopeFuel()
 		{
 			@Override public IRadioisotopeFuel setDecays(ItemStack stack, long lifespan){return this;}
 			@Override public short getHeat(){return thaPower * 4;}
 			@Override public long getMaxLifespan(){return lifeShort;}
 			@Override public boolean getDoesDecay(){return true;}
-			@Override public ItemStack getDecayItem(){return new ItemStack(ModItems.rod_quad_thorium_fuel);}
+			@Override public ItemStack getDecayItem(){return new ItemStack(ModItems.rod_quad, 1, BreedingRodType.THF.ordinal());}
 		});
 		addFuel(SR90.dust(), new IRadioisotopeFuel()
 		{
@@ -197,7 +197,7 @@ public final class BetavoltaicFuels
 			@Override public short getHeat(){return 150;}
 			@Override public long getMaxLifespan(){return IRadioisotopeFuel.getLifespan(330, TimeDurationType.SHORT) * 2;}
 			@Override public boolean getDoesDecay(){return true;}
-			@Override public ItemStack getDecayItem(){return new ItemStack(ModItems.ingot_cf249);}
+			@Override public ItemStack getDecayItem(){return /*new ItemStack(ModItems.ingot_cf249)*/ null;}
 		});
 		addFuel(CS137.dust(), new IRadioisotopeFuel()
 		{
@@ -252,16 +252,16 @@ public final class BetavoltaicFuels
 	{
 		fuelMap.put(new ComparableStack(fuel), data);
 	}
+	private static void addFuel(Item fuel, int meta, IRadioisotopeFuel data)
+	{
+		fuelMap.put(new ComparableStack(fuel, 1, meta), data);
+	}
 	private static void addFuel(String ore, IRadioisotopeFuel data)
 	{
 		fuelMap.put(new OreDictStack(ore), data);
 	}
-	public static boolean isInitialized()
+	public static Set<AStack> getFuels()
 	{
-		return isInitialized;
-	}
-	public static ImmutableList<AStack> getFuels()
-	{
-		return ImmutableList.copyOf(fuelMap.keySet());
+		return ImmutableSet.copyOf(fuelMap.keySet());
 	}
 }

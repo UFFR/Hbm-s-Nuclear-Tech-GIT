@@ -3,6 +3,18 @@ package com.hbm.entity.projectile;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import com.hbm.blocks.ModBlocks;
+import com.hbm.blocks.generic.RedBarrel;
+import com.hbm.entity.grenade.EntityGrenadeTau;
+import com.hbm.entity.mob.EntityNuclearCreeper;
+import com.hbm.entity.particle.EntityBSmokeFX;
+import com.hbm.items.ModItems;
+import com.hbm.lib.ModDamageSource;
+import com.hbm.util.ArmorUtil;
+
+import cpw.mods.fml.relauncher.ReflectionHelper;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -29,19 +41,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-
-import com.hbm.blocks.ModBlocks;
-import com.hbm.blocks.generic.RedBarrel;
-import com.hbm.entity.grenade.EntityGrenadeTau;
-import com.hbm.entity.mob.EntityNuclearCreeper;
-import com.hbm.entity.particle.EntityBSmokeFX;
-import com.hbm.items.ModItems;
-import com.hbm.lib.ModDamageSource;
-import com.hbm.util.ArmorUtil;
-
-import cpw.mods.fml.relauncher.ReflectionHelper;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class EntityBullet extends Entity implements IProjectile {
 	private int field_145791_d = -1;
@@ -763,7 +762,7 @@ public class EntityBullet extends Entity implements IProjectile {
 			boolean flag = this.canBePickedUp == 1 || this.canBePickedUp == 2 && p_70100_1_.capabilities.isCreativeMode;
 
 			if (this.canBePickedUp == 1
-					&& !p_70100_1_.inventory.addItemStackToInventory(new ItemStack(ModItems.gun_rpg_ammo, 1))) {
+					&& !p_70100_1_.inventory.addItemStackToInventory(new ItemStack(ModItems.ammo_rocket))) {
 				flag = false;
 			}
 

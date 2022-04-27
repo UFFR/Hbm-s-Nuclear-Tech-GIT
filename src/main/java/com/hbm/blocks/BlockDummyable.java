@@ -6,7 +6,9 @@ import java.util.Random;
 
 import com.hbm.handler.MultiblockHandlerXR;
 import com.hbm.handler.ThreeInts;
+import com.hbm.main.MainRegistry;
 
+import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -42,7 +44,6 @@ public abstract class BlockDummyable extends BlockContainer {
 
 	public static boolean safeRem = false;
 
-	@Override
 	public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
 
 		super.onNeighborBlockChange(world, x, y, z, block);
@@ -66,7 +67,6 @@ public abstract class BlockDummyable extends BlockContainer {
 		}
 	}
 
-	@Override
 	public void updateTick(World world, int x, int y, int z, Random rand) {
 
 		super.updateTick(world, x, y, z, rand);
@@ -94,7 +94,7 @@ public abstract class BlockDummyable extends BlockContainer {
 		return findCoreRec(world, x, y, z);
 	}
 
-	List<ThreeInts> positions = new ArrayList<ThreeInts>();
+	List<ThreeInts> positions = new ArrayList();
 
 	public int[] findCoreRec(World world, int x, int y, int z) {
 
@@ -156,6 +156,7 @@ public abstract class BlockDummyable extends BlockContainer {
 		if(i == 3) {
 			dir = ForgeDirection.getOrientation(4);
 		}
+		
 		dir = getDirModified(dir);
 
 		if(!checkRequirement(world, x, y, z, dir, o)) {
@@ -237,8 +238,24 @@ public abstract class BlockDummyable extends BlockContainer {
 			return;
 
 		// world.setBlockMetadataWithNotify(x, y, z, meta + extra, 3);
-		BlockDummyable.safeRem = true;
+		this.safeRem = true;
 		world.setBlock(x, y, z, this, meta + extra, 3);
+		this.safeRem = false;
+	}
+	
+	public void removeExtra(World world, int x, int y, int z) {
+
+		if(world.getBlock(x, y, z) != this)
+			return;
+
+		int meta = world.getBlockMetadata(x, y, z);
+
+		if(meta <= 5 || meta >= 12)
+			return;
+
+		// world.setBlockMetadataWithNotify(x, y, z, meta + extra, 3);
+		this.safeRem = true;
+		world.setBlock(x, y, z, this, meta - extra, 3);
 		this.safeRem = false;
 	}
 
@@ -262,9 +279,7 @@ public abstract class BlockDummyable extends BlockContainer {
 
 			// if(pos != null) {
 
-			// TODO: run extensive tests on whether this change doesn't break anything
 			ForgeDirection d = ForgeDirection.getOrientation(i);
-			world.setBlockToAir(x - d.offsetX, y - d.offsetY, z - d.offsetZ);
 			
 			if(world.getBlock(x - d.offsetX, y - d.offsetY, z - d.offsetZ) == this)
 				world.setBlockToAir(x - d.offsetX, y - d.offsetY, z - d.offsetZ);
@@ -339,4 +354,20 @@ public abstract class BlockDummyable extends BlockContainer {
 		return 0;
 	}
 
+	protected boolean standardOpenBehavior(World world, int x, int y, int z, EntityPlayer player, int id) {
+		
+		if(world.isRemote) {
+			return true;
+		} else if(!player.isSneaking()) {
+			int[] pos = this.findCore(world, x, y, z);
+
+			if(pos == null)
+				return false;
+
+			FMLNetworkHandler.openGui(player, MainRegistry.instance, id, world, pos[0], pos[1], pos[2]);
+			return true;
+		} else {
+			return true;
+		}
+	}
 }

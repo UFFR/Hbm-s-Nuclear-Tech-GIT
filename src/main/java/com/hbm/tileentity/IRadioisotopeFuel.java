@@ -5,9 +5,9 @@ import java.util.List;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import com.hbm.config.MachineConfig;
-import com.hbm.interfaces.ICustomWarhead.SaltedFuel.TimeDurationType;
+import com.hbm.config.VersatileConfig;
 import com.hbm.lib.Library;
+import com.hbm.saveddata.TimeSavedData.TimeDurationType;
 import com.hbm.util.BobMathUtil;
 import com.hbm.util.I18nUtil;
 
@@ -51,6 +51,17 @@ public interface IRadioisotopeFuel
 		return stack == null ? null : getInstance(stack.getItem());
 	}
 	
+	public default void setLifespan(ItemStack stack, long life)
+	{
+		if (stack != null && stack.getItem() instanceof IRadioisotopeFuel)
+		{
+			if (stack.hasTagCompound())
+				stack.stackTagCompound = new NBTTagCompound();
+
+			stack.stackTagCompound.setLong(lifeKey, life);
+		}
+	}
+	
 	public default void decay(ItemStack stack)
 	{
 		if (stack != null && stack.getItem() instanceof IRadioisotopeFuel)
@@ -90,7 +101,7 @@ public interface IRadioisotopeFuel
 	 */
 	public static ItemStack handleDecay(ItemStack stack, IRadioisotopeFuel instance)
 	{
-		if (instance.getDoesDecay() && MachineConfig.doRTGsDecay)
+		if (instance.getDoesDecay() && VersatileConfig.rtgDecay())
 		{
 			if (instance.getLifespan(stack) <= 0)
 				return instance.getDecayItem();
@@ -118,7 +129,7 @@ public interface IRadioisotopeFuel
 	public static void addTooltip(List<String> tooltip, ItemStack stack, boolean showAdv)
 	{
 		final IRadioisotopeFuel instance = (IRadioisotopeFuel) stack.getItem();
-		tooltip.add(I18nUtil.resolveKey("desc.item.rtgHeat", instance.getDoesDecay() && MachineConfig.scaleRTGPower ? getScaledPower(instance, stack) : instance.getHeat()));
+		tooltip.add(I18nUtil.resolveKey("desc.item.rtgHeat", instance.getDoesDecay() && VersatileConfig.scaleRTGPower() ? getScaledPower(instance, stack) : instance.getHeat()));
 		if (instance.getDoesDecay())
 		{
 			tooltip.add(I18nUtil.resolveKey("desc.item.rtgDecay", I18nUtil.resolveKey(instance.getDecayItem().getUnlocalizedName() + ".name")));

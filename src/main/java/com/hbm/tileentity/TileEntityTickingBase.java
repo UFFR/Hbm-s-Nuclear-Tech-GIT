@@ -31,6 +31,7 @@ public abstract class TileEntityTickingBase extends TileEntity implements INBTPa
 			PacketDispatcher.wrapper.sendToAllAround(new NBTPacket(nbt, xCoord, yCoord, zCoord), new TargetPoint(this.worldObj.provider.dimensionId, xCoord, yCoord, zCoord, range));
 	}
 	
+	@Override
 	public void networkUnpack(NBTTagCompound nbt) { }
 	
 	@Deprecated

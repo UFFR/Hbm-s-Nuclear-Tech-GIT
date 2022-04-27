@@ -47,10 +47,10 @@ public class BlockBedrockOreSpawner extends BlockGeneric implements IBomb
 	}
 	static final byte range = 4;
 	@Override
-	public void explode(World world, int x, int y, int z)
+	public BombReturnCode explode(World world, int x, int y, int z)
 	{
 		if (world.getBlockMetadata(x, y, z) == 0)
-			return;
+			return BombReturnCode.ERROR_MISSING_COMPONENT;
 		
 		for (int bx = x - range; bx < x + range; bx++)
 			for (int by = y - range; by < y + range; by++)
@@ -60,5 +60,6 @@ public class BlockBedrockOreSpawner extends BlockGeneric implements IBomb
 		
 		world.spawnEntityInWorld(EntityNukeExplosionMK4.statFac(world, 10, x + 0.5, y + 0.5, z + 0.5));
 		world.spawnEntityInWorld(EntityNukeCloudSmall.statFac(world, x, y + 10, z, 50));
+		return BombReturnCode.DETONATED;
 	}
 }

@@ -5,9 +5,11 @@ import static com.hbm.inventory.OreDictManager.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.CheckForNull;
 
+import com.google.common.collect.ImmutableMap;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.config.GeneralConfig;
 import com.hbm.handler.imc.IMCBlastFurnace;
@@ -32,9 +34,12 @@ public class BlastFurnaceRecipes
 	static
 	{
 		addRecipe(FE, COAL, new ItemStack(ModItems.ingot_steel, 2));
+		addRecipe(FE, ANY_COKE, new ItemStack(ModItems.ingot_steel, 2));
 		addRecipe(CU, REDSTONE, new ItemStack(ModItems.ingot_red_copper, 2));
-		addRecipe(STEEL, MINGRADE, new ItemStack(ModItems.ingot_advanced_alloy, 2));
+		if (!GeneralConfig.enable528)
+			addRecipe(NI, MINGRADE, new ItemStack(ModItems.ingot_advanced_alloy, 2));
 		addRecipe(W, COAL, new ItemStack(ModItems.neutron_reflector, 2));
+		addRecipe(W, ANY_COKE, new ItemStack(ModItems.neutron_reflector, 2));
 		addRecipe(ModItems.canister_fuel, "slimeball", new ItemStack(ModItems.canister_napalm));
 		addRecipe(STEEL, CO, new ItemStack(ModItems.ingot_dura_steel, 2));
 		addRecipe(STEEL, W, new ItemStack(ModItems.ingot_dura_steel, 2));
@@ -44,7 +49,7 @@ public class BlastFurnaceRecipes
 		addRecipe(STEEL, TC99.nugget(), new ItemStack(ModItems.ingot_tcalloy));
 		addRecipe(AU.plate(), ModItems.plate_mixed, new ItemStack(ModItems.plate_paa, 2));
 		addRecipe(BIGMT, ModItems.powder_meteorite, new ItemStack(ModItems.ingot_starmetal, 2));
-		addRecipe(ModItems.silicon_lump, ModItems.coke, new ItemStack(ModItems.ingot_silicon, 4));
+		addRecipe(ModItems.silicon_lump, ANY_COKE, new ItemStack(ModItems.ingot_silicon, 4));
 		addRecipe("sand", COAL, new ItemStack(ModItems.nugget_silicon, 3));
 		addRecipe(NB, BE, new ItemStack(ModItems.ingot_nbbe));
 		if (GeneralConfig.enableBabyMode)
@@ -54,7 +59,6 @@ public class BlastFurnaceRecipes
 		addRecipe(W, CO, new ItemStack(ModItems.component_ftl, 1, 4));
 		addRecipe(DNT, OSMIRIDIUM, new ItemStack(ModItems.ingot_dineutronium_forged));
 		addRecipe(ModBlocks.block_meteor, CO, new ItemStack(ModItems.ingot_meteorite));
-		addRecipe(ModItems.meteorite_sword_hardened, CO, new ItemStack(ModItems.meteorite_sword_alloyed));
 		addRecipe(ST, ModBlocks.glass_lead, new ItemStack(ModBlocks.glass_strontium));
 		
 		if (!IMCBlastFurnace.buffer.isEmpty())
@@ -121,15 +125,53 @@ public class BlastFurnaceRecipes
 		
 		return recipeItem1;
 	}
-	
-	public static HashMap<ItemStack[], ItemStack> getRecipesForNEI()
+	// TODO
+	public static Map<List<ItemStack>[], ItemStack> getRecipesForNEI()
 	{
-		HashMap<ItemStack[], ItemStack> recipes = new HashMap<>();
+		HashMap<List<ItemStack>[], ItemStack> recipes = new HashMap<>();
 		
 		for (Triplet<Object, Object, ItemStack> recipe : blastFurnaceRecipes)
+		{
 			if (!hiddenRecipes.contains(recipe.getZ()))
-				recipes.put(new ItemStack[] {getRecipeStacks(recipe.getX())[0].toStack(), getRecipeStacks(recipe.getY())[0].toStack()}, recipe.getZ().copy());
-		
-		return recipes;
+			{
+				final ItemStack nothing = new ItemStack(ModItems.nothing).setStackDisplayName("If you're reading this, an error has occured! Check the console.");
+				List<ItemStack> in1 = new ArrayList<ItemStack>();
+				List<ItemStack> in2 = new ArrayList<ItemStack>();
+				in1.add(nothing);
+				in2.add(nothing);
+				
+				for (AStack stack : getRecipeStacks(recipe.getX()))
+				{
+					if (stack.extractForNEI().isEmpty())
+						continue;
+					else
+					{
+						in1.remove(nothing);
+						in1.addAll(stack.extractForNEI());
+						break;
+					}
+				}
+				if (in1.contains(nothing))
+					MainRegistry.logger.error("Blast furnace cannot compile recipes for NEI: apparent nonexistent item #1 in recipe for item: " + recipe.getZ().getDisplayName());
+				for (AStack stack : getRecipeStacks(recipe.getY()))
+				{
+					if (stack.extractForNEI().isEmpty())
+						continue;
+					else
+					{
+						in2.remove(nothing);
+						in2.addAll(stack.extractForNEI());
+						break;
+					}
+				}
+				if (in2.contains(nothing))
+					MainRegistry.logger.error("Blast furnace cannot compile recipes for NEI: apparent nonexistent item #2 in recipe for item: " + recipe.getZ().getDisplayName());
+				List<ItemStack>[] inputs = new List[2];
+				inputs[0] = in1;
+				inputs[1] = in2;
+				recipes.put(inputs, recipe.getZ());
+			}
+		}
+		return ImmutableMap.copyOf(recipes);
 	}
 }

@@ -13,6 +13,8 @@ import com.hbm.handler.BulletConfigSyncingUtil;
 import com.hbm.handler.BulletConfiguration;
 import com.hbm.interfaces.IBulletImpactBehavior;
 import com.hbm.interfaces.IBulletUpdateBehavior;
+import com.hbm.inventory.RecipesCommon.ComparableStack;
+import com.hbm.items.ItemAmmoEnums.Ammo357Magnum;
 import com.hbm.items.ModItems;
 import com.hbm.lib.Library;
 import com.hbm.packet.AuxParticlePacketNT;
@@ -41,7 +43,7 @@ public class BulletConfigFactory {
 		
 		BulletConfiguration bullet = new BulletConfiguration();
 		
-		bullet.ammo = ModItems.gun_revolver_ammo;
+		bullet.ammo = new ComparableStack(ModItems.ammo_357.stackFromEnum(Ammo357Magnum.LEAD));
 		bullet.velocity = 5.0F;
 		bullet.spread = 0.05F;
 		bullet.wear = 10;
@@ -90,6 +92,12 @@ public class BulletConfigFactory {
 		bullet.plink = BulletConfiguration.PLINK_BULLET;
 		bullet.leadChance = 5;
 		
+		return bullet;
+	}
+	public static BulletConfiguration standardPistolConfig() {
+		BulletConfiguration bullet = standardBulletConfig();
+		bullet.style = BulletConfiguration.STYLE_PISTOL;
+		bullet.plink = BulletConfiguration.PLINK_BULLET;
 		return bullet;
 	}
 	

@@ -2,28 +2,16 @@ package com.hbm.blocks.generic;
 
 import java.util.Random;
 
-import com.hbm.hazard.HazardData;
-import com.hbm.interfaces.IItemHazard;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.world.World;
 
-public class BlockLithium extends BlockBeaconable implements IItemHazard
-{
-
-	HazardData module;
+public class BlockLithium extends BlockBeaconable {
 
 	public BlockLithium(Material material) {
 		super(material);
-		this.module = new HazardData();
-	}
-
-	@Override
-	public HazardData getModule() {
-		return module;
 	}
 
 	private boolean touchesWater(World world, int x, int y, int z) {
@@ -39,7 +27,6 @@ public class BlockLithium extends BlockBeaconable implements IItemHazard
 				|| world.getBlock(x, y, z - 1).getMaterial() == Material.water;
 	}
 
-	@Override
 	public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
 
 		if (touchesWater(world, x, y, z)) {
@@ -48,7 +35,6 @@ public class BlockLithium extends BlockBeaconable implements IItemHazard
 		}
 	}
 
-	@Override
 	public int onBlockPlaced(World world, int x, int y, int z, int side, float fx, float fy, float fz, int meta) {
 
 		if (touchesWater(world, x, y, z)) {
@@ -59,7 +45,6 @@ public class BlockLithium extends BlockBeaconable implements IItemHazard
 		return meta;
 	}
 
-	@Override
 	@SideOnly(Side.CLIENT)
 	public void randomDisplayTick(World world, int x, int y, int z, Random rand) {
 

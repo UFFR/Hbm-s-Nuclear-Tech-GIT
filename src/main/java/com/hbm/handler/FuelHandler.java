@@ -3,13 +3,11 @@ package com.hbm.handler;
 import java.util.HashMap;
 
 import com.hbm.blocks.ModBlocks;
-import com.hbm.interfaces.Spaghetti;
 import com.hbm.items.ModItems;
 
 import cpw.mods.fml.common.IFuelHandler;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-@Spaghetti("This could be handled better, possibly with a switch")
 public class FuelHandler implements IFuelHandler
 {
 	public static final HashMap<Item, Integer> fuelMap = new HashMap<>();

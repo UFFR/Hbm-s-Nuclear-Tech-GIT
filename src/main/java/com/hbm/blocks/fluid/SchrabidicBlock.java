@@ -3,6 +3,7 @@ package com.hbm.blocks.fluid;
 import java.util.Random;
 
 import com.hbm.blocks.ModBlocks;
+import com.hbm.blocks.generic.BlockHazard.ExtDisplayEffect;
 import com.hbm.lib.RefStrings;
 import com.hbm.main.MainRegistry;
 import com.hbm.util.ContaminationUtil;
@@ -25,8 +26,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.BlockFluidClassic;
 import net.minecraftforge.fluids.Fluid;
 
-public class SchrabidicBlock extends BlockFluidClassic
-{
+public class SchrabidicBlock extends BlockFluidClassic {
 
 	@SideOnly(Side.CLIENT)
 	public static IIcon stillIcon;
@@ -77,7 +77,9 @@ public class SchrabidicBlock extends BlockFluidClassic
 
 	@Override
 	public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity) {
-		entity.setInWeb();
+		
+		if(this.getMaterial() == ModBlocks.fluidschrabidic)
+			entity.setInWeb();
 		
 		if(entity instanceof EntityLivingBase)
 			ContaminationUtil.contaminate((EntityLivingBase)entity, HazardType.RADIATION, ContaminationType.CREATIVE, 1.0F);
@@ -97,7 +99,7 @@ public class SchrabidicBlock extends BlockFluidClassic
 	}
 	
 	public boolean reactToBlocks(World world, int x, int y, int z) {
-		if(world.getBlock(x, y, z).getMaterial() != ModBlocks.fluidschrabidic) {
+		if(world.getBlock(x, y, z).getMaterial() != this.getMaterial()) {
 			if(world.getBlock(x, y, z).getMaterial().isLiquid()) {
 				return true;
 			}
@@ -116,7 +118,6 @@ public class SchrabidicBlock extends BlockFluidClassic
 		return 0;
 	}
 
-	@Override
 	@SideOnly(Side.CLIENT)
 	public void randomDisplayTick(World world, int x, int y, int z, Random rand) {
 		super.randomDisplayTick(world, x, y, z, rand);

@@ -4,18 +4,19 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 import javax.annotation.Nonnegative;
 
 import org.apache.logging.log4j.Level;
+import org.lwjgl.opengl.GL11;
 
 import com.google.common.annotations.Beta;
-import com.hbm.handler.FluidTypeHandler.FluidType;
-import com.hbm.inventory.FluidTank;
 import com.hbm.items.machine.ItemRTGPellet;
-import com.hbm.lib.Library;
 import com.hbm.lib.RefStrings;
 import com.hbm.main.MainRegistry;
+import com.hbm.util.BobMathUtil;
 import com.hbm.util.I18nUtil;
 
 import net.minecraft.client.Minecraft;
@@ -38,6 +39,7 @@ public abstract class GuiInfoContainer extends GuiContainer {
 	public static final char slimCursor = '\u2502';
 	public static final char blockCursor = '\u2588';
 	public static final ResourceLocation keyboard = new ResourceLocation(RefStrings.MODID, "misc.keyPress"); 
+	protected final ArrayList<GUIComponent> componentList = new ArrayList<GUIComponent>();
 	public GuiInfoContainer(Container p_i1072_1_) {
 		super(p_i1072_1_);
 	}
@@ -45,7 +47,7 @@ public abstract class GuiInfoContainer extends GuiContainer {
 	public static String[] assembleRTGPellets()
 	{
 		final ArrayList<String> pellets = new ArrayList<String>();
-		pellets.add("Accepted Pellets:");
+		pellets.add(I18nUtil.resolveKey("desc.gui.rtg.pellets"));
 		for (ItemRTGPellet pellet : ItemRTGPellet.getPellets())
 			pellets.add(" - " + pellet.getData());
 		return pellets.toArray(new String[pellets.size()]);
@@ -60,9 +62,9 @@ public abstract class GuiInfoContainer extends GuiContainer {
 		drawFluidInfo(text, x, y);
 	}
 	
-	public void drawElectricityInfo(GuiInfoContainer gui, int mouseX, int mouseY, int x, int y, int width, int height, long power, long maxPower) {
+	public static void drawElectricityInfo(GuiInfoContainer gui, int mouseX, int mouseY, int x, int y, int width, int height, long power, long maxPower) {
 		if(x <= mouseX && x + width > mouseX && y < mouseY && y + height >= mouseY)
-			gui.drawFluidInfo(new String[] { Library.getShortNumber(power) + "/" + Library.getShortNumber(maxPower) + "HE" }, mouseX, mouseY);
+			gui.drawFluidInfo(new String[] { BobMathUtil.getShortNumber(power) + "/" + BobMathUtil.getShortNumber(maxPower) + "HE" }, mouseX, mouseY);
 	}
 	
 	public void drawElectricityInfo(int mouseX, int mouseY, int x, int y, int width, int height, long power, long maxPower)
@@ -105,7 +107,7 @@ public abstract class GuiInfoContainer extends GuiContainer {
 	
 	public static char getCursor(char in)
 	{
-		return Library.getBlink() ? ' ' : in;
+		return BobMathUtil.getBlink() ? ' ' : in;
 	}
 	
 	public static char getCursor()
@@ -222,6 +224,56 @@ public abstract class GuiInfoContainer extends GuiContainer {
 			return -1;
 		}
 	}
+	public void defaultClickHandling(int mX, int mY)
+	{
+		for (GUIComponent comp : componentList)
+			if (comp.contains(mX, mY))
+				comp.getClickAction();
+	}
+	public void defaultHoverHandling(int mX, int mY)
+	{
+		for (GUIComponent comp : componentList)
+			if (comp.contains(mX, mY))
+				comp.getHoverAction();
+	}
+	@Beta
+	public class GUIComponent
+	{
+		private final int x, y, compWidth, compHeight;
+		private Optional<Consumer<GuiInfoContainer>> click = Optional.empty();
+		private Optional<Consumer<GuiInfoContainer>> hover = Optional.empty();
+		public GUIComponent(int x, int y, int width, int height)
+		{
+			this.x = x;
+			this.y = y;
+			this.compWidth = width;
+			this.compHeight = height;
+		}
+		public void getClickAction()
+		{
+			if (click.isPresent())
+				click.get().accept(GuiInfoContainer.this);
+		}
+		public void getHoverAction()
+		{
+			if (hover.isPresent())
+				hover.get().accept(GuiInfoContainer.this);
+		}
+		public GUIComponent setClickAction(Consumer<GuiInfoContainer> action)
+		{
+			click = Optional.of(action);
+			return this;
+		}
+		public GUIComponent setHoverAction(Consumer<GuiInfoContainer> action)
+		{
+			hover = Optional.of(action);
+			return this;
+		}
+		public boolean contains(int mouseX, int mouseY)
+		{
+			return guiLeft + x <= mouseX && guiLeft + x + compWidth > mouseX && guiTop + y < mouseY && guiTop + y + compHeight >= mouseY;
+		}
+	}
 	/**
 	 * Seven segment style displays for GUIs, tried to be as adaptable as possible. Still has some bugs that need to be ironed out but it works for the most part.
 	 * @author UFFR
@@ -234,10 +286,8 @@ public abstract class GuiInfoContainer extends GuiContainer {
 		private int displayX;
 		/** The display's Y coordinate **/
 		private int displayY;
-		/** The X coordinate of the reference **/
-		private int referenceX = 10;
-		/** The Y coordinate of the reference **/
-		private int referenceY = 18;
+		/** The display's color, in hexadecimal **/
+		private int color;
 		/** The amount of padding between digits, default 3 **/
 		@Nonnegative
 		private byte padding = 3;
@@ -265,12 +315,23 @@ public abstract class GuiInfoContainer extends GuiContainer {
 		 * Construct a new number display
 		 * @param dX X coordinate of the display
 		 * @param dY Y coordinate of the display
-		 * @param c Color to use, invalid enums will default to yellow
+		 * @param c Enum Color to use, invalid enums will default to yellow
 		 */
 		public NumberDisplay(int x, int y, EnumChatFormatting c)
 		{
 			this(x, y);
-			setupColor(c);
+			setColor(enumToColor(c));
+		}
+		/**
+		 * Construct a new number display
+		 * @param x X coordinate of the display
+		 * @param y Y coordinate of the display
+		 * @param color Color to use, valid hexadecimal value required
+		 */
+		public NumberDisplay(int x, int y, int color)
+		{
+			this(x, y);
+			setColor(color);
 		}
 		/**
 		 * Construct a new number display, color is yellow
@@ -281,26 +342,59 @@ public abstract class GuiInfoContainer extends GuiContainer {
 		{
 			displayX = x;
 			displayY = y;
+			setColor(0xFFFF55);
 		}
-		public void setupColor(EnumChatFormatting c)
-		{
-			byte row = 4, column = 3;
-			switch (c)
-			{
-			case OBFUSCATED:
-			case RESET:
-			case STRIKETHROUGH:
-			case UNDERLINE:
-				break;
-			default:
-				column = (byte) (c.ordinal() % 4);
-				row = (byte) Math.floorDiv(c.ordinal(), 4);
-				break;
+		/**
+		 * Returns a hexadecimal from EnumChatFormatting
+		 * @param c Color to use
+		 * @return
+		 */
+		private int enumToColor(EnumChatFormatting c) {
+			if(c.isColor()) {
+				switch(c) {
+				case AQUA:
+					return 0x55FFFF;
+				case BLACK:
+					return 0x000000;
+				case BLUE:
+					return 0x5555FF;
+				case DARK_AQUA:
+					return 0x00AAAA;
+				case DARK_BLUE:
+					return 0x0000AA;
+				case DARK_GRAY:
+					return 0x555555;
+				case DARK_GREEN:
+					return 0x00AA00;
+				case DARK_PURPLE:
+					return 0xAA00AA;
+				case DARK_RED:
+					return 0xAA0000;
+				case GOLD:
+					return 0xFFAA00;
+				case GRAY:
+					return 0xAAAAAA;
+				case GREEN:
+					return 0x55FF55;
+				case LIGHT_PURPLE:
+					return 0xFF55FF;
+				case RED:
+					return 0xFF5555;
+				case WHITE:
+					return 0xFFFFFF;
+				case YELLOW:
+				default:
+					return 0xFFFF55;
+				}
 			}
-//			System.out.println(column);
-//			System.out.println(row);
-			referenceY = 6 * row;
-			referenceX = 5 * column;
+			return 0xFFFF55;
+		}
+		/**
+		 * Sets color 
+		 * @param color - The color in hexadecimal
+		 **/
+		public void setColor(int color) {
+			this.color = color;
 		}
 		/**
 		 * Draw custom number
@@ -308,7 +402,7 @@ public abstract class GuiInfoContainer extends GuiContainer {
 		 */
 		public void drawNumber(char[] num)
 		{
-			if (blink && !Library.getBlink())
+			if (blink && !BobMathUtil.getBlink())
 				return;
 				
 			short gap = (short) (digitLength - num.length);
@@ -325,10 +419,6 @@ public abstract class GuiInfoContainer extends GuiContainer {
 		/** Draw the previously provided number **/
 		public void drawNumber()
 		{
-//			System.out.println(referenceX);
-//			System.out.println(referenceY);
-			mc.getTextureManager().bindTexture(numDisplays);
-
 			if (isFloat)
 				formatForFloat();
 			drawNumber(toDisp);
@@ -352,7 +442,6 @@ public abstract class GuiInfoContainer extends GuiContainer {
 		/** Draw a single character (requires dispOffset to be set) **/
 		public void drawChar(char num)
 		{
-//			System.out.println(num);
 			switch (num)
 			{
 			case '1':
@@ -444,39 +533,41 @@ public abstract class GuiInfoContainer extends GuiContainer {
 		private void drawHorizontal(int pos)
 		{
 			byte offset = (byte) (pos * 6);
-			renderSegment(guiLeft + displayX + dispOffset + 1, guiTop + displayY + offset, referenceX + 1, referenceY, 4, 1);
+			renderSegment(guiLeft + displayX + dispOffset + 1, guiTop + displayY + offset, 4, 1);
 		}
 		
 		private void drawPeriod()
 		{
-			renderSegment(guiLeft + displayX + dispOffset + padding - (int) Math.ceil(padding / 2) + 5, guiTop + displayY + 12, referenceX + 1, referenceY, 1, 1);
+			renderSegment(guiLeft + displayX + dispOffset + padding - (int) Math.ceil(padding / 2) + 5, guiTop + displayY + 12, 1, 1);
 		}
 		
 		private void drawVertical(int posX, int posY)
 		{
 			byte offsetX = (byte) (posX * 5);
 			byte offsetY = (byte) (posY * 6);
-			renderSegment(guiLeft + displayX + offsetX + dispOffset, guiTop + displayY + offsetY + 1, referenceX, referenceY + 1, 1, 5);
+			renderSegment(guiLeft + displayX + offsetX + dispOffset, guiTop + displayY + offsetY + 1, 1, 5);
 		}
 		/**
 		 * drawTexturedModalRect() for cool kids
 		 * @param renX X coordinate to render the part
 		 * @param renY Y coordinate to render the part
-		 * @param refX X coordinate of the reference
-		 * @param refY Y coordinate of the reference
 		 * @param width Relevant for horizontals
 		 * @param height Relevant for verticals
 		 */
-		private void renderSegment(int renX, int renY, int refX, int refY, int width, int height)
+		private void renderSegment(int renX, int renY, int width, int height)
 		{
 			final Tessellator tess = Tessellator.instance;
 			final float z = GuiInfoContainer.this.zLevel;
+			
+			GL11.glDisable(GL11.GL_TEXTURE_2D);
 			tess.startDrawingQuads();
-	        tess.addVertexWithUV(renX, renY + height, z, refX, (refY + height));
-	        tess.addVertexWithUV(renX + width, renY + height, z, (refX + width), (refY + height));
-	        tess.addVertexWithUV(renX + width, renY + 0, z, (refX + width), refY);
-	        tess.addVertexWithUV(renX, renY, z, refX, refY);
+			tess.setColorOpaque_I(color);
+			tess.addVertex(renX, renY + height, z);
+			tess.addVertex(renX + width, renY + height, z);
+			tess.addVertex(renX + width, renY + 0, z);
+			tess.addVertex(renX, renY, z);
 			tess.draw();
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
 		}
 
 		public void setNumber(Number num)
@@ -559,7 +650,7 @@ public abstract class GuiInfoContainer extends GuiContainer {
 			
 //			char[] proc = new Double(bd.doubleValue()).toString().toCharArray();
 			char[] proc = bd.toString().toCharArray();
-			proc = Double.valueOf(Library.roundDecimal(numIn.doubleValue(), floatPad)).toString().toCharArray();
+			proc = Double.valueOf(BobMathUtil.roundDecimal(numIn.doubleValue(), floatPad)).toString().toCharArray();
 			
 			if (proc.length == digitLength)
 				toDisp = proc;
@@ -578,64 +669,6 @@ public abstract class GuiInfoContainer extends GuiContainer {
 				return out.clone();
 			}
 			return toDisp;
-		}
-	}
-	/**
-	 * Fluid tank more friendly with NTM GUIs.
-	 * Only overrides {@link#renderTank()} and {@link#renderTankInfo()}.
-	 * Is <i>not</i> meant to be a total replacement for the FluidTank class, rather only in GUIs
-	 * As a result the constructor is a bit bulkier with places for the x, y, width, and height
-	 * @author UFFR
-	 *
-	 */
-	@Beta
-	public class FluidTankGUI
-	{
-		private int xPos;
-		private int yPos;
-		private int tankWidth;
-		private int tankHeight;
-		private FluidTank tank;
-		private FluidType type = FluidType.NONE;
-		public static final int x = 16;
-		public static final int y = 100;
-		public FluidTankGUI(FluidType type, int max, int x, int y, int width, int height)
-		{
-			xPos = x;
-			yPos = y;
-			this.tankHeight = height;
-			this.tankWidth = width;
-			tank = new FluidTank(type, max, 0);
-			this.type = type;
-		}
-		public FluidTankGUI(FluidTank tank, int x, int y, int width, int height)
-		{
-			this(tank.getTankType(), tank.getMaxFill(), x, y, width, height);
-		}
-		public void updateTank(FluidTank tank)
-		{
-			this.tank = tank;
-		}
-		public void renderTank()
-		{
-			mc.getTextureManager().bindTexture(tank.getSheet());
-//			tank.renderTank(GuiInfoContainer.this, guiLeft + xPos, guiTop + yPos, type.textureX() * x, type.textureY() * y, width, height);
-			int i = (tank.getFill() * tankHeight) / tank.getMaxFill();
-			drawTexturedModalRect(guiLeft + xPos, (guiTop + yPos + tankHeight) - i, x * type.textureX(), (type.textureY() * y) - i, tankWidth, i);
-		}
-		
-		public void renderTankInfo(int mouseX, int mouseY)
-		{
-//			renderTankInfo(GuiInfoContainer.this, mouseX, mouseY, guiLeft + xPos, guiTop + yPos, width, height);
-//			System.out.println(mouseX);
-			if(xPos + guiLeft <= mouseX && xPos + tankWidth + guiLeft > mouseX && yPos + guiTop < mouseY && yPos + tankHeight + guiTop >= mouseY)
-			{
-				final ArrayList<String> list = new ArrayList<String>();
-				list.add(I18nUtil.resolveKey(type.getUnlocalizedName()));
-				list.add(String.format("%smB/%smB", tank.getFill(), tank.getMaxFill()));
-				Library.addFluidInfo(type, list);
-				drawFluidInfo(list.toArray(new String[list.size()]), mouseX, mouseY);
-			}
 		}
 	}
 }

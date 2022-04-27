@@ -33,74 +33,14 @@ public class ItemBlockLore extends ItemBlock implements IHasLore
 	@Override
 	public void addInformation(ItemStack itemstack, EntityPlayer player, List list, boolean bool)
 	{
-//		String uloc = field_150939_a.getUnlocalizedName() + ".desc";
-//		String[] loc = I18nUtil.resolveKeyArray(uloc);
-//		if (!uloc.equals(loc[0]))
-//			for (String s : loc)
-//				list.add(s);
-		
 		standardLore(itemstack, list);
 		
 		if(this.field_150939_a instanceof RedBarrel)
 			list.add(I18nUtil.resolveKey("desc.block.barrel.static"));
 		
 		if (this.field_150939_a instanceof BlockFluidBarrel)
-			for (String line : ((BlockFluidBarrel)this.field_150939_a).tooltip)
-				list.add(line);
+			list.addAll(((BlockFluidBarrel)this.field_150939_a).tooltip);
 		
-//		if(this.field_150939_a == ModBlocks.barrel_plastic) {
-//			list.add(EnumChatFormatting.AQUA + "Capacity: 12,000mB");
-//			list.add(EnumChatFormatting.YELLOW + "Cannot store hot fluids");
-//			list.add(EnumChatFormatting.YELLOW + "Cannot store corrosive fluids");
-//			list.add(EnumChatFormatting.YELLOW + "Cannot store antimatter");
-//		}
-		
-//		if(this.field_150939_a == ModBlocks.barrel_corroded) {
-//			list.add(EnumChatFormatting.AQUA + "Capacity: 6,000mB");
-//			list.add(EnumChatFormatting.GREEN + "Can store hot fluids");
-//			list.add(EnumChatFormatting.GREEN + "Can store corrosive fluids");
-//			list.add(EnumChatFormatting.YELLOW + "Cannot store antimatter");
-//			list.add(EnumChatFormatting.RED + "Leaky");
-//		}
-//		
-//		if(this.field_150939_a == ModBlocks.barrel_iron) {
-//			list.add(EnumChatFormatting.AQUA + "Capacity: 8,000mB");
-//			list.add(EnumChatFormatting.GREEN + "Can store hot fluids");
-//			list.add(EnumChatFormatting.YELLOW + "Cannot store corrosive fluids properly");
-//			list.add(EnumChatFormatting.YELLOW + "Cannot store antimatter");
-//		}
-//		
-//		if(this.field_150939_a == ModBlocks.barrel_steel) {
-//			list.add(EnumChatFormatting.AQUA + "Capacity: 16,000mB");
-//			list.add(EnumChatFormatting.GREEN + "Can store hot fluids");
-//			list.add(EnumChatFormatting.GREEN + "Can store corrosive fluids");
-//			list.add(EnumChatFormatting.YELLOW + "Cannot store antimatter");
-//		}
-//		
-//		if(this.field_150939_a == ModBlocks.barrel_antimatter) {
-//			list.add(EnumChatFormatting.AQUA + "Capacity: 16,000mB");
-//			list.add(EnumChatFormatting.GREEN + "Can store hot fluids");
-//			list.add(EnumChatFormatting.GREEN + "Can store corrosive fluids");
-//			list.add(EnumChatFormatting.GREEN + "Can store antimatter");
-//		}
-//		if(this.field_150939_a == ModBlocks.gravel_diamond) {
-//			list.add("There is some kind of joke here,");
-//			list.add("but I can't quite tell what it is.");
-//			list.add("");
-//			list.add("Update, 2020-07-04:");
-//			list.add("We deny any implications of a joke on");
-//			list.add("the basis that it was so severely unfunny");
-//			list.add("that people started stabbing their eyes out.");
-//			list.add("");
-//			list.add("Update, 2020-17-04:");
-//			list.add("As it turns out, \"Diamond Gravel\" was");
-//			list.add("never really a thing, rendering what might");
-//			list.add("have been a joke as totally nonsensical.");
-//			list.add("We apologize for getting your hopes up with");
-//			list.add("this non-joke that hasn't been made.");
-//			list.add("");
-//			list.add("i added an item for a joke that isn't even here, what am i, stupid? can't even tell the difference between gravel and a gavel, how did i not forget how to breathe yet?");
-//		}
 	}
 
 	@Override

@@ -3,12 +3,11 @@ package com.hbm.blocks.machine;
 import java.util.Random;
 
 import com.hbm.blocks.ModBlocks;
-import com.hbm.handler.EnumGUI;
 import com.hbm.handler.MultiblockHandler;
 import com.hbm.interfaces.IMultiblock;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.machine.TileEntityDummy;
-import com.hbm.tileentity.machine.TileEntityMachineFluidTank;
+import com.hbm.tileentity.machine.storage.TileEntityMachineFluidTank;
 
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraft.block.Block;
@@ -25,8 +24,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-public class MachineFluidTank extends BlockContainer implements IMultiblock
-{
+public class MachineFluidTank extends BlockContainer implements IMultiblock {
 
 	public MachineFluidTank(Material p_i45386_1_) {
 		super(p_i45386_1_);
@@ -67,7 +65,7 @@ public class MachineFluidTank extends BlockContainer implements IMultiblock
     		TileEntityMachineFluidTank entity = (TileEntityMachineFluidTank) world.getTileEntity(x, y, z);
     		if(entity != null)
     		{
-    			FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.FLUID_TANK.ordinal(), world, x, y, z);
+    			FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_machine_fluidtank, world, x, y, z);
     		}
 			return true;
 		} else {
@@ -85,7 +83,7 @@ public class MachineFluidTank extends BlockContainer implements IMultiblock
 				MultiblockHandler.fillUp(world, x, y, z, MultiblockHandler.fluidTankDimensionEW, ModBlocks.dummy_block_fluidtank);
 				
 				//
-				DummyOldBase.safeBreak = true;
+				DummyBlockFluidTank.safeBreak = true;
 				world.setBlock(x + 1, y, z + 1, ModBlocks.dummy_port_fluidtank);
 				TileEntity te = world.getTileEntity(x + 1, y, z + 1);
 				if(te instanceof TileEntityDummy) {
@@ -118,7 +116,7 @@ public class MachineFluidTank extends BlockContainer implements IMultiblock
 					dummy.targetY = y;
 					dummy.targetZ = z;
 				}
-				DummyOldBase.safeBreak = false;
+				DummyBlockFluidTank.safeBreak = false;
 				//
 				
 			} else
@@ -130,7 +128,7 @@ public class MachineFluidTank extends BlockContainer implements IMultiblock
 				MultiblockHandler.fillUp(world, x, y, z, MultiblockHandler.fluidTankDimensionNS, ModBlocks.dummy_block_fluidtank);
 
 				//
-				DummyOldBase.safeBreak = true;
+				DummyBlockFluidTank.safeBreak = true;
 				world.setBlock(x + 1, y, z + 1, ModBlocks.dummy_port_fluidtank);
 				TileEntity te = world.getTileEntity(x + 1, y, z + 1);
 				if(te instanceof TileEntityDummy) {
@@ -163,7 +161,7 @@ public class MachineFluidTank extends BlockContainer implements IMultiblock
 					dummy.targetY = y;
 					dummy.targetZ = z;
 				}
-				DummyOldBase.safeBreak = false;
+				DummyBlockFluidTank.safeBreak = false;
 				//
 				
 			} else
@@ -175,7 +173,7 @@ public class MachineFluidTank extends BlockContainer implements IMultiblock
 				MultiblockHandler.fillUp(world, x, y, z, MultiblockHandler.fluidTankDimensionEW, ModBlocks.dummy_block_fluidtank);
 
 				//
-				DummyOldBase.safeBreak = true;
+				DummyBlockFluidTank.safeBreak = true;
 				world.setBlock(x + 1, y, z + 1, ModBlocks.dummy_port_fluidtank);
 				TileEntity te = world.getTileEntity(x + 1, y, z + 1);
 				if(te instanceof TileEntityDummy) {
@@ -208,7 +206,7 @@ public class MachineFluidTank extends BlockContainer implements IMultiblock
 					dummy.targetY = y;
 					dummy.targetZ = z;
 				}
-				DummyOldBase.safeBreak = false;
+				DummyBlockFluidTank.safeBreak = false;
 				//
 				
 			} else
@@ -220,7 +218,7 @@ public class MachineFluidTank extends BlockContainer implements IMultiblock
 				MultiblockHandler.fillUp(world, x, y, z, MultiblockHandler.fluidTankDimensionNS, ModBlocks.dummy_block_fluidtank);
 
 				//
-				DummyOldBase.safeBreak = true;
+				DummyBlockFluidTank.safeBreak = true;
 				world.setBlock(x + 1, y, z + 1, ModBlocks.dummy_port_fluidtank);
 				TileEntity te = world.getTileEntity(x + 1, y, z + 1);
 				if(te instanceof TileEntityDummy) {
@@ -253,7 +251,7 @@ public class MachineFluidTank extends BlockContainer implements IMultiblock
 					dummy.targetY = y;
 					dummy.targetZ = z;
 				}
-				DummyOldBase.safeBreak = false;
+				DummyBlockFluidTank.safeBreak = false;
 				//
 				
 			} else

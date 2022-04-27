@@ -10,12 +10,10 @@ import com.hbm.entity.grenade.EntityGrenadeBouncyBase;
 import com.hbm.entity.grenade.EntityGrenadeFlare;
 import com.hbm.items.ModItems;
 import com.hbm.items.special.ItemCustomLore;
-import com.hbm.lib.RefStrings;
 import com.hbm.main.MainRegistry;
 import com.hbm.util.I18nUtil;
 import com.hbm.util.Tuple.Pair;
 
-import cpw.mods.fml.common.registry.IThrowableEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -115,10 +113,4 @@ public class ItemGrenade extends ItemCustomLore
 		return ((ItemGrenade)grenade).fuse * 20;
 	}
 	
-	@Override
-	public Item setUnlocalizedName(String uloc)
-	{
-		setTextureName(RefStrings.MODID + ":" + uloc);
-		return super.setUnlocalizedName(uloc);
-	}
 }

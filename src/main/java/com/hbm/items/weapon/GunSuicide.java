@@ -4,8 +4,11 @@ import java.util.List;
 import java.util.Random;
 
 import com.google.common.collect.Multimap;
+import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.items.ModItems;
+import com.hbm.items.ItemAmmoEnums.Ammo357Magnum;
 import com.hbm.lib.ModDamageSource;
+import com.hbm.util.InventoryUtil;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -29,7 +32,7 @@ public class GunSuicide extends Item {
     @SideOnly(Side.CLIENT)
     private IIcon[] iconArray;
     private static final String __OBFID = "CL_00001777";
-    private Item ammo;
+    private ComparableStack ammo;
     Random rand = new Random();
 
     public GunSuicide()
@@ -40,7 +43,7 @@ public class GunSuicide extends Item {
         	this.setMaxDamage(500);
         }
         
-        this.ammo = ModItems.gun_revolver_ammo;
+        this.ammo = new ComparableStack(ModItems.ammo_357, 1, Ammo357Magnum.LEAD.ordinal());
     }
 
     /**
@@ -58,7 +61,7 @@ public class GunSuicide extends Item {
         boolean flag = p_77615_3_.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, p_77615_1_) > 0;
 
 
-        if (flag || p_77615_3_.inventory.hasItem(ammo))
+        if (flag || InventoryUtil.doesPlayerHaveAStack(p_77615_3_, ammo))
         {
             float f = j / 20.0F;
             f = (f * f + f * 2.0F) / 3.0F;
@@ -80,7 +83,7 @@ public class GunSuicide extends Item {
             { }
             else
             {
-               	p_77615_3_.inventory.consumeInventoryItem(ammo);
+               	InventoryUtil.doesPlayerHaveAStack(p_77615_3_, ammo, true);
             }
 
             if (!p_77615_2_.isRemote)

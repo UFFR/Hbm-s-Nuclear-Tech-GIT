@@ -3,12 +3,12 @@ package com.hbm.world.generator.room;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.crafting.handlers.MKUCraftingHandler;
 import com.hbm.items.ModItems;
-import com.hbm.tileentity.machine.TileEntitySafe;
+import com.hbm.tileentity.machine.storage.TileEntitySafe;
 import com.hbm.world.generator.CellularDungeon;
 import com.hbm.world.generator.CellularDungeonRoom;
 import com.hbm.world.generator.DungeonToolbox;
 
-import api.hbm.internet.IDataStorageUser;
+import api.hbm.internet.IDataStorageItem;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -57,14 +57,14 @@ public class TestDungeonRoom8 extends CellularDungeonRoom {
 				if(r == 0)
 				{
 					((TileEntitySafe)world.getTileEntity(x + parent.width / 2, y + 2, z + parent.width / 2)).setInventorySlotContents(7, new ItemStack(ModItems.book_of_));
-					((TileEntitySafe)world.getTileEntity(x + parent.width / 2, y + 2, z + parent.width / 2)).setInventorySlotContents(6, IDataStorageUser.getFullMedium(ModItems.storage_magnetic_fdd_tainted));
+					((TileEntitySafe)world.getTileEntity(x + parent.width / 2, y + 2, z + parent.width / 2)).setInventorySlotContents(6, IDataStorageItem.getFullMedium(new ItemStack(ModItems.storage_magnetic_special)));
 				}
 				else if (r < 4)
 					((TileEntitySafe)world.getTileEntity(x + parent.width / 2, y + 2, z + parent.width / 2)).setInventorySlotContents(7, genetateMKU(world));
 				else
 				{
 					((TileEntitySafe)world.getTileEntity(x + parent.width / 2, y + 2, z + parent.width / 2)).setInventorySlotContents(7, new ItemStack(Items.book));
-					((TileEntitySafe)world.getTileEntity(x + parent.width / 2, y + 2, z + parent.width / 2)).setInventorySlotContents(6, IDataStorageUser.getFullMedium(ModItems.storage_magnetic_fdd_tainted));
+					((TileEntitySafe)world.getTileEntity(x + parent.width / 2, y + 2, z + parent.width / 2)).setInventorySlotContents(6, IDataStorageItem.getFullMedium(new ItemStack(ModItems.storage_magnetic_special)));
 				}
 			}
 			break;
@@ -143,7 +143,7 @@ public class TestDungeonRoom8 extends CellularDungeonRoom {
 			ingred = ModItems.dust;
 		} else if(r == 3) {
 			orig = bookMercury;
-			ingred = ModItems.nugget_mercury;
+			ingred = ModItems.ingot_mercury;
 		} else if(r == 4) {
 			orig = bookFlower;
 			ingred = ModItems.morning_glory;

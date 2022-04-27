@@ -2,8 +2,6 @@ package com.hbm.saveddata;
 
 import java.util.List;
 
-import org.apache.logging.log4j.Level;
-
 import com.hbm.extprop.HbmPlayerProps;
 import com.hbm.lib.Library;
 import com.hbm.main.MainRegistry;
@@ -11,6 +9,7 @@ import com.hbm.packet.PacketDispatcher;
 import com.hbm.packet.PlayerInformPacket;
 import com.hbm.util.I18nUtil;
 
+import api.hbm.Date;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,15 +20,19 @@ public class TimeSavedData extends WorldSavedData
 {
 	private static TimeSavedData currentInstance;
 	private World worldObj;
-	/** Some 300 years into the future initially **/
-	private long year = 2300L;
+	/** Some ~50-100 years into the future initially **/
+//	private long year = 2040L;
 	/** 100 days a year **/
-	private byte day = 1;
+//	private byte day = 1;
 	/** 10 hours a day **/
-	private float time = 0.0000F;
-	private long timeInternal = 0;
+//	private float time = 0.0000F;
+//	private int timeInternal = 0;
+//	private BigInteger fullData = BigInteger.valueOf(2040 * 100 + ticksInDay);
+//	private static final BigInteger hundred = BigInteger.valueOf(100);
 	public static final String dataKey = "HBMTimeReference";
-	public static final int ticksInDay = 48000;
+//	public static final int ticksInDay = 48000;
+//	public static final BigInteger tickDayBig = BigInteger.valueOf(ticksInDay);
+	public Date dateData = new Date(2040, 0, 0);
 	// Time Doctor Freeman?
 	// Is it really that time again?
 	public TimeSavedData(String name)
@@ -40,85 +43,53 @@ public class TimeSavedData extends WorldSavedData
 	public TimeSavedData(World worldIn)
 	{
 		super(dataKey);
-		long calcDays = Math.floorDiv(worldIn.getWorldTime(), ticksInDay);
 		
-		if (calcDays > 100)
-		{
-			final long calcYear = Math.floorDiv(calcDays, 100);
-			year += calcYear;
-			calcDays /= 100;
-			calcDays -= calcYear;
-			day = (byte) (calcDays * 100);
-			timeInternal = worldIn.getWorldTime() - (calcYear * 100 + calcDays);
-			clampDate(this);
-		}
-		else
-		{
-			day = (byte) calcDays;
-			timeInternal = worldIn.getWorldTime() - (calcDays * ticksInDay);
-		}
-		time = (float) Library.convertScale(timeInternal, 0, ticksInDay, 0, 10.0000F);
-		year += worldIn.rand.nextInt(50);
+		dateData = new Date(worldIn.getWorldTime()).add(new Date(2040 + worldIn.rand.nextInt(50), worldIn.rand.nextInt(99), 0));
+		
 		worldObj = worldIn;
 		markDirty();
-		MainRegistry.logger.log(Level.INFO, "[TimeSavedData] New instance created");
+		MainRegistry.logger.info("[TimeSavedData] New instance created");
 	}
-	
-	public long getYear()
+	public enum TimeDurationType
 	{
-		return year;
+		/** Counted in days **/
+		SHORT,
+		/** Counted in years **/
+		MEDIUM,
+		/** Counted in hundreds of years **/
+		LONG;
 	}
-	public byte getDay()
-	{
-		return day;
-	}
-	public float getTime()
-	{
-		return time;
-	}
-	
+
 	public static void resetTime(World worldIn)
 	{
 		currentInstance = new TimeSavedData(worldIn);
-		MainRegistry.logger.log(Level.INFO, "[TimeSavedData] Time data was reset");
+		MainRegistry.logger.info("[TimeSavedData] Time data was reset");
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static void updateNormal(World worldIn)
 	{
+//		if (!worldIn.getGameRules().getGameRuleBooleanValue("doDaylightCycle"))
+//			return;
 		TimeSavedData date = getData(worldIn);
-		if (date.timeInternal >= 24000)
+//		System.out.println(Arrays.toString(date.getDateFull()));
+		date.dateData.increment();
+		
+		for (EntityPlayer p : (List<EntityPlayer>) worldIn.playerEntities)
 		{
-			date.timeInternal = 0;
-			if (date.day >= 100)
+			if (HbmPlayerProps.getBirthday(p) == date.dateData.getDay())
 			{
-				date.day = 1;
-				date.year++;
-			}
-			else
-			{
-				date.day++;
-				for (EntityPlayer p : (List<EntityPlayer>) date.worldObj.playerEntities)
-				{
-					if (HbmPlayerProps.getBirthday(p) == date.day)
-					{
-						HbmPlayerProps.setAge(p, 1, true);
-//						p.addChatMessage(new ChatComponentText(I18nUtil.resolveKey("desc.player.birthday")));
-						PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(I18nUtil.resolveKey("desc.player.birthday")), (EntityPlayerMP) p);
-						String[] msg = HbmPlayerProps.hasAscended(p) ? I18nUtil.resolveKeyArray("desc.player.birthdayAlt") : I18nUtil.resolveKeyArray("desc.player.birhdayMsg");
-//						p.addChatMessage(new ChatComponentText(msg[rand.nextInt(msg.length)]));
-						PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(msg[date.worldObj.rand.nextInt(msg.length)]), (EntityPlayerMP) p);
-					}
-				}
+				HbmPlayerProps.setAge(p, 1, true);
+				PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(I18nUtil.resolveKey("desc.player.birthday")), (EntityPlayerMP) p);
+				String[] msg = HbmPlayerProps.hasAscended(p) ? I18nUtil.resolveKeyArray("desc.player.birthdayAlt") : I18nUtil.resolveKeyArray("desc.player.birhdayMsg");
+				PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(Library.randomFromArray(msg)), (EntityPlayerMP) p);
 			}
 		}
-		else
-			date.timeInternal++;
 		
-		date.time = (float) Library.convertScale(date.timeInternal, 0L, 24000L, 0F, 10.0000F);
 		date.markDirty();
 	}
 	
-	public static void setDate(World worldIn, float time, int day, long year, boolean increment)
+	public static void setDate(World worldIn, int time, int day, long year, boolean increment)
 	{
 		TimeSavedData date = getData(worldIn);
 		if (increment)
@@ -127,38 +98,16 @@ public class TimeSavedData extends WorldSavedData
 			date.setDate(time, day, year);
 	}
 	
-	public void setDate(float time, int day, long year)
+	public void setDate(int time, int day, long year)
 	{
-		this.time = time;
-		this.day = (byte) day;
-		this.year = year;
-		clampDate(this);
+		dateData = new Date(year, day, time);
 		markDirty();
 	}
 	
-	public void incrementDate(float time, int day, long year)
+	public void incrementDate(int timeIn, int dayIn, long yearIn)
 	{
-		this.time += time;
-		this.day += day;
-		this.year += year;
-		clampDate(this);
+		dateData.add(new Date(yearIn, dayIn, timeIn));
 		markDirty();
-	}
-	
-	private static void clampDate(TimeSavedData data)
-	{
-		if (data.timeInternal > ticksInDay)
-			data.timeInternal = 0;
-		if (data.time > 10)
-		{
-			data.time = 0;
-			data.day++;
-		}
-		if (data.day > 100)
-		{
-			data.day = 1;
-			data.year++;
-		}
 	}
 	
 	public static TimeSavedData getData(World worldIn)
@@ -179,20 +128,30 @@ public class TimeSavedData extends WorldSavedData
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
 	{
-		year = nbt.getLong("year");
-		day = nbt.getByte("day");
-		time = nbt.getFloat("time");
-		timeInternal = nbt.getLong("timeInternal");
-//		MainRegistry.logger.info("[TimeSavedData] Time datra has been read from NBT");
+		dateData = new Date(nbt.getByteArray("savedDate"));
+//		MainRegistry.logger.info("[TimeSavedData] Time data has been read from NBT");
 	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound nbt)
 	{
-		nbt.setLong("year", year);
-		nbt.setByte("day", day);
-		nbt.setFloat("time", time);
-		nbt.setLong("timeInternal", timeInternal);
+		nbt.setByteArray("savedDate", dateData.getData().toByteArray());
 //		MainRegistry.logger.info("[TimeSavedData] Time data has been written to NBT");
+	}
+	
+	public static Number[] constructUncompressed(long year, int day, int time)
+	{
+		Number[] date = new Number[4];
+		date[0] = year;
+		date[1] = (byte) day;
+		date[2] = Library.convertScale(time, 0, 48000, 0, 10);
+		date[3] = time;
+		return date;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return dateData.toString();
 	}
 }

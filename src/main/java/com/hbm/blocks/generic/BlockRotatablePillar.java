@@ -1,6 +1,5 @@
 package com.hbm.blocks.generic;
 
-import com.hbm.interfaces.IBlockRarity;
 import java.util.List;
 
 import com.hbm.blocks.ITooltipProvider;
@@ -16,9 +15,7 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
-public class BlockRotatablePillar extends BlockRotatedPillar implements IBlockRarity, ITooltipProvider
-{
-
+public class BlockRotatablePillar extends BlockRotatedPillar implements ITooltipProvider {
 
 	@SideOnly(Side.CLIENT)
 	protected IIcon iconSide;
@@ -30,7 +27,6 @@ public class BlockRotatablePillar extends BlockRotatedPillar implements IBlockRa
 		textureTop = top;
 	}
 
-	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister reg) {
 

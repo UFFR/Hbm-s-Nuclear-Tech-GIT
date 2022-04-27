@@ -71,7 +71,7 @@ public class TileEntityLandmine extends TileEntity {
 		isPrimed = nbt.getBoolean("primed");
 	}
 
-	public void writeToNBT(NBTTagCompound nbt) {
+	public void storeInNBT(NBTTagCompound nbt) {
 		super.writeToNBT(nbt);
 		
 		nbt.setBoolean("primed", isPrimed);

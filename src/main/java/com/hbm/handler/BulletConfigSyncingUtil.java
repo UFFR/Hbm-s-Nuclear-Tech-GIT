@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 
 import com.hbm.handler.guncfg.*;
 import com.hbm.items.ModItems;
+import com.hbm.items.ItemAmmoEnums.*;
 
 public class BulletConfigSyncingUtil {
 
@@ -59,6 +60,7 @@ public class BulletConfigSyncingUtil {
 	public static int GRENADE_FINNED = i++;
 	public static int GRENADE_NUCLEAR = i++;
 	public static int GRENADE_PHOSPHORUS = i++;
+	public static int GRENADE_SMOKE = i++;
 	public static int GRENADE_TRACER = i++;
 	public static int GRENADE_KAMPF = i++;
 	public static int GRENADE_LUNATIC = i++;
@@ -133,6 +135,7 @@ public class BulletConfigSyncingUtil {
 	public static int G4_CLAW = i++;
 	public static int G4_VAMPIRE = i++;
 	public static int G4_VOID = i++;
+	public static int G4_TITAN = i++;
 	public static int G4_SLEEK = i++;
 
 	public static int SPECIAL_OSIPR = i++;
@@ -196,12 +199,19 @@ public class BulletConfigSyncingUtil {
 	public static int ROCKET_CHAINSAW_LASER = i++;
 	public static int ROCKET_TOXIC_LASER = i++;
 	public static int ROCKET_PHOSPHORUS_LASER = i++;
+	
+	public static int ROCKET_STINGER = i++;
+	public static int ROCKET_STINGER_HE = i++;
+	public static int ROCKET_STINGER_INCENDIARY = i++;
+	public static int ROCKET_STINGER_NUCLEAR = i++;
+	public static int ROCKET_STINGER_BONES = i++;
 
 	public static int SHELL_NORMAL = i++;
 	public static int SHELL_EXPLOSIVE = i++;
 	public static int SHELL_AP = i++;
 	public static int SHELL_DU = i++;
 	public static int SHELL_W9 = i++;
+	public static int SHELL_W9_FULL = i++;
 	public static int DGK_NORMAL = i++;
 	public static int FLA_NORMAL = i++;
 
@@ -226,9 +236,6 @@ public class BulletConfigSyncingUtil {
 	public static int NUKE_AMAT = i++;
 
 	public static int TWR_RAY = i++;
-	public static int TWR_RAY_LARGE = i++;
-	public static int TWR_RAY_SUPERHEATED = i++;
-	public static int TWR_RAY_COUNTER_RESONANT = i++;
 	public static int HLR_NORMAL = i++;
 	public static int HLR_ALT = i++;
 	
@@ -264,14 +271,14 @@ public class BulletConfigSyncingUtil {
 		configSet.put(TEST_CONFIG, BulletConfigFactory.getTestConfig());
 
 		configSet.put(IRON_REVOLVER, Gun357MagnumFactory.getRevIronConfig());
-		configSet.put(STEEL_REVOLVER, Gun357MagnumFactory.getRevSteelConfig());
-		configSet.put(LEAD_REVOLVER, Gun357MagnumFactory.getRevLeadConfig());
+		configSet.put(STEEL_REVOLVER, Gun357MagnumFactory.getRevLeadConfig());
+		configSet.put(LEAD_REVOLVER, Gun357MagnumFactory.getRevNuclearConfig());
 		configSet.put(GOLD_REVOLVER, Gun357MagnumFactory.getRevGoldConfig());
 		configSet.put(CURSED_REVOLVER, Gun357MagnumFactory.getRevCursedConfig());
 		configSet.put(SCHRABIDIUM_REVOLVER, Gun357MagnumFactory.getRevSchrabidiumConfig());
-		configSet.put(NIGHT_REVOLVER, Gun357MagnumFactory.getRevNightmareConfig());
+		configSet.put(NIGHT_REVOLVER, Gun357MagnumFactory.getRevNightmare1Config());
 		configSet.put(NIGHT2_REVOLVER, Gun357MagnumFactory.getRevNightmare2Config());
-		configSet.put(SATURNITE_REVOLVER, Gun357MagnumFactory.getRevSteelConfig().setToFire(3));
+		configSet.put(SATURNITE_REVOLVER, Gun357MagnumFactory.getRevLeadConfig().setToFire(3));
 		configSet.put(DESH_REVOLVER, Gun357MagnumFactory.getRevDeshConfig());
 
 		configSet.put(G20_NORMAL, Gun20GaugeFactory.get20GaugeConfig());
@@ -298,11 +305,18 @@ public class BulletConfigSyncingUtil {
 		configSet.put(ROCKET_TOXIC, GunRocketFactory.getRocketChlorineConfig());
 		configSet.put(ROCKET_CANISTER, GunRocketFactory.getRocketCanisterConfig());
 		configSet.put(ROCKET_ERROR, GunRocketFactory.getRocketErrorConfig());
+		
+		configSet.put(ROCKET_STINGER, GunRocketHomingFactory.getRocketStingerConfig());
+		configSet.put(ROCKET_STINGER_HE, GunRocketHomingFactory.getRocketStingerHEConfig());
+		configSet.put(ROCKET_STINGER_INCENDIARY, GunRocketHomingFactory.getRocketStingerIncendiaryConfig());
+		configSet.put(ROCKET_STINGER_NUCLEAR, GunRocketHomingFactory.getRocketStingerNuclearConfig());
+		configSet.put(ROCKET_STINGER_BONES, GunRocketHomingFactory.getRocketStingerBonesConfig());
 
 		configSet.put(GRENADE_NORMAL, GunGrenadeFactory.getGrenadeConfig());
 		configSet.put(GRENADE_HE, GunGrenadeFactory.getGrenadeHEConfig());
 		configSet.put(GRENADE_INCENDIARY, GunGrenadeFactory.getGrenadeIncendirayConfig());
 		configSet.put(GRENADE_PHOSPHORUS, GunGrenadeFactory.getGrenadePhosphorusConfig());
+		configSet.put(GRENADE_SMOKE, GunGrenadeFactory.getGrenadeSmokeConfig());
 		configSet.put(GRENADE_CHEMICAL, GunGrenadeFactory.getGrenadeChlorineConfig());
 		configSet.put(GRENADE_SLEEK, GunGrenadeFactory.getGrenadeSleekConfig());
 		configSet.put(GRENADE_CONCUSSION, GunGrenadeFactory.getGrenadeConcussionConfig());
@@ -339,7 +353,7 @@ public class BulletConfigSyncingUtil {
 		configSet.put(P9_DU, Gun9mmFactory.get9mmDUConfig());
 		configSet.put(P9_ROCKET, Gun9mmFactory.get9mmRocketConfig());
 		
-		configSet.put(ACP_45, Gun45ACPFactory.get45ACPConfig());
+		configSet.put(ACP_45, Gun45ACPFactory.get45AutoConfig());
 
 		configSet.put(BMG50_NORMAL, Gun50BMGFactory.get50BMGConfig());
 		configSet.put(BMG50_INCENDIARY, Gun50BMGFactory.get50BMGFireConfig());
@@ -382,6 +396,7 @@ public class BulletConfigSyncingUtil {
 		configSet.put(G4_CLAW, Gun4GaugeFactory.get4GaugeClawConfig());
 		configSet.put(G4_VAMPIRE, Gun4GaugeFactory.get4GaugeVampireConfig());
 		configSet.put(G4_VOID, Gun4GaugeFactory.get4GaugeVoidConfig());
+		configSet.put(G4_TITAN, Gun4GaugeFactory.get4GaugeQuackConfig());
 		configSet.put(G4_SLEEK, Gun4GaugeFactory.get4GaugeSleekConfig());
 
 		configSet.put(SPECIAL_OSIPR, GunOSIPRFactory.getPulseConfig());
@@ -415,7 +430,7 @@ public class BulletConfigSyncingUtil {
 		configSet.put(R556_FLECHETTE_SLEEK, Gun556mmFactory.get556FlechetteSleekConfig());
 		configSet.put(R556_K, Gun556mmFactory.get556KConfig());
 		
-		configSet.put(W308, Gun762mmConfig.get762NATOConfig());
+		configSet.put(W308, Gun762mmFactory.get762NATOConfig());
 
 		configSet.put(B75_NORMAL, Gun75BoltFactory.get75BoltConfig());
 		configSet.put(B75_INCENDIARY, Gun75BoltFactory.get75BoltIncConfig());
@@ -451,6 +466,7 @@ public class BulletConfigSyncingUtil {
 		configSet.put(SHELL_AP, GunCannonFactory.getShellAPConfig());
 		configSet.put(SHELL_DU, GunCannonFactory.getShellDUConfig());
 		configSet.put(SHELL_W9, GunCannonFactory.getShellW9Config());
+		configSet.put(SHELL_W9_FULL, GunCannonFactory.getShellW9FullConfig());
 		configSet.put(DGK_NORMAL, GunDGKFactory.getDGKConfig());
 		configSet.put(FLA_NORMAL, GunEnergyFactory.getTurretConfig());
 
@@ -475,9 +491,6 @@ public class BulletConfigSyncingUtil {
 		configSet.put(NUKE_AMAT, GunFatmanFactory.getBalefireConfig());
 		
 		configSet.put(TWR_RAY, GunEnergyFactory.getSingConfig());
-		configSet.put(TWR_RAY_LARGE, GunEnergyFactory.getRegSingConfig());
-		configSet.put(TWR_RAY_SUPERHEATED, GunEnergyFactory.getSuperheatedSingConfig());
-		configSet.put(TWR_RAY_COUNTER_RESONANT, GunEnergyFactory.getCounterResonantSingConfig());
 		configSet.put(HLR_NORMAL, GunEnergyFactory.getHLRPrecisionConfig());
 		configSet.put(HLR_ALT, GunEnergyFactory.getHLRScatterConfig());
 
@@ -485,16 +498,16 @@ public class BulletConfigSyncingUtil {
 
 		configSet.put(TURBINE, GunEnergyFactory.getTurbineConfig());
 
-		configSet.put(CHL_LR22, Gun22LRFactory.get22LRConfig().setToHoming(ModItems.ammo_22lr_chlorophyte));
-		configSet.put(CHL_LR22_FIRE, Gun22LRFactory.get22LRConfig().setToFire(3).setToHoming(ModItems.ammo_22lr_chlorophyte));
-		configSet.put(CHL_M44, Gun44MagnumFactory.getNoPipConfig().setToHoming(ModItems.ammo_44_chlorophyte));
-		configSet.put(CHL_P9, Gun9mmFactory.get9mmConfig().setToHoming(ModItems.ammo_9mm_chlorophyte));
-		configSet.put(CHL_BMG50, Gun50BMGFactory.get50BMGConfig().setToHoming(ModItems.ammo_50bmg_chlorophyte));
-		configSet.put(CHL_R5, Gun5mmFactory.get5mmConfig().setToHoming(ModItems.ammo_5mm_chlorophyte));
-		configSet.put(CHL_R5_BOLT, Gun5mmFactory.get5mmConfig().setToBolt(BulletConfiguration.BOLT_LACUNAE).setToHoming(ModItems.ammo_5mm_chlorophyte));
-		configSet.put(CHL_AE50, Gun50AEFactory.get50AEConfig().setToHoming(ModItems.ammo_50ae_chlorophyte));
-		configSet.put(CHL_R556, Gun556mmFactory.get556Config().setToHoming(ModItems.ammo_556_chlorophyte));
-		configSet.put(CHL_R556_FLECHETTE, Gun556mmFactory.get556FlechetteConfig().setToHoming(ModItems.ammo_556_flechette_chlorophyte));
+		configSet.put(CHL_LR22, Gun22LRFactory.get22LRConfig().setToHoming(ModItems.ammo_22lr.stackFromEnum(Ammo22LR.CHLOROPHYTE)));
+		configSet.put(CHL_LR22_FIRE, Gun22LRFactory.get22LRConfig().setToFire(3).setToHoming(ModItems.ammo_22lr.stackFromEnum(Ammo22LR.CHLOROPHYTE)));
+		configSet.put(CHL_M44, Gun44MagnumFactory.getNoPipConfig().setToHoming(ModItems.ammo_44.stackFromEnum(Ammo44Magnum.CHLOROPHYTE)));
+		configSet.put(CHL_P9, Gun9mmFactory.get9mmConfig().setToHoming(ModItems.ammo_9mm.stackFromEnum(Ammo9mm.CHLOROPHYTE)));
+		configSet.put(CHL_BMG50, Gun50BMGFactory.get50BMGConfig().setToHoming(ModItems.ammo_50bmg.stackFromEnum(Ammo50BMG.CHLOROPHYTE)));
+		configSet.put(CHL_R5, Gun5mmFactory.get5mmConfig().setToHoming(ModItems.ammo_5mm.stackFromEnum(Ammo5mm.CHLOROPHYTE)));
+		configSet.put(CHL_R5_BOLT, Gun5mmFactory.get5mmConfig().setToBolt(BulletConfiguration.BOLT_LACUNAE).setToHoming(ModItems.ammo_5mm.stackFromEnum(Ammo5mm.CHLOROPHYTE)));
+		configSet.put(CHL_AE50, Gun50AEFactory.get50AEConfig().setToHoming(ModItems.ammo_50ae.stackFromEnum(Ammo50AE.CHLOROPHYTE)));
+		configSet.put(CHL_R556, Gun556mmFactory.get556Config().setToHoming(ModItems.ammo_556.stackFromEnum(Ammo556mm.CHLOROPHYTE)));
+		configSet.put(CHL_R556_FLECHETTE, Gun556mmFactory.get556FlechetteConfig().setToHoming(ModItems.ammo_556.stackFromEnum(Ammo556mm.FLECHETTE_CHLOROPHYTE)));
 
 		configSet.put(MASKMAN_BULLET, GunNPCFactory.getMaskmanBullet());
 		configSet.put(MASKMAN_ORB, GunNPCFactory.getMaskmanOrb());

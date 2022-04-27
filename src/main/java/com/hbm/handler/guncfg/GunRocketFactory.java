@@ -10,6 +10,7 @@ import com.hbm.handler.GunConfiguration;
 import com.hbm.interfaces.IBulletImpactBehavior;
 import com.hbm.interfaces.IBulletRicochetBehavior;
 import com.hbm.interfaces.IBulletUpdateBehavior;
+import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.items.ModItems;
 import com.hbm.lib.HbmCollection.EnumGunManufacturer;
 import com.hbm.render.anim.BusAnimation;
@@ -169,12 +170,12 @@ public class GunRocketFactory {
 		
 		return config;
 	}
-	
+	static byte i = 0;
 	public static BulletConfiguration getRocketConfig() {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardRocketConfig();
 		
-		bullet.ammo = ModItems.ammo_rocket;
+		bullet.ammo = new ComparableStack(ModItems.ammo_rocket, 1, i++);
 		bullet.dmgMin = 10;
 		bullet.dmgMax = 15;
 		bullet.explosive = 4F;
@@ -187,7 +188,7 @@ public class GunRocketFactory {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardRocketConfig();
 		
-		bullet.ammo = ModItems.ammo_rocket_he;
+		bullet.ammo = new ComparableStack(ModItems.ammo_rocket, 1, i++);
 		bullet.dmgMin = 10;
 		bullet.dmgMax = 15;
 		bullet.wear = 15;
@@ -201,7 +202,7 @@ public class GunRocketFactory {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardRocketConfig();
 		
-		bullet.ammo = ModItems.ammo_rocket_incendiary;
+		bullet.ammo = new ComparableStack(ModItems.ammo_rocket, 1, i++);
 		bullet.dmgMin = 10;
 		bullet.dmgMax = 15;
 		bullet.wear = 15;
@@ -216,7 +217,7 @@ public class GunRocketFactory {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardRocketConfig();
 		
-		bullet.ammo = ModItems.ammo_rocket_emp;
+		bullet.ammo = new ComparableStack(ModItems.ammo_rocket, 1, i++);
 		bullet.dmgMin = 10;
 		bullet.dmgMax = 15;
 		bullet.explosive = 2.5F;
@@ -230,7 +231,7 @@ public class GunRocketFactory {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardRocketConfig();
 		
-		bullet.ammo = ModItems.ammo_rocket_sleek;
+		bullet.ammo = new ComparableStack(ModItems.ammo_rocket, 1, i++);
 		bullet.dmgMin = 10;
 		bullet.dmgMax = 15;
 		bullet.explosive = 10F;
@@ -245,7 +246,7 @@ public class GunRocketFactory {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardRocketConfig();
 		
-		bullet.ammo = ModItems.ammo_rocket_shrapnel;
+		bullet.ammo = new ComparableStack(ModItems.ammo_rocket, 1, i++);
 		bullet.dmgMin = 10;
 		bullet.dmgMax = 15;
 		bullet.explosive = 4F;
@@ -259,7 +260,7 @@ public class GunRocketFactory {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardRocketConfig();
 		
-		bullet.ammo = ModItems.ammo_rocket_glare;
+		bullet.ammo = new ComparableStack(ModItems.ammo_rocket, 1, i++);
 		bullet.velocity = 5.0F;
 		bullet.dmgMin = 10;
 		bullet.dmgMax = 15;
@@ -275,7 +276,7 @@ public class GunRocketFactory {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardRocketConfig();
 		
-		bullet.ammo = ModItems.ammo_rocket_nuclear;
+		bullet.ammo = new ComparableStack(ModItems.ammo_rocket, 1, i++);
 		bullet.velocity = 1.5F;
 		bullet.dmgMin = 10;
 		bullet.dmgMax = 15;
@@ -299,7 +300,7 @@ public class GunRocketFactory {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardRocketConfig();
 		
-		bullet.ammo = ModItems.ammo_rocket_toxic;
+		bullet.ammo = new ComparableStack(ModItems.ammo_rocket, 1, i++);
 		bullet.velocity = 1.5F;
 		bullet.dmgMin = 10;
 		bullet.dmgMax = 15;
@@ -315,7 +316,7 @@ public class GunRocketFactory {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardRocketConfig();
 		
-		bullet.ammo = ModItems.ammo_rocket_rpc;
+		bullet.ammo = new ComparableStack(ModItems.ammo_rocket, 1, i++);
 		bullet.velocity = 3.0F;
 		bullet.dmgMin = 20;
 		bullet.dmgMax = 25;
@@ -330,6 +331,7 @@ public class GunRocketFactory {
 		
 		bullet.bRicochet = new IBulletRicochetBehavior() {
 			
+			@Override
 			public void behaveBlockRicochet(EntityBulletBase bullet, int bX, int bY, int bZ) {
 				World worldObj = bullet.worldObj;
 				if(!worldObj.isRemote && 
@@ -348,7 +350,7 @@ public class GunRocketFactory {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardRocketConfig();
 		
-		bullet.ammo = ModItems.ammo_rocket_phosphorus;
+		bullet.ammo = new ComparableStack(ModItems.ammo_rocket, 1, i++);
 		bullet.dmgMin = 10;
 		bullet.dmgMax = 15;
 		bullet.wear = 15;
@@ -365,7 +367,7 @@ public class GunRocketFactory {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardRocketConfig();
 		
-		bullet.ammo = ModItems.ammo_rocket_canister;
+		bullet.ammo = new ComparableStack(ModItems.ammo_rocket, 1, i++);
 		bullet.dmgMin = 10;
 		bullet.dmgMax = 15;
 		bullet.explosive = 2F;
@@ -400,7 +402,7 @@ public class GunRocketFactory {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardRocketConfig();
 		
-		bullet.ammo = ModItems.ammo_rocket_digamma;
+		bullet.ammo = new ComparableStack(ModItems.ammo_rocket, 1, i++);
 		bullet.velocity = 0.5F;
 		bullet.dmgMin = 10;
 		bullet.dmgMax = 15;

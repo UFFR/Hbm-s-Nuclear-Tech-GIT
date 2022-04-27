@@ -3,34 +3,39 @@ package com.hbm.lib;
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnegative;
 
-import com.google.common.collect.ImmutableSet;
+import org.lwjgl.opengl.GL11;
+
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.calc.EasyLocation;
 import com.hbm.calc.UnionOfTileEntitiesAndBooleansForFluids;
 import com.hbm.entity.mob.EntityHunterChopper;
 import com.hbm.entity.projectile.EntityChopperMine;
-import com.hbm.handler.FluidTypeHandler.FluidTrait;
-import com.hbm.handler.FluidTypeHandler.FluidType;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidDuct;
 import com.hbm.interfaces.IFluidSource;
 import com.hbm.interfaces.Spaghetti;
-import com.hbm.interfaces.Untested;
-import com.hbm.interfaces.ICustomWarhead.SaltedFuel.TimeDurationType;
+import com.hbm.inventory.fluid.FluidType;
 import com.hbm.items.ModItems;
-import com.hbm.items.machine.ItemStorageMedium;
+import com.hbm.saveddata.TimeSavedData.TimeDurationType;
+import com.hbm.tileentity.TileEntityProxyBase;
 import com.hbm.tileentity.TileEntityProxyInventory;
-import com.hbm.tileentity.conductor.TileEntityFluidDuct;
+import com.hbm.tileentity.conductor.TileEntityFluidDuctSimple;
 import com.hbm.tileentity.conductor.TileEntityGasDuct;
 import com.hbm.tileentity.conductor.TileEntityGasDuctSolid;
 import com.hbm.tileentity.conductor.TileEntityOilDuct;
@@ -39,22 +44,25 @@ import com.hbm.tileentity.machine.TileEntityDummy;
 import com.hbm.util.ContaminationUtil;
 import com.hbm.util.ContaminationUtil.ContaminationType;
 import com.hbm.util.ContaminationUtil.HazardType;
-import com.hbm.util.I18nUtil;
 
 import api.hbm.energy.IBatteryItem;
 import api.hbm.energy.IEnergyConnector;
 import api.hbm.energy.IEnergyConnectorBlock;
-import api.hbm.internet.IDataStorageUser;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.*;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
@@ -64,7 +72,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 @Spaghetti("this whole class")
 public class Library
 {
-	
+	private static final int[] primes = {3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283,	293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607, 613, 617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719, 727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827, 829, 839, 853, 857, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997, 1009, 1013, 1019, 1021, 1031, 1033, 1039, 1049, 1051, 1061, 1063, 1069, 1087, 1091, 1093, 1097, 1103, 1109, 1117, 1123, 1129, 1151, 1153, 1163, 1171, 1181, 1187, 1193, 1201, 1213, 1217, 1223};
 	final static Random rand = new Random();
 
 	//this is a list of UUIDs used for various things, primarily for accessories.
@@ -81,7 +89,6 @@ public class Library
 	public static final String Hoboy03new = "d7f29d9c-5103-4f6f-88e1-2632ff95973f";
 	public static final String Dragon59MC = "dc23a304-0f84-4e2d-b47d-84c8d3bfbcdb";
 	public static final String Steelcourage = "ac49720b-4a9a-4459-a26f-bee92160287a";
-	public static final String GOD___TM = "57146e3f-16b5-4e9f-b0b8-139bec2ca2cb";
 	public static final String ZippySqrl = "03c20435-a229-489a-a1a1-671b803f7017";
 	public static final String Schrabby = "3a4a1944-5154-4e67-b80a-b6561e8630b7";
 	public static final String SweatySwiggs = "5544aa30-b305-4362-b2c1-67349bb499d5";
@@ -130,7 +137,7 @@ public class Library
 		return (long) life;
 	}
 	
-	public static void radiate(World worldIn, EasyLocation loc, float rads, double range, ContaminationType type)
+	public static void radiate(World worldIn, EasyLocation loc, float rads, double range, HazardType hazType, ContaminationType contType)
 	{
 		List<EntityLivingBase> entities = worldIn.getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(loc.posX + 0.5, loc.posY + 0.5, loc.posZ + 0.5, loc.posX + 0.5, loc.posY + 0.5, loc.posZ + 0.5).expand(range, range, range));
 //		System.out.println(entities.isEmpty());
@@ -160,36 +167,114 @@ public class Library
 			eRads /= res;
 			eRads /= (float) (len * len);
 			
-			ContaminationUtil.contaminate(e, HazardType.RADIATION, type, eRads);
+			ContaminationUtil.contaminate(e, hazType, contType, eRads);
 		}
 	}
 	
-	public static void addFluidInfo(FluidType fluid, List<String> tooltip)
+	public static void easyPrintHook(ScaledResolution resolution, String title, String...text)
 	{
-		final ImmutableSet<FluidTrait> fHazards = fluid.getTraitSet();
-		final String tColor = fluid.temperature > 0 ? EnumChatFormatting.RED.toString() : EnumChatFormatting.BLUE.toString();
+		easyPrintHook(resolution, title, Arrays.asList(text));
+	}
+	
+	public static void easyPrintHook(ScaledResolution resolution, String title, List<String> text)
+	{
+		Minecraft mc = Minecraft.getMinecraft();
 		
-		if (fluid.temperature != 0 || fHazards.contains(FluidTrait.HOT) || fHazards.contains(FluidTrait.CRYO))
-			tooltip.add(tColor + NumberFormat.getInstance().format(fluid.temperature) + "°C");
-		if (fluid.isAntimatter())
-			tooltip.add(I18nUtil.resolveKey(HbmCollection.antimatter));
-		if (fHazards.contains(FluidTrait.CORROSIVE_STRONG) && fHazards.contains(FluidTrait.CORROSIVE))
-			tooltip.add(I18nUtil.resolveKey(HbmCollection.corrosiveStrong));
-		else if (fHazards.contains(FluidTrait.CORROSIVE_STRONG))
-			tooltip.add(I18nUtil.resolveKey(HbmCollection.corrosiveStrong));
-		else if (!fHazards.contains(FluidTrait.CORROSIVE_STRONG) && fHazards.contains(FluidTrait.CORROSIVE))
-			tooltip.add(I18nUtil.resolveKey(HbmCollection.corrosive));
-		if (fHazards.contains(FluidTrait.BIOHAZARD))
-			tooltip.add(I18nUtil.resolveKey(HbmCollection.biohazard));
-		if (fHazards.contains(FluidTrait.CHEMICAL))
-			tooltip.add(I18nUtil.resolveKey(HbmCollection.chemical));
-		if (fHazards.contains(FluidTrait.RADIOACTIVE))
-			tooltip.add(I18nUtil.resolveKey(HbmCollection.radioactiveFluid));
-		if (fHazards.contains(FluidTrait.NO_CONTAINER))
-			tooltip.add(EnumChatFormatting.RED + "Cannot be stored in any universal tank");
-		if (fHazards.contains(FluidTrait.LEAD_CONTAINER))
-			tooltip.add(EnumChatFormatting.YELLOW + "Requires hazardous material tank to hold");
+		GL11.glPushMatrix();
+		
+		int pX = resolution.getScaledWidth() / 2 + 8;
+		int pZ = resolution.getScaledHeight() / 2;
+		
+		mc.fontRenderer.drawString(title, pX + 1, pZ - 19, 0x006000);
+		mc.fontRenderer.drawString(title, pX, pZ - 20, 0x00FF00);
+		
+		for (String s : text)
+		{
+			mc.fontRenderer.drawString(s, pX, pZ, 0xffffff);
+			pZ += 10;
+		}
+		
+		GL11.glDisable(GL11.GL_BLEND);
 
+		GL11.glPopMatrix();
+		Minecraft.getMinecraft().renderEngine.bindTexture(Gui.icons);
+	}
+	
+	public static byte[] boolToByte(boolean[] bools)
+	{
+		byte[] bytes = new byte[bools.length];
+		for (int i = 0; i < bools.length; i++)
+			bytes[i] = (byte) (bools[i] ? 1 : 0);
+		return bytes;
+	}
+	
+	public static boolean[] byteToBool(byte[] bytes, boolean defaultVal)
+	{
+		boolean[] bools = new boolean[bytes.length];
+		for (int i = 0; i < bytes.length; i++)
+			bools[i] = bytes[i] == 1 ? true : defaultVal;
+		return bools;
+	}
+	
+	public static byte[] compressStringCollection(Collection<String> strings)
+	{
+		ByteBuf buf = Unpooled.buffer();
+		buf.writeInt(strings.size());
+		
+		for (String s : strings)
+		{
+			buf.writeInt(s.length());
+			buf.writeBytes(s.getBytes());
+		}
+		
+		return buf.array();
+	}
+	
+	public static Collection<String> decompressStringBytes(byte[] bytes)
+	{
+		ByteBuf buf = Unpooled.copiedBuffer(bytes);
+		final int size = buf.readInt();
+		ArrayList<String> strings = new ArrayList<String>(size);
+		
+		for (int i = 0; i < size; i++)
+		{
+			byte[] stringBytes = new byte[buf.readInt()];
+			buf.writeBytes(stringBytes);
+			strings.add(new String(stringBytes));
+		}
+		
+		return strings;
+	}
+	
+	@CheckForNull
+	public static NBTBase autoNBT(Object obj)
+	{
+		if (obj instanceof Long)
+			return new NBTTagLong((long) obj);
+		else if (obj instanceof Integer)
+			return new NBTTagInt((int) obj);
+		else if (obj instanceof Short)
+			return new NBTTagShort((short) obj);
+		else if (obj instanceof Byte)
+			return new NBTTagByte((byte) obj);
+		else if (obj instanceof Boolean)
+			return new NBTTagByte((byte) (((boolean) obj) ? 1 : 0));
+		else if (obj instanceof Double)
+			return new NBTTagDouble((double) obj);
+		else if (obj instanceof Float)
+			return new NBTTagFloat((float) obj);
+		else if (obj instanceof int[])
+			return new NBTTagIntArray((int[]) obj);
+		else if (obj instanceof byte[])
+			return new NBTTagByteArray((byte[]) obj);
+		else if (obj instanceof String)
+			return new NBTTagString((String) obj);
+		else if (obj instanceof NBTTagList)
+			return (NBTTagList) obj;
+		else if (obj instanceof NBTTagCompound)
+			return (NBTTagCompound) obj;
+		else
+			return null;
 	}
 	
 	/**
@@ -223,7 +308,7 @@ public class Library
 	{
 		return System.currentTimeMillis() % 1000 < 500;
 	}
-	
+	@Deprecated
 	public static String[] ticksToDate(long ticks)
 	{
 		final String[] dateOut = new String[3];
@@ -276,6 +361,21 @@ public class Library
 		T[] out = Arrays.copyOf(array1, array1.length + array2.length);
 		System.arraycopy(array2, 0, out, array1.length, array2.length);
 		return out;
+	}
+	
+	public static <T> T randomFromArray(T[] array)
+	{
+		return array[rand.nextInt(array.length)];
+	}
+	
+	public static <T> T randomFromCollection(Collection<T> collection)
+	{
+		return Iterables.get(collection, rand.nextInt(collection.size()));
+	}
+	
+	public static int randomPrime()
+	{
+		return primes[rand.nextInt(primes.length)];
 	}
 	
 	//the old list that allowed superuser mode for the ZOMG
@@ -332,7 +432,6 @@ public class Library
 			return true;
 		if((tileentity != null && (tileentity instanceof IFluidAcceptor || 
 				tileentity instanceof IFluidSource)) || 
-				world.getBlock(x, y, z) == ModBlocks.dummy_port_well ||
 				world.getBlock(x, y, z) == ModBlocks.dummy_port_flare ||
 				world.getBlock(x, y, z) == ModBlocks.dummy_port_chemplant ||
 				world.getBlock(x, y, z) == ModBlocks.dummy_port_fluidtank ||
@@ -347,7 +446,6 @@ public class Library
 				world.getBlock(x, y, z) == ModBlocks.dummy_port_ams_limiter ||
 				world.getBlock(x, y, z) == ModBlocks.dummy_port_ams_emitter ||
 				world.getBlock(x, y, z) == ModBlocks.dummy_port_ams_base ||
-				world.getBlock(x, y, z) == ModBlocks.dummy_port_reactor_small ||
 				world.getBlock(x, y, z) == ModBlocks.dummy_port_compact_launcher ||
 				world.getBlock(x, y, z) == ModBlocks.dummy_port_launch_table ||
 				world.getBlock(x, y, z) == ModBlocks.rbmk_loader) {
@@ -482,7 +580,6 @@ public class Library
 	 */
 	public static <T> T[] filledArray(Class<T> type, T fill, @Nonnegative int size)
 	{
-		@SuppressWarnings("unchecked")
 		T[] array = (T[]) Array.newInstance(type, size);
 		
 		for (int i = 0; i < size; i++)
@@ -502,6 +599,49 @@ public class Library
 		for (T obj : array)
 			listOut.add(obj);
 		return listOut;
+	}
+	
+	public enum EnumHashAlgorithm
+	{
+		MD5("MD5"),
+		SHA1("SHA-1"),
+		SHA256("SHA-256");
+		final String name;
+		private EnumHashAlgorithm(String name)
+		{
+			this.name = name;
+		}
+	}
+	
+	public static String getHash(String input)
+	{
+		return getHash(input.getBytes(), EnumHashAlgorithm.SHA256);
+	}
+	
+	public static String getHash(byte[] input)
+	{
+		return getHash(input, EnumHashAlgorithm.SHA256);
+	}
+	
+	@CheckReturnValue
+	public static String getHash(byte[] input, EnumHashAlgorithm algorithm)
+	{
+		try
+		{
+			MessageDigest sha256 = MessageDigest.getInstance(algorithm.name);
+			byte[] bytes = sha256.digest(input);
+			StringBuilder output = new StringBuilder(256);
+			
+			for (byte b : bytes)
+				output.append(Integer.toString((b & 0xFF) + 256, 16).substring(1));
+			
+			return output.toString();
+		}
+		catch (NoSuchAlgorithmException e)
+		{
+			e.printStackTrace();
+			return "";
+		}
 	}
 	
 	public static MovingObjectPosition rayTrace(EntityPlayer player, double length, float interpolation) {
@@ -539,42 +679,6 @@ public class Library
 		}
 		
 		return list;
-	}
-	
-	public static String getShortNumber(long l) {
-
-		if(l >= Math.pow(10, 18)) {
-			double res = l / Math.pow(10, 18);
-			res = Math.round(res * 100.0) / 100.0;
-			return res + "E";
-		}
-		if(l >= Math.pow(10, 15)) {
-			double res = l / Math.pow(10, 15);
-			res = Math.round(res * 100.0) / 100.0;
-			return res + "P";
-		}
-		if(l >= Math.pow(10, 12)) {
-			double res = l / Math.pow(10, 12);
-			res = Math.round(res * 100.0) / 100.0;
-			return res + "T";
-		}
-		if(l >= Math.pow(10, 9)) {
-			double res = l / Math.pow(10, 9);
-			res = Math.round(res * 100.0) / 100.0;
-			return res + "G";
-		}
-		if(l >= Math.pow(10, 6)) {
-			double res = l / Math.pow(10, 6);
-			res = Math.round(res * 100.0) / 100.0;
-			return res + "M";
-		}
-		if(l >= Math.pow(10, 3)) {
-			double res = l / Math.pow(10, 3);
-			res = Math.round(res * 100.0) / 100.0;
-			return res + "k";
-		}
-		
-		return Long.toString(l);
 	}
 	
 	//not great either but certainly better
@@ -615,74 +719,6 @@ public class Library
 		}
 		
 		return power;
-	}
-	@Untested
-	/**
-	 * Write data to an item storage medium
-	 * @param slots - The machine's inventory
-	 * @param index - Index of the applicable slot in said inventory
-	 * @param curCapacity - Current data capacity of the machine
-	 * @param totCapacity - Total data capacity of the machine
-	 * @return Data remaining after writing to the medium
-	 */
-	public static long writeToMedium(ItemStack[] slots, int index, long curCapacity)
-	{
-		if (slots[index] != null && slots[index].getItem() instanceof ItemStorageMedium)
-		{
-			ItemStorageMedium medium = (ItemStorageMedium) slots[index].getItem();
-			long max = medium.getMaxCapacity();
-			long cur = medium.getDataUsed(slots[index]);
-			long rate = medium.getWriteSpeed();
-			
-			long toWrite = Math.min(Math.min(curCapacity, rate), max - cur);
-			
-			curCapacity -= toWrite;
-			
-			medium.writeData(slots[index], toWrite);
-		}
-		return curCapacity;
-	}
-	@Untested
-	/**
-	 * Read data from a storage medium
-	 * @param slots - Inventory of the machine
-	 * @param index - Index of the applicable slot in said inventory
-	 * @param curCapacity - Current data capacity of the machine
-	 * @param totCapacity - Total data capacity of the machine
-	 * @return Data capacity after reading from drive
-	 */
-	public static long readFromMedium(ItemStack[] slots, int index, long curCapacity, long totCapacity)
-	{
-		if (slots[index] != null && slots[index].getItem() instanceof IDataStorageUser)
-		{
-			IDataStorageUser medium = (IDataStorageUser) slots[index].getItem();
-			long cur = IDataStorageUser.getDataUsed(slots[index]);
-			long rate = medium.getReadSpeed();
-			
-			long toRead = Math.min(Math.min(totCapacity - curCapacity, rate), cur);
-			curCapacity += toRead;
-		}
-		return curCapacity;
-	}
-	@Untested
-	/**
-	 * Erase data from a storage medium
-	 * @param slots - Inventory of the machine
-	 * @param index - Index of the applicable slot in said inventory
-	 */
-	public static void eraseFromMedium(ItemStack[] slots, int index)
-	{
-		if (slots[index] != null && slots[index].getItem() instanceof IDataStorageUser)
-		{
-			IDataStorageUser medium = (IDataStorageUser) slots[index].getItem();
-			if (medium.getWriteSpeed() == 0)
-				return;
-			long cur = IDataStorageUser.getDataUsed(slots[index]);
-			long rate = medium.getWriteSpeed();
-			
-			long toErase = Math.min(rate, cur);
-			medium.deleteData(slots[index], toErase);
-		}
 	}
 	public static long chargeTEFromItems(ItemStack[] slots, int index, long power, long maxPower) {
 		
@@ -725,11 +761,6 @@ public class Library
 		 * In loving memory, 2016-2021.
 		 * You won't be missed.
 		 */
-	}
-	
-	public static void transmitFluid(EasyLocation loc, boolean newTact, IFluidSource that, World worldObj, FluidType type)
-	{
-		transmitFluid((int) loc.posX, (int) loc.posY, (int) loc.posZ, newTact, that, worldObj, type);
 	}
 	
 	public static void transmitFluid(int x, int y, int z, boolean newTact, IFluidSource that, World worldObj, FluidType type) {
@@ -827,11 +858,6 @@ public class Library
 		{
 			tileentity = worldObj.getTileEntity(((TileEntityDummy)worldObj.getTileEntity(x, y, z)).targetX, ((TileEntityDummy)worldObj.getTileEntity(x, y, z)).targetY, ((TileEntityDummy)worldObj.getTileEntity(x, y, z)).targetZ);
 		}
-		//Small Nuclear Reactor
-		if(block == ModBlocks.dummy_port_reactor_small)
-		{
-			tileentity = worldObj.getTileEntity(((TileEntityDummy)worldObj.getTileEntity(x, y, z)).targetX, ((TileEntityDummy)worldObj.getTileEntity(x, y, z)).targetY, ((TileEntityDummy)worldObj.getTileEntity(x, y, z)).targetZ);
-		}
 		//Launchers
 		if(block == ModBlocks.dummy_port_compact_launcher || block == ModBlocks.dummy_port_launch_table)
 		{
@@ -841,19 +867,26 @@ public class Library
 		if(tileentity == that)
 			tileentity = null;
 		
+		if(tileentity instanceof TileEntityProxyBase) {
+			TileEntityProxyBase proxy = (TileEntityProxyBase) tileentity;
+			
+			if(proxy.getTE() == that)
+				tileentity = null;
+		}
+		
 		if(tileentity instanceof IFluidDuct)
 		{
-			if(tileentity instanceof TileEntityFluidDuct && ((TileEntityFluidDuct)tileentity).type.name().equals(type.name()))
+			if(tileentity instanceof TileEntityFluidDuctSimple && ((TileEntityFluidDuctSimple)tileentity).getType() == type)
 			{
-				if(Library.checkUnionListForFluids(((TileEntityFluidDuct)tileentity).uoteab, that))
+				if(Library.checkUnionListForFluids(((TileEntityFluidDuctSimple)tileentity).uoteab, that))
 				{
-					for(int i = 0; i < ((TileEntityFluidDuct)tileentity).uoteab.size(); i++)
+					for(int i = 0; i < ((TileEntityFluidDuctSimple)tileentity).uoteab.size(); i++)
 					{
-						if(((TileEntityFluidDuct)tileentity).uoteab.get(i).source == that)
+						if(((TileEntityFluidDuctSimple)tileentity).uoteab.get(i).source == that)
 						{
-							if(((TileEntityFluidDuct)tileentity).uoteab.get(i).ticked != newTact)
+							if(((TileEntityFluidDuctSimple)tileentity).uoteab.get(i).ticked != newTact)
 							{
-								((TileEntityFluidDuct)tileentity).uoteab.get(i).ticked = newTact;
+								((TileEntityFluidDuctSimple)tileentity).uoteab.get(i).ticked = newTact;
 								transmitFluid(x, y + 1, z, that.getTact(), that, worldObj, type);
 								transmitFluid(x, y - 1, z, that.getTact(), that, worldObj, type);
 								transmitFluid(x - 1, y, z, that.getTact(), that, worldObj, type);
@@ -864,7 +897,7 @@ public class Library
 						}
 					}
 				} else {
-					((TileEntityFluidDuct)tileentity).uoteab.add(new UnionOfTileEntitiesAndBooleansForFluids(that, newTact));
+					((TileEntityFluidDuctSimple)tileentity).uoteab.add(new UnionOfTileEntitiesAndBooleansForFluids(that, newTact));
 				}
 			}
 			if(tileentity instanceof TileEntityGasDuct && ((TileEntityGasDuct)tileentity).type.name().equals(type.name()))

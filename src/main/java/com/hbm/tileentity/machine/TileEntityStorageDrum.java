@@ -3,13 +3,14 @@ package com.hbm.tileentity.machine;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 
+import com.google.common.collect.ImmutableMap;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.config.VersatileConfig;
-import com.hbm.handler.FluidTypeHandler.FluidType;
 import com.hbm.handler.radiation.ChunkRadiationManager;
 import com.hbm.hazard.HazardRegistry;
 import com.hbm.hazard.HazardSystem;
@@ -17,7 +18,11 @@ import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidSource;
 import com.hbm.inventory.FluidTank;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.items.ModItems;
+import com.hbm.items.ItemEnums.EnumProtactinium;
+import com.hbm.items.machine.ItemBreedingRod.BreedingRodType;
 import com.hbm.items.special.ItemWasteLong;
 import com.hbm.items.special.ItemWasteShort;
 import com.hbm.lib.Library;
@@ -47,24 +52,24 @@ public class TileEntityStorageDrum extends TileEntityMachineBase implements IFlu
 	{
 		super(24);
 		tanks = new FluidTank[2];
-		tanks[0] = new FluidTank(FluidType.WASTEFLUID, 16000, 0);
-		tanks[1] = new FluidTank(FluidType.WASTEGAS, 16000, 1);
 		if (recipes.isEmpty())
 		{
-			recipes.putIfAbsent(new ComparableStack(ModItems.rod_zirnox_tha), new DrumDecayRecipe(new ItemStack(ModItems.rod_zirnox_thorium_fuel), VersatileConfig.getShortDecayChance() / 2));
-			recipes.putIfAbsent(new ComparableStack(ModItems.rod_tha), new DrumDecayRecipe(new ItemStack(ModItems.rod_thorium_fuel), VersatileConfig.getShortDecayChance() / 2));
-			recipes.putIfAbsent(new ComparableStack(ModItems.rod_dual_tha), new DrumDecayRecipe(new ItemStack(ModItems.rod_dual_thorium_fuel), VersatileConfig.getShortDecayChance() / 2));
-			recipes.putIfAbsent(new ComparableStack(ModItems.rod_quad_tha), new DrumDecayRecipe(new ItemStack(ModItems.rod_quad_thorium_fuel), VersatileConfig.getShortDecayChance() / 2));
-			recipes.putIfAbsent(new ComparableStack(ModItems.nugget_tha), new DrumDecayRecipe(new ItemStack(ModItems.nugget_thorium_fuel), VersatileConfig.getShortDecayChance() / 2));
-			recipes.putIfAbsent(new ComparableStack(ModItems.billet_tha), new DrumDecayRecipe(new ItemStack(ModItems.billet_thorium_fuel), VersatileConfig.getShortDecayChance() / 2));
-			recipes.putIfAbsent(new ComparableStack(ModItems.ingot_tha), new DrumDecayRecipe(new ItemStack(ModItems.ingot_thorium_fuel), VersatileConfig.getShortDecayChance() / 2));
-			recipes.putIfAbsent(new ComparableStack(ModBlocks.block_tha), new DrumDecayRecipe(new ItemStack(ModBlocks.block_thorium_fuel), VersatileConfig.getShortDecayChance() / 2));
+			recipes.putIfAbsent(new ComparableStack(ModItems.rod_zirnox_tha), new DrumDecayRecipe(new ItemStack(ModItems.rod_zirnox_thorium_fuel), VersatileConfig.getShortDecayChance() / 2).addWaste(0, 10));
+			recipes.putIfAbsent(new ComparableStack(ModItems.rod, 1, BreedingRodType.THA.ordinal()), new DrumDecayRecipe(new ItemStack(ModItems.rod, 1, BreedingRodType.THF.ordinal()), VersatileConfig.getShortDecayChance() / 2).addWaste(0, 5));
+			recipes.putIfAbsent(new ComparableStack(ModItems.rod_dual, 1, BreedingRodType.THA.ordinal()), new DrumDecayRecipe(new ItemStack(ModItems.rod_dual, 1, BreedingRodType.THF.ordinal()), VersatileConfig.getShortDecayChance() / 2)).addWaste(0, 10);
+			recipes.putIfAbsent(new ComparableStack(ModItems.rod_quad, 1, BreedingRodType.THA.ordinal()), new DrumDecayRecipe(new ItemStack(ModItems.rod_quad, 1, BreedingRodType.THF.ordinal()), VersatileConfig.getShortDecayChance() / 2)).addWaste(0, 20);
+			recipes.putIfAbsent(new ComparableStack(ModItems.nugget_tha), new DrumDecayRecipe(new ItemStack(ModItems.nugget_thorium_fuel), VersatileConfig.getShortDecayChance() / 2).addWaste(0, 1));
+			recipes.putIfAbsent(new ComparableStack(ModItems.billet_tha), new DrumDecayRecipe(new ItemStack(ModItems.billet_thorium_fuel), VersatileConfig.getShortDecayChance() / 2).addWaste(0, 5));
+			recipes.putIfAbsent(new ComparableStack(ModItems.ingot_tha), new DrumDecayRecipe(new ItemStack(ModItems.ingot_thorium_fuel), VersatileConfig.getShortDecayChance() / 2).addWaste(0, 10));
+			recipes.putIfAbsent(new ComparableStack(ModBlocks.block_tha), new DrumDecayRecipe(new ItemStack(ModBlocks.block_thorium_fuel), VersatileConfig.getShortDecayChance() / 2).addWaste(0, 45));
 			recipes.putIfAbsent(new ComparableStack(ModItems.powder_sr90), new DrumDecayRecipe(new ItemStack(ModItems.powder_zirconium), VersatileConfig.getLongDecayChance() / 2));
 			recipes.putIfAbsent(new ComparableStack(ModItems.ingot_sr90), new DrumDecayRecipe(new ItemStack(ModItems.powder_zirconium), VersatileConfig.getLongDecayChance() / 2));
-			recipes.putIfAbsent(new ComparableStack(ModItems.ingot_pa233), new DrumDecayRecipe(new ItemStack(ModItems.ingot_u233), VersatileConfig.getShortDecayChance() / 2));
-			recipes.putIfAbsent(new ComparableStack(ModItems.nugget_pa233), new DrumDecayRecipe(new ItemStack(ModItems.nugget_u233), VersatileConfig.getShortDecayChance() / 2));
-			recipes.putIfAbsent(new ComparableStack(ModItems.billet_pa233), new DrumDecayRecipe(new ItemStack(ModItems.billet_u233), VersatileConfig.getShortDecayChance() / 2));
+			recipes.putIfAbsent(new ComparableStack(ModItems.protactinium, 1, EnumProtactinium.INGOT_PA233.ordinal()), new DrumDecayRecipe(new ItemStack(ModItems.ingot_u233), VersatileConfig.getShortDecayChance() / 2));
+			recipes.putIfAbsent(new ComparableStack(ModItems.protactinium, 1, EnumProtactinium.NUGGET_PA233.ordinal()), new DrumDecayRecipe(new ItemStack(ModItems.nugget_u233), VersatileConfig.getShortDecayChance() / 2));
+			recipes.putIfAbsent(new ComparableStack(ModItems.protactinium, 1, EnumProtactinium.BILLET_PA233.ordinal()), new DrumDecayRecipe(new ItemStack(ModItems.billet_u233), VersatileConfig.getShortDecayChance() / 2));
 		}
+		tanks[0] = new FluidTank(Fluids.WASTEFLUID, 16000, 0);
+		tanks[1] = new FluidTank(Fluids.WASTEGAS, 16000, 1);
 	}
 
 	@Override
@@ -128,13 +133,32 @@ public class TileEntityStorageDrum extends TileEntityMachineBase implements IFlu
 						slots[i] = new ItemStack(ModItems.nuclear_waste_short_depleted_tiny, 1, meta);
 					}
 					
+					ComparableStack stack = new ComparableStack(slots[i]);
+					
+					if (recipes.containsKey(stack))
+					{
+						DrumDecayRecipe recipe = recipes.get(stack);
+						if (worldObj.rand.nextInt(recipe.getChance()) == 0)
+						{
+							slots[i] = recipe.getOutput();
+							liquid += recipe.getLiquid();
+							gas += recipe.getGas();
+						}
+					}
+					
 					if(item == ModItems.ingot_au198 && worldObj.rand.nextInt(VersatileConfig.getShortDecayChance() / 100) == 0) {
+						slots[i] = new ItemStack(ModItems.ingot_mercury, 1, meta);
+					}
+					if(item == ModItems.ingot_au198 && worldObj.rand.nextInt(VersatileConfig.getShortDecayChance() / 20) == 0) {
 						slots[i] = new ItemStack(ModItems.nugget_mercury, 1, meta);
 					}
 					
-					final ComparableStack cStack = constructCStack(slots[i]);
-					if (recipes.containsKey(cStack) && worldObj.rand.nextInt(recipes.get(cStack).getChance()) == 0)
-						slots[i] = recipes.get(cStack).getOutput();
+					if(item == ModItems.ingot_pb209 && worldObj.rand.nextInt(VersatileConfig.getShortDecayChance() / 50) == 0) {
+						slots[i] = new ItemStack(ModItems.ingot_bismuth, 1, meta);
+					}
+					if(item == ModItems.nugget_pb209 && worldObj.rand.nextInt(VersatileConfig.getShortDecayChance() / 10) == 0) {
+						slots[i] = new ItemStack(ModItems.nugget_bismuth, 1, meta);
+					}
 				}
 			}
 
@@ -172,7 +196,7 @@ public class TileEntityStorageDrum extends TileEntityMachineBase implements IFlu
 		}
 	}
 	
-	private void radiate(World world, int x, int y, int z, float rads) {
+	private static void radiate(World world, int x, int y, int z, float rads) {
 		
 		double range = 32D;
 		
@@ -235,7 +259,7 @@ public class TileEntityStorageDrum extends TileEntityMachineBase implements IFlu
 				item == ModItems.nuclear_waste_long_depleted_tiny || 
 				item == ModItems.nuclear_waste_short_depleted || 
 				item == ModItems.nuclear_waste_short_depleted_tiny || 
-				item == ModItems.nugget_mercury)
+				item == ModItems.ingot_mercury)
 			return true;
 		
 		return false;
@@ -321,11 +345,11 @@ public class TileEntityStorageDrum extends TileEntityMachineBase implements IFlu
 
 	@Override
 	public List<FluidTank> getTanks() {
-		List<FluidTank> list = new ArrayList<FluidTank>();
-		list.add(tanks[0]);
-		list.add(tanks[1]);
+		List<FluidTank> l = new ArrayList<FluidTank>();
+		l.add(tanks[0]);
+		l.add(tanks[1]);
 
-		return list;
+		return l;
 	}
 	
 	@Override
@@ -377,5 +401,15 @@ public class TileEntityStorageDrum extends TileEntityMachineBase implements IFlu
 		{
 			return chance;
 		}
+	}
+	
+	public static ImmutableMap<ComparableStack, ItemStack> getRecipesForNEI()
+	{
+		HashMap<ComparableStack, ItemStack> forNEI = new HashMap<>(recipes.size());
+		
+		for (Entry<ComparableStack, DrumDecayRecipe> entry : recipes.entrySet())
+			forNEI.put(entry.getKey(), entry.getValue().getOutput());
+		
+		return ImmutableMap.copyOf(forNEI);
 	}
 }

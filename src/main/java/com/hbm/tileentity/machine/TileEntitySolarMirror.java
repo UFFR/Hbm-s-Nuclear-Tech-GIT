@@ -97,7 +97,7 @@ public class TileEntitySolarMirror extends TileEntityTickingBase {
 		tZ = nbt.getInteger("targetZ");
 	}
 
-	public void writeToNBT(NBTTagCompound nbt) {
+	public void storeInNBT(NBTTagCompound nbt) {
 		super.writeToNBT(nbt);
 		nbt.setInteger("targetX", tX);
 		nbt.setInteger("targetY", tY);

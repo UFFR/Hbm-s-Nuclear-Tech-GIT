@@ -6,8 +6,9 @@ import com.hbm.entity.projectile.EntityBulletBase;
 import com.hbm.handler.BulletConfigSyncingUtil;
 import com.hbm.handler.BulletConfiguration;
 import com.hbm.handler.GunConfiguration;
-import com.hbm.interfaces.IBulletImpactBehavior;
+import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.items.ModItems;
+import com.hbm.lib.HbmCollection;
 import com.hbm.lib.HbmCollection.EnumGunManufacturer;
 import com.hbm.packet.AuxParticlePacketNT;
 import com.hbm.packet.PacketDispatcher;
@@ -64,16 +65,7 @@ public class Gun50BMGFactory {
 		config.name = "mg42";
 		config.manufacturer = EnumGunManufacturer.WGW;
 		
-		config.config = new ArrayList<Integer>();
-		config.config.add(BulletConfigSyncingUtil.BMG50_NORMAL);
-		config.config.add(BulletConfigSyncingUtil.BMG50_INCENDIARY);
-		config.config.add(BulletConfigSyncingUtil.BMG50_PHOSPHORUS);
-		config.config.add(BulletConfigSyncingUtil.BMG50_EXPLOSIVE);
-		config.config.add(BulletConfigSyncingUtil.BMG50_AP);
-		config.config.add(BulletConfigSyncingUtil.BMG50_DU);
-		config.config.add(BulletConfigSyncingUtil.BMG50_STAR);
-		config.config.add(BulletConfigSyncingUtil.CHL_BMG50);
-		config.config.add(BulletConfigSyncingUtil.BMG50_SLEEK);
+		config.config = HbmCollection.fiftyBMG;
 		
 		return config;
 	}
@@ -99,16 +91,7 @@ public class Gun50BMGFactory {
 		config.name = "maximDouble";
 		config.manufacturer = EnumGunManufacturer.UNKNOWN;
 		
-		config.config = new ArrayList<Integer>();
-		config.config.add(BulletConfigSyncingUtil.BMG50_NORMAL);
-		config.config.add(BulletConfigSyncingUtil.BMG50_INCENDIARY);
-		config.config.add(BulletConfigSyncingUtil.BMG50_PHOSPHORUS);
-		config.config.add(BulletConfigSyncingUtil.BMG50_EXPLOSIVE);
-		config.config.add(BulletConfigSyncingUtil.BMG50_AP);
-		config.config.add(BulletConfigSyncingUtil.BMG50_DU);
-		config.config.add(BulletConfigSyncingUtil.BMG50_STAR);
-		config.config.add(BulletConfigSyncingUtil.CHL_BMG50);
-		config.config.add(BulletConfigSyncingUtil.BMG50_SLEEK);
+		config.config = HbmCollection.fiftyBMG;
 		
 		return config;
 	}
@@ -163,10 +146,12 @@ public class Gun50BMGFactory {
 	{
 		BulletConfiguration bullet = BulletConfigFactory.standardBulletConfig();
 		
-		bullet.ammo = ModItems.ammo_luna_sniper;
+		bullet.ammo = new ComparableStack(ModItems.ammo_misc, 1, 0);
 		bullet.spread = 0.0F;
-		bullet.dmgMax = 450F;
-		bullet.dmgMin = 500F;
+		bullet.dmgMax = 500F;
+		bullet.dmgMin = 450F;
+		bullet.penetration = 10000;
+		bullet.penetrationModifier = 1;
 		bullet.wear = 2000;
 		bullet.velocity = 100;
 		bullet.doesPenetrate = true;
@@ -179,15 +164,7 @@ public class Gun50BMGFactory {
 		bullet.effects.add(HbmPotion.getPotionNoCure(HbmPotion.lead.id, 30 * 20, 1));
 		
 		bullet.blockDamage = true;
-		bullet.bImpact = new IBulletImpactBehavior()
-		{
-			
-			@Override
-			public void behaveBlockHit(EntityBulletBase bullet, int x, int y, int z)
-			{
-				bullet.worldObj.newExplosion(bullet, x, y, z, 5.0F, true, false);
-			}
-		};
+		bullet.bImpact = (projectile, x, y, z) -> {projectile.worldObj.newExplosion(projectile, x, y, z, 5.0F, true, false);};
 		
 		return bullet;
 	}
@@ -214,31 +191,61 @@ public class Gun50BMGFactory {
 		config.manufacturer = EnumGunManufacturer.ARMALITE;
 		
 		config.config = new ArrayList<Integer>();
-		config.config.add(BulletConfigSyncingUtil.BMG50_FLECHETTE_AM);
-		config.config.add(BulletConfigSyncingUtil.BMG50_FLECHETTE_PO);
-		config.config.add(BulletConfigSyncingUtil.BMG50_FLECHETTE_NORMAL);
-		config.config.add(BulletConfigSyncingUtil.BMG50_NORMAL);
-		config.config.add(BulletConfigSyncingUtil.BMG50_INCENDIARY);
-		config.config.add(BulletConfigSyncingUtil.BMG50_PHOSPHORUS);
-		config.config.add(BulletConfigSyncingUtil.BMG50_EXPLOSIVE);
-		config.config.add(BulletConfigSyncingUtil.BMG50_AP);
-		config.config.add(BulletConfigSyncingUtil.BMG50_DU);
-		config.config.add(BulletConfigSyncingUtil.BMG50_STAR);
-		config.config.add(BulletConfigSyncingUtil.CHL_BMG50);
-		config.config.add(BulletConfigSyncingUtil.BMG50_SLEEK);
+		config.config.addAll(HbmCollection.fiftyBMG);
+		config.config.addAll(HbmCollection.fiftyBMGFlechette);
 		
 		return config;
 	}
-
+	
+	public static GunConfiguration getM2Config()
+	{
+		GunConfiguration config = getAR15Config().clone();
+		
+		config.rateOfFire = 2;
+		config.durability *= 10;
+		config.ammoCap = 0;
+		config.crosshair = Crosshair.L_BOX;
+		config.reloadType = GunConfiguration.RELOAD_NONE;
+		config.hasSights = false;
+		config.allowsInfinity = true;
+		config.firingSound = "hbm:turret.chekhov_fire";
+		config.equipSound = "hbm:turret.howard_reload";
+		
+		config.name = "m2";
+		config.manufacturer = EnumGunManufacturer.COLT;
+		config.comment.add("\"A single man can do unbelievable things...");
+		config.comment.add("A single man with a .50 cal machine gun can do even more.\"");
+		
+		config.advLore.add("The §lM2 machine gun§r§7 or §lBrowning .50 caliber machine gun§r§7 is a heavy machine gun");
+		config.advLore.add("designed toward the end of World War I by John Browning. Its design is similar to Browning's");
+		config.advLore.add("earlier M1919 Browning machine gun, which was chambered for the .30-06 cartridge. The M2 uses");
+		config.advLore.add("the much larger and much more powerful .50 BMG (12.7 mm) cartridge, which was developed alongside");
+		config.advLore.add("and takes its name from the gun itself (BMG standing for §oBrowning machine gun§r§7). It has been");
+		config.advLore.add("referred to as \"Ma Deuce\", in reference to its M2 nomenclature. The design has had many specific");
+		config.advLore.add("designations; the official US military designation for the current infantry type is §lBrowning");
+		config.advLore.add("§lMachine Gun, Cal. .50, M2, HB, Flexible§r§7. It is effective against infantry, unarmored or");
+		config.advLore.add("lightly armored vehicles and boats, light fortifications, and low-flying aircraft.");
+		
+		config.advFuncLore.add("The Browning M2 is an air-cooled, belt-fed machine gun. The M2 fires from a closed bolt, operated");
+		config.advFuncLore.add("on the short recoil principle. The M2 fires the .50 BMG cartridge, which offers long range, accuracy,");
+		config.advFuncLore.add("and immense stopping power. The closed bolt firing cycle made the M2 usable as a synchronized machine");
+		config.advFuncLore.add("gun on aircraft before and during World War II, as on the early versions of the Curtiss P-40 fighter.");
+		config.advFuncLore.add("The M2 is a scaled-up version of John Browning's M1917 .30 caliber machine gun. ");
+		
+		return config;
+	}
+	
 	static final float inaccuracy = 2.5F;
+	static byte i = 0;
 	public static BulletConfiguration get50BMGConfig() {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardBulletConfig();
 		
-		bullet.ammo = ModItems.ammo_50bmg;
+		bullet.ammo = new ComparableStack(ModItems.ammo_50bmg, 1, i++);
 		bullet.spread *= inaccuracy;
-		bullet.dmgMin = 30;
-		bullet.dmgMax = 36;
+		bullet.dmgMin = 40;
+		bullet.dmgMax = 46;
+		bullet.penetration = 100;
 		
 		return bullet;
 	}
@@ -247,10 +254,11 @@ public class Gun50BMGFactory {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardBulletConfig();
 		
-		bullet.ammo = ModItems.ammo_50bmg_incendiary;
+		bullet.ammo = new ComparableStack(ModItems.ammo_50bmg, 1, i++);
 		bullet.spread *= inaccuracy;
-		bullet.dmgMin = 30;
-		bullet.dmgMax = 36;
+		bullet.dmgMin = 40;
+		bullet.dmgMax = 46;
+		bullet.penetration = 100;
 		bullet.wear = 15;
 		bullet.incendiary = 5;
 		
@@ -261,10 +269,11 @@ public class Gun50BMGFactory {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardBulletConfig();
 		
-		bullet.ammo = ModItems.ammo_50bmg_phosphorus;
+		bullet.ammo = new ComparableStack(ModItems.ammo_50bmg, 1, i++);
 		bullet.spread *= inaccuracy;
-		bullet.dmgMin = 30;
-		bullet.dmgMax = 36;
+		bullet.dmgMin = 40;
+		bullet.dmgMax = 46;
+		bullet.penetration = 75;
 		bullet.wear = 15;
 		bullet.incendiary = 5;
 		bullet.doesPenetrate = false;
@@ -293,10 +302,11 @@ public class Gun50BMGFactory {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardBulletConfig();
 		
-		bullet.ammo = ModItems.ammo_50bmg_explosive;
+		bullet.ammo = new ComparableStack(ModItems.ammo_50bmg, 1, i++);
 		bullet.spread *= inaccuracy;
-		bullet.dmgMin = 60;
-		bullet.dmgMax = 64;
+		bullet.dmgMin = 70;
+		bullet.dmgMax = 74;
+		bullet.penetration = 100;
 		bullet.wear = 25;
 		bullet.explosive = 1;
 		
@@ -307,10 +317,11 @@ public class Gun50BMGFactory {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardBulletConfig();
 		
-		bullet.ammo = ModItems.ammo_50bmg_ap;
+		bullet.ammo = new ComparableStack(ModItems.ammo_50bmg, 1, i++);
 		bullet.spread *= inaccuracy;
-		bullet.dmgMin = 62;
-		bullet.dmgMax = 68;
+		bullet.dmgMin = 72;
+		bullet.dmgMax = 78;
+		bullet.penetration = 125;
 		bullet.wear = 15;
 		bullet.leadChance = 10;
 		
@@ -321,10 +332,11 @@ public class Gun50BMGFactory {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardBulletConfig();
 		
-		bullet.ammo = ModItems.ammo_50bmg_du;
+		bullet.ammo = new ComparableStack(ModItems.ammo_50bmg, 1, i++);
 		bullet.spread *= inaccuracy;
-		bullet.dmgMin = 80;
-		bullet.dmgMax = 86;
+		bullet.dmgMin = 90;
+		bullet.dmgMax = 96;
+		bullet.penetration = 175;
 		bullet.wear = 25;
 		bullet.leadChance = 50;
 		
@@ -335,10 +347,11 @@ public class Gun50BMGFactory {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardBulletConfig();
 		
-		bullet.ammo = ModItems.ammo_50bmg_star;
+		bullet.ammo = new ComparableStack(ModItems.ammo_50bmg, 1, i++);
 		bullet.spread *= inaccuracy;
-		bullet.dmgMin = 98;
-		bullet.dmgMax = 102;
+		bullet.dmgMin = 108;
+		bullet.dmgMax = 112;
+		bullet.penetration = 200;
 		bullet.wear = 25;
 		bullet.leadChance = 100;
 		
@@ -349,10 +362,11 @@ public class Gun50BMGFactory {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardBulletConfig();
 		
-		bullet.ammo = ModItems.ammo_50bmg_sleek;
+		bullet.ammo = new ComparableStack(ModItems.ammo_50bmg, 1, i++);
 		bullet.spread *= inaccuracy;
-		bullet.dmgMin = 50;
-		bullet.dmgMax = 70;
+		bullet.dmgMin = 60;
+		bullet.dmgMax = 80;
+		bullet.penetration = 120;
 		bullet.wear = 10;
 		bullet.leadChance = 100;
 		bullet.doesPenetrate = false;
@@ -391,10 +405,11 @@ public class Gun50BMGFactory {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardBulletConfig();
 		
-		bullet.ammo = ModItems.ammo_50bmg_flechette;
+		bullet.ammo = new ComparableStack(ModItems.ammo_50bmg, 1, i++);
 		bullet.spread *= inaccuracy;
-		bullet.dmgMin = 50;
-		bullet.dmgMax = 54;
+		bullet.dmgMin = 60;
+		bullet.dmgMax = 64;
+		bullet.penetration = 110;
 		bullet.style = BulletConfiguration.STYLE_FLECHETTE;
 		
 		return bullet;
@@ -404,10 +419,11 @@ public class Gun50BMGFactory {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardBulletConfig();
 		
-		bullet.ammo = ModItems.ammo_50bmg_flechette_am;
+		bullet.ammo = new ComparableStack(ModItems.ammo_50bmg, 1, i++);
 		bullet.spread *= inaccuracy;
-		bullet.dmgMin = 60;
-		bullet.dmgMax = 64;
+		bullet.dmgMin = 70;
+		bullet.dmgMax = 74;
+		bullet.penetration = 120;
 		bullet.style = BulletConfiguration.STYLE_FLECHETTE;
 		
 		bullet.bHit = (projectile, hit) -> {
@@ -427,10 +443,11 @@ public class Gun50BMGFactory {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardBulletConfig();
 		
-		bullet.ammo = ModItems.ammo_50bmg_flechette_po;
+		bullet.ammo = new ComparableStack(ModItems.ammo_50bmg, 1, i++);
 		bullet.spread *= inaccuracy;
-		bullet.dmgMin = 60;
-		bullet.dmgMax = 64;
+		bullet.dmgMin = 70;
+		bullet.dmgMax = 74;
+		bullet.penetration = 110;
 		bullet.style = BulletConfiguration.STYLE_FLECHETTE;
 		
 		bullet.bHit = (projectile, hit) -> {

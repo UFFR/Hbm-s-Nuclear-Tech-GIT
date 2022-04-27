@@ -1,7 +1,7 @@
 package com.hbm.interfaces;
 
 import com.hbm.entity.projectile.EntityBulletBase;
-
+@FunctionalInterface
 public interface IBulletImpactBehavior {
 	
 	//block is hit, bullet dies

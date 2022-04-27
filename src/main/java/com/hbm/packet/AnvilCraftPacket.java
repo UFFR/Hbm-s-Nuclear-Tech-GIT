@@ -1,6 +1,8 @@
 package com.hbm.packet;
 
 import com.hbm.blocks.ModBlocks;
+import com.hbm.inventory.RecipesCommon.AStack;
+import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.container.ContainerAnvil;
 import com.hbm.inventory.recipes.anvil.AnvilRecipes;
 import com.hbm.inventory.recipes.anvil.AnvilRecipes.AnvilConstructionRecipe;
@@ -8,12 +10,14 @@ import com.hbm.items.ModItems;
 import com.hbm.main.MainRegistry;
 import com.hbm.util.InventoryUtil;
 
+import api.hbm.energy.IBatteryItem;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 public class AnvilCraftPacket implements IMessage {
 
@@ -63,6 +67,19 @@ public class AnvilCraftPacket implements IMessage {
 			for(int i = 0; i < count; i++) {
 				
 				if(InventoryUtil.doesPlayerHaveAStacks(p, recipe.input, true)) {
+					
+					if (recipe.batteryType)
+					{
+						long capacity = 0;
+						for (AStack stack : recipe.input)
+							if (stack instanceof ComparableStack && stack.toStack().getItem() instanceof IBatteryItem)
+								capacity += ((IBatteryItem) stack.toStack().getItem()).getCharge(stack.toStack());
+						
+						ItemStack outStack = recipe.output.get(0).stack;
+						IBatteryItem outInstance = (IBatteryItem) outStack.getItem();
+						outInstance.setCharge(outStack, Math.min(capacity, outInstance.getMaxCharge()));
+					}
+					
 					InventoryUtil.giveChanceStacksToPlayer(p, recipe.output);
 
 					if(recipe.output.get(0).stack.getItem() == Item.getItemFromBlock(ModBlocks.machine_difurnace_off))

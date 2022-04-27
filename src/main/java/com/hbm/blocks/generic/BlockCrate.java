@@ -135,7 +135,7 @@ public class BlockCrate extends BlockFalling {
     	//Metal Crate
     	BlockCrate.addToListWithWeight(metalList, Item.getItemFromBlock(ModBlocks.machine_press), 10);
     	BlockCrate.addToListWithWeight(metalList, Item.getItemFromBlock(ModBlocks.machine_difurnace_off), 9);
-    	BlockCrate.addToListWithWeight(metalList, Item.getItemFromBlock(ModBlocks.machine_reactor), 6);
+    	BlockCrate.addToListWithWeight(metalList, Item.getItemFromBlock(ModBlocks.machine_reactor_breeding), 6);
     	BlockCrate.addToListWithWeight(metalList, Item.getItemFromBlock(ModBlocks.machine_nuke_furnace_off), 7);
     	BlockCrate.addToListWithWeight(metalList, Item.getItemFromBlock(ModBlocks.machine_coal_off), 10);
     	BlockCrate.addToListWithWeight(metalList, Item.getItemFromBlock(ModBlocks.machine_diesel), 8);
@@ -157,8 +157,6 @@ public class BlockCrate extends BlockFalling {
     	BlockCrate.addToListWithWeight(metalList, ModItems.blade_titanium, 3);
     	BlockCrate.addToListWithWeight(metalList, ModItems.bolt_compound, 2);
     	BlockCrate.addToListWithWeight(metalList, ModItems.piston_selenium, 6);
-    	BlockCrate.addToListWithWeight(metalList, ModItems.pack_fdd, 10);
-    	BlockCrate.addToListWithWeight(metalList, ModItems.storage_optical_cd, 2);
     	
     	//Red Crate
     	BlockCrate.addToListWithWeight(redList, ModItems.mysteryshovel, 1);
@@ -175,7 +173,6 @@ public class BlockCrate extends BlockFalling {
     	BlockCrate.addToListWithWeight(redList, ModItems.flame_pony, 1);
     	BlockCrate.addToListWithWeight(redList, Item.getItemFromBlock(ModBlocks.ntm_dirt), 1);
     	BlockCrate.addToListWithWeight(redList, Item.getItemFromBlock(ModBlocks.broadcaster_pc), 1);
-    	BlockCrate.addToListWithWeight(redList, ModItems.lunar_kit, 1);
     }
     
     public void dropItems(World world, int x, int y, int z) {

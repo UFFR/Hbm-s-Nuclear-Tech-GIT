@@ -1,6 +1,5 @@
 package com.hbm.blocks.machine;
 
-import com.hbm.handler.EnumGUI;
 import com.hbm.main.MainRegistry;
 
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
@@ -19,10 +18,10 @@ import net.minecraft.world.World;
 
 public abstract class BlockMachineBase extends BlockContainer {
 	
-	EnumGUI guiID;
+	int guiID = -1;
 	protected boolean rotatable = false;
 
-	public BlockMachineBase(Material mat, EnumGUI guiID) {
+	public BlockMachineBase(Material mat, int guiID) {
 		super(mat);
 		this.guiID = guiID;
 	}
@@ -30,15 +29,15 @@ public abstract class BlockMachineBase extends BlockContainer {
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
 		
-//		if(guiID == -1)
-//			return false;
+		if(guiID == -1)
+			return false;
 		
 		if(world.isRemote)
 		{
 			return true;
 		} else if(!player.isSneaking())
 		{
-			FMLNetworkHandler.openGui(player, MainRegistry.instance, this.guiID.ordinal(), world, x, y, z);
+			FMLNetworkHandler.openGui(player, MainRegistry.instance, this.guiID, world, x, y, z);
 			return true;
 			
 		} else {

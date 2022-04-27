@@ -10,13 +10,13 @@ public class RBMKBlank extends RBMKBase {
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta) {
 		
-		if(meta >= offset)
+		if(meta >= this.offset)
 			return new TileEntityRBMKBlank();
 		return null;
 	}
 	
 	@Override
 	public int getRenderType(){
-		return renderIDPassive;
+		return this.renderIDPassive;
 	}
 }

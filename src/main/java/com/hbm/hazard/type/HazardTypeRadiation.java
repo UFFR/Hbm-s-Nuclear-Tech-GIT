@@ -3,7 +3,7 @@ package com.hbm.hazard.type;
 import static com.hbm.lib.HbmCollection.alpha;
 import static com.hbm.lib.HbmCollection.beta;
 import static com.hbm.lib.HbmCollection.gamma;
-import static com.hbm.lib.HbmCollection.neutron;
+import static com.hbm.lib.HbmCollection.eta;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -31,22 +31,28 @@ import net.minecraft.util.EnumChatFormatting;
 
 public class HazardTypeRadiation extends HazardTypeBase
 {
-	static final char[] radTypeSymbols = {alpha, beta, gamma, neutron};
+	static final char[] radTypeSymbols = {alpha, beta, gamma, eta};
 	@Override
 	public void onUpdate(EntityLivingBase target, float level, ItemStack stack) {
 		
 		boolean reacher = false;
 		
-		if(target instanceof EntityPlayer && !GeneralConfig.enable528)
-			reacher = ((EntityPlayer) target).inventory.hasItem(ModItems.reacher);
+		if(target instanceof EntityPlayer) {
+			ItemStack item = ((EntityPlayer) target).inventory.getCurrentItem();
+			if(item != null)
+				reacher = item.getItem() == ModItems.reacher;
+		}
 		
 		level *= stack.stackSize;
 		
 		if (RadiationConfig.realisticRads ? level > 0.001 : level > 0) {
 			float rad = level / 20F;
 			
-			if(reacher)
+			if(GeneralConfig.enable528 && reacher) {
+				rad = (float) (rad / Math.pow(7, 2));	//More realistic function for 528: x / distance^2
+			} else if(reacher) {
 				rad = (float) Math.sqrt(rad + 1F / ((rad + 2F) * (rad + 2F))) - 1F / (rad + 2F); //Reworked radiation function: sqrt(x+1/(x+2)^2)-1/(x+2)
+			}											
 			
 			ContaminationUtil.contaminate(target, HazardType.RADIATION, ContaminationType.CREATIVE, rad);
 		}
@@ -55,7 +61,7 @@ public class HazardTypeRadiation extends HazardTypeBase
 	@Override
 	public void updateEntity(EntityItem item, float level)
 	{
-		Library.radiate(item.worldObj, new EasyLocation(item), HazardSystem.getHazardLevelFromStack(item.getEntityItem(), this), level * 2, ContaminationType.HAZMAT);
+		Library.radiate(item.worldObj, new EasyLocation(item), HazardSystem.getHazardLevelFromStack(item.getEntityItem(), this), level * 10, HazardType.RADIATION, ContaminationType.HAZMAT);
 	}
 
 	

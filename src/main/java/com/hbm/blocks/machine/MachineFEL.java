@@ -2,15 +2,17 @@ package com.hbm.blocks.machine;
 
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ModBlocks;
-import com.hbm.handler.EnumGUI;
 import com.hbm.main.MainRegistry;
+import com.hbm.tileentity.TileEntityProxyEnergy;
 import com.hbm.tileentity.machine.TileEntityFEL;
 
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class MachineFEL extends BlockDummyable {
 
@@ -23,6 +25,10 @@ public class MachineFEL extends BlockDummyable {
 		
 		if(meta >= 12)
 			return new TileEntityFEL();
+		
+		if(meta >= extra)
+			return new TileEntityProxyEnergy();
+		
 		return null;
 	}
 
@@ -48,10 +54,16 @@ public class MachineFEL extends BlockDummyable {
 			if(pos == null)
 				return false;
 			
-			FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.FEL.ordinal(), world, pos[0], pos[1], pos[2]);
+			FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_fel, world, pos[0], pos[1], pos[2]);
 			return true;
 		} else {
 			return false;
 		}
+	}
+
+	@Override
+	public void fillSpace(World world, int x, int y, int z, ForgeDirection dir, int o) {
+		super.fillSpace(world, x, y, z, dir, o);
+		this.makeExtra(world, x + dir.offsetX * (o - 4), y + 1, z + dir.offsetZ * (o - 4));
 	}
 }

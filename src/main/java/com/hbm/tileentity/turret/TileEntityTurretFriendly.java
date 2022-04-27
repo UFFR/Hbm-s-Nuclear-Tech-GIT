@@ -1,20 +1,20 @@
 package com.hbm.tileentity.turret;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import com.hbm.handler.BulletConfigSyncingUtil;
+import com.hbm.lib.HbmCollection;
 
 public class TileEntityTurretFriendly extends TileEntityTurretChekhov {
 
-	static List<Integer> configs = new ArrayList();
+//	static List<Integer> configs = new ArrayList();
 	
 	static {
-		configs.add(BulletConfigSyncingUtil.R5_NORMAL);
-		configs.add(BulletConfigSyncingUtil.R5_EXPLOSIVE);
-		configs.add(BulletConfigSyncingUtil.R5_DU);
-		configs.add(BulletConfigSyncingUtil.R5_STAR);
-		configs.add(BulletConfigSyncingUtil.CHL_R5);
+//		configs.add(BulletConfigSyncingUtil.R5_NORMAL);
+//		configs.add(BulletConfigSyncingUtil.R5_EXPLOSIVE);
+//		configs.add(BulletConfigSyncingUtil.R5_DU);
+//		configs.add(BulletConfigSyncingUtil.R5_STAR);
+//		configs.add(BulletConfigSyncingUtil.CHL_R5);
+		configs = HbmCollection.fiveMM;
 	}
 	
 	@Override

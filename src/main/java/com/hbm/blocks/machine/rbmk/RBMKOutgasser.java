@@ -1,6 +1,6 @@
 package com.hbm.blocks.machine.rbmk;
 
-import com.hbm.handler.EnumGUI;
+import com.hbm.blocks.ModBlocks;
 import com.hbm.tileentity.TileEntityProxyCombo;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKOutgasser;
 
@@ -13,7 +13,7 @@ public class RBMKOutgasser extends RBMKBase {
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta) {
 		
-		if(meta >= offset)
+		if(meta >= this.offset)
 			return new TileEntityRBMKOutgasser();
 		
 		if(hasExtra(meta))
@@ -24,11 +24,11 @@ public class RBMKOutgasser extends RBMKBase {
 	
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
-		return openInv(world, x, y, z, player, EnumGUI.RBMK_OUTGASSER);
+		return openInv(world, x, y, z, player, ModBlocks.guiID_rbmk_outgasser);
 	}
 	
 	@Override
 	public int getRenderType(){
-		return renderIDPassive;
+		return this.renderIDPassive;
 	}
 }

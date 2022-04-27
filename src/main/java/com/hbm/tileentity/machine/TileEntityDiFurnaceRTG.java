@@ -1,5 +1,7 @@
 package com.hbm.tileentity.machine;
 
+import java.math.BigInteger;
+
 import com.hbm.blocks.machine.MachineDiFurnaceRTG;
 import com.hbm.inventory.recipes.BlastFurnaceRecipes;
 import com.hbm.items.machine.ItemRTGPellet;
@@ -18,7 +20,7 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase implements IRT
 	private static final short timeRequired = 1200;
 	private static final int[] rtgIn = new int[] {3, 4, 5, 6, 7, 8};
 	private String name;
-	
+	private BigInteger date = BigInteger.ZERO;
 	public TileEntityDiFurnaceRTG() {
 		super(9);
 	}
@@ -62,6 +64,7 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase implements IRT
 		NBTTagCompound data = new NBTTagCompound();
 		data.setShort("progress", progress);
 		data.setShort("speed", processSpeed);
+		data.setByteArray("date", date.toByteArray());
 		networkPack(data, 10);
 	}
 	
@@ -69,6 +72,7 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase implements IRT
 	public void networkUnpack(NBTTagCompound nbt) {
 		progress = nbt.getShort("progress");
 		processSpeed = nbt.getShort("speed");
+		date = new BigInteger(nbt.getByteArray("date"));
 	}
 	
 	private void processItem() {
@@ -97,6 +101,7 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase implements IRT
 		super.readFromNBT(nbt);
 		progress = nbt.getShort("progress");
 		processSpeed = nbt.getShort("speed");
+		date = new BigInteger(nbt.getByteArray("date"));
 	}
 
 	@Override
@@ -104,6 +109,7 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase implements IRT
 		super.writeToNBT(nbt);
 		nbt.setShort("progress", progress);
 		nbt.setShort("speed", processSpeed);
+		nbt.setByteArray("date", date.toByteArray());
 	}
 
 	public int getDiFurnaceProgressScaled(int i) {
@@ -124,7 +130,7 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase implements IRT
 	}
 
 	public boolean hasPower() {
-		processSpeed = (short) (updateRTGs(slots, rtgIn) / 10);
+		processSpeed = (short) getHeat();
 		return processSpeed >= 15;
 	}
 
@@ -166,13 +172,36 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase implements IRT
 	}
 
 	@Override
-	public int getHeat() {
-		return processSpeed;
+	public int getHeat()
+	{
+		return (updateRTGs() / 10);
+	}
+	
+	@Override
+	public ItemStack[] getInventory()
+	{
+		ItemStack[] rtgSlots = new ItemStack[rtgIn.length];
+		for (byte i = 0; i < rtgIn.length; i++)
+			rtgSlots[i] = slots[rtgIn[i]];
+		return rtgSlots;
 	}
 
 	@Override
-	public Class<? extends IRadioisotopeFuel> getDesiredClass() {
+	public Class<? extends IRadioisotopeFuel> getDesiredClass()
+	{
 		return ItemRTGPellet.class;
+	}
+
+	@Override
+	public void incrementAge()
+	{
+		date = date.add(BigInteger.ONE);
+	}
+
+	@Override
+	public BigInteger getInternalDate()
+	{
+		return date;
 	}
 
 }

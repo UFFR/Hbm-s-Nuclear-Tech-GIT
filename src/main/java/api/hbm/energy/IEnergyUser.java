@@ -1,10 +1,5 @@
 package api.hbm.energy;
 
-import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.packet.PacketDispatcher;
-
-import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -83,13 +78,6 @@ public interface IEnergyUser extends IEnergyConnector {
 			if(con.getPowerNet() != null && !con.getPowerNet().isSubscribed(this)) {
 				con.getPowerNet().subscribe(this);
 			}
-		}
-		
-		if(particleDebug) {
-			NBTTagCompound data = new NBTTagCompound();
-			data.setString("type", "vanillaExt");
-			data.setString("mode", red ? "reddust" : "greendust");
-			PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, x + world.rand.nextDouble(), y + world.rand.nextDouble(), z + world.rand.nextDouble()), new TargetPoint(world.provider.dimensionId, x + 0.5, y + 0.5, z + 0.5, 25));
 		}
 	}
 	

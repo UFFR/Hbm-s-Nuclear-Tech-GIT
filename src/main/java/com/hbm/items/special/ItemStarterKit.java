@@ -1,14 +1,8 @@
 package com.hbm.items.special;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import com.hbm.blocks.ModBlocks;
-import com.hbm.handler.FluidTypeHandler.FluidType;
 import com.hbm.items.ModItems;
-import com.hbm.items.machine.ItemBattery;
-import com.hbm.items.machine.ItemStorageMedium;
 import com.hbm.lib.Library;
 import com.hbm.util.I18nUtil;
 
@@ -16,26 +10,31 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
-import scala.actors.threadpool.Arrays;
 
 public class ItemStarterKit extends ItemCustomLore
 {
 	public enum KitType
 	{
-		ARMOR,
-		HAZMAT,
-		POOL,
-		PACK,
-		MISC
+		ARMOR("kitArmor"),
+		HAZMAT("kitHaz"),
+		POOL("kitPool"),
+		PACK("kitPack"),
+		MISC("");
+		final String key;
+		private KitType(String key)
+		{
+			this.key = key;
+		}
+		public String getLoc()
+		{
+			return key.isEmpty() ? "" : "desc.item.".concat(key);
+		}
 	}
 	private ItemStack[] kit = new ItemStack[] {};
 	private Item[] armor = new Item[] {};
@@ -163,15 +162,13 @@ public class ItemStarterKit extends ItemCustomLore
     	super.addInformation(stack, player, list, b);
     	if (type != null || type.length > 0)
     	{
-    		List types = Arrays.asList(type);
-	    	if (types.contains(KitType.POOL))
-	    		list.add(I18nUtil.resolveKey("desc.item.kitPool"));
-	    	if (types.contains(KitType.ARMOR))
-	    		list.add(I18nUtil.resolveKey("desc.item.kitArmor"));
-	    	if (types.contains(KitType.HAZMAT))
-	    		list.add(I18nUtil.resolveKey("desc.item.kitHaz"));
-	    	if (types.contains(KitType.PACK))
-	    		list.add(I18nUtil.resolveKey("desc.item.kitPack"));
+			for (KitType t : type)
+			{
+				if (t.getLoc().isEmpty())
+					continue;
+				else
+					list.add(I18nUtil.resolveKey(t.getLoc()));
+			}
     	}
     }
 

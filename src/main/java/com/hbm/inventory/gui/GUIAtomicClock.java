@@ -12,11 +12,11 @@ import com.hbm.util.I18nUtil;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 
+@SuppressWarnings("deprecation")
 public class GUIAtomicClock extends GuiInfoContainer
 {
 	private static final ResourceLocation texture = new ResourceLocation(RefStrings.MODID, "textures/gui/machine/gui_atomic_clock.png");
 	private final TileEntityAtomicClock clock;
-	private final FluidTankGUI clockTank;
 	private final NumberDisplay[] displays = new NumberDisplay[3];
 	public GUIAtomicClock(InventoryPlayer invPlayer, TileEntityAtomicClock te)
 	{
@@ -27,7 +27,7 @@ public class GUIAtomicClock extends GuiInfoContainer
 		displays[0] = new NumberDisplay(49, 23).setDigitLength(6).setMaxMin(9.9999F, 0).setFloat(4);
 		displays[1] = new NumberDisplay(101, 23).setMaxMin(100, 0);
 		displays[2] = new NumberDisplay(49, 73).setDigitLength(28).setPadding(1);
-		clockTank = new FluidTankGUI(clock.getTanks().get(0), 26, 16, 16, 73);
+		componentList.add(new GUIComponent(44, 43, 18, 18).setClickAction(gui -> PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(clock))));
 	}
 	
 	@Override
@@ -36,8 +36,6 @@ public class GUIAtomicClock extends GuiInfoContainer
 		super.drawScreen(mouseX, mouseY, f);
 		drawElectricityInfo(this, mouseX, mouseY, guiLeft + 8, guiTop + 16, 16, 55, clock.getPower(), clock.getMaxPower());
 //		clock.getTanks().get(0).renderTankInfo(this, mouseX, mouseY, guiLeft + 26, guiTop + 16, 16, 73);
-		clockTank.updateTank(clock.getTanks().get(0));
-		clockTank.renderTankInfo(mouseX, mouseY);
 		if (clock.getIsOn() && clock.getTanks().get(0).getFill() > 0 && clock.getPower() >= clock.consumption)
 		{
 			drawCustomInfoStat(mouseX, mouseY, guiLeft + 47, guiTop + 21, 46, 16, mouseX, mouseY, String.valueOf(displays[0].getNumber()));
@@ -50,8 +48,9 @@ public class GUIAtomicClock extends GuiInfoContainer
 	protected void mouseClicked(int mouseX, int mouseY, int i)
 	{
 		super.mouseClicked(mouseX, mouseY, i);
-		if (getButtonBool(mouseX, mouseY, 44, 43, 18, 18))
-			PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(clock));
+//		if (getButtonBool(mouseX, mouseY, 44, 43, 18, 18))
+//			PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(clock));
+		defaultClickHandling(mouseX, mouseY);
 	}
 	
 	@Override
@@ -86,8 +85,7 @@ public class GUIAtomicClock extends GuiInfoContainer
 				for (byte i = 0; i < 3; i++)
 					displays[i].drawNumber(clock.getTimeData()[i]);
 		}
-		clockTank.updateTank(clock.getTanks().get(0));
-		clockTank.renderTank();
+		clock.getTanks().get(0).renderTank(26, 16, zLevel, 16, 73);
 		
 //		FluidTank cTank = clock.getTanks().get(0);
 //		mc.getTextureManager().bindTexture(cTank.getSheet());

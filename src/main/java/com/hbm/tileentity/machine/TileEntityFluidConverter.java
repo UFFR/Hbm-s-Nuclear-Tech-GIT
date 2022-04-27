@@ -7,10 +7,11 @@ import javax.annotation.CheckReturnValue;
 
 import com.google.common.annotations.Beta;
 import com.google.common.collect.HashBiMap;
-import com.hbm.handler.FluidTypeHandler.FluidType;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.Untested;
 import com.hbm.inventory.FluidTank;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.items.machine.ItemFluidIdentifier;
 import com.hbm.tileentity.TileEntityMachineBase;
 
@@ -29,7 +30,7 @@ public class TileEntityFluidConverter extends TileEntityMachineBase implements I
 	public static final HashBiMap<FluidType, Fluid> conversions = HashBiMap.create();
 
 	public static final short maxCapacity = 16000;
-	private FluidTank bobTank = new FluidTank(FluidType.NONE, maxCapacity, 0);
+	private FluidTank bobTank = new FluidTank(Fluids.NONE, maxCapacity, 0);
 	private net.minecraftforge.fluids.FluidTank forgeTank = new net.minecraftforge.fluids.FluidTank(maxCapacity);
 	public static final short conversionRate = 100;
 	/**
@@ -199,7 +200,7 @@ public class TileEntityFluidConverter extends TileEntityMachineBase implements I
 	@CheckReturnValue
 	public static FluidType getBobFromForge(Fluid f)
 	{
-		return conversions.inverse().containsKey(f) ? conversions.inverse().get(f) : FluidType.NONE;
+		return conversions.inverse().containsKey(f) ? conversions.inverse().get(f) : Fluids.NONE;
 	}
 	@CheckReturnValue
 	public static Fluid getForgeFromBob(FluidType f)

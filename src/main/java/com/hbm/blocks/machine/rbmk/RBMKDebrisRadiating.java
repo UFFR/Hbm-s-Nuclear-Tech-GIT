@@ -99,7 +99,7 @@ public class RBMKDebrisRadiating extends RBMKDebrisBurning {
 				res = 1;
 			
 			float eRads = rads;
-			eRads /= res;
+			eRads /= (float)res;
 			eRads /= (float)(len * len);
 			
 			ContaminationUtil.contaminate(e, HazardType.RADIATION, ContaminationType.CREATIVE, eRads);

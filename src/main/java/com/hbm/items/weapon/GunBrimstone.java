@@ -5,7 +5,10 @@ import java.util.Random;
 
 import com.google.common.collect.Multimap;
 import com.hbm.entity.projectile.EntityLaser;
+import com.hbm.inventory.RecipesCommon.ComparableStack;
+import com.hbm.items.ItemAmmoEnums.Ammo556mm;
 import com.hbm.items.ModItems;
+import com.hbm.util.InventoryUtil;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -52,7 +55,7 @@ public class GunBrimstone extends Item {
 
 		boolean flag = player.capabilities.isCreativeMode
 				|| EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, stack) > 0;
-		if ((player.capabilities.isCreativeMode || player.inventory.hasItem(ModItems.ammo_566_gold)) && count % 1 == 0) {
+		if ((player.capabilities.isCreativeMode || InventoryUtil.doesPlayerHaveAStack(player, new ComparableStack(ModItems.ammo_556.stackFromEnum(Ammo556mm.GOLD)), false)) && count % 1 == 0) {
 			
 			
 			EntityLaser laser = new EntityLaser(world, player);

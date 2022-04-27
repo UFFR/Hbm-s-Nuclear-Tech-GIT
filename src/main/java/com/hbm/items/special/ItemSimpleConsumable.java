@@ -7,6 +7,7 @@ import com.hbm.util.Tuple.Pair;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -19,7 +20,7 @@ public class ItemSimpleConsumable extends ItemCustomLore {
 	private Optional<BiConsumer<ItemStack, EntityPlayer>> useActionServer = Optional.empty();
 	private Optional<BiConsumer<ItemStack, Pair<EntityLivingBase, EntityLivingBase>>> hitAction = Optional.empty();
 	private Optional<BiConsumer<ItemStack, Pair<EntityLivingBase, EntityLivingBase>>> hitActionServer = Optional.empty();
-
+	private EnumAction action = EnumAction.none;
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
 
@@ -67,6 +68,18 @@ public class ItemSimpleConsumable extends ItemCustomLore {
 				player.dropPlayerItemWithRandomChoice(stack, false);
 			}
 		}
+	}
+	
+	@Override
+	public EnumAction getItemUseAction(ItemStack p_77661_1_)
+	{
+		return action;
+	}
+	
+	public ItemSimpleConsumable setActionType(EnumAction action)
+	{
+		this.action = action;
+		return this;
 	}
 	
 	//this formatting style probably already has a name but i will call it "the greg"

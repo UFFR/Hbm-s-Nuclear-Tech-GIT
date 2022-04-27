@@ -6,6 +6,7 @@ import com.hbm.handler.BulletConfigSyncingUtil;
 import com.hbm.handler.BulletConfiguration;
 import com.hbm.handler.GunConfiguration;
 import com.hbm.handler.GunConfigurationEnergy;
+import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.items.ModItems;
 import com.hbm.lib.HbmCollection.EnumGunManufacturer;
 import com.hbm.render.util.RenderScreenOverlay.Crosshair;
@@ -70,16 +71,26 @@ public class GunOSIPRFactory {
 		
 		return config;
 	}
+	
+	public static GunConfiguration getSMGConfig()
+	{
+		GunConfiguration config = getOSIPRConfig().clone();
+		
+		return config;
+	}
 
-	static final float inaccuracy = 5;
+	static final float inaccuracy = 2;
 	public static BulletConfiguration getPulseConfig() {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardBulletConfig();
 		
-		bullet.ammo = ModItems.gun_osipr_ammo;
+		bullet.ammo = new ComparableStack(ModItems.gun_osipr_ammo);
+		bullet.ammoCount = 30;
 		bullet.spread *= inaccuracy;
-		bullet.dmgMin = 3;
-		bullet.dmgMax = 5;
+		bullet.dmgMin = 15;
+		bullet.dmgMax = 21;
+		bullet.penetration = 24;
+		bullet.velocity = 40;
 		bullet.trail = 2;
 		
 		return bullet;
@@ -88,7 +99,7 @@ public class GunOSIPRFactory {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardBulletConfig();
 		
-		bullet.ammo = ModItems.gun_osipr_ammo2;
+		bullet.ammo = new ComparableStack(ModItems.gun_osipr_ammo2);
 		
 		return bullet;
 	}

@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Level;
 
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.generic.RedBarrel;
+import com.hbm.calc.EasyLocation;
 import com.hbm.entity.effect.EntityCloudFleijaRainbow;
 import com.hbm.entity.effect.EntityEMPBlast;
 import com.hbm.entity.logic.EntityNukeExplosionMK3;
@@ -38,6 +39,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -47,6 +49,7 @@ public class EntityBulletBase extends Entity implements IProjectile {
 	
 	private BulletConfiguration config;
 	public EntityLivingBase shooter;
+	public EasyLocation startingPoint;
 	public float overrideDamage;
 	
 	public BulletConfiguration getConfig() {
@@ -81,6 +84,7 @@ public class EntityBulletBase extends Entity implements IProjectile {
 		this.config = BulletConfigSyncingUtil.pullConfig(config);
 		this.dataWatcher.updateObject(18, config);
 		shooter = entity;
+		startingPoint = new EasyLocation(entity);
 
 		this.setLocationAndAngles(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ, entity.rotationYaw, entity.rotationPitch);
 		
@@ -132,6 +136,24 @@ public class EntityBulletBase extends Entity implements IProjectile {
 		
 		this.dataWatcher.updateObject(16, (byte)this.config.style);
 		this.dataWatcher.updateObject(17, (byte)this.config.trail);
+	}
+	
+	@Override
+	public boolean attackEntityFrom(DamageSource source, float amount) {
+		
+		this.setBeenAttacked();
+		
+		if(source instanceof EntityDamageSource) {
+			EntityDamageSource dmg = (EntityDamageSource) source;
+			
+			if(dmg.damageType.equals("player")) {
+				this.motionX *= -1.5;
+				this.motionY *= -1.5;
+				this.motionZ *= -1.5;
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
@@ -193,7 +215,8 @@ public class EntityBulletBase extends Entity implements IProjectile {
 	@Override
 	public void onUpdate() {
 		super.onUpdate();
-		
+		if (startingPoint == null)
+			startingPoint = new EasyLocation(this);
 		if(config == null)
 			config = BulletConfigSyncingUtil.pullConfig(dataWatcher.getWatchableObjectInt(18));
 
@@ -294,12 +317,37 @@ public class EntityBulletBase extends Entity implements IProjectile {
 				if(overrideDamage != 0)
 					damage = overrideDamage;
 				
+				
+				if (victim instanceof EntityLivingBase && startingPoint != null)
+				{
+					int armor = ((EntityLivingBase) victim).getTotalArmorValue();
+					int stockPen = config.penetration;
+					double distance = EasyLocation.distance(startingPoint, new EasyLocation(victim));
+					float penMod = config.penetrationModifier;
+					double newPen = config.modFunction.orElse(BulletConfiguration.defaultModifier).mod(stockPen, penMod, distance);
+					boolean closePen = armor - newPen <= armor * 0.2;
+					if (armor <= newPen || closePen)
+						damagesource.setDamageBypassesArmor();
+					else
+						damage = 0;
+					
+					if (closePen && !(armor <= newPen))
+						damage *= 0.2;
+				}
+				
         		if(!victim.attackEntityFrom(damagesource, damage)) {
 
 					try {
 						Field lastDamage = ReflectionHelper.findField(EntityLivingBase.class, "lastDamage", "field_110153_bc");
 						
 						float dmg = damage + lastDamage.getFloat(victim);
+//						if (armor <= config.penetration || closePen)
+//							damagesource.setDamageBypassesArmor();
+//						else
+//							dmg = 0;
+//						
+//						if (closePen)
+//							dmg *= 0.1;
 						
 						victim.attackEntityFrom(damagesource, dmg);
 					} catch (Exception x) {
@@ -313,9 +361,9 @@ public class EntityBulletBase extends Entity implements IProjectile {
         		boolean hRic = rand.nextInt(100) < config.HBRC;
         		boolean doesRic = config.doesRicochet || hRic;
         		// FIXME
-        		//if(!config.isSpectral && !doesRic && (!config.spectralBlocks.contains(b) || !config.spectralMaterials.contains(b.getMaterial())))
-        		
-        		if(!config.isSpectral && !doesRic) {
+//        		if(!config.isSpectral && !doesRic && (!config.spectralBlocks.contains(b) || !config.spectralMaterials.contains(b.getMaterial())))
+//        			return;
+        		if(!config.isSpectral && !doesRic && !(config.spectralBlocks.contains(b) || config.spectralMaterials.contains(b.getMaterial()))) {
 					this.setPosition(movement.hitVec.xCoord, movement.hitVec.yCoord, movement.hitVec.zCoord);
         			this.onBlockImpact(movement.blockX, movement.blockY, movement.blockZ);
         		}
@@ -337,6 +385,8 @@ public class EntityBulletBase extends Entity implements IProjectile {
                 		face = Vec3.createVectorHelper(-1, 0, 0); break;
                 	case 5:
                 		face = Vec3.createVectorHelper(1, 0, 0); break;
+					default:
+						break;
                 	}
                 	
                 	if(face != null) {
@@ -358,6 +408,8 @@ public class EntityBulletBase extends Entity implements IProjectile {
                         	case 4:
                         	case 5:
                         		motionX *= -1; break;
+							default:
+								break;
                         	}
 
                         	if(config.plink == 1)
@@ -403,13 +455,13 @@ public class EntityBulletBase extends Entity implements IProjectile {
         if(this.config.bUpdate != null)
         	this.config.bUpdate.behaveUpdate(this);
 
-		float f2;
+//		float f2;
 		this.rotationYaw = (float) (Math.atan2(this.motionX, this.motionZ) * 180.0D / Math.PI);
-		f2 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
-		for (this.rotationPitch = (float)(Math.atan2(this.motionY, f2) * 180.0D / Math.PI); this.rotationPitch - this.prevRotationPitch < -180.0F; this.prevRotationPitch -= 360.0F)
-		{
-			
-		}
+//		f2 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
+//		for (this.rotationPitch = (float)(Math.atan2(this.motionY, f2) * 180.0D / Math.PI); this.rotationPitch - this.prevRotationPitch < -180.0F; this.prevRotationPitch -= 360.0F)
+//		{
+//			
+//		}
 
 		while(this.rotationPitch - this.prevRotationPitch >= 180.0F) {
 			this.prevRotationPitch += 360.0F;
@@ -591,6 +643,8 @@ public class EntityBulletBase extends Entity implements IProjectile {
 			return;
 		}
 		
+		startingPoint = new EasyLocation(nbt.getIntArray("startCoord"));
+		
 		this.overrideDamage = nbt.getFloat("damage");
 		
 		this.dataWatcher.updateObject(18, cfg);
@@ -603,6 +657,7 @@ public class EntityBulletBase extends Entity implements IProjectile {
 	protected void writeEntityToNBT(NBTTagCompound nbt) {
 		
 		nbt.setInteger("config", dataWatcher.getWatchableObjectInt(18));
+		nbt.setIntArray("startCoord", startingPoint.getCoordInt());
 		
 		nbt.setFloat("damage", this.overrideDamage);
 	}

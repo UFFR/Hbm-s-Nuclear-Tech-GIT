@@ -1,13 +1,11 @@
 package com.hbm.blocks.generic;
 
 import com.hbm.blocks.BlockBase;
-import com.hbm.interfaces.IBlockRarity;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.world.IBlockAccess;
 
-public class BlockBeaconable extends BlockBase implements IBlockRarity
-{
+public class BlockBeaconable extends BlockBase {
 
 	public BlockBeaconable(Material mat) {
 		super(mat);

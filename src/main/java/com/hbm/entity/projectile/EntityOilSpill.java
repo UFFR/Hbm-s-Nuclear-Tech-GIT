@@ -1,6 +1,7 @@
 package com.hbm.entity.projectile;
 
 import com.hbm.entity.particle.EntityOilSpillFX;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.util.MovingObjectPosition;

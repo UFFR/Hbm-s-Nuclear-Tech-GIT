@@ -3,7 +3,6 @@ package com.hbm.blocks.machine;
 import java.util.Random;
 
 import com.hbm.blocks.ModBlocks;
-import com.hbm.handler.EnumGUI;
 import com.hbm.lib.RefStrings;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.machine.TileEntityMachineElectricFurnace;
@@ -137,7 +136,7 @@ public class MachineElectricFurnace extends BlockContainer {
 			TileEntityMachineElectricFurnace entity = (TileEntityMachineElectricFurnace) world.getTileEntity(x, y, z);
 			if(entity != null)
 			{
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.FURNACE_ELECTRIC.ordinal(), world, x, y, z);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_electric_furnace, world, x, y, z);
 			}
 			return true;
 		} else {

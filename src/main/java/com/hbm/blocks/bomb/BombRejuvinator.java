@@ -54,7 +54,7 @@ public class BombRejuvinator extends Block implements IBomb {
 	}
 
 	@Override
-	public void explode(World worldObj, int x1, int y1, int z1) {
+	public BombReturnCode explode(World worldObj, int x1, int y1, int z1) {
 		worldObj.setBlock(x1, y1, z1, Blocks.air);
 		if (!worldObj.isRemote) {
 			try {
@@ -88,12 +88,16 @@ public class BombRejuvinator extends Block implements IBomb {
 
 					oldChunk.isTerrainPopulated = false;
 					chunkProviderGenerate.populate(chunkProviderGenerate, oldChunk.xPosition, oldChunk.zPosition);
+					
+					return BombReturnCode.DETONATED;
 				}
 			} catch (Exception e) {
 				System.out.println("Rejuvenation Failed!");
 				e.printStackTrace();
+				return BombReturnCode.UNDEFINED;
 			}
 		}
+		return BombReturnCode.DETONATED;
 	}
 
 }

@@ -15,14 +15,12 @@ public class BlockPinkSlab extends BlockSlab {
 		super(bool, mat);
 	}
 
-    @Override
-	public Item getItemDropped(int i, Random rand, int j)
+    public Item getItemDropped(int i, Random rand, int j)
     {
         return Item.getItemFromBlock(ModBlocks.pink_slab);
     }
     
-    @Override
-	protected ItemStack createStackedBlock(int i)
+    protected ItemStack createStackedBlock(int i)
     {
         return new ItemStack(Item.getItemFromBlock(ModBlocks.pink_slab), 2, i & 7);
     }

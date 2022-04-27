@@ -2,7 +2,6 @@ package com.hbm.blocks.machine;
 
 import com.hbm.blocks.ModBlocks;
 import com.hbm.config.WeaponConfig;
-import com.hbm.handler.EnumGUI;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.machine.TileEntityMachineRadar;
 
@@ -58,7 +57,7 @@ public class MachineRadar extends BlockContainer {
 			TileEntityMachineRadar entity = (TileEntityMachineRadar) world.getTileEntity(x, y, z);
 			if(entity != null)
 			{
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.RADAR.ordinal(), world, x, y, z);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_radar, world, x, y, z);
 			}
 			return true;
 		} else {

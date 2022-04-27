@@ -4,7 +4,6 @@ import java.util.Random;
 
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ModBlocks;
-import com.hbm.handler.EnumGUI;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.TileEntityProxyCombo;
 import com.hbm.tileentity.machine.TileEntityITER;
@@ -68,7 +67,7 @@ public class MachineITER extends BlockDummyable {
 			TileEntityITER entity = (TileEntityITER) world.getTileEntity(pos[0], pos[1], pos[2]);
 			if(entity != null)
 			{
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.REACTOR_FUSION.ordinal(), world, pos[0], pos[1], pos[2]);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_iter, world, pos[0], pos[1], pos[2]);
 			}
 			return true;
 		} else {
@@ -135,9 +134,9 @@ public class MachineITER extends BlockDummyable {
 		pl.getHeldItem().stackSize--;
 		
 		world.setBlock(x + dir.offsetX * o , y + dir.offsetY * o + height, z + dir.offsetZ * o, this, dir.ordinal() + offset, 3);
-		BlockDummyable.safeRem = true;
+		this.safeRem = true;
 		fillSpace(world, x, y, z, dir, o);
-		BlockDummyable.safeRem = false;
+		this.safeRem = false;
 		world.scheduleBlockUpdate(x, y, z, this, 1);
 		world.scheduleBlockUpdate(x, y, z, this, 2);
 

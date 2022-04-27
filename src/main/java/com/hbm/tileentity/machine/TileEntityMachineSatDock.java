@@ -297,6 +297,7 @@ public class TileEntityMachineSatDock extends TileEntity implements ISidedInvent
 			new WeightedRandomObject(new ItemStack(ModItems.powder_nitan_mix, 2), 5),
 			new WeightedRandomObject(new ItemStack(ModItems.powder_power, 2), 5),
 			new WeightedRandomObject(new ItemStack(ModItems.powder_copper, 5), 15),
+			new WeightedRandomObject(new ItemStack(ModItems.powder_nickel, 4), 10),
 			new WeightedRandomObject(new ItemStack(ModItems.powder_lead, 3), 10),
 			new WeightedRandomObject(new ItemStack(ModItems.fluorite, 4), 15),
 			new WeightedRandomObject(new ItemStack(ModItems.powder_lapis, 4), 10),

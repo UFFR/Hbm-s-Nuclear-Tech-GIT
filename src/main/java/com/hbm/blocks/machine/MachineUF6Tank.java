@@ -3,12 +3,11 @@ package com.hbm.blocks.machine;
 import java.util.Random;
 
 import com.hbm.blocks.ModBlocks;
-import com.hbm.handler.EnumGUI;
 import com.hbm.handler.MultiblockHandler;
 import com.hbm.interfaces.IMultiblock;
 import com.hbm.lib.RefStrings;
 import com.hbm.main.MainRegistry;
-import com.hbm.tileentity.machine.TileEntityMachineUF6Tank;
+import com.hbm.tileentity.machine.storage.TileEntityMachineUF6Tank;
 
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -158,7 +157,7 @@ public class MachineUF6Tank extends BlockContainer implements IMultiblock {
 			TileEntityMachineUF6Tank entity = (TileEntityMachineUF6Tank) world.getTileEntity(x, y, z);
 			if(entity != null)
 			{
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.UF6_TANK.ordinal(), world, x, y, z);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_uf6_tank, world, x, y, z);
 			}
 			return true;
 		} else {

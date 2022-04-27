@@ -1,10 +1,9 @@
 package com.hbm.tileentity.machine;
 
-import java.util.ArrayList;
-import java.util.List;
-import com.hbm.items.ModItems;
+import java.math.BigInteger;
+
+import com.hbm.config.VersatileConfig;
 import com.hbm.items.machine.ItemRTGPellet;
-import com.hbm.lib.Library;
 import com.hbm.packet.AuxElectricityPacket;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.tileentity.IRTGUser;
@@ -24,17 +23,15 @@ public class TileEntityMachineRTG extends TileEntity implements ISidedInventory,
 
 	private ItemStack slots[];
 	
-	public short heat;
-	public static final short heatMax = 1500;
+	public int heat;
+	public final int heatMax = VersatileConfig.rtgDecay() ? 600 : 200;
 	public long power;
 	public final static long powerMax = 100000;
 	
-	private static final int[] slots_top = new int[] { 0 };
-	private static final int[] slots_bottom = new int[] { 0 };
-	private static final int[] slots_side = new int[] { 0 };
+	public static final int[] slot_io = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
 	
 	private String customName;
-	
+	private BigInteger date = BigInteger.ZERO;
 	public TileEntityMachineRTG() {
 		slots = new ItemStack[15];
 	}
@@ -107,10 +104,7 @@ public class TileEntityMachineRTG extends TileEntity implements ISidedInventory,
 
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemStack) {
-		
-		if(itemStack.getItem() != null && (itemStack.getItem() instanceof ItemRTGPellet))
-			return true;
-		return false;
+		return itemStack.getItem() instanceof ItemRTGPellet;
 	}
 	
 	@Override
@@ -153,13 +147,15 @@ public class TileEntityMachineRTG extends TileEntity implements ISidedInventory,
 				slots[b0] = ItemStack.loadItemStackFromNBT(nbt1);
 			}
 		}
+		
+		date = new BigInteger(nbt.getByteArray("date"));
 	}
 	
 	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
 		super.writeToNBT(nbt);
 		nbt.setInteger("power", (short) (power));
-		nbt.setShort("heat", heat);
+		nbt.setInteger("heat", heat);
 		NBTTagList list = new NBTTagList();
 		
 		for(int i = 0; i < slots.length; i++)
@@ -173,12 +169,13 @@ public class TileEntityMachineRTG extends TileEntity implements ISidedInventory,
 			}
 		}
 		nbt.setTag("items", list);
+		
+		nbt.setByteArray("date", date.toByteArray());
 	}
 	
 	@Override
-	public int[] getAccessibleSlotsFromSide(int p_94128_1_)
-    {
-        return p_94128_1_ == 0 ? slots_bottom : (p_94128_1_ == 1 ? slots_top : slots_side);
+	public int[] getAccessibleSlotsFromSide(int p_94128_1_){
+        return slot_io;
     }
 
 	@Override
@@ -204,7 +201,7 @@ public class TileEntityMachineRTG extends TileEntity implements ISidedInventory,
 	}
 	
 	public boolean hasHeat() {
-		return heat > 0;
+		return getHeat() > 0;
 	}
 
 	@Override
@@ -215,14 +212,12 @@ public class TileEntityMachineRTG extends TileEntity implements ISidedInventory,
 			for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
 				this.sendPower(worldObj, xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ, dir.getOpposite());
 			
-			heat = 0;
-			
-			heat = (short) updateRTGs(slots);
+			heat = updateRTGs();
 			
 			if(heat > heatMax)
 				heat = heatMax;
 			
-			power += heat * 10;
+			power += heat * 5;
 			if(power > powerMax)
 				power = powerMax;
 			
@@ -250,10 +245,28 @@ public class TileEntityMachineRTG extends TileEntity implements ISidedInventory,
 	{
 		return heat;
 	}
+	
+	@Override
+	public ItemStack[] getInventory()
+	{
+		return slots;
+	}
 
 	@Override
 	public Class<ItemRTGPellet> getDesiredClass()
 	{
 		return ItemRTGPellet.class;
+	}
+
+	@Override
+	public void incrementAge()
+	{
+		date = date.add(BigInteger.ONE);
+	}
+
+	@Override
+	public BigInteger getInternalDate()
+	{
+		return date;
 	}
 }

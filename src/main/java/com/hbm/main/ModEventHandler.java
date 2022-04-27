@@ -14,10 +14,8 @@ import org.apache.logging.log4j.Level;
 
 import com.google.common.collect.Multimap;
 import com.hbm.blocks.ModBlocks;
-import com.hbm.blocks.generic.BlockAshes;
 import com.hbm.config.GeneralConfig;
 import com.hbm.config.MobConfig;
-import com.hbm.config.WorldConfig;
 import com.hbm.entity.missile.EntityMissileBaseAdvanced;
 import com.hbm.entity.missile.EntityMissileCustom;
 import com.hbm.entity.mob.EntityCyberCrab;
@@ -26,24 +24,26 @@ import com.hbm.entity.mob.EntityNuclearCreeper;
 import com.hbm.entity.mob.EntityQuackos;
 import com.hbm.entity.mob.EntityTaintedCreeper;
 import com.hbm.entity.projectile.EntityBurningFOEQ;
-import com.hbm.entity.projectile.EntityMeteor;
 import com.hbm.extprop.HbmLivingProps;
 import com.hbm.extprop.HbmPlayerProps;
 import com.hbm.handler.ArmorModHandler;
 import com.hbm.handler.BossSpawnHandler;
 import com.hbm.handler.EntityEffectHandler;
 import com.hbm.handler.HTTPHandler;
+import com.hbm.hazard.HazardEntry;
 import com.hbm.hazard.HazardSystem;
 import com.hbm.interfaces.IBomb;
 import com.hbm.handler.ImpactWorldHandler;
+import com.hbm.handler.SiegeOrchestrator;
 import com.hbm.items.IEquipReceiver;
 import com.hbm.items.ModItems;
 import com.hbm.items.armor.ArmorFSB;
+import com.hbm.items.armor.IAttackHandler;
+import com.hbm.items.armor.IDamageHandler;
 import com.hbm.items.armor.ItemArmorMod;
 import com.hbm.items.armor.ItemModRevive;
 import com.hbm.items.armor.ItemModShackles;
 import com.hbm.items.weapon.ItemGunBase;
-import com.hbm.lib.HbmCollection;
 import com.hbm.lib.Library;
 import com.hbm.lib.ModDamageSource;
 import com.hbm.lib.RefStrings;
@@ -66,12 +66,10 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.relauncher.ReflectionHelper;
-import cpw.mods.fml.relauncher.Side;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBush;
 import net.minecraft.block.BlockCrops;
@@ -79,7 +77,6 @@ import net.minecraft.block.BlockDoor;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.BlockLog;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -115,7 +112,6 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.FoodStats;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
@@ -149,13 +145,14 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
+@SuppressWarnings("static-method")
 public class ModEventHandler {
 	
 	public static int meteorShower = 0;
 	public static int tsukuyomiCooldown = 0;
 	
 	//////////////////////////////////////////
-	private static Random rand = new Random();
+	private static final Random rand = new Random();
 	public static float dust;
 	public static float fire;
 	public static boolean impact;
@@ -169,12 +166,16 @@ public class ModEventHandler {
 
 			if(HTTPHandler.newVersion) {
 				event.player.addChatMessage(
-						new ChatComponentText("New version " + HTTPHandler.versionNumber + " is available!")
-						.setChatStyle(new ChatStyle()
-								.setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/HbmMods/Hbm-s-Nuclear-Tech-GIT/releases"))
-								.setUnderlined(true)
-								.setColor(EnumChatFormatting.YELLOW)
+						new ChatComponentText("New version " + HTTPHandler.versionNumber + " is available! Click ")
+						.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW))
+						.appendSibling(new ChatComponentText("[here]")
+								.setChatStyle(new ChatStyle()
+									.setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/HbmMods/Hbm-s-Nuclear-Tech-GIT/releases"))
+									.setUnderlined(true)
+									.setColor(EnumChatFormatting.RED)
 								)
+							)
+						.appendSibling(new ChatComponentText(" to download!").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
 						);
 			}
 			
@@ -182,7 +183,6 @@ public class ModEventHandler {
 				PacketDispatcher.wrapper.sendTo(new PlayerInformPacket("Press O to Duck!"), (EntityPlayerMP) event.player);
 		}
 		
-		HbmCollection.initKits();
 	}
 	
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -393,6 +393,11 @@ public class ModEventHandler {
 					}
 				}
 			}
+			
+			SiegeOrchestrator.playerDeathHook(player, event.source);
+			
+		} else {
+			SiegeOrchestrator.mobDeathHook(entity, event.source);
 		}
 	}
 	
@@ -556,31 +561,6 @@ public class ModEventHandler {
 		}
 	}
 
-	public static int currentBrightness = 0;
-	public static int lastBrightness = 0;
-	
-	@SubscribeEvent
-	public void clentTick(ClientTickEvent event) {
-		
-		Minecraft mc = Minecraft.getMinecraft();
-
-		if(mc.theWorld == null || mc.thePlayer == null)
-			return;
-		
-		if(event.phase == Phase.START && event.side == Side.CLIENT) {
-			if(BlockAshes.ashes > 256)
-				BlockAshes.ashes = 256;
-			
-			if(BlockAshes.ashes > 0)
-				BlockAshes.ashes -= 2;
-			
-			if(mc.theWorld.getTotalWorldTime() % 20 == 0) {
-				ModEventHandler.lastBrightness = ModEventHandler.currentBrightness;
-				currentBrightness = mc.theWorld.getLightBrightnessForSkyBlocks(MathHelper.floor_double(mc.thePlayer.posX), MathHelper.floor_double(mc.thePlayer.posY), MathHelper.floor_double(mc.thePlayer.posZ), 0);
-			}
-		}
-	}
-
 	//TODO: move all of this into its own event handler
 	/// TOM STUFF ///
 	/// TOM STUFF ///
@@ -595,12 +575,12 @@ public class ModEventHandler {
 	public void onUnload(WorldEvent.Unload event) {
 		// We don't want Tom's impact data transferring between worlds.
 		TomSaveData data = TomSaveData.forWorld(event.world);
-		this.fire = 0;
-		this.dust = 0;
-		this.impact = false;
-		data.fire = 0;
-		data.dust = 0;
-		data.impact = false;
+		fire = 0;
+		dust = 0;
+		impact = false;
+		TomSaveData.fire = 0;
+		TomSaveData.dust = 0;
+		TomSaveData.impact = false;
 	}
 
 	@SubscribeEvent
@@ -614,7 +594,7 @@ public class ModEventHandler {
 					}
 				}
 				if(event.entity instanceof EntityWaterMob && event.entity.ticksExisted < 20) {
-					Random rand = new Random();
+//					Random rand = new Random();
 					if(rand.nextInt(9) != 0) {
 						event.setCanceled(true);
 					}
@@ -686,13 +666,13 @@ public class ModEventHandler {
 			EventType type = event.type;
 			
 			if(dust > 0 || fire > 0) {
-				if(type == event.type.TREE || type == event.type.BIG_SHROOM || type == event.type.GRASS || type == event.type.REED || type == event.type.FLOWERS || type == event.type.DEAD_BUSH
-						|| type == event.type.CACTUS || type == event.type.PUMPKIN || type == event.type.LILYPAD) {
+				if(type == EventType.TREE || type == EventType.BIG_SHROOM || type == EventType.GRASS || type == EventType.REED || type == EventType.FLOWERS || type == EventType.DEAD_BUSH
+						|| type == EventType.CACTUS || type == EventType.PUMPKIN || type == EventType.LILYPAD) {
 					event.setResult(Result.DENY);
 				}
 				
 			} else if(dust == 0 && fire == 0) {
-				if(type == event.type.TREE || type == event.type.BIG_SHROOM || type == event.type.CACTUS) {
+				if(type == EventType.TREE || type == EventType.BIG_SHROOM || type == EventType.CACTUS) {
 					if(event.world.rand.nextInt(9) == 0) {
 						event.setResult(Result.DEFAULT);
 					} else {
@@ -700,7 +680,7 @@ public class ModEventHandler {
 					}
 				}
 				
-				if(type == event.type.GRASS || type == event.type.REED) {
+				if(type == EventType.GRASS || type == EventType.REED) {
 					event.setResult(Result.DEFAULT);
 				}
 			}
@@ -768,22 +748,22 @@ public class ModEventHandler {
 			float atmosphericDust = tag.getFloat("dust");
 			float firestorm = tag.getFloat("fire");
 			boolean hasImpacted = tag.getBoolean("impact");
-			data.impact = hasImpacted;
+			TomSaveData.impact = hasImpacted;
 			if(atmosphericDust > 0 && firestorm == 0) {
 				tag.setFloat("dust", Math.max(0, atmosphericDust - settle));
 				data.markDirty();
-				data.dust = atmosphericDust;
+				TomSaveData.dust = atmosphericDust;
 			}
 			if(firestorm > 0) {
 				tag.setFloat("fire", Math.max(0, (firestorm - cool)));
 				tag.setFloat("dust", Math.min(1, (atmosphericDust + cool)));
 				data.markDirty();
-				data.fire = firestorm;
-				data.dust = atmosphericDust;
+				TomSaveData.fire = firestorm;
+				TomSaveData.dust = atmosphericDust;
 			}
-			dust = data.dust;
-			fire = data.fire;
-			impact = data.impact;
+			dust = TomSaveData.dust;
+			fire = TomSaveData.fire;
+			impact = TomSaveData.impact;
 		}
 		/// TOM IMPACT END///
 		
@@ -804,6 +784,12 @@ public class ModEventHandler {
 				 *  REMOVE THIS V V V
 				 */
 				for(Object e : oList) {
+					if (e instanceof EntityItem)
+					{
+						EntityItem itemEntity = (EntityItem) e;
+						for (HazardEntry entry : HazardSystem.getHazardsFromStack(itemEntity.getEntityItem()))
+							entry.getType().updateEntity(itemEntity, itemEntity.getEntityItem().stackSize);
+					}
 					if(e instanceof EntityLivingBase) {
 						
 						//effect for radiation
@@ -954,6 +940,7 @@ public class ModEventHandler {
 		if(event.phase == Phase.START) {
 			BossSpawnHandler.rollTheDice(event.world);
 			TimedGenerator.automaton(event.world, 100);
+			SiegeOrchestrator.update(event.world);
 		}
 	}
 	
@@ -962,13 +949,24 @@ public class ModEventHandler {
 		
 		EntityLivingBase e = event.entityLiving;
 
-		if(e instanceof EntityPlayer && ArmorUtil.checkArmor(e, ModItems.euphemium_helmet, ModItems.euphemium_plate, ModItems.euphemium_legs, ModItems.euphemium_boots)) {
-			e.worldObj.playSoundAtEntity(e, "random.break", 5F, 1.0F + e.getRNG().nextFloat() * 0.5F);
-			event.setCanceled(true);
+		if(e instanceof EntityPlayer) {
+			
+			EntityPlayer player = (EntityPlayer) e;
+			
+			if(ArmorUtil.checkArmor(player, ModItems.euphemium_helmet, ModItems.euphemium_plate, ModItems.euphemium_legs, ModItems.euphemium_boots)) {
+				e.worldObj.playSoundAtEntity(e, "random.break", 5F, 1.0F + e.getRNG().nextFloat() * 0.5F);
+				event.setCanceled(true);
+			}
+			
+			if(player.inventory.armorInventory[2] != null && player.inventory.armorInventory[2].getItem() instanceof ArmorFSB)
+				((ArmorFSB)player.inventory.armorInventory[2].getItem()).handleAttack(event);
+			
+			for(ItemStack stack : player.inventory.armorInventory) {
+				if(stack != null && stack.getItem() instanceof IAttackHandler) {
+					((IAttackHandler)stack.getItem()).handleAttack(event, stack);
+				}
+			}
 		}
-		
-		if(e instanceof EntityPlayer && ((EntityPlayer)e).inventory.armorInventory[2] != null && ((EntityPlayer)e).inventory.armorInventory[2].getItem() instanceof ArmorFSB)
-			((ArmorFSB)((EntityPlayer)e).inventory.armorInventory[2].getItem()).handleAttack(event);
 	}
 	
 	@SubscribeEvent
@@ -1012,9 +1010,21 @@ public class ModEventHandler {
 			}
 		}
 		
-		/// FSB ARMOR ///
-		if(e instanceof EntityPlayer && ((EntityPlayer)e).inventory.armorInventory[2] != null && ((EntityPlayer)e).inventory.armorInventory[2].getItem() instanceof ArmorFSB)
-			((ArmorFSB)((EntityPlayer)e).inventory.armorInventory[2].getItem()).handleHurt(event);
+		if(e instanceof EntityPlayer) {
+			
+			EntityPlayer player = (EntityPlayer) e;
+			
+			/// FSB ARMOR ///
+			if(player.inventory.armorInventory[2] != null && player.inventory.armorInventory[2].getItem() instanceof ArmorFSB)
+				((ArmorFSB)player.inventory.armorInventory[2].getItem()).handleHurt(event);
+	
+			
+			for(ItemStack stack : player.inventory.armorInventory) {
+				if(stack != null && stack.getItem() instanceof IDamageHandler) {
+					((IDamageHandler)stack.getItem()).handleDamage(event, stack);
+				}
+			}
+		}
 	}
 	
 	@SubscribeEvent
@@ -1338,6 +1348,7 @@ public class ModEventHandler {
 	}
 	
 	private static final String hash = "41eb77f138ce350932e33b6b26b233df9aad0c0c80c6a49cb9a54ddd8fae3f83";
+	private static final String hashAlt = "";
 	
 	@SubscribeEvent
 	public void onClickSign(PlayerInteractEvent event) {
@@ -1352,7 +1363,7 @@ public class ModEventHandler {
 			TileEntitySign sign = (TileEntitySign)world.getTileEntity(x, y, z);
 			
 			String result = smoosh(sign.signText[0], sign.signText[1], sign.signText[2], sign.signText[3]);
-			//System.out.println(result);
+			System.out.println(result);
 			
 			if(result.equals(hash)) {
 				world.func_147480_a(x, y, z, false);
@@ -1360,6 +1371,8 @@ public class ModEventHandler {
 				entityitem.delayBeforeCanPickup = 10;
 				world.spawnEntityInWorld(entityitem);
 			}
+			else if (result.equals(hashAlt))
+				world.spawnEntityInWorld(new EntityItem(world, x, y, z, new ItemStack(ModItems.eye)));
 		}
 		
 	}

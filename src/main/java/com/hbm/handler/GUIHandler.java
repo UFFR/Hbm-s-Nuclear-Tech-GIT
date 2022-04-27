@@ -4,7 +4,7 @@ import static com.hbm.main.MainRegistry.logger;
 
 import java.lang.reflect.InvocationTargetException;
 
-import com.hbm.interfaces.Spaghetti;
+import com.hbm.util.EnumUtil;
 
 import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,13 +12,12 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-@Spaghetti("ew")
 public class GUIHandler implements IGuiHandler {
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		TileEntity entity = world.getTileEntity(x, y, z);
-		EnumGUI gui = EnumGUI.values()[ID];
+		EnumGUI gui = EnumUtil.grabEnumSafely(EnumGUI.class, ID);
 		if (gui.hasStandardBehavior() && gui.getContainer().isPresent())
 		{
 			try
@@ -44,7 +43,7 @@ public class GUIHandler implements IGuiHandler {
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		TileEntity entity = world.getTileEntity(x, y, z);
-		EnumGUI gui = EnumGUI.values()[ID];
+		EnumGUI gui = EnumUtil.grabEnumSafely(EnumGUI.class, ID);
 		if (gui.hasStandardBehavior())
 		{
 			try

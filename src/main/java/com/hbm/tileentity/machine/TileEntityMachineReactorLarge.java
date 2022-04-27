@@ -7,12 +7,13 @@ import java.util.List;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.config.MobConfig;
 import com.hbm.explosion.ExplosionNukeGeneric;
-import com.hbm.handler.FluidTypeHandler.FluidType;
 import com.hbm.handler.radiation.ChunkRadiationManager;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidContainer;
 import com.hbm.interfaces.IFluidSource;
 import com.hbm.inventory.FluidTank;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemFuelRod;
 import com.hbm.lib.Library;
@@ -68,9 +69,9 @@ public class TileEntityMachineReactorLarge extends TileEntity
 	public TileEntityMachineReactorLarge() {
 		slots = new ItemStack[8];
 		tanks = new FluidTank[3];
-		tanks[0] = new FluidTank(FluidType.WATER, 128000, 0);
-		tanks[1] = new FluidTank(FluidType.COOLANT, 64000, 1);
-		tanks[2] = new FluidTank(FluidType.STEAM, 32000, 2);
+		tanks[0] = new FluidTank(Fluids.WATER, 128000, 0);
+		tanks[1] = new FluidTank(Fluids.COOLANT, 64000, 1);
+		tanks[2] = new FluidTank(Fluids.STEAM, 32000, 2);
 		type = ReactorFuelType.URANIUM;
 	}
 
@@ -573,30 +574,30 @@ public class TileEntityMachineReactorLarge extends TileEntity
 			
 			IInventory chest = (IInventory)te;
 			
-			Item waste = ModItems.waste_uranium_hot;
+			Item waste = ModItems.waste_uranium;
 			
 			switch(type) {
 			case PLUTONIUM:
-				waste = ModItems.waste_plutonium_hot;
+				waste = ModItems.waste_plutonium;
 				break;
 			case MOX:
-				waste = ModItems.waste_mox_hot;
+				waste = ModItems.waste_mox;
 				break;
 			case SCHRABIDIUM:
-				waste = ModItems.waste_schrabidium_hot;
+				waste = ModItems.waste_schrabidium;
 				break;
 			case THORIUM:
-				waste = ModItems.waste_thorium_hot;
+				waste = ModItems.waste_thorium;
 				break;
 			default:
-				waste = ModItems.waste_uranium_hot;
+				waste = ModItems.waste_uranium;
 				break;
 			}
 			
 			for(int i = 0; i < chest.getSizeInventory(); i++) {
 				
-				if(chest.isItemValidForSlot(i, new ItemStack(waste)) && chest.getStackInSlot(i) != null && chest.getStackInSlot(i).getItem() == waste && chest.getStackInSlot(i).stackSize < chest.getStackInSlot(i).getMaxStackSize()) {
-					chest.setInventorySlotContents(i, new ItemStack(waste, chest.getStackInSlot(i).stackSize + 1));
+				if(chest.isItemValidForSlot(i, new ItemStack(waste, 1, 1)) && chest.getStackInSlot(i) != null && chest.getStackInSlot(i).getItem() == waste && chest.getStackInSlot(i).stackSize < chest.getStackInSlot(i).getMaxStackSize()) {
+					chest.setInventorySlotContents(i, new ItemStack(waste, chest.getStackInSlot(i).stackSize + 1, 1));
 					this.waste -= wSize;
 					return;
 				}
@@ -604,8 +605,8 @@ public class TileEntityMachineReactorLarge extends TileEntity
 			
 			for(int i = 0; i < chest.getSizeInventory(); i++) {
 				
-				if(chest.isItemValidForSlot(i, new ItemStack(waste)) && chest.getStackInSlot(i) == null) {
-					chest.setInventorySlotContents(i, new ItemStack(waste));
+				if(chest.isItemValidForSlot(i, new ItemStack(waste, 1, 1)) && chest.getStackInSlot(i) == null) {
+					chest.setInventorySlotContents(i, new ItemStack(waste, 1, 1));
 					this.waste -= wSize;
 					return;
 				}
@@ -662,7 +663,6 @@ public class TileEntityMachineReactorLarge extends TileEntity
 		}
 	}
 	
-	@SuppressWarnings("incomplete-switch")
 	private void generateSteam() {
 
 		//function of SHS produced per tick
@@ -674,16 +674,9 @@ public class TileEntityMachineReactorLarge extends TileEntity
 		
 		double water = steam;
 		
-		switch(tanks[2].getTankType()) {
-		case STEAM:
-			water /= 100D;
-			break;
-		case HOTSTEAM:
-			water /= 10;
-			break;
-		case SUPERHOTSTEAM:
-			break;
-		}
+		FluidType type = tanks[2].getTankType();
+		if(type == Fluids.STEAM) water /= 100D;
+		if(type == Fluids.HOTSTEAM) water /= 10;
 		
 		tanks[0].setFill(tanks[0].getFill() - (int)Math.ceil(water));
 		tanks[2].setFill(tanks[2].getFill() + (int)Math.floor(steam));
@@ -917,48 +910,18 @@ public class TileEntityMachineReactorLarge extends TileEntity
 
 		TileEntityMachineReactorLarge.registerFuelEntry(1, ReactorFuelType.URANIUM, ModItems.nugget_uranium_fuel);
 		TileEntityMachineReactorLarge.registerFuelEntry(9, ReactorFuelType.URANIUM, ModItems.ingot_uranium_fuel);
-		TileEntityMachineReactorLarge.registerFuelEntry(6, ReactorFuelType.URANIUM, ModItems.rod_uranium_fuel);
-		TileEntityMachineReactorLarge.registerFuelEntry(12, ReactorFuelType.URANIUM, ModItems.rod_dual_uranium_fuel);
-		TileEntityMachineReactorLarge.registerFuelEntry(24, ReactorFuelType.URANIUM, ModItems.rod_quad_uranium_fuel);
-		TileEntityMachineReactorLarge.registerWasteEntry(6, ReactorFuelType.URANIUM, ModItems.rod_empty, ModItems.rod_uranium_fuel_depleted);
-		TileEntityMachineReactorLarge.registerWasteEntry(12, ReactorFuelType.URANIUM, ModItems.rod_dual_empty, ModItems.rod_dual_uranium_fuel_depleted);
-		TileEntityMachineReactorLarge.registerWasteEntry(24, ReactorFuelType.URANIUM, ModItems.rod_quad_empty, ModItems.rod_quad_uranium_fuel_depleted);
 
 		TileEntityMachineReactorLarge.registerFuelEntry(1, ReactorFuelType.PLUTONIUM, ModItems.nugget_plutonium_fuel);
 		TileEntityMachineReactorLarge.registerFuelEntry(9, ReactorFuelType.PLUTONIUM, ModItems.ingot_plutonium_fuel);
-		TileEntityMachineReactorLarge.registerFuelEntry(6, ReactorFuelType.PLUTONIUM, ModItems.rod_plutonium_fuel);
-		TileEntityMachineReactorLarge.registerFuelEntry(12, ReactorFuelType.PLUTONIUM, ModItems.rod_dual_plutonium_fuel);
-		TileEntityMachineReactorLarge.registerFuelEntry(24, ReactorFuelType.PLUTONIUM, ModItems.rod_quad_plutonium_fuel);
-		TileEntityMachineReactorLarge.registerWasteEntry(6, ReactorFuelType.PLUTONIUM, ModItems.rod_empty, ModItems.rod_plutonium_fuel_depleted);
-		TileEntityMachineReactorLarge.registerWasteEntry(12, ReactorFuelType.PLUTONIUM, ModItems.rod_dual_empty, ModItems.rod_dual_plutonium_fuel_depleted);
-		TileEntityMachineReactorLarge.registerWasteEntry(24, ReactorFuelType.PLUTONIUM, ModItems.rod_quad_empty, ModItems.rod_quad_plutonium_fuel_depleted);
-
+		
 		TileEntityMachineReactorLarge.registerFuelEntry(1, ReactorFuelType.MOX, ModItems.nugget_mox_fuel);
 		TileEntityMachineReactorLarge.registerFuelEntry(9, ReactorFuelType.MOX, ModItems.ingot_mox_fuel);
-		TileEntityMachineReactorLarge.registerFuelEntry(6, ReactorFuelType.MOX, ModItems.rod_mox_fuel);
-		TileEntityMachineReactorLarge.registerFuelEntry(12, ReactorFuelType.MOX, ModItems.rod_dual_mox_fuel);
-		TileEntityMachineReactorLarge.registerFuelEntry(24, ReactorFuelType.MOX, ModItems.rod_quad_mox_fuel);
-		TileEntityMachineReactorLarge.registerWasteEntry(6, ReactorFuelType.MOX, ModItems.rod_empty, ModItems.rod_mox_fuel_depleted);
-		TileEntityMachineReactorLarge.registerWasteEntry(12, ReactorFuelType.MOX, ModItems.rod_dual_empty, ModItems.rod_dual_mox_fuel_depleted);
-		TileEntityMachineReactorLarge.registerWasteEntry(24, ReactorFuelType.MOX, ModItems.rod_quad_empty, ModItems.rod_quad_mox_fuel_depleted);
 
-		TileEntityMachineReactorLarge.registerFuelEntry(10, ReactorFuelType.SCHRABIDIUM, ModItems.nugget_schrabidium_fuel);
-		TileEntityMachineReactorLarge.registerFuelEntry(90, ReactorFuelType.SCHRABIDIUM, ModItems.ingot_schrabidium_fuel);
-		TileEntityMachineReactorLarge.registerFuelEntry(60, ReactorFuelType.SCHRABIDIUM, ModItems.rod_schrabidium_fuel);
-		TileEntityMachineReactorLarge.registerFuelEntry(120, ReactorFuelType.SCHRABIDIUM, ModItems.rod_dual_schrabidium_fuel);
-		TileEntityMachineReactorLarge.registerFuelEntry(240, ReactorFuelType.SCHRABIDIUM, ModItems.rod_quad_schrabidium_fuel);
-		TileEntityMachineReactorLarge.registerWasteEntry(60, ReactorFuelType.SCHRABIDIUM, ModItems.rod_empty, ModItems.rod_schrabidium_fuel_depleted);
-		TileEntityMachineReactorLarge.registerWasteEntry(120, ReactorFuelType.SCHRABIDIUM, ModItems.rod_dual_empty, ModItems.rod_dual_schrabidium_fuel_depleted);
-		TileEntityMachineReactorLarge.registerWasteEntry(240, ReactorFuelType.SCHRABIDIUM, ModItems.rod_quad_empty, ModItems.rod_quad_schrabidium_fuel_depleted);
+		TileEntityMachineReactorLarge.registerFuelEntry(10, ReactorFuelType.SCHRABIDIUM, ModItems.nugget_mes);
+		TileEntityMachineReactorLarge.registerFuelEntry(90, ReactorFuelType.SCHRABIDIUM, ModItems.ingot_mes);
 
 		TileEntityMachineReactorLarge.registerFuelEntry(1, ReactorFuelType.THORIUM, ModItems.nugget_thorium_fuel);
 		TileEntityMachineReactorLarge.registerFuelEntry(9, ReactorFuelType.THORIUM, ModItems.ingot_thorium_fuel);
-		TileEntityMachineReactorLarge.registerFuelEntry(6, ReactorFuelType.THORIUM, ModItems.rod_thorium_fuel);
-		TileEntityMachineReactorLarge.registerFuelEntry(12, ReactorFuelType.THORIUM, ModItems.rod_dual_thorium_fuel);
-		TileEntityMachineReactorLarge.registerFuelEntry(24, ReactorFuelType.THORIUM, ModItems.rod_quad_thorium_fuel);
-		TileEntityMachineReactorLarge.registerWasteEntry(6, ReactorFuelType.THORIUM, ModItems.rod_empty, ModItems.rod_thorium_fuel_depleted);
-		TileEntityMachineReactorLarge.registerWasteEntry(12, ReactorFuelType.THORIUM, ModItems.rod_dual_empty, ModItems.rod_dual_thorium_fuel_depleted);
-		TileEntityMachineReactorLarge.registerWasteEntry(24, ReactorFuelType.THORIUM, ModItems.rod_quad_empty, ModItems.rod_quad_thorium_fuel_depleted);
 	}
 	
 	public static void registerFuelEntry(int nuggets, ReactorFuelType type, Item fuel) {

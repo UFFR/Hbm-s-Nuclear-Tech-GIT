@@ -77,6 +77,8 @@ public class GunConfiguration implements Cloneable
 	public EnumGunManufacturer manufacturer = EnumGunManufacturer.NONE;
 	/**Additional comments**/
 	public List<String> comment = new ArrayList<String>();
+	
+	public boolean canUnload = true;
 
 	/**bullet configs for main and alt fire**/
 	public List<Integer> config = new ArrayList<Integer>();

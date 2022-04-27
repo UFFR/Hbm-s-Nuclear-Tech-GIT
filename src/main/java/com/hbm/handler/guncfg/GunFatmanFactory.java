@@ -11,6 +11,7 @@ import com.hbm.handler.BulletConfiguration;
 import com.hbm.handler.GunConfiguration;
 import com.hbm.interfaces.IBulletImpactBehavior;
 import com.hbm.interfaces.IBulletUpdateBehavior;
+import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.items.ModItems;
 import com.hbm.lib.HbmCollection.EnumGunManufacturer;
 import com.hbm.packet.AuxParticlePacketNT;
@@ -118,11 +119,11 @@ public class GunFatmanFactory {
 		
 		return config;
 	}
-	
+	static byte i = 0;
 	public static BulletConfiguration getNukeConfig() {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardNukeConfig();
-		bullet.ammo = ModItems.ammo_nuke;
+		bullet.ammo = new ComparableStack(ModItems.ammo_nuke, 1, i++);
 		
 		bullet.bImpact = new IBulletImpactBehavior() {
 
@@ -138,7 +139,7 @@ public class GunFatmanFactory {
 	public static BulletConfiguration getNukeLowConfig() {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardNukeConfig();
-		bullet.ammo = ModItems.ammo_nuke_low;
+		bullet.ammo = new ComparableStack(ModItems.ammo_nuke, 1, i++);
 		
 		bullet.bImpact = new IBulletImpactBehavior() {
 
@@ -154,7 +155,7 @@ public class GunFatmanFactory {
 	public static BulletConfiguration getNukeHighConfig() {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardNukeConfig();
-		bullet.ammo = ModItems.ammo_nuke_high;
+		bullet.ammo = new ComparableStack(ModItems.ammo_nuke, 1, i++);
 		
 		bullet.bImpact = new IBulletImpactBehavior() {
 
@@ -170,7 +171,7 @@ public class GunFatmanFactory {
 	public static BulletConfiguration getNukeTotsConfig() {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardNukeConfig();
-		bullet.ammo = ModItems.ammo_nuke_tots;
+		bullet.ammo = new ComparableStack(ModItems.ammo_nuke, 1, i++);
 		bullet.bulletsMin = 8;
 		bullet.bulletsMax = 8;
 		bullet.spread = 0.1F;
@@ -190,7 +191,7 @@ public class GunFatmanFactory {
 	public static BulletConfiguration getNukeSafeConfig() {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardNukeConfig();
-		bullet.ammo = ModItems.ammo_nuke_safe;
+		bullet.ammo = new ComparableStack(ModItems.ammo_nuke, 1, i++);
 		
 		bullet.bImpact = new IBulletImpactBehavior() {
 
@@ -206,7 +207,7 @@ public class GunFatmanFactory {
 	public static BulletConfiguration getNukePumpkinConfig() {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardNukeConfig();
-		bullet.ammo = ModItems.ammo_nuke_pumpkin;
+		bullet.ammo = new ComparableStack(ModItems.ammo_nuke, 1, i++);
 		bullet.explosive = 10F;
 		
 		bullet.bImpact = new IBulletImpactBehavior() {
@@ -238,7 +239,7 @@ public class GunFatmanFactory {
 		
 		BulletConfiguration bullet = getNukeConfig();
 		
-		bullet.ammo = ModItems.ammo_mirv;
+		bullet.ammo = new ComparableStack(ModItems.ammo_nuke, 1, i++);
 		bullet.style = BulletConfiguration.STYLE_MIRV;
 		bullet.velocity *= 3;
 		
@@ -275,7 +276,7 @@ public class GunFatmanFactory {
 		
 		BulletConfiguration bullet = getNukeLowConfig();
 		
-		bullet.ammo = ModItems.ammo_mirv_low;
+		bullet.ammo = new ComparableStack(ModItems.ammo_nuke, 1, i++);
 		bullet.style = BulletConfiguration.STYLE_MIRV;
 		bullet.velocity *= 3;
 		
@@ -312,7 +313,7 @@ public class GunFatmanFactory {
 		
 		BulletConfiguration bullet = getNukeHighConfig();
 		
-		bullet.ammo = ModItems.ammo_mirv_high;
+		bullet.ammo = new ComparableStack(ModItems.ammo_nuke, 1, i++);
 		bullet.style = BulletConfiguration.STYLE_MIRV;
 		bullet.velocity *= 3;
 		
@@ -349,7 +350,7 @@ public class GunFatmanFactory {
 		
 		BulletConfiguration bullet = getNukeSafeConfig();
 		
-		bullet.ammo = ModItems.ammo_mirv_safe;
+		bullet.ammo = new ComparableStack(ModItems.ammo_nuke, 1, i++);
 		bullet.style = BulletConfiguration.STYLE_MIRV;
 		bullet.velocity *= 3;
 		
@@ -386,7 +387,7 @@ public class GunFatmanFactory {
 		
 		BulletConfiguration bullet = getNukeConfig();
 		
-		bullet.ammo = ModItems.ammo_mirv_special;
+		bullet.ammo = new ComparableStack(ModItems.ammo_nuke, 1, i++);
 		bullet.style = BulletConfiguration.STYLE_MIRV;
 		bullet.velocity *= 3;
 		
@@ -434,7 +435,7 @@ public class GunFatmanFactory {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardNukeConfig();
 		
-		bullet.ammo = ModItems.gun_bf_ammo;
+		bullet.ammo = new ComparableStack(ModItems.ammo_nuke, 1, i++);
 		bullet.style = BulletConfiguration.STYLE_BF;
 		
 		bullet.bImpact = new IBulletImpactBehavior() {

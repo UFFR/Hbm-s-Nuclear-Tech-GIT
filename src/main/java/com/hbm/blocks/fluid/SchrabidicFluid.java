@@ -5,8 +5,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.fluids.Fluid;
 
-public class SchrabidicFluid extends Fluid
-{
+public class SchrabidicFluid extends Fluid {
 
 	public SchrabidicFluid() {
 		super("schrabidic_fluid");

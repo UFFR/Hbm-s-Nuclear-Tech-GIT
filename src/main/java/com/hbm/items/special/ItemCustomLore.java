@@ -6,6 +6,7 @@ import java.util.Random;
 import com.hbm.config.GeneralConfig;
 import com.hbm.interfaces.IHasLore;
 import com.hbm.items.ModItems;
+import com.hbm.lib.RefStrings;
 import com.hbm.main.MainRegistry;
 import com.hbm.util.ArmorUtil;
 import com.hbm.util.I18nUtil;
@@ -161,5 +162,12 @@ public class ItemCustomLore extends Item implements IHasLore
     public ItemCustomLore setRarity(EnumRarity rarity) {
     	this.rarity = rarity;
 		return this;
+    }
+    
+    @Override
+    public ItemCustomLore setUnlocalizedName(String uloc)
+    {
+    	setTextureName(RefStrings.MODID + ':' + uloc);
+    	return (ItemCustomLore) super.setUnlocalizedName(uloc);
     }
 }

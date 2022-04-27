@@ -24,7 +24,7 @@ public class HazardTypeHydroactive extends HazardTypeBase {
 
 	@Override
 	public void updateEntity(EntityItem item, float level) {
-		if(item.worldObj.getBlock((int)Math.floor(item.posX), (int)Math.floor(item.posY), (int)Math.floor(item.posZ)).getMaterial() == Material.water) {
+		if(item.worldObj.getBlock((int)Math.floor(item.posX), (int)Math.floor(item.posY), (int)Math.floor(item.posZ)).getMaterial() == Material.water || item.isInWater() || item.isWet()) {
 			item.setDead();
 			item.worldObj.newExplosion(null, item.posX, item.posY + item.height * 0.5, item.posZ, level, false, true);
 		}

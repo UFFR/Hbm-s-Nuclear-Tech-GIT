@@ -34,8 +34,8 @@ public class EntityMissileShuttle extends EntityMissileBaseAdvanced {
 	@Override
 	public void onImpact() {
 		ExplosionNT explosion = new ExplosionNT(worldObj, null, this.posX + 0.5F, this.posY + 0.5F, this.posZ + 0.5F, 20.0F).overrideResolution(64);
-		explosion.atttributes.add(ExAttrib.NOSOUND);
-		explosion.atttributes.add(ExAttrib.NOPARTICLE);
+		explosion.attributes.add(ExAttrib.NOSOUND);
+		explosion.attributes.add(ExAttrib.NOPARTICLE);
 		explosion.explode();
 		NBTTagCompound data = new NBTTagCompound();
 		data.setString("type", "rbmkmush");

@@ -3,10 +3,11 @@ package com.hbm.inventory.recipes;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.hbm.interfaces.IResearchableRecipe;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.items.ModItems;
+import com.hbm.util.I18nUtil;
 
+import api.hbm.computer.Researchable;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
@@ -146,7 +147,7 @@ public class HadronRecipes {
 		return recipes;
 	}
 	
-	public static class HadronRecipe implements IResearchableRecipe {
+	public static class HadronRecipe extends Researchable {
 		
 		public ComparableStack in1;
 		public ComparableStack in2;
@@ -156,6 +157,7 @@ public class HadronRecipes {
 		public boolean analysisOnly;
 		
 		public HadronRecipe(ItemStack in1, ItemStack in2, int momentum, ItemStack out1, ItemStack out2, boolean analysisOnly) {
+			super(out1.getDisplayName() + '+' + out2.getDisplayName());
 			this.in1 = new ComparableStack(in1);
 			this.in2 = new ComparableStack(in2);
 			this.momentum = momentum;
@@ -163,11 +165,20 @@ public class HadronRecipes {
 			this.out2 = out2;
 			this.analysisOnly = analysisOnly;
 		}
-
 		@Override
 		public String getKey()
 		{
-			return "NTM_HADRON";
+			return I18nUtil.resolveKey(out1.getUnlocalizedName()) + '+' + I18nUtil.resolveKey(out2.getUnlocalizedName());
+		}
+		@Override
+		public HadronRecipe setPrevious(Researchable prev)
+		{
+			return (HadronRecipe) super.setPrevious(prev);
+		}
+		@Override
+		public HadronRecipe setWork(long ram, long cpu)
+		{
+			return (HadronRecipe) super.setWork(ram, cpu);
 		}
 	}
 }

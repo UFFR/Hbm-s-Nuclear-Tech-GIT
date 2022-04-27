@@ -22,6 +22,7 @@ public class ItemRBMKRod extends Item {
 	public double reactivity;					//endpoint of the function
 	public double selfRate;					//self-inflicted flux from self-igniting fuels
 	public EnumBurnFunc function = EnumBurnFunc.LOG_TEN;
+	public EnumDepleteFunction depFunc = EnumDepleteFunction.LINEAR;
 	public double xGen = 0.5D;				//multiplier for xenon production
 	public double xBurn = 50D;				//divider for xenon burnup
 	public double heat = 1D;				//heat produced per outFlux
@@ -81,6 +82,11 @@ public class ItemRBMKRod extends Item {
 
 	public ItemRBMKRod setFunction(EnumBurnFunc func) {
 		this.function = func;
+		return this;
+	}
+
+	public ItemRBMKRod setDepletionFunction(EnumDepleteFunction func) {
+		this.depFunc = func;
 		return this;
 	}
 
@@ -199,30 +205,17 @@ public class ItemRBMKRod extends Item {
 		
 		return ret;
 	}
-	/**
-	 * Function types of RBMK fuels<br>
-	 * {@link #PASSIVE} {@link #LOG_TEN} {@link #PLATEU} {@link #ARCH} {@link #SIGMOID} {@link #SQUARE_ROOT} {@link #LINEAR} {@link #QUADRATIC}
-	 * @author HBM
-	 *
-	 */
-	public static enum EnumBurnFunc
-	{
-		/** const, no reactivity **/
-		PASSIVE(EnumChatFormatting.DARK_GREEN + "SAFE / PASSIVE"),
-		/** log10(x + 1) * reactivity * 50 **/
-		LOG_TEN(EnumChatFormatting.YELLOW + "MEDIUM / LOGARITHMIC"),
-		/** (1 - e^(-x/25)) * reactivity * 100 **/
-		PLATEU(EnumChatFormatting.GREEN + "SAFE / EULER"),
-		/** x-(x²/1000) * reactivity **/
-		ARCH(EnumChatFormatting.YELLOW + "MEDIUM / NEGATIVE-QUADRATIC"),
-		/** 100 / (1 + e^(-(x - 50) / 10)) <- tiny amount of reactivity at x=0 ! **/
-		SIGMOID(EnumChatFormatting.GREEN + "SAFE / SIGMOID"),
-		/** sqrt(x) * 10 / reactivity **/
-		SQUARE_ROOT(EnumChatFormatting.YELLOW + "MEDIUM / SQUARE ROOT"),
-		/** x * reactivity **/
-		LINEAR(EnumChatFormatting.RED + "DANGEROUS / LINEAR"),
-		/** x^2 / 100 * reactivity **/
-		QUADRATIC(EnumChatFormatting.RED + "DANGEROUS / QUADRATIC");
+	
+	public static enum EnumBurnFunc {
+		PASSIVE(EnumChatFormatting.DARK_GREEN + "SAFE / PASSIVE"),			//const, no reactivity
+		LOG_TEN(EnumChatFormatting.YELLOW + "MEDIUM / LOGARITHMIC"),		//log10(x + 1) * reactivity * 50
+		PLATEU(EnumChatFormatting.GREEN + "SAFE / EULER"),					//(1 - e^(-x/25)) * reactivity * 100
+		ARCH(EnumChatFormatting.YELLOW + "MEDIUM / NEGATIVE-QUADRATIC"),	//x-(x²/1000) * reactivity
+		SIGMOID(EnumChatFormatting.GREEN + "SAFE / SIGMOID"),				//100 / (1 + e^(-(x - 50) / 10)) <- tiny amount of reactivity at x=0 !
+		SQUARE_ROOT(EnumChatFormatting.YELLOW + "MEDIUM / SQUARE ROOT"),	//sqrt(x) * 10 * reactivity
+		LINEAR(EnumChatFormatting.RED + "DANGEROUS / LINEAR"),				//x * reactivity
+		QUADRATIC(EnumChatFormatting.RED + "DANGEROUS / QUADRATIC"),		//x^2 / 100 * reactivity
+		EXPERIMENTAL(EnumChatFormatting.RED + "EXPERIMENTAL / SINE SLOPE");		//x * (sin(x) + 1)
 		
 		public String title = "";
 		
@@ -232,22 +225,23 @@ public class ItemRBMKRod extends Item {
 	}
 	
 	/**
-	 * @param flux [0;100] ...or at least those are sane levels
+	 * @param reactivity [0;100] ...or at least those are sane levels
 	 * @return the amount of reactivity yielded, unmodified by xenon
 	 */
 	public double reactivityFunc(double in, double enrichment) {
 		
-		double flux = in * enrichment;
+		double flux = in * reativityModByEnrichment(enrichment);
 		
 		switch(this.function) {
 		case PASSIVE: return selfRate * enrichment;
 		case LOG_TEN: return Math.log10(flux + 1) * 0.5D * reactivity;
 		case PLATEU: return (1 - Math.pow(Math.E, -flux / 25D)) * reactivity;
-		case ARCH: return Math.max(flux - (flux * flux / 100000D) / 100D * reactivity, 0D);
+		case ARCH: return Math.max(flux - (flux * flux / 10000D) / 100D * reactivity, 0D);
 		case SIGMOID: return reactivity / (1 + Math.pow(Math.E, -(flux - 50D) / 10D));
 		case SQUARE_ROOT: return Math.sqrt(flux) * reactivity / 10D;
 		case LINEAR: return flux / 100D * reactivity;
 		case QUADRATIC: return flux * flux / 10000D * reactivity;
+		case EXPERIMENTAL: return flux * (Math.sin(flux) + 1) * reactivity;
 		}
 		
 		return 0;
@@ -264,14 +258,35 @@ public class ItemRBMKRod extends Item {
 		case PASSIVE: return EnumChatFormatting.RED + "" + selfRate;
 		case LOG_TEN: return "log10(x + 1" + (selfRate > 0 ? (EnumChatFormatting.RED + " + " + selfRate) : "") + EnumChatFormatting.WHITE + ") * 0.5 * " + reactivity;
 		case PLATEU: return "(1 - e^-" + x + " / 25)) * " + reactivity;
-		case ARCH: return "(" + x + " - " + x + "² / 100000) / 100 * " + reactivity + " [0;∞]";
+		case ARCH: return "(" + x + " - " + x + "² / 10000) / 100 * " + reactivity + " [0;∞]";
 		case SIGMOID: return reactivity + " / (1 + e^(-(" + x + " - 50) / 10)";
 		case SQUARE_ROOT: return "sqrt(" + x + ") * " + reactivity + " / 10";
 		case LINEAR: return x + " / 100 * " + reactivity;
 		case QUADRATIC: return x + "² / 10000 * " + reactivity;
+		case EXPERIMENTAL: return x + " * (sin(" + x + ") + 1) * " + reactivity;
 		}
 		
 		return "ERROR";
+	}
+	
+	public static enum EnumDepleteFunction {
+		LINEAR,			//old function
+		RAISING_SLOPE,	//for breeding fuels such as MEU, maximum of 110% at 28% depletion
+		BOOSTED_SLOPE,	//for strong breeding fuels such Th232, maximum of 132% at 64% depletion
+		GENTLE_SLOPE,	//recommended for most fuels, maximum barely over the start, near the beginning
+		STATIC;			//for arcade-style neutron sources
+	}
+	
+	public double reativityModByEnrichment(double enrichment) {
+		
+		switch(this.depFunc) {
+		default:
+		case LINEAR: return enrichment;
+		case STATIC: return 1D;
+		case BOOSTED_SLOPE: return -enrichment + 1 + Math.sin(enrichment * enrichment * Math.PI);
+		case RAISING_SLOPE: return -enrichment + 1 + (Math.sin(enrichment * Math.PI) / 2D);
+		case GENTLE_SLOPE: return -enrichment + 1 + (Math.sin(enrichment * Math.PI) / 3D);
+		}
 	}
 	
 	/**

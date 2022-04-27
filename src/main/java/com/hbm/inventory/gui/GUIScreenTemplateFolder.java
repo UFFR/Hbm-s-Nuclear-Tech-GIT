@@ -8,17 +8,20 @@ import org.apache.logging.log4j.Level;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import com.hbm.handler.FluidTypeHandler.FluidType;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.recipes.AssemblerRecipes;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemCassette;
 import com.hbm.items.machine.ItemChemistryTemplate;
 import com.hbm.items.machine.ItemStamp;
+import com.hbm.items.machine.ItemChemistryTemplate.EnumChemistryTemplate;
 import com.hbm.items.machine.ItemStamp.StampType;
 import com.hbm.lib.RefStrings;
 import com.hbm.main.MainRegistry;
 import com.hbm.packet.ItemFolderPacket;
 import com.hbm.packet.PacketDispatcher;
+import com.hbm.util.I18nUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -66,9 +69,10 @@ public class GUIScreenTemplateFolder extends GuiScreen {
 				allStacks.add(new ItemStack(ModItems.siren_track, 1, i));
 			}
 			// Fluid IDs
-			for(int i = 1; i < FluidType.values().length; i++) {
-				if(!FluidType.values()[i].hasNoID()) {
-					allStacks.add(new ItemStack(ModItems.fluid_identifier, 1, i));
+			FluidType[] fluids = Fluids.getInNiceOrder();
+			for(int i = 1; i < fluids.length; i++) {
+				if(!fluids[i].hasNoID()) {
+					allStacks.add(new ItemStack(ModItems.fluid_identifier, 1, fluids[i].getID()));
 				}
 			}
 			// Assembly Templates
@@ -79,7 +83,10 @@ public class GUIScreenTemplateFolder extends GuiScreen {
 			}
 			// Chemistry Templates
 			for(int i = 0; i < ItemChemistryTemplate.EnumChemistryTemplate.values().length; i++) {
-				allStacks.add(new ItemStack(ModItems.chemistry_template, 1, i));
+				EnumChemistryTemplate chem = EnumChemistryTemplate.getEnum(i);
+				if(!chem.isDisabled()) {
+					allStacks.add(new ItemStack(ModItems.chemistry_template, 1, i));
+				}
 			}
 		} else {
 
@@ -114,6 +121,12 @@ public class GUIScreenTemplateFolder extends GuiScreen {
 			
 			if(stack.getDisplayName().toLowerCase().contains(sub)) {
 				stacks.add(stack);
+			} else if(stack.getItem() == ModItems.fluid_identifier) {
+				FluidType fluid = Fluids.fromID(stack.getItemDamage());
+				
+				if(I18nUtil.resolveKey(fluid.getUnlocalizedName()).toLowerCase().contains(sub)) {
+					stacks.add(stack);
+				}
 			}
 		}
 		

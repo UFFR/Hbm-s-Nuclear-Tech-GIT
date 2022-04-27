@@ -201,8 +201,7 @@ public class BlockOre extends Block {
 		if(this == ModBlocks.ore_cinnebar) {
 			return ModItems.cinnebar;
 		}
-		if(this == ModBlocks.ore_coltan)
-		{
+		if(this == ModBlocks.ore_coltan) {
 			return ModItems.fragment_coltan;
 		}
 		if(this == ModBlocks.ore_cobalt || this == ModBlocks.ore_nether_cobalt) {
@@ -240,6 +239,29 @@ public class BlockOre extends Block {
 		}
 
 		return 1;
+	}
+	
+	public boolean allowFortune = true;
+	
+	public BlockOre noFortune() {
+		this.allowFortune = false;
+		return this;
+	}
+	
+	@Override
+	public int quantityDroppedWithBonus(int fortune, Random rand) {
+		
+		if(fortune > 0 && Item.getItemFromBlock(this) != this.getItemDropped(0, rand, fortune) && allowFortune) {
+			int mult = rand.nextInt(fortune + 2) - 1;
+
+			if(mult < 0) {
+				mult = 0;
+			}
+
+			return this.quantityDropped(rand) * (mult + 1);
+		} else {
+			return this.quantityDropped(rand);
+		}
 	}
 
 	@Override

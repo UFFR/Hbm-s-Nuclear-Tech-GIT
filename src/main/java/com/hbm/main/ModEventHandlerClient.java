@@ -5,11 +5,12 @@ import java.util.Random;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import com.hbm.blocks.ILookOverlay;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.generic.BlockAshes;
-import com.hbm.blocks.machine.rbmk.RBMKBase;
+import com.hbm.config.GeneralConfig;
 import com.hbm.entity.mob.EntityHunterChopper;
 import com.hbm.entity.projectile.EntityChopperMine;
 import com.hbm.extprop.HbmLivingProps;
@@ -20,23 +21,22 @@ import com.hbm.handler.HazmatRegistry;
 import com.hbm.hazard.HazardSystem;
 import com.hbm.interfaces.IHoldableWeapon;
 import com.hbm.interfaces.IItemHUD;
+import com.hbm.interfaces.IMonocular;
 import com.hbm.interfaces.Spaghetti;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.gui.GUIArmorTable;
-import com.hbm.inventory.recipes.BreederRecipes;
 import com.hbm.items.ModItems;
 import com.hbm.items.armor.ArmorFSB;
 import com.hbm.items.armor.ArmorFSBPowered;
 import com.hbm.items.armor.ItemArmorMod;
 import com.hbm.items.armor.JetpackBase;
+import com.hbm.items.tool.ItemWatch;
 import com.hbm.items.weapon.ItemGunBase;
-import com.hbm.lib.HbmCollection;
 import com.hbm.lib.Library;
 import com.hbm.lib.RefStrings;
 import com.hbm.packet.AuxButtonPacket;
 import com.hbm.packet.GunButtonPacket;
 import com.hbm.packet.PacketDispatcher;
-import com.hbm.potion.HbmPotion;
 import com.hbm.render.anim.HbmAnimations;
 import com.hbm.render.anim.HbmAnimations.Animation;
 import com.hbm.render.block.ct.CTStitchReceiver;
@@ -44,26 +44,27 @@ import com.hbm.render.util.RenderAccessoryUtility;
 import com.hbm.render.util.RenderOverhead;
 import com.hbm.render.util.RenderScreenOverlay;
 import com.hbm.render.util.SoyuzPronter;
-import com.hbm.render.world.RenderNTMSkybox;
+import com.hbm.render.world.RenderNTMSkyboxChainloader;
+import com.hbm.render.world.RenderNTMSkyboxImpact;
 import com.hbm.sound.MovingSoundChopper;
 import com.hbm.sound.MovingSoundChopperMine;
 import com.hbm.sound.MovingSoundCrashing;
 import com.hbm.sound.MovingSoundPlayerLoop;
+import com.hbm.sound.MovingSoundPlayerLoop.EnumHbmSound;
 import com.hbm.sound.MovingSoundXVL1456;
 import com.hbm.tileentity.bomb.TileEntityNukeCustom;
 import com.hbm.tileentity.bomb.TileEntityNukeCustom.CustomNukeEntry;
 import com.hbm.tileentity.bomb.TileEntityNukeCustom.EnumEntryType;
-import com.hbm.tileentity.machine.rbmk.TileEntityRBMKBase;
-import com.hbm.util.I18nUtil;
+import com.hbm.tileentity.machine.TileEntityNukeFurnace;
 import com.hbm.util.ArmorRegistry;
 import com.hbm.util.ArmorRegistry.HazardClass;
+import com.hbm.util.ArmorUtil;
+import com.hbm.util.I18nUtil;
+import com.hbm.util.LoggingUtil;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
 import api.hbm.item.IButtonReceiver;
 import api.hbm.item.IClickReceiver;
-
-import com.hbm.sound.MovingSoundPlayerLoop.EnumHbmSound;
-
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -75,6 +76,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -91,6 +93,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
@@ -110,6 +113,7 @@ import net.minecraftforge.client.event.sound.PlaySoundEvent17;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.oredict.OreDictionary;
 
+@SuppressWarnings("static-method")
 public class ModEventHandlerClient {
 	
 	@SubscribeEvent
@@ -120,6 +124,23 @@ public class ModEventHandlerClient {
 		/// HANDLE GUN OVERLAYS ///
 		if(player.getHeldItem() != null && player.getHeldItem().getItem() instanceof IItemHUD) {
 			((IItemHUD)player.getHeldItem().getItem()).renderHUD(event, event.type, player, player.getHeldItem());
+		}
+		
+		if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof IMonocular)
+		{
+			IMonocular monocular = (IMonocular) player.getHeldItem().getItem();
+			if (monocular.isEnabled())
+			{
+				if (event.type == ElementType.CROSSHAIRS)
+				{
+					RenderScreenOverlay.renderCustomCrosshairs(event.resolution, Minecraft.getMinecraft().currentScreen, monocular.getCrosshairType());
+					Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation(RefStrings.MODID, "textures/misc/overlay_scope.png"));
+					GL11.glDisable(GL11.GL_BLEND);
+			        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+					Minecraft.getMinecraft().currentScreen.drawTexturedModalRect(0, 0, 0, 0, 256, 256);
+					Minecraft.getMinecraft().getTextureManager().bindTexture(Gui.icons);
+				}
+			}
 		}
 		
 		/// HANDLE GEIGER COUNTER HUD ///
@@ -134,6 +155,9 @@ public class ModEventHandlerClient {
 					RenderScreenOverlay.renderRadCounter(event.resolution, rads, Minecraft.getMinecraft().ingameGUI);
 				}
 			}
+			
+			if (player.inventory.hasItem(ModItems.watch_digital))
+				RenderScreenOverlay.renderWatchTime(event.resolution, ItemWatch.getTime(player.worldObj));
 		}
 
 		/// DODD DIAG HOOK FOR RBMK
@@ -141,9 +165,8 @@ public class ModEventHandlerClient {
 			Minecraft mc = Minecraft.getMinecraft();
 			World world = mc.theWorld;
 			MovingObjectPosition mop = mc.objectMouseOver;
-			ScaledResolution resolution = event.resolution;
 			
-			if(mop != null && mop.typeOfHit == mop.typeOfHit.BLOCK && world.getBlock(mop.blockX, mop.blockY, mop.blockZ) instanceof ILookOverlay) {
+			if(mop != null && mop.typeOfHit == MovingObjectType.BLOCK && world.getBlock(mop.blockX, mop.blockY, mop.blockZ) instanceof ILookOverlay) {
 				((ILookOverlay) world.getBlock(mop.blockX, mop.blockY, mop.blockZ)).printHook(event, world, mop.blockX, mop.blockY, mop.blockZ);
 			}
 		}
@@ -306,24 +329,6 @@ public class ModEventHandlerClient {
 			renderer.modelArmorChestplate.aimedBow = true;
 		}
 	}
-	
-	//just finish this somewhen i guess
-	/*@SubscribeEvent
-	public void keybindEvent(RenderPlayerEvent.Pre event) {
-		
-		HbmPlayerProps props = HbmPlayerProps.getData(Minecraft.getMinecraft().thePlayer);
-		
-		for(EnumKeybind key : EnumKeybind.values()) {
-			
-			boolean last = props.getKeyPressed(key);
-			boolean current = MainRegistry.proxy.getIsKeyPressed(key);
-	
-			if(last != current) {
-				PacketDispatcher.wrapper.sendToServer(new KeybindPacket(key, current));
-				props.setKeyPressed(key, current);
-			}
-		}
-	}*/
 	
 	@SubscribeEvent
 	public void onRenderArmorEvent(RenderPlayerEvent.SetArmorModel event) {
@@ -564,13 +569,11 @@ public class ModEventHandlerClient {
 			}
 		}
 		
-		/// BREEDING ///
-		int[] breeder = BreederRecipes.getFuelValue(stack);
+		/// NUCLEAR FURNACE FUELS ///
+		int breeder = TileEntityNukeFurnace.getFuelValue(stack);
 		
-		if(breeder != null) {
-			list.add(BreederRecipes.getHEATString("[" + I18nUtil.resolveKey("trait.heat", breeder[0]) + "]", breeder[0]));
-			list.add(EnumChatFormatting.YELLOW + I18nUtil.resolveKey("trait.breeding", breeder[1]));
-			list.add(EnumChatFormatting.YELLOW + I18nUtil.resolveKey("trait.furnace", (breeder[0] * breeder[1] * 5)));
+		if(breeder != 0) {
+			list.add(EnumChatFormatting.YELLOW + I18nUtil.resolveKey("trait.furnace", (breeder * 5)));
 		}
 		
 		/// CUSTOM NUKE ///
@@ -592,18 +595,26 @@ public class ModEventHandlerClient {
 		}
 	}
 	
-	private ResourceLocation ashes = new ResourceLocation(RefStrings.MODID + ":textures/misc/overlay_ash.png");
-	
+	private static final ResourceLocation ashes = new ResourceLocation(RefStrings.MODID + ":textures/misc/overlay_ash.png");
+	private static final ResourceLocation scope = new ResourceLocation(RefStrings.MODID, "textures/misc/overlay_scope.png");
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
 	public void onRenderStorm(RenderHandEvent event) {
+		Minecraft mc = Minecraft.getMinecraft();
+		EntityPlayer player = mc.thePlayer;
+		if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof IMonocular)
+		{
+			mc.getTextureManager().bindTexture(scope);
+			IMonocular monocular = (IMonocular) player.getHeldItem().getItem();
+			int zoom = monocular.getZoomLevel(player.getHeldItem());
+			
+		}
 		
+
 		if(BlockAshes.ashes == 0)
 			return;
 		
 		GL11.glPushMatrix();
-		
-		Minecraft mc = Minecraft.getMinecraft();
 
 		GL11.glRotatef(-mc.thePlayer.rotationYaw, 0, 1, 0);
 		GL11.glRotatef((mc.thePlayer.rotationPitch), 1, 0, 0);
@@ -624,14 +635,14 @@ public class ModEventHandlerClient {
 		Tessellator tessellator = Tessellator.instance;
 
 		//int d = mc.theWorld.getLightBrightnessForSkyBlocks(MathHelper.floor_double(mc.thePlayer.posX), MathHelper.floor_double(mc.thePlayer.posY), MathHelper.floor_double(mc.thePlayer.posZ), 0);
-		int cX = ModEventHandler.currentBrightness % 65536;
-		int cY = ModEventHandler.currentBrightness / 65536;
-		int lX = ModEventHandler.lastBrightness % 65536;
-		int lY = ModEventHandler.lastBrightness / 65536;
+		int cX = currentBrightness % 65536;
+		int cY = currentBrightness / 65536;
+		int lX = lastBrightness % 65536;
+		int lY = lastBrightness / 65536;
 		float interp = (mc.theWorld.getTotalWorldTime() % 20) * 0.05F;
 		
 		if(mc.theWorld.getTotalWorldTime() == 1)
-			ModEventHandler.lastBrightness = ModEventHandler.currentBrightness;
+			lastBrightness = currentBrightness;
 		
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (lX + (cX - lX) * interp) / 1.0F, (lY + (cY - lY) * interp) / 1.0F);
 
@@ -661,6 +672,45 @@ public class ModEventHandlerClient {
 
 		GL11.glPopMatrix();
 	}
+
+	public static int currentBrightness = 0;
+	public static int lastBrightness = 0;
+	
+	@SubscribeEvent
+	public void clentTick(ClientTickEvent event) {
+		
+		Minecraft mc = Minecraft.getMinecraft();
+		
+		if(mc.gameSettings.renderDistanceChunks > 16 && GeneralConfig.enableRenderDistCheck && ! FMLClientHandler.instance().hasOptifine()) {
+			mc.gameSettings.renderDistanceChunks = 16;
+			LoggingUtil.errorWithHighlight("========================== WARNING ==========================");
+			LoggingUtil.errorWithHighlight("Dangerous render distance detected: Values over 16 only work on 1.8+ or with Optifine installed!!");
+			LoggingUtil.errorWithHighlight("Set '1.25_enableRenderDistCheck' in hbm.cfg to 'false' to disable this check.");
+			LoggingUtil.errorWithHighlight("========================== WARNING ==========================");
+			LoggingUtil.errorWithHighlight("If you got this error after removing Optifine: Consider deleting your option files after removing mods.");
+			LoggingUtil.errorWithHighlight("If you got this error after downgrading your Minecraft version: Consider using a launcher that doesn't reuse the same folders for every game instance. MultiMC for example, it's really good and it comes with a dedicated cat button. You like cats, right? Are you using the Microsoft launcher? The one launcher that turns every version switch into a tightrope act because all the old config and options files are still here because different instances all use the same folder structure instead of different folders like a competent launcher would, because some MO-RON thought that this was an acceptable way of doing things? Really? The launcher that circumcises every crashlog into indecipherable garbage, tricking oblivious people into posting that as a \"crash report\", effectively wasting everyone's time? The launcher made by the company that thought it would be HI-LA-RI-OUS to force everyone to use Microsoft accounts, effectively breaking every other launcher until they implement their terrible auth system?");
+			LoggingUtil.errorWithHighlight("========================== WARNING ==========================");
+		}
+		
+		if(mc.theWorld == null || mc.thePlayer == null)
+			return;
+		
+		if(event.phase == Phase.START && event.side == Side.CLIENT) {
+			
+			if(BlockAshes.ashes > 256) BlockAshes.ashes = 256;
+			if(BlockAshes.ashes > 0) BlockAshes.ashes -= 2;
+			if(BlockAshes.ashes < 0) BlockAshes.ashes = 0;
+			
+			if(mc.theWorld.getTotalWorldTime() % 20 == 0) {
+				ModEventHandlerClient.lastBrightness = ModEventHandlerClient.currentBrightness;
+				currentBrightness = mc.theWorld.getLightBrightnessForSkyBlocks(MathHelper.floor_double(mc.thePlayer.posX), MathHelper.floor_double(mc.thePlayer.posY), MathHelper.floor_double(mc.thePlayer.posZ), 0);
+			}
+			
+			if(ArmorUtil.isWearingEmptyMask(mc.thePlayer)) {
+				MainRegistry.proxy.displayTooltip(EnumChatFormatting.RED + "Your mask has no filter!");
+			}
+		}
+	}
 	
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent(priority = EventPriority.LOWEST)
@@ -673,8 +723,17 @@ public class ModEventHandlerClient {
 			if(world != null && world.provider instanceof WorldProviderSurface) {
 				
 				IRenderHandler sky = world.provider.getSkyRenderer();
-				if(!(sky instanceof RenderNTMSkybox)) {
-					world.provider.setSkyRenderer(new RenderNTMSkybox());
+				
+				if(ModEventHandler.dust > 0 || ModEventHandler.fire > 0) {
+
+					if(!(sky instanceof RenderNTMSkyboxImpact)) {
+						world.provider.setSkyRenderer(new RenderNTMSkyboxImpact());
+					}
+				} else {
+
+					if(!(sky instanceof RenderNTMSkyboxChainloader)) {
+						world.provider.setSkyRenderer(new RenderNTMSkyboxChainloader(sky));
+					}
 				}
 			}
 		}
@@ -769,12 +828,18 @@ public class ModEventHandlerClient {
 			if(chestplate.thermal && HbmPlayerProps.getData(player).enableHUD)
 				RenderOverhead.renderThermalSight(event.partialTicks);
 		}
+		
+		if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof IMonocular)
+		{
+			IMonocular monocular = (IMonocular) player.getHeldItem().getItem();
+			if (monocular.hasHUD())
+				RenderOverhead.renderThermalSight(event.partialTicks);
+		}
 	}
 	
-	private static final ResourceLocation digammaStar = new ResourceLocation("hbm:textures/misc/star_digamma.png");
+	/*private static final ResourceLocation digammaStar = new ResourceLocation("hbm:textures/misc/star_digamma.png");
 	
 	@SideOnly(Side.CLIENT)
-	//@SubscribeEvent
 	public void onRenderDigammaStar(RenderWorldLastEvent event) {
 		
 		World world = Minecraft.getMinecraft().theWorld;
@@ -816,7 +881,7 @@ public class ModEventHandlerClient {
 		GL11.glEnable(GL11.GL_ALPHA_TEST);
 		
 		GL11.glPopMatrix();
-	}
+	}*/
 	
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void preRenderEventFirst(RenderLivingEvent.Pre event) {

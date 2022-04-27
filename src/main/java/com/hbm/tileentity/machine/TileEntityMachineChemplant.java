@@ -4,13 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import com.hbm.handler.FluidTypeHandler.FluidType;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidContainer;
 import com.hbm.interfaces.IFluidSource;
+import com.hbm.interfaces.Spaghetti;
 import com.hbm.inventory.FluidStack;
 import com.hbm.inventory.FluidTank;
 import com.hbm.inventory.UpgradeManager;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.recipes.MachineRecipes;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemChemistryTemplate;
@@ -21,6 +23,9 @@ import com.hbm.packet.AuxParticlePacket;
 import com.hbm.packet.LoopedSoundPacket;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.packet.TEChemplantPacket;
+import com.hbm.tileentity.machine.storage.TileEntityCrateIron;
+import com.hbm.tileentity.machine.storage.TileEntityCrateSteel;
+import com.hbm.util.ItemStackUtil;
 
 import api.hbm.energy.IBatteryItem;
 import api.hbm.energy.IEnergyUser;
@@ -62,10 +67,10 @@ public class TileEntityMachineChemplant extends TileEntity implements ISidedInve
 	public TileEntityMachineChemplant() {
 		slots = new ItemStack[21];
 		tanks = new FluidTank[4];
-		tanks[0] = new FluidTank(FluidType.NONE, 24000, 0);
-		tanks[1] = new FluidTank(FluidType.NONE, 24000, 1);
-		tanks[2] = new FluidTank(FluidType.NONE, 24000, 2);
-		tanks[3] = new FluidTank(FluidType.NONE, 24000, 3);
+		tanks[0] = new FluidTank(Fluids.NONE, 24000, 0);
+		tanks[1] = new FluidTank(Fluids.NONE, 24000, 1);
+		tanks[2] = new FluidTank(Fluids.NONE, 24000, 2);
+		tanks[3] = new FluidTank(Fluids.NONE, 24000, 3);
 	}
 
 	@Override
@@ -540,10 +545,10 @@ public class TileEntityMachineChemplant extends TileEntity implements ISidedInve
 			FluidStack[] inputs = MachineRecipes.getFluidInputFromTempate(slots[4]);
 			FluidStack[] outputs = MachineRecipes.getFluidOutputFromTempate(slots[4]);
 
-			tanks[0].setTankType(inputs[0] == null ? FluidType.NONE : inputs[0].type);
-			tanks[1].setTankType(inputs[1] == null ? FluidType.NONE : inputs[1].type);
-			tanks[2].setTankType(outputs[0] == null ? FluidType.NONE : outputs[0].type);
-			tanks[3].setTankType(outputs[1] == null ? FluidType.NONE : outputs[1].type);
+			tanks[0].setTankType(inputs[0] == null ? Fluids.NONE : inputs[0].type);
+			tanks[1].setTankType(inputs[1] == null ? Fluids.NONE : inputs[1].type);
+			tanks[2].setTankType(outputs[0] == null ? Fluids.NONE : outputs[0].type);
+			tanks[3].setTankType(outputs[1] == null ? Fluids.NONE : outputs[1].type);
 		}
 	}
 	
@@ -579,34 +584,35 @@ public class TileEntityMachineChemplant extends TileEntity implements ISidedInve
 			tanks[1].setFill(tanks[1].getFill() - fluids[1].fill);
 	}
 	
+	@Spaghetti("what the fuck am i looking at")
 	public boolean hasSpaceForItems(ItemStack[] stacks) {
 		if(stacks == null)
 			return true;
 		if(stacks != null && Library.isArrayEmpty(stacks))
 			return true;
 
-		ItemStack sta0 = Library.carefulCopy(slots[5]);
+		ItemStack sta0 = ItemStackUtil.carefulCopy(slots[5]);
 		if(sta0 != null)
 			sta0.stackSize = 1;
-		ItemStack sta1 = Library.carefulCopy(stacks[0]);
+		ItemStack sta1 = ItemStackUtil.carefulCopy(stacks[0]);
 		if(sta1 != null)
 			sta1.stackSize = 1;
-		ItemStack sta2 = Library.carefulCopy(slots[6]);
+		ItemStack sta2 = ItemStackUtil.carefulCopy(slots[6]);
 		if(sta2 != null)
 			sta2.stackSize = 1;
-		ItemStack sta3 = Library.carefulCopy(stacks[1]);
+		ItemStack sta3 = ItemStackUtil.carefulCopy(stacks[1]);
 		if(sta3 != null)
 			sta3.stackSize = 1;
-		ItemStack sta4 = Library.carefulCopy(slots[7]);
+		ItemStack sta4 = ItemStackUtil.carefulCopy(slots[7]);
 		if(sta4 != null)
 			sta4.stackSize = 1;
-		ItemStack sta5 = Library.carefulCopy(stacks[2]);
+		ItemStack sta5 = ItemStackUtil.carefulCopy(stacks[2]);
 		if(sta5 != null)
 			sta5.stackSize = 1;
-		ItemStack sta6 = Library.carefulCopy(slots[8]);
+		ItemStack sta6 = ItemStackUtil.carefulCopy(slots[8]);
 		if(sta6 != null)
 			sta6.stackSize = 1;
-		ItemStack sta7 = Library.carefulCopy(stacks[3]);
+		ItemStack sta7 = ItemStackUtil.carefulCopy(stacks[3]);
 		if(sta7 != null)
 			sta7.stackSize = 1;
 		

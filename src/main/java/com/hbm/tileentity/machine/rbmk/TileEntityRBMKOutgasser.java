@@ -9,12 +9,13 @@ import java.util.Optional;
 
 import com.hbm.blocks.ModBlocks;
 import com.hbm.entity.projectile.EntityDebrisBase.DebrisType;
-import com.hbm.handler.FluidTypeHandler.FluidType;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidSource;
 import com.hbm.inventory.FluidTank;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
+import com.hbm.inventory.fluid.*;
 import com.hbm.items.ModItems;
+import com.hbm.items.machine.ItemBreedingRod.BreedingRodType;
 import com.hbm.items.machine.ItemFluidIcon;
 import com.hbm.items.special.Orichalcum;
 import com.hbm.lib.Library;
@@ -35,7 +36,7 @@ public class TileEntityRBMKOutgasser extends TileEntityRBMKSlottedBase implement
 
 	public TileEntityRBMKOutgasser() {
 		super(2);
-		gas = new FluidTank(FluidType.TRITIUM, 64000, 0);
+		gas = new FluidTank(Fluids.TRITIUM, 64000, 0);
 	}
 
 	@Override
@@ -82,10 +83,10 @@ public class TileEntityRBMKOutgasser extends TileEntityRBMKSlottedBase implement
 	private static final HashMap<Object, IrradiationRecipe> recipes = new HashMap<Object, IrradiationRecipe>();
 	
 	static {
-		recipes.put(LI.block(), newRecipe(ItemFluidIcon.addQuantity(new ItemStack(ModItems.fluid_icon, 1, FluidType.TRITIUM.ordinal()), 10000)));
-		recipes.put(LI.ingot(), newRecipe(ItemFluidIcon.addQuantity(new ItemStack(ModItems.fluid_icon, 1, FluidType.TRITIUM.ordinal()), 1000)));
-		recipes.put(LI.dust(), newRecipe(ItemFluidIcon.addQuantity(new ItemStack(ModItems.fluid_icon, 1, FluidType.TRITIUM.ordinal()), 1000)));
-		recipes.put(LI.dustTiny(), newRecipe(ItemFluidIcon.addQuantity(new ItemStack(ModItems.fluid_icon, 1, FluidType.TRITIUM.ordinal()), 100)));
+		recipes.put(LI.block(), newRecipe(ItemFluidIcon.addQuantity(new ItemStack(ModItems.fluid_icon, 1, Fluids.TRITIUM.getID()), 10000)));
+		recipes.put(LI.ingot(), newRecipe(ItemFluidIcon.addQuantity(new ItemStack(ModItems.fluid_icon, 1, Fluids.TRITIUM.getID()), 1000)));
+		recipes.put(LI.dust(), newRecipe(ItemFluidIcon.addQuantity(new ItemStack(ModItems.fluid_icon, 1, Fluids.TRITIUM.getID()), 1000)));
+		recipes.put(LI.dustTiny(), newRecipe(ItemFluidIcon.addQuantity(new ItemStack(ModItems.fluid_icon, 1, Fluids.TRITIUM.getID()), 100)));
 		recipes.put(AU.ingot(), newRecipe(new ItemStack(ModItems.ingot_au198)));
 		recipes.put(AU.nugget(), newRecipe(new ItemStack(ModItems.nugget_au198)));
 		recipes.put(AU.dust(), newRecipe(new ItemStack(ModItems.powder_au198)));
@@ -96,9 +97,9 @@ public class TileEntityRBMKOutgasser extends TileEntityRBMKSlottedBase implement
 		recipes.put(TH232.ingot(), newRecipe(new ItemStack(ModItems.ingot_tha), 50));
 		recipes.put(TH232.nugget(), newRecipe(new ItemStack(ModItems.nugget_tha)));
 		recipes.put(TH232.billet(), newRecipe(new ItemStack(ModItems.billet_tha), 50));
-		recipes.put(new ComparableStack(ModItems.rod_th232), newRecipe(new ItemStack(ModItems.rod_tha)));
-		recipes.put(new ComparableStack(ModItems.rod_dual_th232), newRecipe(new ItemStack(ModItems.rod_dual_tha)));
-		recipes.put(new ComparableStack(ModItems.rod_quad_th232), newRecipe(new ItemStack(ModItems.rod_quad_tha)));
+		recipes.put(new ComparableStack(ModItems.rod, 1, BreedingRodType.TH232.ordinal()), newRecipe(new ItemStack(ModItems.rod, 1, BreedingRodType.THA.ordinal())));
+		recipes.put(new ComparableStack(ModItems.rod_dual, 1, BreedingRodType.TH232.ordinal()), newRecipe(new ItemStack(ModItems.rod_dual, 1, BreedingRodType.THA.ordinal())));
+		recipes.put(new ComparableStack(ModItems.rod_quad, 1, BreedingRodType.TH232.ordinal()), newRecipe(new ItemStack(ModItems.rod_quad, 1, BreedingRodType.THA.ordinal())));
 		recipes.put(RA226.block(), newRecipe(new ItemStack(ModBlocks.block_ra226)));
 		recipes.put(RA226.nugget(), newRecipe(new ItemStack(ModItems.nugget_actinium)));
 		recipes.put(RA226.billet(), newRecipe(new ItemStack(ModItems.billet_actinium)));
@@ -124,7 +125,7 @@ public class TileEntityRBMKOutgasser extends TileEntityRBMKSlottedBase implement
 			return false;
 		
 		if(recipe.output.getItem() == ModItems.fluid_icon) {
-			return recipe.output.getItemDamage() == gas.getTankType().ordinal() && gas.getFill() + ItemFluidIcon.getQuantity(recipe.output) <= gas.getMaxFill();
+			return recipe.output.getItemDamage() == gas.getTankType().getID() && gas.getFill() + ItemFluidIcon.getQuantity(recipe.output) <= gas.getMaxFill();
 		}
 		
 		if(slots[1] == null)
@@ -277,7 +278,7 @@ public class TileEntityRBMKOutgasser extends TileEntityRBMKSlottedBase implement
 		NBTTagCompound data = new NBTTagCompound();
 		data.setInteger("gas", this.gas.getFill());
 		data.setInteger("maxGas", this.gas.getMaxFill());
-		data.setShort("type", (short)this.gas.getTankType().ordinal());
+		data.setShort("type", (short)this.gas.getTankType().getID());
 		data.setDouble("progress", this.progress);
 		return data;
 	}

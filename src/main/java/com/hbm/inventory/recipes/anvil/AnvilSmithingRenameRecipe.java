@@ -1,6 +1,5 @@
 package com.hbm.inventory.recipes.anvil;
 
-import com.hbm.inventory.RecipesCommon;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 
 import net.minecraft.init.Items;
@@ -39,7 +38,7 @@ public class AnvilSmithingRenameRecipe extends AnvilSmithingRecipe {
 		return out;
 	}
 	
-	public String getDisplayName(ItemStack stack) {
+	public static String getDisplayName(ItemStack stack) {
 		String s = null;
 
 		if(stack.stackTagCompound != null && stack.stackTagCompound.hasKey("display", 10)) {

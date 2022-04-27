@@ -2,7 +2,6 @@ package com.hbm.blocks.machine.rbmk;
 
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ILookOverlay;
-import com.hbm.handler.EnumGUI;
 import com.hbm.handler.MultiblockHandlerXR;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemRBMKLid;
@@ -12,6 +11,7 @@ import com.hbm.tileentity.machine.rbmk.RBMKDials;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKBase;
 
 import api.hbm.block.IToolable;
+import api.hbm.block.IToolable.ToolType;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -57,7 +57,7 @@ public abstract class RBMKBase extends BlockDummyable implements IToolable, ILoo
 		return 0;
 	}
 	
-	public boolean openInv(World world, int x, int y, int z, EntityPlayer player, EnumGUI gui) {
+	public boolean openInv(World world, int x, int y, int z, EntityPlayer player, int gui) {
 		
 		if(world.isRemote) {
 			return true;
@@ -82,7 +82,7 @@ public abstract class RBMKBase extends BlockDummyable implements IToolable, ILoo
 		}
 		
 		if(!player.isSneaking()) {
-			FMLNetworkHandler.openGui(player, MainRegistry.instance, gui.ordinal(), world, pos[0], pos[1], pos[2]);
+			FMLNetworkHandler.openGui(player, MainRegistry.instance, gui, world, pos[0], pos[1], pos[2]);
 			return true;
 		} else {
 			return true;
@@ -180,7 +180,7 @@ public abstract class RBMKBase extends BlockDummyable implements IToolable, ILoo
 							world.spawnEntityInWorld(new EntityItem(world, pos[0] + 0.5, pos[1] + 0.5 + RBMKDials.getColumnHeight(world), pos[2] + 0.5, new ItemStack(ModItems.rbmk_lid_glass)));
 						}
 						
-						world.setBlockMetadataWithNotify(pos[0], pos[1], pos[2], DIR_NO_LID.ordinal() + offset, 3);
+						world.setBlockMetadataWithNotify(pos[0], pos[1], pos[2], DIR_NO_LID.ordinal() + this.offset, 3);
 					}
 					
 					return true;

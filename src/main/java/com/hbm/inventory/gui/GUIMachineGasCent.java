@@ -6,6 +6,7 @@ import com.hbm.inventory.FluidTank;
 import com.hbm.inventory.container.ContainerMachineGasCent;
 import com.hbm.lib.RefStrings;
 import com.hbm.tileentity.machine.TileEntityMachineGasCent;
+import com.hbm.util.I18nUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
@@ -34,10 +35,11 @@ public class GUIMachineGasCent extends GuiInfoContainer {
 		
 		this.drawElectricityInfo(this, mouseX, mouseY, guiLeft + 8, guiTop + 51 - 34, 16, 34, gasCent.power, gasCent.maxPower);
 		
-		String[] info = new String[] { "Uranium enrichment requires cascades.", "Two-centrifuge cascades will give you", "uranium fuel, four-centrifuge cascades", "will give you total separation."};
-		this.drawCustomInfoStat(mouseX, mouseY, guiLeft - 16, guiTop + 16, 16, 16, guiLeft - 8, guiTop + 16 + 16, info);
-		String[] info2 = new String[] { "A centrifuge overclocking upgrade is", "required for total isotopic separation."};
-		this.drawCustomInfoStat(mouseX, mouseY, guiLeft - 16, guiTop + 32, 16, 16, guiLeft - 8, guiTop + 32 + 16, info2);
+		String[] enrichmentText = I18nUtil.resolveKeyArray("desc.gui.gasCent.enrichment");
+		this.drawCustomInfoStat(mouseX, mouseY, guiLeft - 16, guiTop + 16, 16, 16, guiLeft - 8, guiTop + 16 + 16, enrichmentText);
+		
+		String[] transferText = I18nUtil.resolveKeyArray("desc.gui.gasCent.output");
+		this.drawCustomInfoStat(mouseX, mouseY, guiLeft - 16, guiTop + 32, 16, 16, guiLeft - 8, guiTop + 32 + 16, transferText);
 	}
 	
 	@Override
@@ -60,10 +62,16 @@ public class GUIMachineGasCent extends GuiInfoContainer {
 		int j = (int)gasCent.getCentrifugeProgressScaled(33);
 		drawTexturedModalRect(guiLeft + 74, guiTop + 37, 208, 0, j, 12);
 		
-		int a = gasCent.getTankScaled(32, 0);
+		int a = gasCent.getTankScaled(31, 0);
 		switch (gasCent.inputTank.getTankType()) {
 			case PF6:
 				drawTexturedModalRect(guiLeft + 58, guiTop + 62 - a, 200, 31 - a, 8, a);
+				break;
+			case MUD:
+				drawTexturedModalRect(guiLeft + 58, guiTop + 62 - a, 192, 63 - a, 8, a);
+				break;
+			case MUD_HEAVY:
+				drawTexturedModalRect(guiLeft + 58, guiTop + 62 - a, 192, 63 - a, 8, a);
 				break;
 			case NONE:
 				break;
@@ -71,10 +79,13 @@ public class GUIMachineGasCent extends GuiInfoContainer {
 				drawTexturedModalRect(guiLeft + 58, guiTop + 62 - a, 192, 31 - a, 8, a);
 		}
 		
-		int b = gasCent.getTankScaled(32, 1);
+		int b = gasCent.getTankScaled(31, 1);
 		switch (gasCent.outputTank.getTankType()) {
 			case PF6:
 				drawTexturedModalRect(guiLeft + 114, guiTop + 62 - b, 200, 31 - b, 8, b);
+				break;
+			case MUD_HEAVY:
+				drawTexturedModalRect(guiLeft + 114, guiTop + 62 - b, 192, 63 - b, 8, b);
 				break;
 			case NONE:
 				break;

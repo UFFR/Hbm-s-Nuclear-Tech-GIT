@@ -384,10 +384,30 @@ public class ArmorUtil {
 			append = " (" + ((max - meta) * 100 / max) + "%)";
 		}
 		
-		List<String> lore = new ArrayList();
+		List<String> lore = new ArrayList<>();
 		list.add("  " + filter.getDisplayName() + append);
 		filter.getItem().addInformation(filter, player, lore, ext);
 		ForgeEventFactory.onItemTooltip(filter, player, lore, ext);
 		lore.forEach(x -> list.add(EnumChatFormatting.YELLOW + "  " + x));
+	}
+	
+	public static boolean isWearingEmptyMask(EntityPlayer player) {
+		
+		ItemStack mask = player.getEquipmentInSlot(4);
+		
+		if(mask == null)
+			return false;
+		
+		if(mask.getItem() instanceof IGasMask) {
+			return getGasMaskFilter(mask) == null;
+		}
+		
+		ItemStack mod = ArmorModHandler.pryMods(mask)[ArmorModHandler.helmet_only];
+		
+		if(mod != null && mod.getItem() instanceof IGasMask) {
+			return getGasMaskFilter(mod) == null;
+		}
+		
+		return false;
 	}
 }

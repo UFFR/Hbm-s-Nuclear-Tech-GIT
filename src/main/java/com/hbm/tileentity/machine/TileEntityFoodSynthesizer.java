@@ -2,7 +2,8 @@ package com.hbm.tileentity.machine;
 
 import java.util.ArrayList;
 
-import com.hbm.config.GeneralConfig;
+import com.hbm.inventory.FluidTank;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.items.ModItems;
 import com.hbm.lib.Library;
 import com.hbm.tileentity.TileEntityMachineBase;
@@ -18,10 +19,9 @@ public class TileEntityFoodSynthesizer extends TileEntityMachineBase implements 
 	private long power = 0;
 	public static final long powerRate = 100000;
 	public static final long maxPower = 1000000000;
-	private int fuel = 0;
-	public static final int fuelRatio = GeneralConfig.enableBabyMode ? 500 : 250;
 	public static final int maxFuel = 32000;
 	private static ArrayList<Pair<Item, Integer>> recipes = new ArrayList<>();
+	private final FluidTank tank;
 	static
 	{
 		addRecipe(Items.apple, 250);
@@ -34,7 +34,8 @@ public class TileEntityFoodSynthesizer extends TileEntityMachineBase implements 
 	}
 	public TileEntityFoodSynthesizer()
 	{
-		super(3);
+		super(4);
+		tank = new FluidTank(Fluids.SALIENT, maxFuel, 0);
 	}
 
 	@Override
@@ -44,16 +45,10 @@ public class TileEntityFoodSynthesizer extends TileEntityMachineBase implements 
 		if (!worldObj.isRemote)
 		{
 			power = Library.chargeTEFromItems(slots, 0, power, maxPower);
-			// Add to fuel
-			if (fuel + fuelRatio <= maxFuel && slots[1] != null && getStackInSlot(1).getItem() == ModItems.biomass)
-			{
-				fuel += fuelRatio;
-				decrStackSize(1, 1);
-			}
+			tank.updateTank(this);
 		}
 		NBTTagCompound data = new NBTTagCompound();
 		data.setLong("power", power);
-		data.setInteger("fuel", fuel);
 		networkPack(data, 10);
 	}
 
@@ -61,7 +56,6 @@ public class TileEntityFoodSynthesizer extends TileEntityMachineBase implements 
 	public void networkUnpack(NBTTagCompound nbt)
 	{
 		power = nbt.getLong("power");
-		fuel = nbt.getInteger("fuel");
 	}
 	
 	@Override
@@ -69,7 +63,6 @@ public class TileEntityFoodSynthesizer extends TileEntityMachineBase implements 
 	{
 		super.writeToNBT(nbt);
 		nbt.setLong("power", power);
-		nbt.setInteger("fuel", fuel);
 	}
 	
 	@Override
@@ -77,7 +70,6 @@ public class TileEntityFoodSynthesizer extends TileEntityMachineBase implements 
 	{
 		super.readFromNBT(nbt);
 		power = nbt.getLong("power");
-		fuel = nbt.getInteger("fuel");
 	}
 	
 	@Override

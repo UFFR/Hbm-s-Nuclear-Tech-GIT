@@ -193,6 +193,18 @@ public class InventoryUtil {
 		return stack1.getTagCompound().equals(stack2.getTagCompound());
 	}
 	
+	public static boolean doesPlayerHaveAStack(EntityPlayer player, AStack stack)
+	{
+		return doesPlayerHaveAStack(player, stack, false);
+	}
+	
+	public static boolean doesPlayerHaveAStack(EntityPlayer player, AStack stack, boolean shouldRemove)
+	{
+		ArrayList<AStack> single = new ArrayList<>(1);
+		single.add(stack);
+		return doesPlayerHaveAStacks(player, single, shouldRemove);
+	}
+	
 	/**
 	 * Checks if a player has matching item stacks in his inventory and removes them if so desired
 	 * @param player
@@ -203,7 +215,12 @@ public class InventoryUtil {
 	public static boolean doesPlayerHaveAStacks(EntityPlayer player, List<AStack> stacks, boolean shouldRemove) {
 		
 		ItemStack[] original = player.inventory.mainInventory;
-		ItemStack[] inventory = new ItemStack[original.length];
+		return doesInventoryHaveAStacks(original, stacks, shouldRemove);
+	}
+	
+	public static boolean doesInventoryHaveAStacks(ItemStack[] inventory, List<AStack> stacks, boolean shouldRemove)
+	{
+		ItemStack[] copy = new ItemStack[inventory.length];
 		AStack[] input = new AStack[stacks.size()];
 		
 		//first we copy the inputs into an array because 1. it's easier to deal with and 2. we can dick around with the stack sized with no repercussions
@@ -212,9 +229,9 @@ public class InventoryUtil {
 		}
 		
 		//then we copy the inventory so we can dick around with it as well without making actual modifications to the player's inventory
-		for(int i = 0; i < original.length; i++) {
-			if(original[i] != null) {
-				inventory[i] = original[i].copy();
+		for(int i = 0; i < inventory.length; i++) {
+			if(inventory[i] != null) {
+				copy[i] = inventory[i].copy();
 			}
 		}
 		
@@ -224,9 +241,9 @@ public class InventoryUtil {
 			AStack stack = input[i];
 			
 			//...and compare each ingredient to every stack in the inventory
-			for(int j = 0; j < inventory.length; j++) {
+			for(int j = 0; j < copy.length; j++) {
 				
-				ItemStack inv = inventory[j];
+				ItemStack inv = copy[j];
 				
 				//we check if it matches but ignore stack size for now
 				if(stack.matchesRecipe(inv, true)) {
@@ -242,7 +259,7 @@ public class InventoryUtil {
 					}
 					
 					if(inv.stackSize <= 0) {
-						inventory[j] = null;
+						copy[j] = null;
 						System.out.println("da yis");
 					}
 				}
@@ -256,12 +273,12 @@ public class InventoryUtil {
 		}
 		
 		if(shouldRemove) {
-			for(int i = 0; i < original.length; i++) {
+			for(int i = 0; i < inventory.length; i++) {
 				
-				if(inventory[i] != null && inventory[i].stackSize <= 0)
-					original[i] = null;
+				if(copy[i] != null && copy[i].stackSize <= 0)
+					inventory[i] = null;
 				else
-					original[i] = inventory[i];
+					inventory[i] = copy[i];
 			}
 		}
 		
@@ -294,7 +311,6 @@ public class InventoryUtil {
 			if(stack != null) {
 				
 				int[] ids = OreDictionary.getOreIDs(stack);
-				List<String> dicts = new ArrayList<String>();
 				
 				for(int id : ids) {
 					if(OreDictionary.getOreName(id).equals(dict)) {
@@ -317,7 +333,6 @@ public class InventoryUtil {
 			if(stack != null) {
 				
 				int[] ids = OreDictionary.getOreIDs(stack);
-				List<String> dicts = new ArrayList<String>();
 				
 				for(int id : ids) {
 					if(OreDictionary.getOreName(id).equals(dict)) {
@@ -330,5 +345,54 @@ public class InventoryUtil {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Turns objects into 2D ItemStack arrays. Index 1: Ingredient slot, index 2: variation (ore dict)
+	 * Handles:<br>
+	 * <ul>
+	 * <li>ItemStack</li>
+	 * <li>ItemStack[]</li>
+	 * <li>AStack</li>
+	 * <li>AStack[]</li>
+	 * </ul>
+	 * @param o
+	 * @return
+	 */
+	public static ItemStack[][] extractObject(Object o) {
+		
+		if(o instanceof ItemStack) {
+			ItemStack[][] stacks = new ItemStack[1][1];
+			stacks[0][0] = ((ItemStack)o).copy();
+			return stacks;
+		}
+		
+		if(o instanceof ItemStack[]) {
+			ItemStack[] ingredients = (ItemStack[]) o;
+			ItemStack[][] stacks = new ItemStack[1][0];
+			stacks[0] = ingredients;
+			return stacks;
+		}
+		
+		if(o instanceof AStack) {
+			AStack astack = (AStack) o;
+			ItemStack[] ext = astack.extractForNEI().toArray(new ItemStack[0]);
+			ItemStack[][] stacks = new ItemStack[1][0];
+			stacks[0] = ext; //untested, do java arrays allow that? the capacity set is 0 after all
+			return stacks;
+		}
+		
+		if(o instanceof AStack[]) {
+			AStack[] ingredients = (AStack[]) o;
+			ItemStack[][] stacks = new ItemStack[ingredients.length][0];
+			
+			for(int i = 0; i < ingredients.length; i++) {
+				stacks[i] = ingredients[i].extractForNEI().toArray(new ItemStack[0]);
+			}
+			
+			return stacks;
+		}
+		
+		return new ItemStack[0][0];
 	}
 }

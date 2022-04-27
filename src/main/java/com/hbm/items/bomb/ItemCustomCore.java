@@ -2,31 +2,19 @@ package com.hbm.items.bomb;
 
 import java.util.List;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nullable;
-
-import org.lwjgl.input.Keyboard;
-
 import com.google.common.annotations.Beta;
 import com.hbm.interfaces.ICustomWarhead;
-import com.hbm.items.ModItems;
-import com.hbm.items.special.ItemHazard;
-import com.hbm.lib.HbmCollection;
-import com.hbm.util.I18nUtil;
+import com.hbm.items.special.ItemCustomLore;
 
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 @Beta
-public class ItemCustomCore extends ItemHazard implements ICustomWarhead
+public class ItemCustomCore extends ItemCustomLore implements ICustomWarhead
 {
 	public ItemCustomCore()
 	{
 		// TODO Auto-generated constructor stub
-		addRadiation(5.0F);
-		setMaxStackSize(1);
 	}
 
 	@Override

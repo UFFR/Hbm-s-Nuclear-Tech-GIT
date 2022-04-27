@@ -24,19 +24,21 @@ public abstract class TileEntityPylonBase extends TileEntityCableBaseNT {
 		if(first.getConnectionType() != second.getConnectionType())
 			return false;
 		
+		if(first == second)
+			return false;
+		
 		double len = Math.min(first.getMaxWireLength(), second.getMaxWireLength());
-		double lenSq = len * len;
 		
 		Vec3 firstPos = first.getConnectionPoint();
 		Vec3 secondPos = second.getConnectionPoint();
 		
 		Vec3 delta = Vec3.createVectorHelper(
-				(second.xCoord + secondPos.xCoord) - (first.xCoord + firstPos.xCoord),
-				(second.yCoord + secondPos.yCoord) - (first.yCoord + firstPos.yCoord),
-				(second.zCoord + secondPos.zCoord) - (first.zCoord + firstPos.zCoord)
+				(secondPos.xCoord) - (firstPos.xCoord),
+				(secondPos.yCoord) - (firstPos.yCoord),
+				(secondPos.zCoord) - (firstPos.zCoord)
 				);
 		
-		return Math.sqrt(lenSq) >= delta.lengthVector();
+		return len >= delta.lengthVector();
 	}
 	
 	public void addConnection(int x, int y, int z) {
@@ -44,8 +46,8 @@ public abstract class TileEntityPylonBase extends TileEntityCableBaseNT {
 		connected.add(new int[] {x, y, z});
 		
 		if(this.getPowerNet() != null) {
-			this.getPowerNet().destroy();
-			this.setPowerNet(null);
+			this.getPowerNet().reevaluate();
+			this.network = null;
 		}
 		
 		this.markDirty();
@@ -61,6 +63,9 @@ public abstract class TileEntityPylonBase extends TileEntityCableBaseNT {
 		for(int[] pos : connected) {
 			
 			TileEntity te = worldObj.getTileEntity(pos[0], pos[1], pos[2]);
+			
+			if(te == this)
+				continue;
 			
 			if(te instanceof TileEntityPylonBase) {
 				TileEntityPylonBase pylon = (TileEntityPylonBase) te;
@@ -87,7 +92,7 @@ public abstract class TileEntityPylonBase extends TileEntityCableBaseNT {
 	@Override
 	protected void connect() {
 		
-		for(int[] pos : connected) {
+		for(int[] pos : getConnectionPoints()) {
 			
 			TileEntity te = worldObj.getTileEntity(pos[0], pos[1], pos[2]);
 			
@@ -106,6 +111,11 @@ public abstract class TileEntityPylonBase extends TileEntityCableBaseNT {
 		}
 	}
 	
+	@Override
+	public List<int[]> getConnectionPoints() {
+		return new ArrayList(connected);
+	}
+	
 	public abstract ConnectionType getConnectionType();
 	public abstract Vec3[] getMountPos();
 	public abstract double getMaxWireLength();
@@ -116,7 +126,7 @@ public abstract class TileEntityPylonBase extends TileEntityCableBaseNT {
 		if(mounts == null || mounts.length == 0)
 			return Vec3.createVectorHelper(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5);
 		
-		return mounts[0];
+		return mounts[0].addVector(xCoord, yCoord, zCoord);
 	}
 	
 	@Override

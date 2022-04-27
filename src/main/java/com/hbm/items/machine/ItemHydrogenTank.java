@@ -2,8 +2,8 @@ package com.hbm.items.machine;
 
 import org.apache.logging.log4j.Level;
 
-import com.hbm.handler.FluidTypeHandler.FluidType;
 import com.hbm.interfaces.IPartiallyFillable;
+import com.hbm.inventory.fluid.*;
 import com.hbm.items.special.ItemCustomLore;
 import com.hbm.main.MainRegistry;
 
@@ -28,13 +28,13 @@ public class ItemHydrogenTank extends ItemCustomLore implements IPartiallyFillab
 	{
 		try
 		{
-			return stack.hasTagCompound() ? FluidType.valueOf(stack.stackTagCompound.getString(tankTypeKey)) : FluidType.NONE;
+			return stack.hasTagCompound() ? Fluids.fromName(stack.stackTagCompound.getString(tankTypeKey)) : Fluids.NONE;
 		}
 		catch (EnumConstantNotPresentException e)
 		{
 			MainRegistry.logger.catching(Level.ERROR, e);
 			MainRegistry.logger.error(String.format("Item: %s did not have an NBT tag under the key: %s that matches any fluid. Attempted tag: ", stack.getDisplayName(), tankTypeKey, stack.stackTagCompound.getString(tankTypeKey)));
-			return FluidType.NONE;
+			return Fluids.NONE;
 		}
 	}
 

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.hbm.handler.BulletConfigSyncingUtil;
 import com.hbm.handler.BulletConfiguration;
 import com.hbm.handler.GunConfiguration;
+import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.items.ModItems;
 import com.hbm.lib.HbmCollection;
 import com.hbm.lib.HbmCollection.EnumGunManufacturer;
@@ -93,7 +94,7 @@ public class Gun9mmFactory {
 		config.reloadType = GunConfiguration.RELOAD_FULL;
 		config.allowsInfinity = true;
 		config.crosshair = Crosshair.L_SPLIT;
-		config.durability = 40000;
+		config.durability = 60000;
 		config.firingSound = "hbm:weapon.rifleShoot";
 		config.firingPitch = 1.25F;
 		config.reloadSound = GunConfiguration.RSOUND_MAG;
@@ -113,12 +114,13 @@ public class Gun9mmFactory {
 		return config;
 	}
 	
-	static final float inaccuracy = 5;
+	static final float inaccuracy = 2.5f;
+	static byte i = 0;
 	public static BulletConfiguration get9mmConfig() {
 		
-		BulletConfiguration bullet = BulletConfigFactory.standardBulletConfig();
+		BulletConfiguration bullet = BulletConfigFactory.standardPistolConfig();
 		
-		bullet.ammo = ModItems.ammo_9mm;
+		bullet.ammo = new ComparableStack(ModItems.ammo_9mm, 1, i++);
 		bullet.spread *= inaccuracy;
 		bullet.dmgMin = 10;
 		bullet.dmgMax = 14;
@@ -128,12 +130,13 @@ public class Gun9mmFactory {
 	
 	public static BulletConfiguration get9mmAPConfig() {
 		
-		BulletConfiguration bullet = BulletConfigFactory.standardBulletConfig();
+		BulletConfiguration bullet = BulletConfigFactory.standardPistolConfig();
 		
-		bullet.ammo = ModItems.ammo_9mm_ap;
+		bullet.ammo = new ComparableStack(ModItems.ammo_9mm, 1, i++);
 		bullet.spread *= inaccuracy;
 		bullet.dmgMin = 18;
 		bullet.dmgMax = 20;
+		bullet.penetration *= 1.5;
 		bullet.leadChance = 10;
 		bullet.wear = 15;
 		
@@ -142,12 +145,13 @@ public class Gun9mmFactory {
 	
 	public static BulletConfiguration get9mmDUConfig() {
 		
-		BulletConfiguration bullet = BulletConfigFactory.standardBulletConfig();
+		BulletConfiguration bullet = BulletConfigFactory.standardPistolConfig();
 		
-		bullet.ammo = ModItems.ammo_9mm_du;
+		bullet.ammo = new ComparableStack(ModItems.ammo_9mm, 1, i++);
 		bullet.spread *= inaccuracy;
 		bullet.dmgMin = 22;
 		bullet.dmgMax = 26;
+		bullet.penetration *= 2;
 		bullet.leadChance = 50;
 		bullet.wear = 25;
 		
@@ -158,7 +162,7 @@ public class Gun9mmFactory {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardRocketConfig();
 		
-		bullet.ammo = ModItems.ammo_9mm_rocket;
+		bullet.ammo = new ComparableStack(ModItems.ammo_9mm, 1, i++);
 		bullet.velocity = 5;
 		bullet.explosive = 7.5F;
 		bullet.trail = 5;

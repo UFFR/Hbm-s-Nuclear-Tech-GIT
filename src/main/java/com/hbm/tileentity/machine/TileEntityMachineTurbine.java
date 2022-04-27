@@ -3,11 +3,12 @@ package com.hbm.tileentity.machine;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.hbm.handler.FluidTypeHandler.FluidType;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidContainer;
 import com.hbm.interfaces.IFluidSource;
 import com.hbm.inventory.FluidTank;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.recipes.MachineRecipes;
 import com.hbm.lib.Library;
 import com.hbm.packet.AuxElectricityPacket;
@@ -43,8 +44,8 @@ public class TileEntityMachineTurbine extends TileEntity implements ISidedInvent
 	public TileEntityMachineTurbine() {
 		slots = new ItemStack[7];
 		tanks = new FluidTank[2];
-		tanks[0] = new FluidTank(FluidType.STEAM, 64000, 0);
-		tanks[1] = new FluidTank(FluidType.SPENTSTEAM, 128000, 1);
+		tanks[0] = new FluidTank(Fluids.STEAM, 64000, 0);
+		tanks[1] = new FluidTank(Fluids.SPENTSTEAM, 128000, 1);
 	}
 
 	@Override
@@ -232,7 +233,7 @@ public class TileEntityMachineTurbine extends TileEntity implements ISidedInvent
 			Object[] outs = MachineRecipes.getTurbineOutput(tanks[0].getTankType());
 			
 			if(outs == null) {
-				tanks[1].setTankType(FluidType.NONE);
+				tanks[1].setTankType(Fluids.NONE);
 			} else {
 				tanks[1].setTankType((FluidType) outs[0]);
 				

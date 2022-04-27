@@ -1,5 +1,7 @@
 package com.hbm.tileentity.machine;
 
+import java.math.BigInteger;
+
 import com.google.common.annotations.Beta;
 import com.hbm.inventory.RecipesCommon.AStack;
 import com.hbm.inventory.recipes.BetavoltaicFuels;
@@ -18,11 +20,10 @@ public class TileEntityBetavoltaic extends TileEntityMachineBase implements IRTG
 	public static final short maxHeat = 32000;
 	private short heat = 0;
 	private long power = 0;
+	private BigInteger date = BigInteger.ZERO;
 	public TileEntityBetavoltaic()
 	{
 		super(24);
-		if (!BetavoltaicFuels.isInitialized())
-			BetavoltaicFuels.initialize();
 	}
 	
 	@Override
@@ -35,6 +36,12 @@ public class TileEntityBetavoltaic extends TileEntityMachineBase implements IRTG
 	public int getHeat()
 	{
 		return heat;
+	}
+	
+	@Override
+	public ItemStack[] getInventory()
+	{
+		return slots;
 	}
 
 	@Override
@@ -54,7 +61,7 @@ public class TileEntityBetavoltaic extends TileEntityMachineBase implements IRTG
 	{
 		if (!worldObj.isRemote)
 		{
-			heat = (short) updateRTGs(slots, BetavoltaicFuels.fuelMap);
+			heat = (short) updateRTGs(BetavoltaicFuels.fuelMap);
 			
 			if (heat > maxHeat)
 				heat = maxHeat;
@@ -66,6 +73,7 @@ public class TileEntityBetavoltaic extends TileEntityMachineBase implements IRTG
 		NBTTagCompound data = new NBTTagCompound();
 		data.setLong("power", power);
 		data.setShort("heat", heat);
+		data.setByteArray("date", date.toByteArray());
 		networkPack(data, 25);
 	}
 
@@ -74,6 +82,7 @@ public class TileEntityBetavoltaic extends TileEntityMachineBase implements IRTG
 	{
 		power = nbt.getLong("power");
 		heat = nbt.getShort("heat");
+		date = new BigInteger(nbt.getByteArray("date"));
 	}
 	
 	@Override
@@ -82,6 +91,7 @@ public class TileEntityBetavoltaic extends TileEntityMachineBase implements IRTG
 		super.writeToNBT(nbt);
 		nbt.setLong("power", power);
 		nbt.setShort("heat", heat);
+		nbt.setByteArray("date", date.toByteArray());
 	}
 	
 	@Override
@@ -90,6 +100,7 @@ public class TileEntityBetavoltaic extends TileEntityMachineBase implements IRTG
 		super.readFromNBT(nbt);
 		power = nbt.getLong("power");
 		heat = nbt.getShort("heat");
+		date = new BigInteger(nbt.getByteArray("date"));
 	}
 	
 	@Override
@@ -119,5 +130,17 @@ public class TileEntityBetavoltaic extends TileEntityMachineBase implements IRTG
 	public long getMaxPower()
 	{
 		return maxPower;
+	}
+
+	@Override
+	public void incrementAge()
+	{
+		date = date.add(BigInteger.ONE);
+	}
+
+	@Override
+	public BigInteger getInternalDate()
+	{
+		return date;
 	}
 }

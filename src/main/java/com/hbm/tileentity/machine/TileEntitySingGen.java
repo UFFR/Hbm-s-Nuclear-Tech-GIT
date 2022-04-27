@@ -4,18 +4,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import com.hbm.config.BombConfig;
 import com.hbm.config.MachineConfig;
 import com.hbm.entity.effect.EntityCloudFleija;
 import com.hbm.entity.effect.EntityVortex;
 import com.hbm.entity.logic.EntityNukeExplosionMK3;
-import com.hbm.handler.FluidTypeHandler.FluidType;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.Spaghetti;
 import com.hbm.inventory.FluidTank;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.container.ContainerSingGen;
+import com.hbm.inventory.fluid.*;
 import com.hbm.inventory.recipes.SingGenRecipes;
 import com.hbm.inventory.recipes.SingGenRecipes.SingGenRecipe;
 import com.hbm.items.machine.ItemFluidIdentifier;
@@ -35,21 +36,21 @@ public class TileEntitySingGen extends TileEntityMachineBase implements IFluidAc
 {
 	public long power;
 	public static final long maxPower = 50000000000L;
-	private static long consumptionRate = (maxPower / 200) / 4;// TODO Placeholder(?)
-	public FluidTank tank;
+	private static final long consumptionRate = (maxPower / 200) / 4;// TODO Placeholder(?)
+	public final FluidTank tank;
 	
 	public boolean isOn;
 	private int progress;
 	private static final int[] ringSlots = new int[] {5, 9, 6, 11, 12, 7, 10, 8};
-	private Map<Integer, ItemStack> ring = new HashMap<Integer, ItemStack>(8);
+	private final Map<Integer, ItemStack> ring = new HashMap<Integer, ItemStack>(8);
 	
-	private ItemStack[] ringArray = new ItemStack[8];
-	private SingGenRecipe currentRecipe = null;
+	private final ItemStack[] ringArray = new ItemStack[8];
+	private Optional<SingGenRecipe> currentRecipe = Optional.empty();
 	
 	public TileEntitySingGen()
 	{
 		super(14);
-		tank = new FluidTank(FluidType.ASCHRAB, 64000, 0);
+		tank = new FluidTank(Fluids.ASCHRAB, 64000, 0);
 	}
 	
 	public boolean isProcessing()
@@ -112,12 +113,12 @@ public class TileEntitySingGen extends TileEntityMachineBase implements IFluidAc
 	{
 		markDirty();
 		updateRing();
-		currentRecipe = validateRecipe(ringArray, slots[4], tank.getTankType(), tank.getFill());
-		if (currentRecipe != null)
+		currentRecipe = Optional.ofNullable(validateRecipe(ringArray, slots[4], tank.getTankType(), tank.getFill()));
+		if (currentRecipe.isPresent())
 		{
-			if ((tank.getTankType().equals(currentRecipe.fluid) && tank.getFill() >= currentRecipe.fluidAmount) || currentRecipe.fluid == FluidType.NONE)
+			if ((tank.getTankType().equals(currentRecipe.get().fluid) && tank.getFill() >= currentRecipe.get().fluidAmount) || currentRecipe.get().fluid == Fluids.NONE)
 			{
-				if (this.getStackInSlot(1) == null || this.getStackInSlot(1).getMaxStackSize() >= this.getStackInSlot(1).stackSize + currentRecipe.getOutput().stackSize)
+				if (this.getStackInSlot(1) == null || this.getStackInSlot(1).getMaxStackSize() >= this.getStackInSlot(1).stackSize + currentRecipe.get().getOutput().stackSize)
 				{
 					if (power >= consumptionRate)
 					{
@@ -214,7 +215,7 @@ public class TileEntitySingGen extends TileEntityMachineBase implements IFluidAc
 	 */
 	private void attemptFail()
 	{
-		if ((power < consumptionRate && tank.getFill() > 0 && tank.getTankType().equals(FluidType.ASCHRAB) && (currentRecipe != null && currentRecipe.fluid.equals(FluidType.ASCHRAB)) && !MachineConfig.singGenFailType.equals(MachineConfig.EnumSingGenFail.NONE)))
+		if ((power < consumptionRate && tank.getFill() > 0 && tank.getTankType().equals(Fluids.ASCHRAB) && (currentRecipe != null && currentRecipe.get().fluid.equals(Fluids.ASCHRAB)) && !MachineConfig.singGenFailType.equals(MachineConfig.EnumSingGenFail.NONE)))
 		{
 			if (rand.nextInt(4) == 0)
 			{
@@ -258,30 +259,25 @@ public class TileEntitySingGen extends TileEntityMachineBase implements IFluidAc
 	public void handleButtonPacket(int value, int meta)
 	{
 		worldObj.playSoundEffect(xCoord, yCoord, zCoord, buttonPress, 1, 1);
-		switch(meta)
-		{
-		case 0:
-			this.isOn = !this.isOn;
-			break;
-		}
+		this.isOn = !this.isOn;
 	}
 	private void process()
 	{
 		//System.out.println("Processing...");
-		if (!currentRecipe.keepRing)
+		if (!currentRecipe.get().keepRing)
 		{
 			for (int slot : ringSlots)
 				if (this.getStackInSlot(slot) != null)
 					this.decrStackSize(slot, 1);
 		}
-		this.decrStackSize(4, currentRecipe.inputCenter.stacksize);
-		if (currentRecipe.fluid != FluidType.NONE)
-			tank.setFill(tank.getFill() - currentRecipe.fluidAmount);
+		this.decrStackSize(4, currentRecipe.get().inputCenter.stacksize);
+		if (currentRecipe.get().fluid != Fluids.NONE)
+			tank.setFill(tank.getFill() - currentRecipe.get().fluidAmount);
 		
 		if (this.getStackInSlot(1) == null)
-			this.setInventorySlotContents(1, currentRecipe.getOutput());
-		else if (this.getStackInSlot(1) != null && slots[1].getItem() == currentRecipe.getOutput().getItem())
-			this.getStackInSlot(1).stackSize += currentRecipe.getOutput().stackSize;
+			this.setInventorySlotContents(1, currentRecipe.get().getOutput());
+		else if (this.getStackInSlot(1) != null && slots[1].getItem() == currentRecipe.get().getOutput().getItem())
+			this.getStackInSlot(1).stackSize += currentRecipe.get().getOutput().stackSize;
 
 		markDirty();
 	}
@@ -341,7 +337,7 @@ public class TileEntitySingGen extends TileEntityMachineBase implements IFluidAc
 	
 	public SingGenRecipe getCurrentRecipe()
 	{
-		return currentRecipe;
+		return currentRecipe.orElse(null);
 	}
 	
 	@Override

@@ -8,16 +8,14 @@ import java.util.Iterator;
 import javax.annotation.Nonnegative;
 
 import com.hbm.blocks.ModBlocks;
-import com.hbm.handler.FluidTypeHandler.FluidType;
-import com.hbm.interfaces.IResearchableRecipe;
 import com.hbm.interfaces.Spaghetti;
-import com.hbm.inventory.RecipesCommon.AStack;
-import com.hbm.inventory.RecipesCommon.ComparableStack;
-import com.hbm.inventory.RecipesCommon.OreDictStack;
+import com.hbm.inventory.RecipesCommon.*;
 import com.hbm.inventory.container.ContainerSingGen;
+import com.hbm.inventory.fluid.*;
 import com.hbm.items.ModItems;
 import com.hbm.items.special.Orichalcum;
 
+import api.hbm.computer.Researchable;
 import api.hbm.energy.IBatteryItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -34,7 +32,7 @@ public class SingGenRecipes
 	// Output:{<Item(s) out>}, Input:{<corner>, <side>, <corner>, <side>, <side>, <corner>, <side>, <corner>, <center>, Shaped?, Keep shell?, Fluid, Fluid amount}
 	public static void register()
 	{
-		recipes.add(commonFluid(new ItemStack(ModItems.singularity, 1), ModItems.nugget_euphemium, FluidType.ASCHRAB, new ComparableStack(ModBlocks.block_schrabidium), 4000).setLevel(1));
+		recipes.add(commonFluid(new ItemStack(ModItems.singularity, 1), ModItems.nugget_euphemium, Fluids.ASCHRAB, new ComparableStack(ModBlocks.block_schrabidium), 4000).setLevel(1));
 		recipes.add(commonStandard(new ItemStack(ModItems.singularity_super_heated, 1), ModItems.plate_advanced_alloy, ModItems.powder_power, new ComparableStack(ModItems.singularity)).setLevel(2));
 		recipes.add(commonStandard(new ItemStack(ModItems.singularity_counter_resonant, 1), ModItems.plate_combine_steel, ModItems.ingot_magnetized_tungsten, new ComparableStack(ModItems.singularity)).setLevel(3));
 		recipes.add(addRecipe(new ItemStack(ModItems.black_hole, 1), new AStack[]
@@ -42,83 +40,83 @@ public class SingGenRecipes
 					new ComparableStack(ModItems.crystal_xen), new ComparableStack(ModItems.crystal_xen), new ComparableStack(ModItems.crystal_xen),
 					new ComparableStack(ModItems.crystal_xen), new ComparableStack(ModItems.crystal_xen),
 					new ComparableStack(ModItems.crystal_xen), new ComparableStack(ModItems.crystal_xen), new ComparableStack(ModItems.crystal_xen)
-				}, new ComparableStack(ModItems.singularity), true, false, FluidType.NONE, 0).setLevel(4));
+				}, new ComparableStack(ModItems.singularity)).setLevel(4));
 		recipes.add(addRecipe(new ItemStack(ModItems.overfuse, 1), new ComparableStack[]
 				{
 					new ComparableStack(ModItems.screwdriver_chad), new ComparableStack(ModItems.board_copper), new ComparableStack(ModItems.powder_nitan_mix),
 					new ComparableStack(ModItems.powder_nitan_mix), new ComparableStack(ModItems.powder_nitan_mix),
 					new ComparableStack(ModItems.powder_nitan_mix), new ComparableStack(ModItems.powder_nitan_mix), new ComparableStack(ModItems.powder_nitan_mix)
-				}, new ComparableStack(ModItems.black_hole), false, false, FluidType.NONE, 0).setLevel(5));
+				}, new ComparableStack(ModItems.black_hole)).setLevel(5).setShapeless());
 		recipes.add(addRecipe(new ItemStack(ModItems.overfuse, 1), new AStack[]
 				{
 					new ComparableStack(ModItems.screwdriver_chad), new ComparableStack(ModItems.board_copper), new OreDictStack(NP237.dust()),
 					new OreDictStack(I.dust()), new OreDictStack(TH232.dust()),
 					new OreDictStack(AT.dust()), new OreDictStack(ND.dust()), new OreDictStack(CS.dust())
-				}, new ComparableStack(ModItems.black_hole), false, false, FluidType.NONE, 0).setLevel(5));
+				}, new ComparableStack(ModItems.black_hole)).setLevel(5).setShapeless());
 		recipes.add(addRecipe(new ItemStack(ModItems.overfuse, 1), new AStack[]
 				{
 					new ComparableStack(ModItems.screwdriver_chad), new ComparableStack(ModItems.board_copper), new OreDictStack(ST.dust()),
 					new OreDictStack(BR.dust()), new OreDictStack(CO.dust()),
 					new OreDictStack(TS.dust()), new OreDictStack(NB.dust()), new OreDictStack(CE.dust())
-				}, new ComparableStack(ModItems.black_hole), false, false, FluidType.NONE, 0).setLevel(5));
+				}, new ComparableStack(ModItems.black_hole)).setLevel(5).setShapeless());
 		recipes.add(addRecipe(new ItemStack(ModItems.singularity_spark, 1), new ComparableStack[]
 				{
 					new ComparableStack(ModItems.plate_dineutronium), new ComparableStack(ModItems.singularity_super_heated), new ComparableStack(ModItems.plate_dineutronium),
 					new ComparableStack(ModItems.singularity_counter_resonant), new ComparableStack(ModItems.singularity_counter_resonant),
 					new ComparableStack(ModItems.plate_dineutronium), new ComparableStack(ModItems.singularity_super_heated), new ComparableStack(ModItems.plate_dineutronium)
-				}, new ComparableStack(ModItems.black_hole), true, false, FluidType.NONE, 0).setLevel(5));
+				}, new ComparableStack(ModItems.black_hole)).setLevel(5));
 		recipes.add(addRecipe(new ItemStack(ModItems.singularity_spark, 1), new ComparableStack[]
 				{
 					new ComparableStack(ModItems.plate_dineutronium), new ComparableStack(ModItems.singularity_counter_resonant), new ComparableStack(ModItems.plate_dineutronium),
 					new ComparableStack(ModItems.singularity_super_heated), new ComparableStack(ModItems.singularity_super_heated),
 					new ComparableStack(ModItems.plate_dineutronium), new ComparableStack(ModItems.singularity_counter_resonant), new ComparableStack(ModItems.plate_dineutronium)
-				}, new ComparableStack(ModItems.black_hole), true, false, FluidType.NONE, 0).setLevel(5));
-		recipes.add(commonFluid(new ItemStack(ModItems.ams_core_sing, 1), ModItems.plate_euphemium, FluidType.ASCHRAB, new ComparableStack(ModItems.singularity), 4000).setLevel(5));
+				}, new ComparableStack(ModItems.black_hole)).setLevel(5));
+		recipes.add(commonFluid(new ItemStack(ModItems.ams_core_sing, 1), ModItems.plate_euphemium, Fluids.ASCHRAB, new ComparableStack(ModItems.singularity), 4000).setLevel(5));
 		recipes.add(commonStandard(new ItemStack(ModItems.ams_core_wormhole, 1), ModItems.plate_dineutronium, ModItems.powder_spark_mix, new ComparableStack(ModItems.singularity)).setLevel(5));
-		recipes.add(commonFluid(new ItemStack(ModItems.ams_core_eyeofharmony, 1), ModItems.plate_dalekanium, FluidType.PLASMA_WARP, new ComparableStack(ModItems.black_hole), 64000).setLevel(5));
+		recipes.add(commonFluid(new ItemStack(ModItems.ams_core_eyeofharmony, 1), ModItems.plate_dalekanium, Fluids.PLASMA_WARP, new ComparableStack(ModItems.black_hole), 64000).setLevel(5));
 		recipes.add(new SingGenRecipe(new ItemStack(ModItems.singularity_micro, 8), new AStack[]
 				{
 					new ComparableStack(ModItems.nugget_euphemium), new ComparableStack(ModItems.catalyst_rare), new ComparableStack(ModItems.nugget_euphemium),
 					new ComparableStack(ModItems.catalyst_rare), new ComparableStack(ModItems.catalyst_rare),
 					new ComparableStack(ModItems.nugget_euphemium), new ComparableStack(ModItems.catalyst_rare), new ComparableStack(ModItems.nugget_euphemium)
-				}, new ComparableStack(ModItems.ingot_schrabidium)).setFluid(FluidType.ASCHRAB, 1000).setKeepRing());
+				}, new ComparableStack(ModItems.ingot_schrabidium)).setFluid(Fluids.ASCHRAB, 1000).setKeepRing());
 		recipes.add(addRecipe(new ItemStack(ModItems.ingot_dineutronium, 1), new ComparableStack[]
 				{
 					new ComparableStack(ModBlocks.block_starmetal), new ComparableStack(ModItems.powder_spark_mix), new ComparableStack(ModBlocks.block_starmetal),
 					new ComparableStack(ModItems.powder_spark_mix), new ComparableStack(ModItems.powder_spark_mix),
 					new ComparableStack(ModBlocks.block_starmetal), new ComparableStack(ModItems.powder_spark_mix), new ComparableStack(ModBlocks.block_starmetal)
-				}, new ComparableStack(ModBlocks.block_schrabidate), true, false, FluidType.ASCHRAB, 4000).setLevel(1));
-		recipes.add(commonStandard(IBatteryItem.emptyBattery(ModItems.battery_gun_advanced), ModItems.ingot_schrabidate, ModItems.powder_tennessine, new ComparableStack(ModItems.battery_gun_enhanced)).setLevel(2));
-		recipes.add(addRecipe(IBatteryItem.emptyBattery(ModItems.battery_gun_elite), new ComparableStack[]
+				}, new ComparableStack(ModBlocks.block_schrabidate), true, false, Fluids.ASCHRAB, 4000).setLevel(1));
+		recipes.add(commonStandard(IBatteryItem.emptyBattery(ModItems.battery_fast_2_advanced), ModItems.ingot_schrabidate, ModItems.powder_tennessine, new ComparableStack(ModItems.battery_fast_2_enhanced)).setLevel(2));
+		recipes.add(addRecipe(IBatteryItem.emptyBattery(ModItems.battery_fast_2_elite), new ComparableStack[]
 				{
 					new ComparableStack(ModItems.powder_spark_mix), new ComparableStack(ModItems.plate_dineutronium), new ComparableStack(ModItems.powder_spark_mix),
 					new ComparableStack(ModItems.plate_euphemium), new ComparableStack(ModItems.plate_euphemium),
 					new ComparableStack(ModItems.powder_spark_mix), new ComparableStack(ModItems.plate_dineutronium), new ComparableStack(ModItems.powder_spark_mix)
-				}, new ComparableStack(ModItems.battery_gun_advanced), true, false, FluidType.PLASMA_WARP, 2000).setLevel(3));
-		recipes.add(addRecipe(IBatteryItem.emptyBattery(ModItems.battery_gun_elite), new ComparableStack[]
+				}, new ComparableStack(ModItems.battery_fast_2_advanced)).setLevel(3).setFluid(Fluids.PLASMA_WARP, 2000));
+		recipes.add(addRecipe(IBatteryItem.emptyBattery(ModItems.battery_fast_2_elite), new ComparableStack[]
 				{
 					new ComparableStack(ModItems.powder_spark_mix), new ComparableStack(ModItems.plate_euphemium), new ComparableStack(ModItems.powder_spark_mix),
 					new ComparableStack(ModItems.plate_dineutronium), new ComparableStack(ModItems.plate_dineutronium),
 					new ComparableStack(ModItems.powder_spark_mix), new ComparableStack(ModItems.plate_euphemium), new ComparableStack(ModItems.powder_spark_mix)
-				}, new ComparableStack(ModItems.battery_gun_advanced), true, false, FluidType.ASCHRAB, 2000).setLevel(3));
+				}, new ComparableStack(ModItems.battery_fast_2_advanced)).setLevel(3).setFluid(Fluids.ASCHRAB, 2000));
 		recipes.add(addRecipe(new ItemStack(ModItems.orichalcum, 1, Orichalcum.PLATE), new ComparableStack[]
 				{
 						new ComparableStack(ModItems.billet_yharonite), new ComparableStack(ModItems.orichalcum, 1, Orichalcum.INGOT_SMALL_IRR), new ComparableStack(ModItems.billet_yharonite),
 						new ComparableStack(ModItems.orichalcum, 1, Orichalcum.INGOT_SMALL_IRR), new ComparableStack(ModItems.orichalcum, 1, Orichalcum.INGOT_SMALL_IRR),
 						new ComparableStack(ModItems.billet_yharonite), new ComparableStack(ModItems.orichalcum, 1, Orichalcum.INGOT_SMALL_IRR), new ComparableStack(ModItems.billet_yharonite)
-				}, new OreDictStack(TA.block()), true, false, FluidType.PLASMA_WARP, 32000).setLevel(4));
+				}, new OreDictStack(TA.block())).setLevel(4).setFluid(Fluids.PLASMA_WARP, 32000));
 		recipes.add(addRecipe(new ItemStack(ModItems.orichalcum, 1, Orichalcum.INGOT_FINSIHED), new ComparableStack[]
 				{
 						new ComparableStack(ModItems.orichalcum, 1, Orichalcum.GEM), new ComparableStack(ModItems.orichalcum, 1, Orichalcum.PLATE), new ComparableStack(ModItems.orichalcum, 1, Orichalcum.GEM),
 						new ComparableStack(ModItems.orichalcum, 1, Orichalcum.PLATE), new ComparableStack(ModItems.orichalcum, 1, Orichalcum.PLATE),
 						new ComparableStack(ModItems.orichalcum, 1, Orichalcum.GEM), new ComparableStack(ModItems.orichalcum, 1, Orichalcum.PLATE), new ComparableStack(ModItems.orichalcum, 1, Orichalcum.GEM)
-				}, new ComparableStack(ModItems.orichalcum, 1, Orichalcum.INGOT), true, false, FluidType.ASCHRAB, 4000).setLevel(5));
+				}, new ComparableStack(ModItems.orichalcum, 1, Orichalcum.INGOT)).setLevel(5).setFluid(Fluids.ASCHRAB, 4000));
 		recipes.add(addRecipe(new ItemStack(ModItems.orichalcum, 1, Orichalcum.GEM), new ComparableStack[]
 				{
 						new ComparableStack(ModItems.ingot_bismuth), new ComparableStack(ModItems.orichalcum, 1, Orichalcum.FRAGMENT), new ComparableStack(ModItems.ingot_bismuth),
 						new ComparableStack(ModItems.orichalcum, 1, Orichalcum.FRAGMENT), new ComparableStack(ModItems.orichalcum, 1, Orichalcum.FRAGMENT),
 						new ComparableStack(ModItems.ingot_bismuth), new ComparableStack(ModItems.orichalcum, 1, Orichalcum.FRAGMENT), new ComparableStack(ModItems.ingot_bismuth)
-				}, new ComparableStack(ModItems.crystal_trixite), true, false, FluidType.PLASMA_WARP, 8000).setLevel(3));
+				}, new ComparableStack(ModItems.crystal_trixite)).setLevel(3).setFluid(Fluids.PLASMA_WARP, 8000));
 	}
 	/**
 	 * Standard recipe for upgrading singularities
@@ -129,7 +127,7 @@ public class SingGenRecipes
 	 */
 	private static SingGenRecipe commonStandard(ItemStack output, Item containmentItem, Item modifierItem, AStack centerItem)
 	{
-		return addRecipe(output, new ComparableStack[] {new ComparableStack(containmentItem), new ComparableStack(modifierItem), new ComparableStack(containmentItem), new ComparableStack(modifierItem), new ComparableStack(modifierItem), new ComparableStack(containmentItem),  new ComparableStack(modifierItem), new ComparableStack(containmentItem)}, centerItem, true, false, FluidType.NONE, 0);
+		return addRecipe(output, new ComparableStack[] {new ComparableStack(containmentItem), new ComparableStack(modifierItem), new ComparableStack(containmentItem), new ComparableStack(modifierItem), new ComparableStack(modifierItem), new ComparableStack(containmentItem),  new ComparableStack(modifierItem), new ComparableStack(containmentItem)}, centerItem, true, false, Fluids.NONE, 0);
 	}
 	/**
 	 * Standard recipe type
@@ -160,8 +158,13 @@ public class SingGenRecipes
 			throw new IllegalArgumentException("Recipe ring input must be exactly 8! Recipe output: " + output.getUnlocalizedName() + "; Ring length: " + inputRing.length);// So we know which recipe errored and why
 		if (fluidAmount > 64000 || fluidAmount < 0)
 			throw new IndexOutOfBoundsException("Recipe fluid input amount out of bounds, must be between 0 and 64000! Recipe output: " + output.getUnlocalizedName() + "; Fluid amount attempted: " + fluidAmount);
-		
+
 		return new SingGenRecipe(output, inputRing, inputCenter, shaped, keepRing, fluid, fluidAmount);
+	}
+	
+	private static SingGenRecipe addRecipe(ItemStack output, AStack[] inputRing, AStack inputCenter)
+	{
+		return addRecipe(output, inputRing, inputCenter, true, false, Fluids.NONE, 0);
 	}
 	
 	/**
@@ -174,7 +177,7 @@ public class SingGenRecipes
 	 */
 	public static boolean isRecipeValid(ItemStack[] machineRing, SingGenRecipe recipe, ItemStack center, FluidType fluidIn)
 	{
-		if (!(recipe.fluid.equals(fluidIn) || recipe.fluid.equals(FluidType.NONE)))
+		if (!(recipe.fluid.equals(fluidIn) || recipe.fluid.equals(Fluids.NONE)))
 			return false;
 		if ((center == null && recipe.inputCenter != null) || (center != null && recipe.inputCenter == null))
 			return false;
@@ -228,20 +231,21 @@ public class SingGenRecipes
 		return (recipeIn.matchesRecipe(stackIn, true));
 	}
 	
-	public static class SingGenRecipe implements IResearchableRecipe
+	public static class SingGenRecipe extends Researchable
 	{
 		private static final byte[] corners = {0, 2, 5, 7};
 		private static final byte[] sides = {1, 3, 4, 6};
 		private ItemStack output;
 		public AStack[] inputRing = new AStack[8];
 		public AStack inputCenter;
-		public boolean shaped;
-		public boolean keepRing;
-		public FluidType fluid = FluidType.NONE;
+		public boolean shaped = true;
+		public boolean keepRing = false;
+		public FluidType fluid = Fluids.NONE;
 		public int fluidAmount;
 		private byte level = 0;
 		public SingGenRecipe(ItemStack output, AStack[] inputRing, AStack inputCenter, boolean shaped, boolean keepRing, FluidType fluid, int fluidAmount)
 		{
+			super(output.getUnlocalizedName());
 			if (inputRing.length != 8)
 				throw new IllegalArgumentException("Recipe ring input must be exactly 8! Recipe output: " + output.getUnlocalizedName() + "; Ring length: " + inputRing.length);// So we know which recipe errored and why
 			if (fluidAmount > 64000 || fluidAmount < 0)
@@ -279,7 +283,7 @@ public class SingGenRecipes
 		}
 		public SingGenRecipe(ItemStack output, AStack[] inputRing, AStack inputCenter)
 		{
-			this(output, inputRing, inputCenter, true, false, FluidType.NONE, 0);
+			this(output, inputRing, inputCenter, true, false, Fluids.NONE, 0);
 		}
 		public SingGenRecipe setShapeless()
 		{
@@ -328,12 +332,17 @@ public class SingGenRecipes
 		@Override
 		public String toString()
 		{
-			return String.format("Stock toString(): %s; Recipe output: %s; Center input: %s; Ring input: [%s, %s, %s, %s, %s, %s, %s, %s]; Fluid input: %s; Fluid amount: %s; Recipe level: %s", super.toString(), output.getDisplayName(), inputCenter.getFriendlyName(), inputRing.toString(), fluid.getName(), fluidAmount, level);
+			return String.format("Stock toString(): %s; Recipe output: %s; Center input: %s; Ring input: [%s, %s, %s, %s, %s, %s, %s, %s]; Fluid input: %s; Fluid amount: %s; Recipe level: %s", super.toString(), output.getDisplayName(), inputCenter.getFriendlyName(), inputRing.toString(), fluid.getUnlocalizedName(), fluidAmount, level);
 		}
 		@Override
-		public String getKey()
+		public SingGenRecipe setPrevious(Researchable prev)
 		{
-			return output.getUnlocalizedName();
+			return (SingGenRecipe) super.setPrevious(prev);
+		}
+		@Override
+		public SingGenRecipe setWork(long ram, long cpu)
+		{
+			return (SingGenRecipe) super.setWork(ram, cpu);
 		}
 	}
 }

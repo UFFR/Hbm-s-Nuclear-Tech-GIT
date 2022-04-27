@@ -8,12 +8,10 @@ public class ModSoundType extends Block.SoundType {
 		super(name, volume, pitch);
 	}
 
-	@Override
 	public String getBreakSound() {
 		return "hbm:" + super.getBreakSound();
 	}
 
-	@Override
 	public String getStepResourcePath() {
 		return "hbm:" + super.getStepResourcePath();
 	}

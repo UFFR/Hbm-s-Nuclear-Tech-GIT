@@ -3,15 +3,14 @@ package com.hbm.tileentity.machine;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.hbm.blocks.BlockDummyable;
-import com.hbm.handler.FluidTypeHandler.FluidType;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidSource;
 import com.hbm.inventory.FluidTank;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.lib.Library;
 import com.hbm.main.ModEventHandler;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.EnumSkyBlock;
@@ -27,8 +26,8 @@ public class TileEntityCondenser extends TileEntity implements IFluidAcceptor, I
 	
 	public TileEntityCondenser() {
 		tanks = new FluidTank[2];
-		tanks[0] = new FluidTank(FluidType.SPENTSTEAM, 100, 0);
-		tanks[1] = new FluidTank(FluidType.WATER, 100, 1);
+		tanks[0] = new FluidTank(Fluids.SPENTSTEAM, 100, 0);
+		tanks[1] = new FluidTank(Fluids.WATER, 100, 1);
 	}
 	
 	@Override

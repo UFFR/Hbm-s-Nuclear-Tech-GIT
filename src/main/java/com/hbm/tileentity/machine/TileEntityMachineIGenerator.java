@@ -1,20 +1,21 @@
 package com.hbm.tileentity.machine;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 import com.hbm.blocks.BlockDummyable;
-import com.hbm.handler.FluidTypeHandler.FluidType;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.inventory.FluidTank;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemRTGPellet;
 import com.hbm.lib.Library;
 import com.hbm.tileentity.IRTGUser;
 import com.hbm.tileentity.IRadioisotopeFuel;
 import com.hbm.tileentity.TileEntityMachineBase;
-
 import api.hbm.energy.IEnergyGenerator;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -33,8 +34,8 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 	public int spin;
 	public int[] burn = new int[4];
 	public boolean hasRTG = false;
-	private static final int[] rtgSlots = {11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
-
+	public final static int[] RTGSlots = new int[]{ 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+	private BigInteger date = BigInteger.ZERO;
 	@SideOnly(Side.CLIENT)
 	public float rotation;
 	@SideOnly(Side.CLIENT)
@@ -46,9 +47,9 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 	public TileEntityMachineIGenerator() {
 		super(21);
 		tanks = new FluidTank[3];
-		tanks[0] = new FluidTank(FluidType.WATER, 16000, 0);
-		tanks[1] = new FluidTank(FluidType.HEATINGOIL, 16000, 1);
-		tanks[2] = new FluidTank(FluidType.LUBRICANT, 4000, 2);
+		tanks[0] = new FluidTank(Fluids.WATER, 16000, 0);
+		tanks[1] = new FluidTank(Fluids.HEATINGOIL, 16000, 1);
+		tanks[2] = new FluidTank(Fluids.LUBRICANT, 4000, 2);
 	}
 
 	@Override
@@ -106,6 +107,10 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 								burnTime *= 1.5;
 							if(fuel.getItem() == ModItems.solid_fuel)
 								burnTime *= 2;
+							if(fuel.getItem() == ModItems.solid_fuel_presto)
+								burnTime *= 4;
+							if(fuel.getItem() == ModItems.solid_fuel_presto_triplet)
+								burnTime *= 10;
 							
 							burn[i] = burnTime;
 							
@@ -125,18 +130,8 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 			}
 			
 			// RTG ///
-			final int rtgHeat = getHeat();
-			this.hasRTG = rtgHeat > 0;
-			
-//			for(int i = 11; i < 21; i++) {
-//					if(slots[i] != null && slots[i].getItem() instanceof ItemRTGPellet) {
-//						ItemRTGPellet pellet = (ItemRTGPellet) slots[i].getItem();
-//						this.spin += pellet.getHeat() * 10;
-//						this.hasRTG = true;
-//					}
-//			}
-			
-			spin += rtgHeat;
+			this.hasRTG = getHeat() > 0;
+			this.spin += getHeat() * 0.2;
 			
 			if(this.spin > 0) {
 				
@@ -152,10 +147,10 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 					this.tanks[2].setFill(this.tanks[2].getFill() - 1);
 				}
 				
-				this.power += Math.pow(powerGen, 1.15D);
+				this.power += Math.pow(powerGen, 1.1D);
 				
-				if(this.power > this.maxPower)
-					this.power = this.maxPower;
+				if(this.power > TileEntityMachineIGenerator.maxPower)
+					this.power = TileEntityMachineIGenerator.maxPower;
 			}
 			
 			NBTTagCompound data = new NBTTagCompound();
@@ -163,6 +158,7 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 			data.setInteger("spin", spin);
 			data.setIntArray("burn", burn);
 			data.setBoolean("hasRTG", hasRTG);
+			data.setByteArray("date", date.toByteArray());
 			this.networkPack(data, 150);
 			
 			for(int i = 0; i < 3; i++)
@@ -189,24 +185,25 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 		this.spin = nbt.getInteger("spin");
 		this.burn = nbt.getIntArray("burn");
 		this.hasRTG = nbt.getBoolean("hasRTG");
+		date = new BigInteger(nbt.getByteArray("date"));
 	}
 	
-	public static final int coalGenRate = 50;
-	public static final HashMap<FluidType, Integer> fuels = new HashMap();
+	public static final int coalGenRate = 75;
+	public static final HashMap<FluidType, Integer> fuels = new HashMap<>();
 	
 	static {
-		fuels.put(FluidType.SMEAR,		50);
-		fuels.put(FluidType.HEATINGOIL,	75);
-		fuels.put(FluidType.HYDROGEN,	5);
-		fuels.put(FluidType.DIESEL,		225);
-		fuels.put(FluidType.KEROSENE,	300);
-		fuels.put(FluidType.RECLAIMED,	100);
-		fuels.put(FluidType.PETROIL,	125);
-		fuels.put(FluidType.BIOFUEL,	200);
-		fuels.put(FluidType.GASOLINE,	700);
-		fuels.put(FluidType.NITAN,		2500);
-		fuels.put(FluidType.LPG,		200);
-		fuels.put(FluidType.ETHANOL,	75);
+		fuels.put(Fluids.SMEAR,			50);
+		fuels.put(Fluids.HEATINGOIL,	75);
+		fuels.put(Fluids.HYDROGEN,		5);
+		fuels.put(Fluids.DIESEL,		225);
+		fuels.put(Fluids.KEROSENE,		300);
+		fuels.put(Fluids.RECLAIMED,		100);
+		fuels.put(Fluids.PETROIL,		125);
+		fuels.put(Fluids.BIOFUEL,		200);
+		fuels.put(Fluids.GASOLINE,		700);
+		fuels.put(Fluids.NITAN,			2500);
+		fuels.put(Fluids.LPG,			200);
+		fuels.put(Fluids.ETHANOL,		75);
 	}
 	
 	public int getPowerFromFuel() {
@@ -223,9 +220,9 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 	@Override
 	public void setFluidFill(int fill, FluidType type) {
 		
-		if(type == FluidType.WATER)
+		if(type == Fluids.WATER)
 			tanks[0].setFill(fill);
-		else if(type == FluidType.LUBRICANT)
+		else if(type == Fluids.LUBRICANT)
 			tanks[2].setFill(fill);
 		else if(tanks[1].getTankType() == type)
 			tanks[1].setFill(fill);
@@ -270,6 +267,7 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 		
 		this.power = nbt.getLong("power");
 		this.burn = nbt.getIntArray("burn");
+		date = new BigInteger(nbt.getByteArray("date"));
 	}
 	
 	@Override
@@ -281,6 +279,7 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 		
 		nbt.setLong("power", power);
 		nbt.setIntArray("burn", burn);
+		nbt.setByteArray("date", date.toByteArray());
 	}
 	
 	@Override
@@ -313,12 +312,33 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 	@Override
 	public int getHeat()
 	{
-		return updateRTGs(slots, rtgSlots);
+		return updateRTGs();
 	}
 
+	@Override
+	public ItemStack[] getInventory()
+	{
+		ItemStack[] rtgSlots = new ItemStack[RTGSlots.length];
+		for (byte i = 0; i < RTGSlots.length; i++)
+			rtgSlots[i] = slots[RTGSlots[i]];
+		return rtgSlots;
+	}
+	
 	@Override
 	public Class<? extends IRadioisotopeFuel> getDesiredClass()
 	{
 		return ItemRTGPellet.class;
+	}
+
+	@Override
+	public void incrementAge()
+	{
+		date = date.add(BigInteger.ONE);
+	}
+
+	@Override
+	public BigInteger getInternalDate()
+	{
+		return date;
 	}
 }

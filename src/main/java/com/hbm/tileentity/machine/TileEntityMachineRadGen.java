@@ -223,8 +223,6 @@ public class TileEntityMachineRadGen extends TileEntityMachineBase implements IE
 		fuels.put(		new ComparableStack(ModItems.ingot_ra226), 						new Triplet<Integer, Integer, ItemStack>(50, 	12 * 60 * 20, 		new ItemStack(ModItems.ingot_polonium)));
 		fuels.put(		new ComparableStack(ModItems.powder_ra226), 					new Triplet<Integer, Integer, ItemStack>(50, 	12 * 60 * 20, 		new ItemStack(ModItems.powder_polonium)));
 		
-		if (!BetavoltaicFuels.isInitialized())
-			BetavoltaicFuels.initialize();
 		
 		for (Entry<AStack, IRadioisotopeFuel> e : BetavoltaicFuels.fuelMap.entrySet())
 			fuels.put(new ComparableStack(e.getKey().toStack()), new Triplet<Integer, Integer, ItemStack>(e.getValue().getHeat() / 10, (int) (e.getValue().getMaxLifespan() / 10), e.getValue().getDecayItem()));

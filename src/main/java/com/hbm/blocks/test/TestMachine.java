@@ -43,8 +43,9 @@ public class TestMachine extends BlockBasicMachine implements IBomb
 	}
 
 	@Override
-	public void explode(World world, int x, int y, int z)
+	public BombReturnCode explode(World world, int x, int y, int z)
 	{
 		PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(x, y, z, 1, 0));
+		return BombReturnCode.DETONATED;
 	}
 }

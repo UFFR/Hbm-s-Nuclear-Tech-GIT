@@ -3,6 +3,7 @@ package com.hbm.inventory.recipes.anvil;
 import com.google.common.annotations.Beta;
 import com.hbm.hazard.HazardRegistry;
 import com.hbm.hazard.transformer.HazardTransformerRadiationNBT;
+import com.hbm.inventory.OreDictManager;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.RecipesCommon.OreDictStack;
 
@@ -16,7 +17,7 @@ public class AnvilSmithingPoloniumRecipe extends AnvilSmithingRecipe
 
 	public AnvilSmithingPoloniumRecipe()
 	{
-		super(1, new ItemStack(Items.bread), new ComparableStack(Items.bread), new OreDictStack("nuggetPolonium210"));
+		super(1, new ItemStack(Items.bread), new ComparableStack(Items.bread), new OreDictStack(OreDictManager.PO210.nugget()));
 		output = HazardTransformerRadiationNBT.addRadNBT(output, HazardRegistry.po210);
 	}
 	

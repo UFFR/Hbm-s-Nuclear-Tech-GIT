@@ -32,7 +32,8 @@ public class EntityTaintCrab extends EntityCyberCrab {
         this.ignoreFrustumCheck = true;
 	}
     
-    protected EntityAIArrowAttack arrowAI() {
+    @Override
+	protected EntityAIArrowAttack arrowAI() {
     	return new EntityAIArrowAttack(this, 0.5D, 5, 5, 50.0F);
     }
 
@@ -44,7 +45,8 @@ public class EntityTaintCrab extends EntityCyberCrab {
         this.getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(0.5F);
     }
     
-    public void onLivingUpdate() {
+    @Override
+	public void onLivingUpdate() {
     	
     	targets = TileEntityTesla.zap(worldObj, posX, posY + 1.25, posZ, 10, this);
 
@@ -65,7 +67,8 @@ public class EntityTaintCrab extends EntityCyberCrab {
         return ModItems.coil_advanced_alloy;
     }
 
-    protected void dropRareDrop(int p_70600_1_) {
+    @Override
+	protected void dropRareDrop(int p_70600_1_) {
     	this.dropItem(ModItems.coil_magnetized_tungsten, 1);
     }
 

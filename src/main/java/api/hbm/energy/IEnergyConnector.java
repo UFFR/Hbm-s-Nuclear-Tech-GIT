@@ -1,12 +1,7 @@
 package api.hbm.energy;
 
-import com.hbm.blocks.ModBlocks;
-import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.packet.PacketDispatcher;
-
-import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -15,10 +10,10 @@ import net.minecraftforge.common.util.ForgeDirection;
  * This is mean for TILE ENTITIES
  * @author hbm
  */
-public interface IEnergyConnector {
+public interface IEnergyConnector extends ILoadedTile {
 	
 	/**
-	 * Returns the amount of power that was added
+	 * Returns the amount of power that remains in the source after transfer
 	 * @param power
 	 * @return
 	 */
@@ -45,6 +40,10 @@ public interface IEnergyConnector {
 	 */
 	public long getMaxPower();
 	
+	public default long getTransferWeight() {
+		return Math.max(getMaxPower() - getPower(), 0);
+	}
+	
 	/**
 	 * Basic implementation of subscribing to a nearby power grid
 	 * @param world
@@ -70,12 +69,6 @@ public interface IEnergyConnector {
 				red = true;
 		}
 		
-		if(particleDebug) {
-			NBTTagCompound data = new NBTTagCompound();
-			data.setString("type", "vanillaExt");
-			data.setString("mode", red ? "reddust" : "bluedust");
-			PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, x + world.rand.nextDouble(), y + world.rand.nextDouble(), z + world.rand.nextDouble()), new TargetPoint(world.provider.dimensionId, x + 0.5, y + 0.5, z + 0.5, 25));
-		}
 	}
 	
 	public default void tryUnsubscribe(World world, int x, int y, int z) {
@@ -91,4 +84,10 @@ public interface IEnergyConnector {
 	}
 	
 	public static final boolean particleDebug = false;
+	
+	public default Vec3 getDebugParticlePos() {
+		TileEntity te = (TileEntity) this;
+		Vec3 vec = Vec3.createVectorHelper(te.xCoord + 0.5, te.yCoord + 1, te.zCoord + 0.5);
+		return vec;
+	}
 }

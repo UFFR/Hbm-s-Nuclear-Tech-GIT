@@ -6,11 +6,11 @@ import org.lwjgl.opengl.GL11;
 
 import com.hbm.inventory.FluidTank;
 import com.hbm.inventory.container.ContainerCoreEmitter;
-import com.hbm.lib.Library;
 import com.hbm.lib.RefStrings;
 import com.hbm.packet.AuxButtonPacket;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.tileentity.machine.TileEntityCoreEmitter;
+import com.hbm.util.BobMathUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -81,7 +81,7 @@ public class GUICoreEmitter extends GuiInfoContainer {
 		String name = I18n.format(this.emitter.getInventoryName());
 		this.fontRendererObj.drawString(name, this.xSize / 2 - this.fontRendererObj.getStringWidth(name) / 2, 6, 4210752);
 		
-		this.fontRendererObj.drawString("Output: " + Library.getShortNumber(emitter.prev) + "Spk", 50, 30, 0xFF7F7F);
+		this.fontRendererObj.drawString("Output: " + BobMathUtil.getShortNumber(emitter.prev) + "Spk", 50, 30, 0xFF7F7F);
 		
 		this.fontRendererObj.drawString(I18n.format("container.inventory"), 8, this.ySize - 96 + 2, 4210752);
 	}
@@ -103,10 +103,9 @@ public class GUICoreEmitter extends GuiInfoContainer {
 		int i = (int) emitter.getPowerScaled(52);
 		drawTexturedModalRect(guiLeft + 26, guiTop + 69 - i, 176, 52 - i, 16, i);
 		
-        this.field.drawTextBox();
+		this.field.drawTextBox();
 
-		Minecraft.getMinecraft().getTextureManager().bindTexture(emitter.tank.getSheet());
-		emitter.tank.renderTank(this, guiLeft + 8, guiTop + 69, emitter.tank.getTankType().textureX() * FluidTank.x, emitter.tank.getTankType().textureY() * FluidTank.y, 16, 52);
+		emitter.tank.renderTank(guiLeft + 8, guiTop + 69, this.zLevel, 16, 52);
 	}
 	
 	protected void keyTyped(char p_73869_1_, int p_73869_2_) {

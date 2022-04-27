@@ -1,7 +1,6 @@
 package com.hbm.blocks.machine;
 
 import com.hbm.blocks.ModBlocks;
-import com.hbm.handler.EnumGUI;
 import com.hbm.handler.MultiblockHandler;
 import com.hbm.interfaces.IMultiblock;
 import com.hbm.main.MainRegistry;
@@ -54,7 +53,7 @@ public class BlockAMSLimiter extends BlockContainer implements IMultiblock {
 			TileEntityAMSLimiter entity = (TileEntityAMSLimiter) world.getTileEntity(x, y, z);
 			if(entity != null)
 			{
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.AMS_LIMITER.ordinal(), world, x, y, z);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_ams_limiter, world, x, y, z);
 			}
 			return true;
 		} else {

@@ -6,7 +6,6 @@ import com.hbm.blocks.ModBlocks;
 import com.hbm.config.BombConfig;
 import com.hbm.entity.effect.EntityNukeCloudSmall;
 import com.hbm.entity.logic.EntityNukeExplosionMK4;
-import com.hbm.handler.EnumGUI;
 import com.hbm.interfaces.IBomb;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.bomb.TileEntityNukeGadget;
@@ -104,7 +103,7 @@ public class NukeGadget extends BlockContainer implements IBomb {
 		} else if (!player.isSneaking()) {
 			TileEntityNukeGadget entity = (TileEntityNukeGadget) world.getTileEntity(x, y, z);
 			if (entity != null) {
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.NUKE_GADGET.ordinal(), world, x, y, z);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_nuke_gadget, world, x, y, z);
 			}
 			return true;
 		} else {
@@ -177,16 +176,21 @@ public class NukeGadget extends BlockContainer implements IBomb {
 	}
 
 	@Override
-	public void explode(World world, int x, int y, int z) {
-		TileEntityNukeGadget entity = (TileEntityNukeGadget) world.getTileEntity(x, y, z);
-		// if (p_149695_1_.isBlockIndirectlyGettingPowered(x, y, z))
-		{
+	public BombReturnCode explode(World world, int x, int y, int z) {
+		
+		if(!world.isRemote) {
+			TileEntityNukeGadget entity = (TileEntityNukeGadget) world.getTileEntity(x, y, z);
 			if (entity.isReady()) {
 				this.onBlockDestroyedByPlayer(world, x, y, z, 1);
 				entity.clearSlots();
 				world.setBlockToAir(x, y, z);
 				igniteTestBomb(world, x, y, z);
+				return BombReturnCode.DETONATED;
 			}
+			
+			return BombReturnCode.ERROR_MISSING_COMPONENT;
 		}
+		
+		return BombReturnCode.UNDEFINED;
 	}
 }

@@ -3,16 +3,15 @@ package com.hbm.blocks.generic;
 import java.util.Random;
 
 import com.hbm.blocks.ModBlocks;
-import com.hbm.handler.EnumGUI;
 import com.hbm.items.ModItems;
 import com.hbm.items.tool.ItemLock;
 import com.hbm.lib.RefStrings;
 import com.hbm.main.MainRegistry;
-import com.hbm.tileentity.machine.TileEntityCrateIron;
-import com.hbm.tileentity.machine.TileEntityCrateSteel;
-import com.hbm.tileentity.machine.TileEntityCrateTungsten;
 import com.hbm.tileentity.machine.TileEntityLockableBase;
-import com.hbm.tileentity.machine.TileEntitySafe;
+import com.hbm.tileentity.machine.storage.TileEntityCrateIron;
+import com.hbm.tileentity.machine.storage.TileEntityCrateSteel;
+import com.hbm.tileentity.machine.storage.TileEntityCrateTungsten;
+import com.hbm.tileentity.machine.storage.TileEntitySafe;
 
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -145,16 +144,16 @@ public class BlockStorageCrate extends BlockContainer {
 		} else if(!player.isSneaking()) {
 			TileEntity entity = world.getTileEntity(x, y, z);
 			if(entity instanceof TileEntityCrateIron && ((TileEntityCrateIron) entity).canAccess(player)) {
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.CRATE_IRON.ordinal(), world, x, y, z);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_crate_iron, world, x, y, z);
 			}
 			if(entity instanceof TileEntityCrateSteel && ((TileEntityCrateSteel) entity).canAccess(player)) {
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.CRATE_STEEL.ordinal(), world, x, y, z);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_crate_steel, world, x, y, z);
 			}
 			if(entity instanceof TileEntityCrateTungsten && ((TileEntityCrateTungsten) entity).canAccess(player)) {
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.CRATE_TUNGSTEN.ordinal(), world, x, y, z);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_crate_tungsten, world, x, y, z);
 			}
 			if(entity instanceof TileEntitySafe && ((TileEntitySafe) entity).canAccess(player)) {
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.SAFE.ordinal(), world, x, y, z);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_safe, world, x, y, z);
 			}
 			return true;
 		} else {

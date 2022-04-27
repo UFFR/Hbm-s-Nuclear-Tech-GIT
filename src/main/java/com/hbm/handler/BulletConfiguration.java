@@ -3,6 +3,9 @@ package com.hbm.handler;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+
+import javax.annotation.Nullable;
 
 import org.apache.logging.log4j.Level;
 
@@ -14,22 +17,28 @@ import com.hbm.interfaces.IBulletImpactBehavior;
 import com.hbm.interfaces.IBulletRicochetBehavior;
 import com.hbm.interfaces.IBulletUpdateBehavior;
 import com.hbm.interfaces.Untested;
+import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.lib.ModDamageSource;
 import com.hbm.main.MainRegistry;
 
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.item.Item;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
 
 public class BulletConfiguration implements Cloneable
 {
+	@FunctionalInterface
+	public interface PenetrationModifierFunction
+	{
+		public double mod(int penetration, float modifier, double distance);
+	}
 	
 	/**What item this specific configuration consumes**/
-	public Item ammo;
+	public ComparableStack ammo;
 	/**How many ammo units one item restores, default 1**/
 	public int ammoCount = 1;
 	/**How fast the bullet is (in sanics per second, or sps)**/
@@ -47,14 +56,14 @@ public class BulletConfiguration implements Cloneable
 	public float dmgMin;
 	public float dmgMax;
 	
-	//acceleration torwards neg Y
+	/**acceleration torwards neg Y**/
 	public double gravity;
-	//max age in ticks before despawning
+	/**max age in ticks before despawning**/
 	public int maxAge;
 
 	/**whether the projectile should be able to bounce off of blocks**/
 	public boolean doesRicochet;
-	//the maximum angle at which the projectile should bounce
+	/**the maximum angle at which the projectile should bounce**/
 	public double ricochetAngle;
 	/**lower bound ricochet chance (below R angle)**/
 	public int LBRC;
@@ -62,14 +71,29 @@ public class BulletConfiguration implements Cloneable
 	public int HBRC;
 	/**how much of the initial velocity is kept after bouncing**/
 	public double bounceMod;
-
+	/**Armor penetration value, default 15**/
+	public int penetration = 15;
+	/**Armor penetration modifier over distance, default 0.95**/
+	public float penetrationModifier = 0.95f;
+	/**The function that handles lost penetration over distance**/
+	@Nullable
+	public Optional<PenetrationModifierFunction> modFunction = Optional.of(defaultModifier);
+	/**
+	 * {@code m^(d / 50)}<br>
+	 * Penetration value = p<br>
+	 * Distance = d<br>
+	 * Modifier = m (default 0.95)<br>
+	 * Meaning, assuming the modifier is 0.95, the penetration will drop 5% over 50 meters or be reduced to 95% of the original value
+	 * **/
+	public static final PenetrationModifierFunction defaultModifier = (pen, mod, dist) -> {return pen * Math.pow(mod, dist / 50);};
+	
 	/**whether or not the bullet should penetrate mobs**/
 	public boolean doesPenetrate;
 	/**whether or not the bullet should phase through blocks**/
 	public boolean isSpectral;
 	/**whether or not the bullet should break glass**/
 	public boolean doesBreakGlass;
-	//whether the bullet should stay alive after colliding with a block
+	/**whether the bullet should stay alive after colliding with a block**/
 	public boolean liveAfterImpact;
 	
 	//creates a "muzzle flash" and a ton of smoke with every projectile spawned
@@ -165,9 +189,8 @@ public class BulletConfiguration implements Cloneable
 		return this;
 	}
 	
-	public BulletConfiguration setToHoming(Item ammo) {
-		
-		this.ammo = ammo;
+	public BulletConfiguration getChlorophyte()
+	{
 		this.bUpdate = BulletConfigFactory.getHomingBehavior(200, 45);
 		this.dmgMin *= 1.5F;
 		this.dmgMax *= 1.5F;
@@ -176,6 +199,12 @@ public class BulletConfiguration implements Cloneable
 		this.doesPenetrate = false;
 		this.vPFX = "greendust";
 		return this;
+	}
+	
+	public BulletConfiguration setToHoming(ItemStack ammo) {
+		
+		this.ammo = new ComparableStack(ammo);
+		return getChlorophyte();
 	}
 	
 	public BulletConfiguration accuracyMod(float mod) {
@@ -206,7 +235,6 @@ public class BulletConfiguration implements Cloneable
 		
 		return dmg;
 	}
-	// TODO
 	@Override
 	public BulletConfiguration clone()
 	{

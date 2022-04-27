@@ -1,18 +1,23 @@
 package com.hbm.extprop;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.UUID;
 
 import com.hbm.hazard.HazardRegistry;
 import com.hbm.hazard.type.HazardTypeBase;
+import com.hbm.entity.mob.EntityDuck;
 import com.hbm.lib.ModDamageSource;
 import com.hbm.main.MainRegistry;
 import com.hbm.packet.AuxParticlePacketNT;
 import com.hbm.packet.PacketDispatcher;
+import com.hbm.saveddata.TimeSavedData;
 
+import api.hbm.IHasAge;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -20,13 +25,14 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
+import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 
-public class HbmLivingProps implements IExtendedEntityProperties
+public class HbmLivingProps implements IExtendedEntityProperties, IHasAge
 {
 	
 	public static final String key = "NTM_EXT_LIVING";
@@ -34,6 +40,7 @@ public class HbmLivingProps implements IExtendedEntityProperties
 	public EntityLivingBase entity;
 	
 	/// VALS ///
+	private static final Random rand = new Random();
 	private float radiation;
 	private float digamma;
 	private int asbestos;
@@ -46,16 +53,32 @@ public class HbmLivingProps implements IExtendedEntityProperties
 	private float radBuf;
 	private int bombTimer;
 	private int contagion;
+	private BigInteger age = BigInteger.ZERO, maxAge, intDate;
 	private List<ContaminationEffect> contamination = new ArrayList<ContaminationEffect>();
 	private final HashMap<HazardTypeBase, Float> basicHazards = new HashMap<HazardTypeBase, Float>();
 	public static final HashMap<HazardTypeBase, Float> maxHazards = new HashMap<HazardTypeBase, Float>();
+	private static final HashMap<Class<? extends EntityLivingBase>, BigInteger> maxAges = new HashMap<Class<? extends EntityLivingBase>, BigInteger>();
 	static
 	{
 		maxHazards.put(HazardRegistry.BERYLLIUM, 72000f);
+		maxAges.put(EntityPlayer.class, TimeSavedData.constructCompressed(90, 0, 0));
+		maxAges.put(EntityVillager.class, TimeSavedData.constructCompressed(60, 0, 0));
+		maxAges.put(EntityWolf.class, TimeSavedData.constructCompressed(10, 0, 0));
 	}
 	
 	public HbmLivingProps(EntityLivingBase entity) {
 		this.entity = entity;
+		intDate = TimeSavedData.getData(entity.worldObj).getFullTotal();
+		// Zero meaning it does not die of old age
+		maxAge = maxAges.getOrDefault(entity.getClass(), BigInteger.ZERO);
+		if (!maxAge.equals(BigInteger.ZERO))
+			maxAge = maxAge.add(TimeSavedData.constructCompressed(rand.nextInt(10), rand.nextInt(100), 0));
+		
+		if (entity instanceof EntityPlayer)
+		{
+			TimeSavedData data = TimeSavedData.getData(entity.worldObj);
+			age = TimeSavedData.constructCompressed(20 + rand.nextInt(10), data.getDay(), data.getInternalTime());
+		}
 	}
 	
 	/// DATA ///
@@ -148,6 +171,12 @@ public class HbmLivingProps implements IExtendedEntityProperties
 	}
 	
 	public static void setDigamma(EntityLivingBase entity, float digamma) {
+		
+		if(entity.worldObj.isRemote)
+			return;
+		
+		if(entity instanceof EntityDuck)
+			digamma = 0.0F;
 		
 		getData(entity).digamma = digamma;
 		
@@ -312,6 +341,9 @@ public class HbmLivingProps implements IExtendedEntityProperties
 			props.setTag("hfr_basic", data);
 		}
 		
+		props.setByteArray("age", age.toByteArray());
+		props.setByteArray("maxAge", maxAge.toByteArray());
+		
 		nbt.setTag("HbmLivingProps", props);
 	}
 
@@ -334,6 +366,9 @@ public class HbmLivingProps implements IExtendedEntityProperties
 			for(int i = 0; i < cont; i++) {
 				this.contamination.add(ContaminationEffect.load(props, i));
 			}
+			
+			age = new BigInteger(props.getByteArray("age"));
+			maxAge = new BigInteger(props.getByteArray("maxAge"));
 			
 //			if (props.hasKey("hfr_basic"))
 //			{
@@ -379,5 +414,24 @@ public class HbmLivingProps implements IExtendedEntityProperties
 			effect.time = time;
 			return effect;
 		}
+	}
+
+	@Override
+	public void incrementAge()
+	{
+		age = age.add(BigInteger.ONE);
+	}
+	
+	@Override
+	public void notifyTimeUpdated(BigInteger newTime)
+	{
+		// TODO Auto-generated method stub
+		intDate = newTime;
+	}
+
+	@Override
+	public BigInteger getInternalDate()
+	{
+		return intDate;
 	}
 }

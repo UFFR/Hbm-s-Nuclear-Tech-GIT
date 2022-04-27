@@ -10,6 +10,7 @@ import com.hbm.handler.BulletConfigSyncingUtil;
 import com.hbm.handler.BulletConfiguration;
 import com.hbm.handler.GunConfiguration;
 import com.hbm.handler.GunConfigurationEnergy;
+import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.items.ModItems;
 import com.hbm.lib.HbmCollection;
 import com.hbm.lib.HbmCollection.EnumGunManufacturer;
@@ -51,6 +52,7 @@ public class GunEnergyFactory
 		config.allowsInfinity = true;
 		config.crosshair = Crosshair.L_SPLIT;
 		config.firingSound = "hbm:weapon.teslaShoot";
+		config.canUnload = false;
 		
 		config.name = "emp";
 		config.manufacturer = EnumGunManufacturer.MWT;
@@ -79,6 +81,7 @@ public class GunEnergyFactory
 		config.crosshair = Crosshair.L_CIRCLE;
 		config.firingSound = "hbm:weapon.flamethrowerShoot";
 		config.reloadSound = "hbm:weapon.flamerReload";
+		config.canUnload = false;
 		
 		config.name = "topaz";
 		config.manufacturer = EnumGunManufacturer.MWT;
@@ -116,6 +119,7 @@ public class GunEnergyFactory
 		config.crosshair = Crosshair.L_ARROWS;
 		config.firingSound = "hbm:weapon.zomgShoot";
 		config.reloadSound = "hbm:weapon.b92Reload";
+		config.canUnload = false;
 		
 		config.name = "zomg";
 		config.manufacturer = EnumGunManufacturer.MWT;
@@ -146,6 +150,7 @@ public class GunEnergyFactory
 		config.crosshair = Crosshair.L_CIRCLE;
 		config.firingSound = "hbm:weapon.extinguisher";
 		config.reloadSound = "hbm:weapon.flamerReload";
+		config.canUnload = false;
 		
 		config.name = "extinguisher";
 		config.manufacturer = EnumGunManufacturer.GLORIA;
@@ -183,6 +188,7 @@ public class GunEnergyFactory
 		config.allowsInfinity = false;
 		config.damage = EnumChatFormatting.BOLD + "A lot";
 		config.crosshair = Crosshair.SPLIT;
+		config.canUnload = false;
 		
 		config.config = new ArrayList<Integer>();
 		config.config.add(BulletConfigSyncingUtil.TWR_RAY);
@@ -333,7 +339,7 @@ public class GunEnergyFactory
 		
 		BulletConfiguration bullet = new BulletConfiguration();
 		
-		bullet.ammo = ModItems.gun_emp_ammo;
+		bullet.ammo = new ComparableStack(ModItems.gun_emp_ammo);
 		
 		bullet.velocity = 1F;
 		bullet.spread = 0.0F;
@@ -361,12 +367,12 @@ public class GunEnergyFactory
 		
 		return bullet;
 	}
-	
+	static byte i1 = 0;
 	public static BulletConfiguration getFlameConfig() {
 		
 		BulletConfiguration bullet = new BulletConfiguration();
 		
-		bullet.ammo = ModItems.ammo_fuel;
+		bullet.ammo = new ComparableStack(ModItems.ammo_fuel, 1, i1++);
 		bullet.ammoCount = 100;
 		
 		bullet.velocity = 0.75F;
@@ -376,6 +382,7 @@ public class GunEnergyFactory
 		bullet.bulletsMax = 5;
 		bullet.dmgMin = 2;
 		bullet.dmgMax = 4;
+		bullet.penetration = 0;
 		bullet.gravity = 0.01D;
 		bullet.maxAge = 60;
 		bullet.doesRicochet = false;
@@ -411,7 +418,7 @@ public class GunEnergyFactory
 		
 		BulletConfiguration bullet = getFlameConfig();
 		
-		bullet.ammo = ModItems.ammo_fuel_napalm;
+		bullet.ammo = new ComparableStack(ModItems.ammo_fuel, 1, i1++);
 		bullet.wear = 2;
 		bullet.dmgMin = 4;
 		bullet.dmgMax = 6;
@@ -424,7 +431,7 @@ public class GunEnergyFactory
 		
 		BulletConfiguration bullet = getFlameConfig();
 		
-		bullet.ammo = ModItems.ammo_fuel_phosphorus;
+		bullet.ammo = new ComparableStack(ModItems.ammo_fuel, 1, i1++);
 		bullet.wear = 2;
 		bullet.spread = 0.0F;
 		bullet.bulletsMin = 1;
@@ -443,7 +450,7 @@ public class GunEnergyFactory
 		
 		BulletConfiguration bullet = getFlameConfig();
 		
-		bullet.ammo = ModItems.ammo_fuel_vaporizer;
+		bullet.ammo = new ComparableStack(ModItems.ammo_fuel, 1, i1++);
 		bullet.wear = 4;
 		bullet.spread = 0.25F;
 		bullet.bulletsMin = 8;
@@ -468,7 +475,7 @@ public class GunEnergyFactory
 		
 		BulletConfiguration bullet = getFlameConfig();
 		
-		bullet.ammo = ModItems.ammo_fuel_gas;
+		bullet.ammo = new ComparableStack(ModItems.ammo_fuel, 1, i1++);
 		bullet.wear = 1;
 		bullet.spread = 0.05F;
 		bullet.gravity = 0D;
@@ -486,18 +493,20 @@ public class GunEnergyFactory
 		return bullet;
 	}
 	
-	// TODO Finish, not technically a bullet, it's supposed to be a ray
+	// It's a ray, all of this is just placeholder really
 	public static BulletConfiguration getSingConfig()
 	{
 		BulletConfiguration bullet = BulletConfigFactory.standardBulletConfig().clone();
 		
-		bullet.ammo = ModItems.singularity_micro;
+		bullet.ammo = new ComparableStack(ModItems.singularity_micro);
 		bullet.velocity = 10.0F;
 		bullet.spread = 0.0F;
 		bullet.wear = 1000;
 		
 		bullet.dmgMax = 200000;
 		bullet.dmgMin = 100000;
+		bullet.penetration = Integer.MAX_VALUE;
+		bullet.dmgBypass = true;
 		
 		bullet.gravity = 0D;
 		bullet.maxAge = 400;
@@ -520,48 +529,12 @@ public class GunEnergyFactory
 
 		return bullet;
 	}
-	public static BulletConfiguration getRegSingConfig()
-	{
-		BulletConfiguration bullet = getSingConfig();
-		
-		bullet.ammo = ModItems.singularity;
-		bullet.ammoCount = 100;
-		
-		return bullet;
-	}
-	public static BulletConfiguration getSuperheatedSingConfig()
-	{
-		BulletConfiguration bullet = getRegSingConfig();
-		
-		bullet.ammo = ModItems.singularity_super_heated;
-		bullet.dmgMax += 40000;
-		bullet.dmgMin += 40000;
-		bullet.incendiary = 100;
-		bullet.effects.add(new PotionEffect(HbmPotion.phosphorus.id, 60 * 20, 4));
-		
-		return bullet;
-	}
-	public static BulletConfiguration getCounterResonantSingConfig()
-	{
-		BulletConfiguration bullet = getRegSingConfig();
-		
-		bullet.ammo = ModItems.singularity_counter_resonant;
-		bullet.ammoCount = 500;
-		bullet.velocity *= 2;
-		bullet.isSpectral = true;
-		bullet.doesBreakGlass = false;
-		bullet.destroysBlocks = false;
-		bullet.incendiary = 0;
-		bullet.instakill = true;
-		
-		return bullet;
-	}
 	/** Main fire bullet **/
 	public static BulletConfiguration getHLRPrecisionConfig()
 	{
 		BulletConfiguration bullet = BulletConfigFactory.standardBulletConfig().clone();
 		
-		bullet.ammo = ModItems.nothing;
+		bullet.ammo = new ComparableStack(ModItems.nothing);
 		bullet.velocity = 10.0F;
 		bullet.spread = 0.01F;
 		bullet.maxAge = 350;
@@ -569,6 +542,7 @@ public class GunEnergyFactory
 		
 		bullet.dmgMax = 60F;
 		bullet.dmgMin = 50F;
+		bullet.penetration = 50;
 		
 		bullet.gravity = 0D;
 		bullet.doesRicochet = false;
@@ -576,8 +550,8 @@ public class GunEnergyFactory
 		bullet.doesPenetrate = true;
 		
 		bullet.effects = new ArrayList<PotionEffect>();
-		bullet.effects.add(new PotionEffect(HbmPotion.hollow.id, 2 * 20));
-		bullet.effects.add(new PotionEffect(HbmPotion.fragile.id, 5 * 20));
+		bullet.effects.add(HbmPotion.getPotionNoCure(HbmPotion.hollow.id, 2 * 20, 0));
+		bullet.effects.add(HbmPotion.getPotionNoCure(HbmPotion.fragile.id, 5 * 20, 1));
 		
 		bullet.bHit = (projectile, hit) -> {if (hit instanceof EntityLivingBase) ContaminationUtil.applyDigammaData(hit, 0.005F);};
 		
@@ -596,7 +570,7 @@ public class GunEnergyFactory
 	{
 		BulletConfiguration bullet = BulletConfigFactory.standardBuckshotConfig().clone();
 		
-		bullet.ammo = ModItems.nothing;
+		bullet.ammo = new ComparableStack(ModItems.nothing);
 		bullet.velocity = 10.0F;
 		bullet.spread = 0.125F;
 		bullet.maxAge = 350;
@@ -606,6 +580,7 @@ public class GunEnergyFactory
 		bullet.dmgMin = 70F;
 		bullet.bulletsMax = 18;
 		bullet.bulletsMin = 12;
+		bullet.penetration = 75;
 		
 		bullet.gravity = 0D;
 		bullet.doesRicochet = false;
@@ -613,9 +588,9 @@ public class GunEnergyFactory
 		bullet.doesPenetrate = true;
 		
 		bullet.effects = new ArrayList<PotionEffect>();
-		bullet.effects.add(new PotionEffect(HbmPotion.hollow.id, 5 * 20, 1));
-		bullet.effects.add(new PotionEffect(HbmPotion.fragile.id, 7 * 20, 1));
-		bullet.effects.add(new PotionEffect(HbmPotion.perforated.id, 3 * 20));
+		bullet.effects.add(HbmPotion.getPotionNoCure(HbmPotion.hollow.id, 5 * 20, 1));
+		bullet.effects.add(HbmPotion.getPotionNoCure(HbmPotion.fragile.id, 7 * 20, 2));
+		bullet.effects.add(HbmPotion.getPotionNoCure(HbmPotion.perforated.id, 3 * 20, 0));
 		
 		bullet.bHurt = (projectile, hit) -> {if (hit instanceof EntityLivingBase) ContaminationUtil.applyDigammaData(hit, 0.01F);};
 		
@@ -629,12 +604,12 @@ public class GunEnergyFactory
 		
 		return bullet;
 	}
-	
+	static byte i2 = 0;
 	public static BulletConfiguration getFextConfig() {
 		
 		BulletConfiguration bullet = new BulletConfiguration();
 		
-		bullet.ammo = ModItems.ammo_fireext;
+		bullet.ammo = new ComparableStack(ModItems.ammo_fireext, 1, i2++);
 		bullet.ammoCount = 300;
 		
 		bullet.velocity = 0.75F;
@@ -644,6 +619,7 @@ public class GunEnergyFactory
 		bullet.bulletsMax = 3;
 		bullet.dmgMin = 0;
 		bullet.dmgMax = 0;
+		bullet.penetration = 0;
 		bullet.gravity = 0.04D;
 		bullet.maxAge = 100;
 		bullet.doesRicochet = false;
@@ -714,7 +690,7 @@ public class GunEnergyFactory
 		
 		BulletConfiguration bullet = getFextConfig();
 		
-		bullet.ammo = ModItems.ammo_fireext_foam;
+		bullet.ammo = new ComparableStack(ModItems.ammo_fireext, 1, i2++);
 		bullet.spread = 0.05F;
 		
 		bullet.bImpact = (projectile, x, y, z) -> {
@@ -788,7 +764,7 @@ public class GunEnergyFactory
 		
 		BulletConfiguration bullet = getFextConfig();
 		
-		bullet.ammo = ModItems.ammo_fireext_sand;
+		bullet.ammo = new ComparableStack(ModItems.ammo_fireext, 1, i2++);
 		bullet.spread = 0.1F;
 		
 		bullet.bImpact = (projectile, x, y, z) -> {
@@ -847,7 +823,7 @@ public class GunEnergyFactory
 		
 		BulletConfiguration bullet = new BulletConfiguration();
 		
-		bullet.ammo = ModItems.nugget_euphemium;
+		bullet.ammo = new ComparableStack(ModItems.nugget_euphemium);
 		bullet.ammoCount = 1000;
 		bullet.wear = 1;
 		bullet.velocity = 1F;
@@ -889,7 +865,7 @@ public class GunEnergyFactory
 		
 		BulletConfiguration bullet = new BulletConfiguration();
 		
-		bullet.ammo = ModItems.nothing;
+		bullet.ammo = new ComparableStack(ModItems.nothing);
 		bullet.dmgMin = 100;
 		bullet.dmgMax = 150;
 		bullet.velocity = 1F;

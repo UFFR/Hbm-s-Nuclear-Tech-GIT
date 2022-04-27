@@ -3,7 +3,6 @@ package com.hbm.blocks.machine;
 import java.util.Random;
 
 import com.hbm.blocks.ModBlocks;
-import com.hbm.handler.EnumGUI;
 import com.hbm.interfaces.IDummy;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.machine.TileEntityAMSEmitter;
@@ -95,7 +94,7 @@ public class DummyBlockAMSEmitter extends BlockContainer implements IDummy {
     			TileEntityAMSEmitter entity = (TileEntityAMSEmitter) world.getTileEntity(a, b, c);
     			if(entity != null)
     			{
-    				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.AMS_EMITTER.ordinal(), world, a, b, c);
+    				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_ams_emitter, world, a, b, c);
     			}
     		}
 			return true;

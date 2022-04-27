@@ -1,15 +1,11 @@
 package com.hbm.interfaces;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.logging.log4j.Level;
 
 import com.google.common.annotations.Beta;
 import com.hbm.hazard.HazardRegistry;
-import com.hbm.lib.Library;
-import com.hbm.main.MainRegistry;
+import com.hbm.saveddata.TimeSavedData.TimeDurationType;
 import com.hbm.util.BobMathUtil;
 import com.hbm.util.I18nUtil;
 
@@ -17,7 +13,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
-import scala.actors.threadpool.Arrays;
 /**
  * Interface for customizable warheads or other explosive devices
  * @author UFFR
@@ -205,64 +200,7 @@ public interface ICustomWarhead
 	public default void addTooltip(ItemStack stack, List<String> tooltip)
 	{
 //		tooltip.clear();
-		try {
-		NBTTagCompound data = getWarheadData(stack);
-		
-		final ArrayList<Enum<?>> combinedFuels = new ArrayList<>();
-		combinedFuels.addAll(Arrays.asList(FissileFuel.values()));
-		combinedFuels.addAll(Arrays.asList(FusionFuel.values()));
-		combinedFuels.addAll(Arrays.asList(SaltedFuel.values()));
-		combinedFuels.addAll(Arrays.asList(EnumCustomWarhead.values()));
-		switch (getWarheadType(data))
-		{
-		case NUCLEAR:
-		case TX:
-		case HE:
-			tooltip.add("Composition:");
-			addCompositionalInfo(data, tooltip, combinedFuels);
-			break;
-		default:
-			break;
-		}
-		final EnumCustomWarhead warhead = getWarheadType(data);
-		tooltip.add(data.getFloat(NBT_MASS) + "kg total");
-		tooltip.add("");
-		switch (warhead)
-		{
-		case CHEM:
-		case BIO:
-			tooltip.add("Type: " + getColorFromWarhead(warhead) + I18nUtil.resolveKey("warhead.".concat(warhead.toString()), I18nUtil.resolveKey(data.getString(NBT_SPECIAL))));
-			break;
-		default:
-			tooltip.add("Type: " + getColorFromWarhead(warhead) + warhead.getLoc());
-			break;
-		}
-		tooltip.add("Function: " + getWeaponType(data).getLoc());
-		switch (warhead)
-		{
-		case AMAT:
-		case BF:
-		case FUSION:
-		case GRAV:
-		case HE:
-		case NUCLEAR:
-		case TX:
-			tooltip.add("Yield: " + Library.getShortNumber(data.getInteger(NBT_YIELD)) + "T");
-			break;
-		case BIO:
-		case CHEM:
-		case SCHRAB:
-			tooltip.add("Radius: " + Library.getShortNumber(data.getInteger(NBT_YIELD)) + "M");
-			break;
-		default:
-			break;
-		}
-		tooltip.add("Trait: " + getWeaponTrait(data).getLoc());
-		}
-		catch (Exception e)
-		{
-			MainRegistry.logger.catching(Level.ERROR, e);
-		}
+		// TODO
 	}
 	
 	public enum FissileFuel
@@ -336,15 +274,6 @@ public interface ICustomWarhead
 			this.halfLife = halfLife;
 			this.type = type;
 			this.mass = mass;
-		}
-		public enum TimeDurationType
-		{
-			/** Counted in days **/
-			SHORT,
-			/** Counted in years **/
-			MEDIUM,
-			/** Counted in hundreds of years **/
-			LONG;
 		}
 		public float getBlockMass()
 		{

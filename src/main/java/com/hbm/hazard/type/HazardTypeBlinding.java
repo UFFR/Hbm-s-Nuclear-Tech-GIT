@@ -29,7 +29,7 @@ public class HazardTypeBlinding extends HazardTypeBase {
 	@Override
 	public void updateEntity(EntityItem item, float level)
 	{
-		final List<EntityLivingBase> entities = item.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(level, level, level, level, level, level));
+		final List<EntityLivingBase> entities = item.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(-level, -level, -level, level, level, level));
 		for (EntityLivingBase e : entities)
 			e.addPotionEffect(new PotionEffect(Potion.blindness.id, (int) (level * (level / e.getDistanceToEntity(item)))));
 	}

@@ -1,22 +1,27 @@
 package com.hbm.items.weapon;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
+import com.hbm.handler.BulletConfiguration;
+import com.hbm.inventory.RecipesCommon.ComparableStack;
+import com.hbm.items.ItemAmmoEnums.AmmoRocket;
+import com.hbm.items.ItemAmmoEnums.IAmmoItemEnum;
+import com.hbm.items.ItemEnumMulti;
 import com.hbm.items.ModItems;
-import com.hbm.items.special.ItemCustomLore;
 import com.hbm.lib.RefStrings;
 import com.hbm.main.MainRegistry;
+import com.hbm.util.EnumUtil;
 import com.hbm.util.I18nUtil;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
+import scala.actors.threadpool.Arrays;
 
-public class ItemAmmo extends ItemCustomLore
+public class ItemAmmo extends ItemEnumMulti
 {
-	private AmmoItemTrait[] traitArray = new AmmoItemTrait[] {};
 	public enum AmmoItemTrait
 	{
 		CON_ACCURACY2,
@@ -102,39 +107,45 @@ public class ItemAmmo extends ItemCustomLore
 			key += this.toString().toLowerCase();
 		}
 	}
-	
-	public ItemAmmo()
+	private String altName = "";
+	public ItemAmmo(Class<? extends Enum> clazz)
 	{
+		super(clazz, true, true);
 		setCreativeTab(MainRegistry.weaponTab);
 	}
 	
-	public ItemAmmo(String key)
+	public ItemAmmo(Class<? extends Enum> clazz, String altName)
 	{
-		super(key);
-		setCreativeTab(MainRegistry.weaponTab);
-	}
-	
-	public ItemAmmo addTraits(AmmoItemTrait... traitsIn)
-	{
-		traitArray = traitsIn;
-		return this;
+		this(clazz);
+		this.altName = altName;
 	}
 	
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean bool)
 	{
 		super.addInformation(stack, player, list, bool);
-		if (this == ModItems.ammo_rocket_digamma) {
-			
-			if(new Random().nextInt(3) < 2)
-				list.add(EnumChatFormatting.RED + "COVER YOURSELF IN OIL");
-			else
-				list.add(EnumChatFormatting.RED + "" + EnumChatFormatting.OBFUSCATED + "COVER YOURSELF IN OIL");
+		if (!altName.isEmpty())
+			list.add(EnumChatFormatting.ITALIC + I18nUtil.resolveKey(altName));
+		if (new ComparableStack(ModItems.ammo_rocket.stackFromEnum(AmmoRocket.DIGAMMA)).matchesRecipe(stack, true))
+			list.add(player.worldObj.rand.nextInt(3) < 2 ? EnumChatFormatting.RED + "COVER YOURSELF IN OIL" : EnumChatFormatting.RED + "" + EnumChatFormatting.OBFUSCATED + "COVER YOURSELF IN OIL");
+		
+		IAmmoItemEnum item = (IAmmoItemEnum) EnumUtil.grabEnumSafely(theEnum, stack.getItemDamage());
+		AmmoItemTrait[] traitArray = item.getTraits();
+		
+		if (bool)
+		{
+			BulletConfiguration config = item.getConfig();
+			list.add("Damage: " + config.dmgMin + '-' + config.dmgMax);
+			list.add("Penetration value: " + config.penetration);
+			list.add("Penetration value at 50 meters: ~" + Math.round(config.modFunction.orElse(BulletConfiguration.defaultModifier).mod(config.penetration, config.penetrationModifier, 50)));
 		}
-		if (traitArray != null || traitArray.length > 0)
+		
+		if (traitArray.length > 0)
 		{
 			//List traits = Arrays.asList(traitArray);
-			for (AmmoItemTrait trait : traitArray)
+			ArrayList<AmmoItemTrait> sortedTraits = new ArrayList<AmmoItemTrait>(Arrays.asList(traitArray));
+			Collections.sort(sortedTraits, Collections.reverseOrder());
+			for (AmmoItemTrait trait : sortedTraits)
 			{
 				EnumChatFormatting color;
 				switch(trait.toString().substring(0, 3))
@@ -157,9 +168,9 @@ public class ItemAmmo extends ItemCustomLore
 		}		
 	}
 	@Override
-	public Item setUnlocalizedName(String uloc)
+	public ItemEnumMulti setUnlocalizedName(String uloc)
 	{
 		setTextureName(RefStrings.MODID + ":" + uloc);
-		return super.setUnlocalizedName(uloc);
+		return (ItemEnumMulti) super.setUnlocalizedName(uloc);
 	}
 }

@@ -1,26 +1,28 @@
 package com.hbm.inventory;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import org.lwjgl.opengl.GL11;
 
 import com.hbm.handler.ArmorModHandler;
-import com.hbm.handler.FluidTypeHandler.FluidType;
 import com.hbm.interfaces.IPartiallyFillable;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.gui.GuiInfoContainer;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemFluidIdentifier;
-import com.hbm.lib.Library;
-import com.hbm.lib.RefStrings;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.packet.TEFluidPacket;
-import com.hbm.util.I18nUtil;
 
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
 
 public class FluidTank {
 	
@@ -53,7 +55,7 @@ public class FluidTank {
 	
 	public final void setTankType(FluidType type) {
 		
-		if(this.type.name().equals(type.name()))
+		if(this.type == type)
 			return;
 		
 		this.type = type;
@@ -86,47 +88,37 @@ public class FluidTank {
 	}
 	
 	//Called on TE update
-	public final void updateTank(int x, int y, int z, int dim) {
-
-		PacketDispatcher.wrapper.sendToAllAround(new TEFluidPacket(x, y, z, fluid, index, type), new TargetPoint(dim, x, y, z, 100));
+	public void updateTank(TileEntity te) {
+		updateTank(te.xCoord, te.yCoord, te.zCoord, te.getWorldObj().provider.dimensionId);
 	}
 	
-	public final void updateTank(TileEntity te)
-	{
-		updateTank(te.xCoord, te.yCoord, te.zCoord, te.getWorldObj().provider.dimensionId);
+	public void updateTank(int x, int y, int z, int dim) {
+		PacketDispatcher.wrapper.sendToAllAround(new TEFluidPacket(x, y, z, fluid, index, type), new TargetPoint(dim, x, y, z, 100));
 	}
 	
 	//Fills tank from canisters
 	public final void loadTank(int in, int out, ItemStack[] slots) {
 		
-		FluidType inType = FluidType.NONE;
+		FluidType inType = Fluids.NONE;
 		if(slots[in] != null) {
 			
-			//TODO: add IPartiallyFillable case for unloading
+			//TODO: add IPartiallyFillable case for unloading, useful for infinite tanks so they don't need to be hardcoded
 			
 			inType = FluidContainerRegistry.getFluidType(slots[in]);
 			
-			if(slots[in].getItem() == ModItems.fluid_barrel_infinite && type != FluidType.NONE) {
+			if(slots[in].getItem() == ModItems.fluid_barrel_infinite && type != Fluids.NONE) {
 				this.fluid = this.maxFluid;
 				return;
 			}
 			
-			if(slots[in].getItem() == ModItems.inf_water && this.type.name().equals(FluidType.WATER.name())) {
+			if(slots[in].getItem() == ModItems.inf_water && this.type == Fluids.WATER) {
 				this.fluid += 50;
 				if(this.fluid > this.maxFluid)
 					this.fluid = this.maxFluid;
 				return;
 			}
 			
-			if (slots[in].getItem() == ModItems.inf_coolant && this.type.name().equals(FluidType.COOLANT.name()))
-			{
-				this.fluid += 100;
-				if (this.fluid > this.maxFluid)
-					this.fluid = this.maxFluid;
-				return;
-			}
-			
-			if(slots[in].getItem() == ModItems.inf_water_mk2 && this.type.name().equals(FluidType.WATER.name())) {
+			if(slots[in].getItem() == ModItems.inf_water_mk2 && this.type == Fluids.WATER) {
 				this.fluid += 500;
 				if(this.fluid > this.maxFluid)
 					this.fluid = this.maxFluid;
@@ -139,7 +131,7 @@ public class FluidTank {
 			return;
 		}
 		
-		if(slots[in] != null && inType.name().equals(type.name()) && fluid + FluidContainerRegistry.getFluidContent(slots[in], type) <= maxFluid) {
+		if(slots[in] != null && inType.getName().equals(type.getName()) && fluid + FluidContainerRegistry.getFluidContent(slots[in], type) <= maxFluid) {
 			if(slots[out] == null) {
 				fluid += FluidContainerRegistry.getFluidContent(slots[in], type);
 				slots[out] = FluidContainerRegistry.getEmptyContainer(slots[in]);
@@ -203,14 +195,14 @@ public class FluidTank {
 				return;
 			}
 			
-			if(slots[in].getItem() == ModItems.inf_water && this.type.name().equals(FluidType.WATER.name())) {
+			if(slots[in].getItem() == ModItems.inf_water && type == Fluids.WATER) {
 				this.fluid -= 50;
 				if(this.fluid < 0)
 					this.fluid = 0;
 				return;
 			}
 			
-			if(slots[in].getItem() == ModItems.inf_water_mk2 && this.type.name().equals(FluidType.WATER.name())) {
+			if(slots[in].getItem() == ModItems.inf_water_mk2 && type == Fluids.WATER) {
 				this.fluid -= 500;
 				if(this.fluid < 0)
 					this.fluid = 0;
@@ -238,67 +230,93 @@ public class FluidTank {
 			}
 		}
 	}
+
+	public void setType(int in, ItemStack[] slots) {
+		setType(in, in, slots);
+	}
 	
 	//Changes tank type
 	public final void setType(int in, int out, ItemStack[] slots) {
 		
-		if(in == out && slots[in] != null && slots[in].getItem() instanceof ItemFluidIdentifier) {
-			FluidType newType = ItemFluidIdentifier.getType(slots[in]);
+		if(slots[in] != null && slots[in].getItem() instanceof ItemFluidIdentifier) {
 			
-			if(type != newType) {
-				type = newType;
-				fluid = 0;
-			}
-			return;
-		}
-		
-		if(slots[in] != null && slots[out] == null && slots[in].getItem() instanceof ItemFluidIdentifier) {
-			FluidType newType = ItemFluidIdentifier.getType(slots[in]);
-			if(!type.name().equals(newType.name())) {
-				type = newType;
-				slots[out] = slots[in].copy();
-				slots[in] = null;
-				fluid = 0;
+			if(in == out) {
+				FluidType newType = ItemFluidIdentifier.getType(slots[in]);
+				
+				if(type != newType) {
+					type = newType;
+					fluid = 0;
+				}
+				
+			} else if(slots[out] == null) {
+				FluidType newType = ItemFluidIdentifier.getType(slots[in]);
+				if(type != newType) {
+					type = newType;
+					slots[out] = slots[in].copy();
+					slots[in] = null;
+					fluid = 0;
+				}
 			}
 		}
 	}
-	@Deprecated
-	//Used in the GUI rendering, renders correct fluid type in container with progress
-	public void renderTank(GuiContainer gui, int x, int y, int tx, int ty, int width, int height) {
+	
+	/**
+	 * Renders the fluid texture into a GUI, with the height based on the fill state
+	 * @param x the tank's left side
+	 * @param y the tank's bottom side (convention from the old system, changing it now would be a pain in the ass)
+	 * @param z the GUI's zLevel
+	 * @param width
+	 * @param height
+	 */
+	//TODO: add a directional parameter to allow tanks to grow horizontally
+	public void renderTank(int x, int y, double z, int width, int height) {
+
+		GL11.glEnable(GL11.GL_BLEND);
+
+		y -= height;
+		
+		Minecraft.getMinecraft().getTextureManager().bindTexture(type.getTexture());
 		
 		int i = (fluid * height) / maxFluid;
-		gui.drawTexturedModalRect(x, y - i, tx, ty - i, width, i);
-	}
-	@Deprecated
-	public void renderTankInfo(GuiContainer gui, int mouseX, int mouseY, int x, int y, int width, int height) {
-		if(gui instanceof GuiInfoContainer)
-			renderTankInfo((GuiInfoContainer)gui, mouseX, mouseY, x, y, width, height);
+		
+		double minX = x;
+		double maxX = x + width;
+		double minY = y + (height - i);
+		double maxY = y + height;
+		
+		double minV = 1D - i / 16D;
+		double maxV = 1D;
+		double minU = 0D;
+		double maxU = width / 16D;
+		
+		Tessellator tessellator = Tessellator.instance;
+		tessellator.startDrawingQuads();
+		tessellator.addVertexWithUV(minX, maxY, z, minU, maxV);
+		tessellator.addVertexWithUV(maxX, maxY, z, maxU, maxV);
+		tessellator.addVertexWithUV(maxX, minY, z, maxU, minV);
+		tessellator.addVertexWithUV(minX, minY, z, minU, minV);
+		tessellator.draw();
+
+		GL11.glDisable(GL11.GL_BLEND);
 	}
 	@Deprecated
 	public void renderTankInfo(GuiInfoContainer gui, int mouseX, int mouseY, int x, int y, int width, int height) {
 		if(x <= mouseX && x + width > mouseX && y < mouseY && y + height >= mouseY) {
 			
-			ArrayList<String> list = new ArrayList<String>();
-			list.add(I18nUtil.resolveKey(type.getUnlocalizedName()));
-			list.add(String.format("%smB/%smB", getFill(), getMaxFill()));
-			Library.addFluidInfo(type, list);
-			gui.drawFluidInfo(list.toArray(new String[list.size()]), mouseX, mouseY);
-//			if(type.temperature == 0)
-//				gui.drawFluidInfo(new String[] { I18n.format(this.type.getUnlocalizedName()), fluid + "/" + maxFluid + "mB" }, mouseX, mouseY);
-//			else
-//				gui.drawFluidInfo(new String[] { I18n.format(this.type.getUnlocalizedName()), fluid + "/" + maxFluid + "mB", EnumChatFormatting.RED + "" + type.temperature + "°C" }, mouseX, mouseY);
+			List<String> list = new ArrayList<>();
+			list.add(I18n.format(this.type.getUnlocalizedName()));
+			list.add(fluid + "/" + maxFluid + "mB");
+			
+			type.addInfo(list);
+			gui.drawFluidInfo(list.toArray(new String[0]), mouseX, mouseY);
 		}
-	}
-	
-	public ResourceLocation getSheet() {
-		return new ResourceLocation(RefStrings.MODID + ":textures/gui/fluids" + this.type.getSheetID() + ".png");
 	}
 
 	//Called by TE to save fillstate
 	public final void writeToNBT(NBTTagCompound nbt, String s) {
 		nbt.setInteger(s, fluid);
 		nbt.setInteger(s + "_max", maxFluid);
-		nbt.setString(s + "_type", type.getName());
+		nbt.setInteger(s + "_type", type.getID());
 	}
 	
 	//Called by TE to load fillstate
@@ -307,9 +325,10 @@ public class FluidTank {
 		int max = nbt.getInteger(s + "_max");
 		if(max > 0)
 			maxFluid = nbt.getInteger(s + "_max");
-		type = FluidType.getEnum(nbt.getInteger(s + "_type"));
-		if(type.name().equals(FluidType.NONE.name()))
-			type = FluidType.getEnumFromName(nbt.getString(s + "_type"));
+		
+		type = Fluids.fromName(nbt.getString(s + "_type")); //compat
+		if(type == Fluids.NONE)
+			type = Fluids.fromID(nbt.getInteger(s + "_type"));
 	}
 
 }

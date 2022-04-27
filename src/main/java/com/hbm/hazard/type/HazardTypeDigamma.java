@@ -3,12 +3,16 @@ package com.hbm.hazard.type;
 import java.text.DecimalFormat;
 import java.util.List;
 
+import com.hbm.calc.EasyLocation;
 import com.hbm.config.GeneralConfig;
+import com.hbm.hazard.HazardSystem;
 import com.hbm.hazard.modifier.HazardModifier;
 import com.hbm.items.machine.ItemRBMKRod;
 import com.hbm.lib.Library;
 import com.hbm.util.ContaminationUtil;
 import com.hbm.util.I18nUtil;
+import com.hbm.util.ContaminationUtil.ContaminationType;
+import com.hbm.util.ContaminationUtil.HazardType;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -24,7 +28,10 @@ public class HazardTypeDigamma extends HazardTypeBase {
 	}
 
 	@Override
-	public void updateEntity(EntityItem item, float level) { }
+	public void updateEntity(EntityItem item, float level)
+	{
+		Library.radiate(item.worldObj, new EasyLocation(item), HazardSystem.getHazardLevelFromStack(item.getEntityItem(), this), level * 10, HazardType.DIGAMMA, ContaminationType.DIGAMMA2);
+	}
 
 	static final DecimalFormat basicFormatter = new DecimalFormat("0.###");
 	static final DecimalFormat sciNotFormatter = new DecimalFormat("0.###E0");

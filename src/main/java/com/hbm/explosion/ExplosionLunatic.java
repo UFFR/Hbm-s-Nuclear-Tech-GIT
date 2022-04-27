@@ -2,11 +2,12 @@ package com.hbm.explosion;
 
 import org.apache.logging.log4j.Level;
 
+import com.hbm.interfaces.Spaghetti;
 import com.hbm.main.MainRegistry;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-
+@Spaghetti("Just a copy-paste, need to switch to a better system")
 public class ExplosionLunatic
 {
 	public int posX;

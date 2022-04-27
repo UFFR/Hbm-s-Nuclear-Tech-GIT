@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hbm.blocks.BlockDummyable;
-import com.hbm.handler.FluidTypeHandler.FluidType;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidContainer;
 import com.hbm.interfaces.IFluidSource;
 import com.hbm.inventory.FluidTank;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.recipes.MachineRecipes;
 import com.hbm.lib.Library;
 import com.hbm.tileentity.TileEntityMachineBase;
@@ -37,8 +38,8 @@ public class TileEntityMachineLargeTurbine extends TileEntityMachineBase impleme
 		super(7);
 		
 		tanks = new FluidTank[2];
-		tanks[0] = new FluidTank(FluidType.STEAM, 512000, 0);
-		tanks[1] = new FluidTank(FluidType.SPENTSTEAM, 10240000, 1);
+		tanks[0] = new FluidTank(Fluids.STEAM, 512000, 0);
+		tanks[1] = new FluidTank(Fluids.SPENTSTEAM, 10240000, 1);
 	}
 
 	@Override
@@ -71,11 +72,11 @@ public class TileEntityMachineLargeTurbine extends TileEntityMachineBase impleme
 			Object[] outs = MachineRecipes.getTurbineOutput(tanks[0].getTankType());
 			
 			if(outs == null) {
-				tanks[1].setTankType(FluidType.NONE);
+				tanks[1].setTankType(Fluids.NONE);
 			} else {
 				tanks[1].setTankType((FluidType) outs[0]);
 				
-				int processMax = (int) Math.ceil(Math.ceil(tanks[0].getFill() / 10F) / (Integer)outs[2]);		//the maximum amount of cycles based on the 10% cap
+				int processMax = (int) Math.ceil(Math.ceil(tanks[0].getFill() / 5F) / (Integer)outs[2]);		//the maximum amount of cycles based on the 20% cap
 				int processSteam = tanks[0].getFill() / (Integer)outs[2];										//the maximum amount of cycles depending on steam
 				int processWater = (tanks[1].getMaxFill() - tanks[1].getFill()) / (Integer)outs[1];				//the maximum amount of cycles depending on water
 				
@@ -84,7 +85,7 @@ public class TileEntityMachineLargeTurbine extends TileEntityMachineBase impleme
 				tanks[0].setFill(tanks[0].getFill() - (Integer)outs[2] * cycles);
 				tanks[1].setFill(tanks[1].getFill() + (Integer)outs[1] * cycles);
 				
-				power += (Integer)outs[3] * cycles;
+				power += ((Integer)outs[3] * cycles) * 1.25; //yields a 25% power conversion bonus
 				
 				if(power > maxPower)
 					power = maxPower;

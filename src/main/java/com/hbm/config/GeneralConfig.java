@@ -30,6 +30,7 @@ public class GeneralConfig {
 	public static boolean enableBabyMode = false;
 	public static boolean enableReflectorCompat = false;
 	public static boolean enableRoundedValues = false;
+	public static boolean enableRenderDistCheck = true;
 
 	public static boolean enable528 = false;
 	public static boolean enable528ReasimBoilers = true;
@@ -69,6 +70,7 @@ public class GeneralConfig {
 		enableBabyMode = config.get(CATEGORY_GENERAL, "1.23_enableBabyMode", false).getBoolean(false);
 		enableReflectorCompat = config.get(CATEGORY_GENERAL, "1.24_enableReflectorCompat", false).getBoolean(false);
 		enableRoundedValues = config.getBoolean(CATEGORY_GENERAL, "1.25_enableRoundedValues", false, "Whether or not to round off the radiation values by a certain amount of significant figures (does not apply to RBMK rods)");
+		enableRenderDistCheck = config.get(CATEGORY_GENERAL, "1.25_enableRenderDistCheck", true).getBoolean(true);
 		
 		final String CATEGORY_528 = "528";
 

@@ -1,14 +1,17 @@
 package com.hbm.blocks.machine;
 
+import java.util.List;
 import java.util.Random;
 
+import com.hbm.blocks.ITooltipProvider;
 import com.hbm.blocks.ModBlocks;
-import com.hbm.handler.EnumGUI;
 import com.hbm.handler.MultiblockHandler;
 import com.hbm.interfaces.IMultiblock;
+import com.hbm.inventory.fluid.FluidTypeCombustible.FuelGrade;
 import com.hbm.items.ModItems;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.machine.TileEntityDummy;
+import com.hbm.tileentity.machine.TileEntityMachineDiesel;
 import com.hbm.tileentity.machine.TileEntityMachineTurbofan;
 
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
@@ -23,10 +26,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-public class MachineTurbofan extends BlockContainer implements IMultiblock {
+public class MachineTurbofan extends BlockContainer implements IMultiblock, ITooltipProvider {
 
 	public MachineTurbofan(Material p_i45386_1_) {
 		super(p_i45386_1_);
@@ -68,7 +72,7 @@ public class MachineTurbofan extends BlockContainer implements IMultiblock {
 				MultiblockHandler.fillUp(world, x, y, z, MultiblockHandler.turbofanDimensionEast, ModBlocks.dummy_block_turbofan);
 				
 				//
-				DummyOldBase.safeBreak = true;
+				DummyBlockTurbofan.safeBreak = true;
 				world.setBlock(x + 1, y + 1, z + 1, ModBlocks.dummy_port_turbofan);
 				TileEntity te = world.getTileEntity(x + 1, y + 1, z + 1);
 				if(te instanceof TileEntityDummy) {
@@ -101,7 +105,7 @@ public class MachineTurbofan extends BlockContainer implements IMultiblock {
 					dummy.targetY = y;
 					dummy.targetZ = z;
 				}
-				DummyOldBase.safeBreak = false;
+				DummyBlockTurbofan.safeBreak = false;
 				//
 				
 			} else
@@ -113,7 +117,7 @@ public class MachineTurbofan extends BlockContainer implements IMultiblock {
 				MultiblockHandler.fillUp(world, x, y, z, MultiblockHandler.turbofanDimensionSouth, ModBlocks.dummy_block_turbofan);
 				
 				//
-				DummyOldBase.safeBreak = true;
+				DummyBlockTurbofan.safeBreak = true;
 				world.setBlock(x + 1, y + 1, z + 1, ModBlocks.dummy_port_turbofan);
 				TileEntity te = world.getTileEntity(x + 1, y + 1, z + 1);
 				if(te instanceof TileEntityDummy) {
@@ -146,7 +150,7 @@ public class MachineTurbofan extends BlockContainer implements IMultiblock {
 					dummy.targetY = y;
 					dummy.targetZ = z;
 				}
-				DummyOldBase.safeBreak = false;
+				DummyBlockTurbofan.safeBreak = false;
 				//
 				
 			} else
@@ -158,7 +162,7 @@ public class MachineTurbofan extends BlockContainer implements IMultiblock {
 				MultiblockHandler.fillUp(world, x, y, z, MultiblockHandler.turbofanDimensionWest, ModBlocks.dummy_block_turbofan);
 				
 				//
-				DummyOldBase.safeBreak = true;
+				DummyBlockTurbofan.safeBreak = true;
 				world.setBlock(x + 1, y + 1, z + 1, ModBlocks.dummy_port_turbofan);
 				TileEntity te = world.getTileEntity(x + 1, y + 1, z + 1);
 				if(te instanceof TileEntityDummy) {
@@ -191,7 +195,7 @@ public class MachineTurbofan extends BlockContainer implements IMultiblock {
 					dummy.targetY = y;
 					dummy.targetZ = z;
 				}
-				DummyOldBase.safeBreak = false;
+				DummyBlockTurbofan.safeBreak = false;
 				//
 				
 			} else
@@ -203,7 +207,7 @@ public class MachineTurbofan extends BlockContainer implements IMultiblock {
 				MultiblockHandler.fillUp(world, x, y, z, MultiblockHandler.turbofanDimensionNorth, ModBlocks.dummy_block_turbofan);
 				
 				//
-				DummyOldBase.safeBreak = true;
+				DummyBlockTurbofan.safeBreak = true;
 				world.setBlock(x + 1, y + 1, z + 1, ModBlocks.dummy_port_turbofan);
 				TileEntity te = world.getTileEntity(x + 1, y + 1, z + 1);
 				if(te instanceof TileEntityDummy) {
@@ -236,7 +240,7 @@ public class MachineTurbofan extends BlockContainer implements IMultiblock {
 					dummy.targetY = y;
 					dummy.targetZ = z;
 				}
-				DummyOldBase.safeBreak = false;
+				DummyBlockTurbofan.safeBreak = false;
 				//
 				
 			} else
@@ -254,7 +258,7 @@ public class MachineTurbofan extends BlockContainer implements IMultiblock {
 		}else if (!player.isSneaking()) {
 			TileEntityMachineTurbofan entity = (TileEntityMachineTurbofan) world.getTileEntity(x, y, z);
 			if (entity != null) {
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.GENERATOR_TURBOFAN.ordinal(), world, x,
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_machine_turbofan, world, x,
 						y, z);
 			}
 			return true;
@@ -317,4 +321,11 @@ public class MachineTurbofan extends BlockContainer implements IMultiblock {
 
         super.breakBlock(p_149749_1_, p_149749_2_, p_149749_3_, p_149749_4_, p_149749_5_, p_149749_6_);
     }
+
+	@Override
+	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean ext) {
+		
+		list.add(EnumChatFormatting.YELLOW + "Fuel efficiency:");
+		list.add(EnumChatFormatting.YELLOW + "-" + FuelGrade.AERO.getGrade() + ": " + EnumChatFormatting.RED + "100%");
+	}
 }

@@ -8,15 +8,15 @@ import javax.annotation.Nonnull;
 import com.hbm.items.ModItems;
 import com.hbm.util.I18nUtil;
 
-import net.minecraft.client.resources.I18n;
+import com.hbm.items.machine.ItemFuelRod;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class WatzFuel extends ItemHazard {
+public class WatzFuel extends ItemFuelRod {
 
-	public int lifeTime;
 	public int power;
 	public float powerMultiplier;
 	public int heat;
@@ -33,21 +33,14 @@ public class WatzFuel extends ItemHazard {
 	 * @param decayMultiplier
 	 */
 	
-	public WatzFuel(float radiation, boolean blinding, int lifeTime, int power, float powerMultiplier, int heat, float heatMultiplier, float decayMultiplier) {
-		super();
-		this.lifeTime = lifeTime * 100;
+	public WatzFuel(int lifeTime, int power, float powerMultiplier, int heat, float heatMultiplier, float decayMultiplier) {
+		super(lifeTime * 100);
 		this.power = power/10;
 		this.powerMultiplier = powerMultiplier;
 		this.heat = heat;
 		this.heatMultiplier = heatMultiplier;
 		this.decayMultiplier = decayMultiplier;
 		this.setMaxDamage(100);
-		this.canRepair = false;
-		setMaxStackSize(1);
-		
-		this.addRadiation(radiation);
-		if(blinding)
-			this.addBlinding();
 	}
 	/**
 	 * What the pellet will decay into, Lead pellet by default
@@ -96,27 +89,11 @@ public class WatzFuel extends ItemHazard {
 		}
 	}
 	
-	public static void setLifeTime(ItemStack stack, int time) {
-		if(!stack.hasTagCompound())
-			stack.stackTagCompound = new NBTTagCompound();
-		
-		stack.stackTagCompound.setInteger("life", time);
-	}
-	
 	public static void updateDamage(ItemStack stack) {
 		
 		if(!stack.hasTagCompound())
 			stack.stackTagCompound = new NBTTagCompound();
 		
 		stack.setItemDamage((int)((double)getLifeTime(stack) / (double)((WatzFuel)stack.getItem()).lifeTime * 100D));
-	}
-	
-	public static int getLifeTime(ItemStack stack) {
-		if(!stack.hasTagCompound()) {
-			stack.stackTagCompound = new NBTTagCompound();
-			return 0;
-		}
-		
-		return stack.stackTagCompound.getInteger("life");
 	}
 }

@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.annotations.Beta;
-import com.hbm.handler.FluidTypeHandler.FluidType;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.inventory.FluidTank;
 import com.hbm.inventory.UpgradeManager;
+import com.hbm.inventory.fluid.*;
 import com.hbm.items.machine.ItemMachineUpgrade;
 import com.hbm.items.machine.ItemMachineUpgrade.UpgradeType;
 import com.hbm.lib.Library;
@@ -18,19 +18,18 @@ import api.hbm.energy.IEnergyUser;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
-import net.minecraft.world.World;
 @Beta
 public class TileEntityAtomicClock extends TileEntityMachineBase implements IEnergyUser, IFluidAcceptor
 {
-	private FluidTank tank = new FluidTank(FluidType.CRYOGEL, 64000, 0);
-	private static TimeSavedData timeData;
-	private long power = 0;
+	private FluidTank tank = new FluidTank(Fluids.CRYOGEL, 64000, 0);
+	private long power = 0, internalTime;
 	public static final long powerRate = 100000;
 	public static final long maxPower = 50000000;
-	private float time = 0.0F;
-	private byte day = 1;
-	private long year = 2300L;
-	private boolean isOn = false;
+	private Number[] time = {2030l, 1, 0f};
+//	private float time = 0.0F;
+//	private byte day = 1;
+//	private long year = 2300L;
+	private boolean isOn = false, needsReset = true;
 	public long consumption = powerRate;
 	private int[] upgrades = {0, 0};
 	public TileEntityAtomicClock()
@@ -39,26 +38,25 @@ public class TileEntityAtomicClock extends TileEntityMachineBase implements IEne
 	}
 
 	@Override
-	public void setWorldObj(World worldIn)
-	{
-		super.setWorldObj(worldIn);
-		
-	}
-	
-	@Override
 	public void updateEntity()
 	{
 		// TODO Auto-generated method stub
-		timeData = TimeSavedData.getData(worldObj);
 		if (!worldObj.isRemote)
 		{
 			tank.updateTank(this);
 			power = Library.chargeTEFromItems(slots, 0, power, maxPower);
 			updateUpgrades();
-			time = timeData.getTime();
-			day = timeData.getDay();
-			year = timeData.getYear();
-			
+//			time = timeData.getTime();
+//			day = timeData.getDay();
+//			year = timeData.getYear();
+			if (needsReset)
+			{
+				TimeSavedData data = TimeSavedData.getData(worldObj);
+				time = data.getDateFull();
+				internalTime = data.getInternalTime();
+			}
+			else
+				increment();
 			if (isOn && canOperate())
 			{
 				tank.decrementFill(1);
@@ -68,12 +66,33 @@ public class TileEntityAtomicClock extends TileEntityMachineBase implements IEne
 		
 		NBTTagCompound data = new NBTTagCompound();
 		data.setLong("power", power);
-		data.setFloat("time", time);
-		data.setByte("day", day);
-		data.setLong("year", year);
+		data.setFloat("time", time[2].floatValue());
+		data.setByte("day", time[1].byteValue());
+		data.setLong("year", time[0].longValue());
 		data.setBoolean("isOn", isOn);
 		data.setLong("consumption", consumption);
+		data.setLong("internalTime", internalTime);
 		networkPack(data, 100);
+	}
+	
+	private void increment()
+	{
+		if (internalTime >= 24000)
+		{
+			internalTime = 0;
+			if (time[1].byteValue() >= 100)
+			{
+				time[1] = 1;
+				time[0] = time[0].longValue() + 1;
+			}
+			else
+				time[1] = time[1].byteValue() + 1;
+		}
+		else
+			internalTime++;
+		if (rand.nextInt(upgrades[0] * 100) == 0)
+			internalTime = rand.nextInt(20 - upgrades[0]);
+		time[3] = (float) Library.convertScale(internalTime, 0L, 24000L, 0F, 10.0000F);
 	}
 	
 	public boolean canOperate()
@@ -128,11 +147,12 @@ public class TileEntityAtomicClock extends TileEntityMachineBase implements IEne
 	public void networkUnpack(NBTTagCompound nbt)
 	{
 		power = nbt.getLong("power");
-		time = nbt.getFloat("time");
-		day = nbt.getByte("day");
-		year = nbt.getLong("year");
+		time[2] = nbt.getFloat("time");
+		time[1] = nbt.getByte("day");
+		time[0] = nbt.getLong("year");
 		isOn = nbt.getBoolean("isOn");
 		consumption = nbt.getLong("consumption");
+		internalTime = nbt.getLong("internalTime");
 	}
 	
 	@Override
@@ -222,11 +242,12 @@ public class TileEntityAtomicClock extends TileEntityMachineBase implements IEne
 	
 	public Number[] getTimeData()
 	{
-		Number[] data = new Number[3];
-		data[0] = time;
-		data[1] = day;
-		data[2] = year;
-		return data;
+//		Number[] data = new Number[3];
+//		data[0] = time;
+//		data[1] = day;
+//		data[2] = year;
+//		return data;
+		return time.clone();
 	}
 	
 	@Override

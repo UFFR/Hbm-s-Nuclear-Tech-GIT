@@ -3,7 +3,6 @@ package com.hbm.blocks.machine;
 import java.util.Random;
 
 import com.hbm.blocks.ModBlocks;
-import com.hbm.handler.EnumGUI;
 import com.hbm.lib.RefStrings;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.machine.TileEntityReactorControl;
@@ -37,7 +36,6 @@ public class MachineReactorControl extends BlockContainer {
 	private IIcon iconBack;
 
     private final Random field_149933_a = new Random();
-	private Random rand;
 	private static boolean keepInventory;
 
 	public MachineReactorControl(Material p_i45386_1_) {
@@ -206,7 +204,7 @@ public class MachineReactorControl extends BlockContainer {
 			TileEntityReactorControl entity = (TileEntityReactorControl) world.getTileEntity(x, y, z);
 			if(entity != null)
 			{
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.REACTOR_GENERIC_CONTROL.ordinal(), world, x, y, z);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_machine_controller, world, x, y, z);
 			}
 			return true;
 		} else {
@@ -227,7 +225,7 @@ public class MachineReactorControl extends BlockContainer {
 		
 		if(entity != null)
 		{
-			return (int)Math.ceil((double)entity.coreHeat * 15D / 50000D);
+			return (int)Math.ceil((double)entity.heat * 15D / 50000D);
 		}
 		
 		return 0;

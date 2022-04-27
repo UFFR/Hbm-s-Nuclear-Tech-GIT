@@ -94,7 +94,7 @@ public class TileEntityHadronDiode extends TileEntityTickingBase {
 		fatherIAskOfYouToUpdateMe = true;
 	}
 
-	public void writeToNBT(NBTTagCompound nbt) {
+	public void storeInNBT(NBTTagCompound nbt) {
 		super.writeToNBT(nbt);
 		
 		for(int i = 0; i < 6; i++) {

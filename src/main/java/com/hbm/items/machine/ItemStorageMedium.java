@@ -1,106 +1,50 @@
 package com.hbm.items.machine;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.lwjgl.input.Keyboard;
 
 import com.google.common.annotations.Beta;
-import com.hbm.interfaces.Spaghetti;
-import com.hbm.items.special.ItemCustomLore;
+import com.google.common.collect.ImmutableSet;
+import com.hbm.items.ItemEnumMultiSimple;
+import com.hbm.items.ItemStorageEnums.EnumStorageMagneticNew;
+import com.hbm.items.ItemStorageEnums.EnumStorageMagneticOld;
+import com.hbm.items.ItemStorageEnums.EnumStorageOptical;
+import com.hbm.lib.HbmCollection;
 import com.hbm.lib.Library;
+import com.hbm.util.BobMathUtil;
 import com.hbm.util.I18nUtil;
-import com.hbm.util.TerminalUtil.File;
 
-import api.hbm.internet.IDataStorageUser;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.creativetab.CreativeTabs;
+import api.hbm.computer.File;
+import api.hbm.internet.IDataStorageItem;
+import api.hbm.internet.IStorageItemEnum;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
 @Beta
-@Spaghetti("Could  be a lot better tbh")
-public class ItemStorageMedium extends ItemCustomLore implements IDataStorageUser
+public class ItemStorageMedium extends ItemEnumMultiSimple implements IDataStorageItem
 {
-	private Item dropItem = null;
-	private EnumStorageItemType type;
-	
-	private long readRate;
-	private long writeRate;
-	private long maxCapacity;
-	private ArrayList<EnumStorageItemTraits> traits = new ArrayList<EnumStorageItemTraits>();
-	private boolean exposed;
-	private boolean aux;
-	private ArrayList<ProsConsList> prosCons = new ArrayList<>();
-	
-	// Scaling
-	public static final int KB = 1000;
-	public static final int MB = 1000000;
-	public static final int GB = 1000000000;
-	public static final long TB = 100000000000L;
-	public static final long PB = 100000000000000L;
-	public static final long ZB = 100000000000000000L;
-	/**
-	 * Construct a new data storage medium
-	 * @param maxCapacity - Total capacity of the drive
-	 * @param writeRate - Rate of which data is modified from the drive
-	 * @param readRate - Rate of which data is read from the drive
-	 * @param aux - Whether or not the medium is an auxiliary drive (can it be quickly added and removed from a drive)
-	 * @param type - The technology the medium uses, determines some traits
-	 */
-	public ItemStorageMedium(long maxCapacity, long writeRate, long readRate, boolean aux, EnumStorageItemType type)
+	private Optional<Item> dropItem = Optional.empty();
+	private static final HashMap<Class<? extends Enum>, EnumStorageItemType> classMap = new HashMap<>();
+	static
 	{
-		this.maxCapacity = maxCapacity;
-		this.writeRate = writeRate;
-		this.readRate = readRate;
-		this.aux = aux;
-		setMaxStackSize(0);
-		this.type = type;
-		getProsCons();
+		classMap.put(EnumStorageMagneticOld.class, EnumStorageItemType.MAGNETIC_BASIC);
+		classMap.put(EnumStorageMagneticNew.class, EnumStorageItemType.MAGNETIC_ENHANCED);
+		classMap.put(EnumStorageOptical.class, EnumStorageItemType.OPTICAL);
 	}
-	
-	public ItemStorageMedium specialProsCons(ProsConsList... traits)
+	public ItemStorageMedium(Class<? extends Enum<? extends IStorageItemEnum>> clazz)
 	{
-		for (ProsConsList trait : traits)
-			prosCons.add(trait);
-		return this;
-	}
-	
-	private void getProsCons()
-	{
-		switch (this.type)
-		{
-		case MAGNETIC_BASIC:
-			prosCons.add(ProsConsList.LIFESPAN_GOOD);
-			prosCons.add(ProsConsList.CHEAP_VERY);
-			prosCons.add(ProsConsList.MAGNETIC);
-			prosCons.add(ProsConsList.FRAGILE);
-			prosCons.add(ProsConsList.MAGNET);
-			break;
-		case MAGNETIC_ENHANCED:
-			prosCons.add(ProsConsList.LIFESPAN_DECENT);
-			prosCons.add(ProsConsList.MAGNETIC);
-			prosCons.add(ProsConsList.FRAGILE);
-			prosCons.add(ProsConsList.MAGNET);
-			prosCons.add(ProsConsList.MAGNETIC);
-			prosCons.add(ProsConsList.MECHANICAL);
-			prosCons.add(ProsConsList.FRAGILE);
-			prosCons.add(ProsConsList.MECHANICAL_BAD);
-			break;
-		default:
-			prosCons.add(ProsConsList.NA);
-			break;
-		}
-		if (this.exposed)
-			prosCons.add(ProsConsList.EXPOSED);
+		super(clazz, true, true);
 	}
 	
 	public static enum EnumStorageItemType
@@ -110,7 +54,7 @@ public class ItemStorageMedium extends ItemCustomLore implements IDataStorageUse
 		OPTICAL,// CDs, DVDs, & BDs, immune to magnets
 		FLASH,// SSDs & USBs, immune to magnets
 		MAGNETIC_ADVANCED,// Super high capacity tape drives, very weak to magnets
-		CRYSTALLINE,// Quite stable, immune to almost everything, overall very good albiet expensive, similar to optical
+		CRYSTALLINE,// Quite stable, immune to almost everything, overall very good albeit expensive, similar to optical
 		SINGULARITY;// Endgame(?), immune to radiation
 	}
 	public static enum EnumStorageItemTraits
@@ -153,143 +97,47 @@ public class ItemStorageMedium extends ItemCustomLore implements IDataStorageUse
 		}
 	}
 	
-	public void writeData(ItemStack stack, long i)
-	{
-		if (stack.getItem() instanceof ItemStorageMedium)
-		{
-			if (stack.hasTagCompound())
-				stack.stackTagCompound.setLong("used", stack.stackTagCompound.getLong("used") + i);
-			else
-			{
-				stack.stackTagCompound = new NBTTagCompound();
-				stack.stackTagCompound.setLong("used", i);
-			}
-		}
-	}
-	
-	public void setData(ItemStack stack, long i)
-	{
-		if (stack.getItem() instanceof ItemStorageMedium)
-		{
-			if (stack.hasTagCompound())
-				stack.stackTagCompound.setLong("used", i);
-			else
-			{
-				stack.stackTagCompound = new NBTTagCompound();
-				stack.stackTagCompound.setLong("used", i);
-			}
-		}
-	}
-	
-	@Override
-	public void deleteData(ItemStack stack, long i)
-	{
-		if (stack.getItem() instanceof ItemStorageMedium)
-		{
-			if (stack.hasTagCompound())
-				stack.stackTagCompound.setLong("used", stack.stackTagCompound.getLong("used") - i);
-			else
-			{
-				stack.stackTagCompound = new NBTTagCompound();
-				stack.stackTagCompound.setLong("used", this.maxCapacity - i);
-			}
-		}
-	}
-	
-	public long getDataUsed(ItemStack stack)
-	{
-		if (stack.getItem() instanceof ItemStorageMedium)
-		{
-			if (stack.hasTagCompound())
-				return stack.stackTagCompound.getLong("used");
-			else
-			{
-				stack.stackTagCompound = new NBTTagCompound();
-				stack.stackTagCompound.setLong("used", ((ItemStorageMedium) stack.getItem()).maxCapacity);
-				return stack.stackTagCompound.getLong("used");
-			}
-		}
-		return 0;
-	}
-	
 	@Override
 	public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean bool)
 	{
 		super.addInformation(itemStack, player, list, bool);
+		IStorageItemEnum storageData = IStorageItemEnum.getInstance(theEnum, itemStack);
 		// Auto-generated
-		long written = this.maxCapacity;
+		long written = storageData.getMaxCapacity();
 		if (itemStack.hasTagCompound())
-			written = getDataUsed(itemStack);
+			written = IDataStorageItem.getUsedCapacity(itemStack);
 		
-		String capacityPercent = Library.getShortNumber((written * 100) / this.maxCapacity);
-		list.add("Capacity: " + capacityPercent + "%");
-		list.add(String.format("(%s/%sbyte)", Library.getShortNumber(written), Library.getShortNumber(maxCapacity)));
-		list.add(String.format("Write rate: %sbyte/s", Library.getShortNumber(writeRate)));
-		list.add(String.format("Read rate: %sbyte/s", Library.getShortNumber(readRate)));
+		String capacityPercent = BobMathUtil.getShortNumber((written * 100) / storageData.getMaxCapacity());
+		list.add("Capacity: " + capacityPercent + '%');
+		list.add(String.format("(%s/%sbyte)", BobMathUtil.getShortNumber(written), BobMathUtil.getShortNumber(storageData.getMaxCapacity())));
+		list.add(String.format("Write rate: %sbyte/s", BobMathUtil.getShortNumber(storageData.getWriteSpeed())));
+		list.add(String.format("Read rate: %sbyte/s", BobMathUtil.getShortNumber(storageData.getReadSpeed())));
 		
 		list.add("");
 		if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
-			list.add(String.format("%s%sHold <%sLSHIFT%s%s%s> to view pros/cons list", EnumChatFormatting.DARK_GRAY, EnumChatFormatting.ITALIC, EnumChatFormatting.YELLOW, EnumChatFormatting.RESET, EnumChatFormatting.DARK_GRAY, EnumChatFormatting.ITALIC));
+			list.add(I18nUtil.resolveKey(HbmCollection.lshift, I18nUtil.resolveKey("desc.item.storage.proscons")));
 		else
 		{
+			list.clear();
 			// There's probably a better way of doing this, I'll figure it out eventually, but until then, this'll do
-			// Get pros
-			for (ProsConsList trait : prosCons)
-				if (trait.key.contains("pro"))
-					list.add(EnumChatFormatting.BLUE + I18nUtil.resolveKey(trait.key));
-			// Get neutral
-			for (ProsConsList trait : prosCons)
-				if (trait.key.contains("neu"))
-					list.add(EnumChatFormatting.YELLOW + I18nUtil.resolveKey(trait.key));
-			// Get cons
-			for (ProsConsList trait : prosCons)
-				if (trait.key.contains("con"))
-					list.add(EnumChatFormatting.RED + I18nUtil.resolveKey(trait.key));
+			// Turns out, you could sort lists of enums the entire time
+			ArrayList<ProsConsList> sortedList = new ArrayList<>(storageData.prosCons());
+			Collections.sort(sortedList);
+			if (sortedList.isEmpty())
+				sortedList.add(ProsConsList.NA);
+			for (ProsConsList trait : sortedList)
+				list.add(I18nUtil.resolveKey(trait.key));
 		}
-		
+		if (!Keyboard.isKeyDown(Keyboard.KEY_LCONTROL))
+			list.add("Press <LCTRL> to view stored file list");
+		else
+		{
+			list.clear();
+			for (String f : getFileList(itemStack))
+				list.add(f);
+		}
 	}
 	
-	@Override
-	public long getMaxCapacity()
-	{
-		return maxCapacity;
-	}
-	@Override
-	public long getWriteSpeed()
-	{
-		return writeRate;
-	}
-	@Override
-	public long getReadSpeed()
-	{
-		return readRate;
-	}
-	@Deprecated
-	public static ItemStack getBlankMedium(Item item)
-	{
-		if (item instanceof ItemStorageMedium)
-		{
-			ItemStack stack = new ItemStack(item);
-			stack.stackTagCompound = new NBTTagCompound();
-			stack.stackTagCompound.setLong("used", 0);
-			stack.stackSize = 1;
-			return stack.copy();
-		}
-		return null;
-	}
-	@Deprecated
-	public static ItemStack getFullMedium(Item item)
-	{
-		if (item instanceof ItemStorageMedium)
-		{
-			ItemStack stack = new ItemStack(item);
-			stack.stackTagCompound = new NBTTagCompound();
-			stack.stackTagCompound.setLong("used", ((ItemStorageMedium) item).getMaxCapacity());
-			stack.stackSize = 1;
-			return stack.copy();
-		}
-		return new ItemStack(item);
-	}
 	@Override
 	public boolean showDurabilityBar(ItemStack stack)
 	{
@@ -298,7 +146,7 @@ public class ItemStorageMedium extends ItemCustomLore implements IDataStorageUse
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack)
 	{
-		return 1D - (double) getDataUsed(stack) / (double) getMaxCapacity();
+		return 1D - (double) IDataStorageItem.getUsedCapacity(stack) / (double) getMaxCapacity(stack);
 	}
 	/**
 	 * If not null, when dropped, the item will turn into the one specified to simulate "breaking"
@@ -307,7 +155,7 @@ public class ItemStorageMedium extends ItemCustomLore implements IDataStorageUse
 	 */
 	public ItemStorageMedium setFragile(@Nonnull Item item)
 	{
-		this.dropItem = item;
+		this.dropItem = Optional.of(item);
 		return this;
 	}
 	/**
@@ -316,92 +164,114 @@ public class ItemStorageMedium extends ItemCustomLore implements IDataStorageUse
 	 */
 	public ItemStorageMedium isExposed()
 	{
-		exposed = true;
 		return this;
 	}
 	
 	@Override
 	public boolean onEntityItemUpdate(EntityItem entityItem)
 	{
-		if (entityItem != null && !entityItem.worldObj.isRemote && entityItem.onGround && dropItem != null)
+		if (entityItem != null && !entityItem.worldObj.isRemote && entityItem.onGround && dropItem.isPresent())
 		{
-			entityItem.setEntityItemStack(new ItemStack(dropItem));
+			entityItem.setEntityItemStack(new ItemStack(dropItem.get()));
 			return true;
 		}		
 		return false;
 	}
 		
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item item, CreativeTabs tab, List list)
+	public long getMaxCapacity(ItemStack stack)
 	{
-		if (this.writeRate > 0)
+		return IStorageItemEnum.getInstance(theEnum, stack).getMaxCapacity();
+	}
+
+	@Override
+	public long getReadSpeed(ItemStack stack)
+	{
+		return IStorageItemEnum.getInstance(theEnum, stack).getReadSpeed();
+	}
+
+	@Override
+	public long getWriteSpeed(ItemStack stack)
+	{
+		return IStorageItemEnum.getInstance(theEnum, stack).getWriteSpeed();
+	}
+
+	@Override
+	public boolean writeFile(File file, ItemStack stack)
+	{
+		IStorageItemEnum instance = IStorageItemEnum.getInstance(theEnum, stack);
+		if (file.getSize() + IDataStorageItem.getUsedCapacity(stack) > instance.getMaxCapacity())
+			return false;
+		else
 		{
-			list.add(IDataStorageUser.getBlankMedium(item));
-			list.add(IDataStorageUser.getFullMedium(item));
+			if (!stack.hasTagCompound())
+				stack.stackTagCompound = new NBTTagCompound();
+			stack.stackTagCompound.setByteArray(PREFIX + file.getName(), file.toBytes());
+			stack.stackTagCompound.setString(PREFIX + file.getName() + H_SUFFIX, Library.getHash(file.toBytes()));
+			HashSet<String> list = new HashSet<String>(getFileList(stack));
+			list.add(file.getName());
+			stack.stackTagCompound.setByteArray(KEY_FILE_LIST, Library.compressStringCollection(list));
+			IDataStorageItem.setUsedCapacity(stack, IDataStorageItem.getUsedCapacity(stack) + file.getSize());
+			return true;
 		}
 	}
-	// TODO
+
 	@Override
-	@CheckForNull
-	public NBTTagCompound getStoredData(ItemStack stack)
+	public boolean deleteFile(String filename, ItemStack stack)
 	{
-		if (stack != null && stack.getItem() instanceof ItemStorageMedium)
+		if (getFileList(stack).contains(filename))
 		{
-			if (stack.hasTagCompound() && !stack.stackTagCompound.getCompoundTag(GROUP_KEY).equals(BLANK))
-				return stack.stackTagCompound.getCompoundTag(GROUP_KEY);
+			long size = readFile(filename, stack).getSize();
+			IDataStorageItem.setUsedCapacity(stack, IDataStorageItem.getUsedCapacity(stack) - size);
+			stack.stackTagCompound.removeTag(PREFIX + filename);
+			HashSet<String> list = new HashSet<>(getFileList(stack));
+			list.remove(filename);
+			stack.stackTagCompound.setByteArray(KEY_FILE_LIST, Library.compressStringCollection(list));
+			return true;
+		}
+		else
+			return false;
+	}
+
+	@Override
+	public boolean overwriteFile(File file, ItemStack stack)
+	{
+		IStorageItemEnum instance = IStorageItemEnum.getInstance(theEnum, stack);
+		if (getFileList(stack).contains(file.getName()))
+		{
+			if (file.getSize() + IDataStorageItem.getUsedCapacity(stack) > instance.getMaxCapacity())
+				return false;
 			else
-				return null;
+			{
+				writeFile(file, stack);
+				return true;
+			}
 		}
-		return null;
+		else
+			return false;
 	}
 
 	@Override
-	public long getUsedSpace()
+	public File readFile(String filename, ItemStack stack)
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		if (getFileList(stack).contains(PREFIX + filename))
+			return File.fromBytes(stack.stackTagCompound.getByteArray(PREFIX + filename));
+		else
+			return null;
+	}
+	
+	@Override
+	public String readFileHash(String filename, ItemStack stack)
+	{
+		if (getFileList(stack).contains(PREFIX + filename))
+			return stack.stackTagCompound.getString(PREFIX + filename + H_SUFFIX);
+		else
+			return "";
 	}
 
 	@Override
-	public boolean writeFile(File file)
+	public Set<String> getFileList(ItemStack stack)
 	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean deleteFile(String filename)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean overwriteFile(File file)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public File getFile(String filename)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public NBTTagCompound extractNBT()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Collection<File> getFileList()
-	{
-		// TODO Auto-generated method stub
-		return null;
+		return ImmutableSet.copyOf(Library.decompressStringBytes(stack.getTagCompound().getByteArray(KEY_FILE_LIST)));
 	}
 }

@@ -8,13 +8,13 @@ import com.hbm.entity.effect.EntityCloudFleija;
 import com.hbm.entity.logic.EntityBalefire;
 import com.hbm.entity.logic.EntityNukeExplosionMK3;
 import com.hbm.handler.BulletConfigSyncingUtil;
-import com.hbm.handler.FluidTypeHandler.FluidType;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.items.ModItems;
+import com.hbm.items.machine.ItemBreedingRod.BreedingRodType;
 import com.hbm.items.weapon.ItemAmmo.AmmoItemTrait;
 import com.hbm.main.MainRegistry;
 import com.hbm.potion.HbmPotion;
 
-import api.hbm.internet.IDataStorageUser;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -24,7 +24,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.world.World;
-import scala.actors.threadpool.Arrays;
 /** Collection for commonly used data **/
 public final class HbmCollection
 {
@@ -35,7 +34,7 @@ public final class HbmCollection
 	public static final char alpha = '\u03b1';
 	public static final char beta = '\u03b2';
 	public static final char gamma = '\u03b3';
-	public static final char neutron = '\u03b7';
+	public static final char eta = '\u03b7';
 	public static final char delta = '\u03b4';
 	public static final char theta = '\u03b8';
 	public static final char digamma = '\u03dc';
@@ -127,7 +126,7 @@ public final class HbmCollection
 	/** 20 GAUGE **/
 	public static final ImmutableList<Integer> twentyGauge = ImmutableList.of(BulletConfigSyncingUtil.G20_NORMAL, BulletConfigSyncingUtil.G20_SLUG, BulletConfigSyncingUtil.G20_FLECHETTE, BulletConfigSyncingUtil.G20_FIRE, BulletConfigSyncingUtil.G20_SHRAPNEL, BulletConfigSyncingUtil.G20_EXPLOSIVE, BulletConfigSyncingUtil.G20_CAUSTIC, BulletConfigSyncingUtil.G20_SHOCK, BulletConfigSyncingUtil.G20_WITHER, BulletConfigSyncingUtil.G20_SLEEK);
 	/** 4 GAUGE **/
-	public static final ImmutableList<Integer> fourGauge = ImmutableList.of(BulletConfigSyncingUtil.G4_NORMAL, BulletConfigSyncingUtil.G4_SLUG, BulletConfigSyncingUtil.G4_FLECHETTE, BulletConfigSyncingUtil.G4_FLECHETTE_PHOSPHORUS, BulletConfigSyncingUtil.G4_EXPLOSIVE, BulletConfigSyncingUtil.G4_SEMTEX, BulletConfigSyncingUtil.G4_BALEFIRE, BulletConfigSyncingUtil.G4_KAMPF, BulletConfigSyncingUtil.G4_CANISTER, BulletConfigSyncingUtil.G4_CLAW, BulletConfigSyncingUtil.G4_VAMPIRE, BulletConfigSyncingUtil.G4_VOID, BulletConfigSyncingUtil.G4_SLEEK);
+	public static final ImmutableList<Integer> fourGauge = ImmutableList.of(BulletConfigSyncingUtil.G4_NORMAL, BulletConfigSyncingUtil.G4_SLUG, BulletConfigSyncingUtil.G4_FLECHETTE, BulletConfigSyncingUtil.G4_FLECHETTE_PHOSPHORUS, BulletConfigSyncingUtil.G4_EXPLOSIVE, BulletConfigSyncingUtil.G4_SEMTEX, BulletConfigSyncingUtil.G4_BALEFIRE, BulletConfigSyncingUtil.G4_KAMPF, BulletConfigSyncingUtil.G4_CANISTER, BulletConfigSyncingUtil.G4_CLAW, BulletConfigSyncingUtil.G4_VAMPIRE, BulletConfigSyncingUtil.G4_VOID, BulletConfigSyncingUtil.G4_TITAN, BulletConfigSyncingUtil.G4_SLEEK);
 	// PISTOL CALIBER
 	/** .22 LONG RIFLE **/
 	public static final ImmutableList<Integer> twentyTwoLR = ImmutableList.of(BulletConfigSyncingUtil.LR22_NORMAL_FIRE, BulletConfigSyncingUtil.LR22_AP_FIRE, BulletConfigSyncingUtil.CHL_LR22_FIRE);
@@ -144,6 +143,8 @@ public final class HbmCollection
 	// RIFLE CALIBER
 	/** .50 BROWNING MACHINE GUN **/
 	public static final ImmutableList<Integer> fiftyBMG = ImmutableList.of(BulletConfigSyncingUtil.BMG50_NORMAL, BulletConfigSyncingUtil.BMG50_INCENDIARY, BulletConfigSyncingUtil.BMG50_PHOSPHORUS, BulletConfigSyncingUtil.BMG50_EXPLOSIVE, BulletConfigSyncingUtil.BMG50_AP, BulletConfigSyncingUtil.BMG50_DU, BulletConfigSyncingUtil.BMG50_STAR, BulletConfigSyncingUtil.CHL_BMG50, BulletConfigSyncingUtil.BMG50_SLEEK);
+	/** .50 BROWNING MACHINE GUN (FLECHETTE) **/
+	public static final ImmutableList<Integer> fiftyBMGFlechette = ImmutableList.of(BulletConfigSyncingUtil.BMG50_FLECHETTE_AM, BulletConfigSyncingUtil.BMG50_FLECHETTE_NORMAL, BulletConfigSyncingUtil.BMG50_FLECHETTE_PO);
 	/** 5.56MMx45 NATO (BASIC) **/
 	public static final ImmutableList<Integer> NATO = ImmutableList.of(BulletConfigSyncingUtil.R556_NORMAL, BulletConfigSyncingUtil.R556_GOLD, BulletConfigSyncingUtil.R556_TRACER, BulletConfigSyncingUtil.R556_PHOSPHORUS, BulletConfigSyncingUtil.R556_AP, BulletConfigSyncingUtil.R556_DU, BulletConfigSyncingUtil.R556_STAR, BulletConfigSyncingUtil.CHL_R556, BulletConfigSyncingUtil.R556_SLEEK, BulletConfigSyncingUtil.R556_K);
 	/** 5.56MMx45 NATO (FLECHETTE) **/
@@ -156,7 +157,7 @@ public final class HbmCollection
 	/** .75 **/
 	public static final ImmutableList<Integer> seventyFive = ImmutableList.of(BulletConfigSyncingUtil.B75_NORMAL, BulletConfigSyncingUtil.B75_INCENDIARY, BulletConfigSyncingUtil.B75_HE);
 	/** 240MM SHELL **/
-	public static final ImmutableList<Integer> cannon = ImmutableList.of(BulletConfigSyncingUtil.SHELL_NORMAL, BulletConfigSyncingUtil.SHELL_EXPLOSIVE, BulletConfigSyncingUtil.SHELL_AP, BulletConfigSyncingUtil.SHELL_DU, BulletConfigSyncingUtil.SHELL_W9);
+	public static final ImmutableList<Integer> cannon = ImmutableList.of(BulletConfigSyncingUtil.SHELL_NORMAL, BulletConfigSyncingUtil.SHELL_EXPLOSIVE, BulletConfigSyncingUtil.SHELL_AP, BulletConfigSyncingUtil.SHELL_DU, BulletConfigSyncingUtil.SHELL_W9, BulletConfigSyncingUtil.SHELL_W9_FULL);
 	/** FLAMETHROWER FUEL **/
 	public static final ImmutableList<Integer> flamer = ImmutableList.of(BulletConfigSyncingUtil.FLAMER_NORMAL, BulletConfigSyncingUtil.FLAMER_NAPALM, BulletConfigSyncingUtil.FLAMER_WP, BulletConfigSyncingUtil.FLAMER_VAPORIZER, BulletConfigSyncingUtil.FLAMER_GAS);
 	/** MINI-NUKES **/
@@ -164,10 +165,12 @@ public final class HbmCollection
 	/** MIRV MINI-NUKES **/
 	public static final ImmutableList<Integer> fatmanMIRV = ImmutableList.of(BulletConfigSyncingUtil.NUKE_MIRV_NORMAL, BulletConfigSyncingUtil.NUKE_MIRV_LOW, BulletConfigSyncingUtil.NUKE_MIRV_HIGH, BulletConfigSyncingUtil.NUKE_MIRV_SAFE, BulletConfigSyncingUtil.NUKE_MIRV_SPECIAL);
 	/** 40MM GRENADE **/
-	public static final ImmutableList<Integer> grenade = ImmutableList.of(BulletConfigSyncingUtil.GRENADE_NORMAL, BulletConfigSyncingUtil.GRENADE_HE, BulletConfigSyncingUtil.GRENADE_INCENDIARY, BulletConfigSyncingUtil.GRENADE_PHOSPHORUS, BulletConfigSyncingUtil.GRENADE_CHEMICAL, BulletConfigSyncingUtil.GRENADE_CONCUSSION, BulletConfigSyncingUtil.GRENADE_FINNED, BulletConfigSyncingUtil.GRENADE_SLEEK, BulletConfigSyncingUtil.GRENADE_NUCLEAR, BulletConfigSyncingUtil.GRENADE_TRACER, BulletConfigSyncingUtil.GRENADE_KAMPF, BulletConfigSyncingUtil.GRENADE_LUNATIC);
+	public static final ImmutableList<Integer> grenade = ImmutableList.of(BulletConfigSyncingUtil.GRENADE_NORMAL, BulletConfigSyncingUtil.GRENADE_HE, BulletConfigSyncingUtil.GRENADE_INCENDIARY, BulletConfigSyncingUtil.GRENADE_PHOSPHORUS, BulletConfigSyncingUtil.GRENADE_SMOKE, BulletConfigSyncingUtil.GRENADE_CHEMICAL, BulletConfigSyncingUtil.GRENADE_CONCUSSION, BulletConfigSyncingUtil.GRENADE_FINNED, BulletConfigSyncingUtil.GRENADE_SLEEK, BulletConfigSyncingUtil.GRENADE_NUCLEAR, BulletConfigSyncingUtil.GRENADE_TRACER, BulletConfigSyncingUtil.GRENADE_KAMPF, BulletConfigSyncingUtil.GRENADE_LUNATIC);
 	/** 84MM ROCKET **/
 	public static final ImmutableList<Integer> rocket = ImmutableList.of(BulletConfigSyncingUtil.ROCKET_NORMAL, BulletConfigSyncingUtil.ROCKET_HE, BulletConfigSyncingUtil.ROCKET_INCENDIARY, BulletConfigSyncingUtil.ROCKET_PHOSPHORUS, BulletConfigSyncingUtil.ROCKET_SHRAPNEL, BulletConfigSyncingUtil.ROCKET_EMP, BulletConfigSyncingUtil.ROCKET_GLARE, BulletConfigSyncingUtil.ROCKET_TOXIC, BulletConfigSyncingUtil.ROCKET_CANISTER, BulletConfigSyncingUtil.ROCKET_SLEEK, BulletConfigSyncingUtil.ROCKET_NUKE, BulletConfigSyncingUtil.ROCKET_CHAINSAW);
 	/// HASH SETS
+	// PRIMES
+	public static final ImmutableSet<Integer> primes = ImmutableSet.of(3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283,	293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607, 613, 617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719, 727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827, 829, 839, 853, 857, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997, 1009, 1013, 1019, 1021, 1031, 1033, 1039, 1049, 1051, 1061, 1063, 1069, 1087, 1091, 1093, 1097, 1103, 1109, 1117, 1123, 1129, 1151, 1153, 1163, 1171, 1181, 1187, 1193, 1201, 1213, 1217, 1223);
 	// ENERGY BULLET SPECTRAL-ABLE
 	public static ImmutableSet<Block> energyRoundBlock;
 	public static ImmutableSet<Material> energyRoundMaterial;
@@ -211,6 +214,8 @@ public final class HbmCollection
 		CUBE,
 		/**Enzinger Union**/
 		ENZINGER,
+		/**Equestria Missile Systems**/
+		EQUESTRIA,
 		/**Fisher Price**/
 		F_PRICE,
 		/**Fort Strong**/
@@ -247,6 +252,8 @@ public final class HbmCollection
 		NONE,
 		/**Lunar Defense Corp**/
 		LUNA,
+		/**Raytheon Missile Systems**/
+		RAYTHEON,
 		/**Rockwell International Corporation**/
 		ROCKWELL,
 		/**Rockwell International Corporation?**/
@@ -360,11 +367,11 @@ public final class HbmCollection
 						new ItemStack(ModBlocks.machine_difurnace_off),
 						new ItemStack(ModBlocks.machine_gascent),
 						new ItemStack(ModBlocks.machine_puf6_tank),
-						new ItemStack(ModBlocks.machine_reactor),
+						new ItemStack(ModBlocks.machine_reactor_breeding),
 						new ItemStack(ModBlocks.machine_nuke_furnace_off),
 						new ItemStack(ModBlocks.machine_assembler),
 						new ItemStack(ModBlocks.machine_chemplant),
-						new ItemStack(ModBlocks.machine_reactor_small),
+						new ItemStack(ModBlocks.reactor_research),
 						new ItemStack(ModBlocks.machine_turbine, 2),
 						new ItemStack(ModItems.radaway, 8),
 						new ItemStack(ModItems.radx, 2),
@@ -389,9 +396,9 @@ public final class HbmCollection
 						new ItemStack(ModBlocks.machine_centrifuge, 2),
 						new ItemStack(ModBlocks.machine_uf6_tank, 2),
 						new ItemStack(ModBlocks.machine_puf6_tank, 2),
-						new ItemStack(ModBlocks.machine_reactor, 2),
+						new ItemStack(ModBlocks.machine_reactor_breeding, 2),
 						new ItemStack(ModBlocks.machine_rtg_furnace_off, 2),
-						new ItemStack(ModBlocks.machine_reactor_small, 4),
+						new ItemStack(ModBlocks.reactor_research, 4),
 						new ItemStack(ModBlocks.machine_turbine, 4),
 						new ItemStack(ModBlocks.machine_radgen),
 						new ItemStack(ModBlocks.machine_rtg_grey),
@@ -402,7 +409,7 @@ public final class HbmCollection
 						new ItemStack(ModItems.pellet_rtg_weak, 3),
 						new ItemStack(ModItems.cell_empty, 32),
 						new ItemStack(ModItems.rod_empty, 32),
-						new ItemStack(ModItems.fluid_barrel_full, 4, FluidType.COOLANT.getID()),
+						new ItemStack(ModItems.fluid_barrel_full, 4, Fluids.COOLANT.getID()),
 						new ItemStack(ModItems.radaway_strong, 4),
 						new ItemStack(ModItems.radx, 4),
 						new ItemStack(ModItems.pill_iodine),
@@ -422,15 +429,15 @@ public final class HbmCollection
 						new ItemStack(ModItems.reactor_core),
 						new ItemStack(ModItems.cell_empty, 32),
 						new ItemStack(ModItems.rod_empty, 64),
-						new ItemStack(ModItems.fluid_barrel_full, 6, FluidType.WATER.getID()),
-						new ItemStack(ModItems.fluid_barrel_full, 8, FluidType.COOLANT.getID()),
+						new ItemStack(ModItems.fluid_barrel_full, 6, Fluids.WATER.getID()),
+						new ItemStack(ModItems.fluid_barrel_full, 8, Fluids.COOLANT.getID()),
 						new ItemStack(ModBlocks.machine_assembler),
 						new ItemStack(ModBlocks.machine_chemplant, 3),
 						new ItemStack(ModBlocks.machine_gascent, 2),
 						new ItemStack(ModBlocks.machine_nuke_furnace_off, 2),
 						new ItemStack(ModBlocks.machine_rtg_furnace_off, 3),
 						new ItemStack(ModBlocks.machine_rtg_grey, 2),
-						new ItemStack(ModBlocks.machine_reactor_small, 8),
+						new ItemStack(ModBlocks.reactor_research, 8),
 						new ItemStack(ModBlocks.machine_turbine, 6),
 						new ItemStack(ModBlocks.machine_lithium_battery, 4),
 						new ItemStack(ModBlocks.red_cable, 32),
@@ -586,9 +593,9 @@ public final class HbmCollection
 						new ItemStack(ModBlocks.nuke_prototype),
 						new ItemStack(ModItems.igniter),
 						new ItemStack(ModItems.cell_sas3, 4),
-						new ItemStack(ModItems.rod_quad_uranium, 4),
-						new ItemStack(ModItems.rod_quad_lead, 4),
-						new ItemStack(ModItems.rod_quad_neptunium, 2),
+						new ItemStack(ModItems.rod_quad, 4, BreedingRodType.URANIUM.ordinal()),
+						new ItemStack(ModItems.rod_quad, 4, BreedingRodType.LEAD.ordinal()),
+						new ItemStack(ModItems.rod_quad, 2, BreedingRodType.NP237.ordinal()),
 				};
 		missileKit = new ItemStack[]
 				{
@@ -641,14 +648,14 @@ public final class HbmCollection
 				};
 //		ItemStack fdd = ItemStorageMedium.getBlankMedium(ModItems.storage_magnetic_fdd);
 //		ItemStack cd = ItemStorageMedium.getBlankMedium(ModItems.storage_optical_cd);
-		ItemStack fdd = IDataStorageUser.getBlankMedium(ModItems.storage_magnetic_fdd);
-		ItemStack cd = IDataStorageUser.getBlankMedium(ModItems.storage_optical_cd);
+//		ItemStack fdd = IDataStorageUser.getBlankMedium(ModItems.storage_magnetic_fdd);
+//		ItemStack cd = IDataStorageUser.getBlankMedium(ModItems.storage_optical_cd);
 //		fdd.stackSize = 10;
 //		cd.stackSize = 8;
 //		fddPack = new ItemStack[] {fdd};
 //		cdPack = new ItemStack[] {cd};
-		Arrays.fill(fddPack, fdd);
-		Arrays.fill(cdPack, cd);
+//		Arrays.fill(fddPack, fdd);
+//		Arrays.fill(cdPack, cd);
 		lunarKit = new ItemStack[]
 				{
 						new ItemStack(ModItems.bj_helmet),
@@ -656,7 +663,6 @@ public final class HbmCollection
 						new ItemStack(ModItems.bj_legs),
 						new ItemStack(ModItems.bj_boots),
 						new ItemStack(ModItems.grenade_lunatic, 8),
-						new ItemStack(ModItems.ammo_grenade_lunatic, 8),
 						new ItemStack(ModItems.ingot_starmetal, 32),
 						new ItemStack(ModItems.crystal_starmetal, 8),
 						new ItemStack(ModItems.pancake, 8),

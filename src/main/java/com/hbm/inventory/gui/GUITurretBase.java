@@ -54,7 +54,8 @@ public abstract class GUITurretBase extends GuiInfoContainer
 	public void drawScreen(int mouseX, int mouseY, float f) {
 		super.drawScreen(mouseX, mouseY, f);
 
-		this.drawElectricityInfo(this, mouseX, mouseY, guiLeft + 152, guiTop + 45, 16, 52, turret.power, turret.getMaxPower());
+		drawElectricityInfo(this, mouseX, mouseY, guiLeft + 152, guiTop + 45, 16, 52, turret.power, turret.getMaxPower());
+		drawCustomInfoStat(mouseX, mouseY, guiLeft + 77, guiTop + 50, 62, 6, mouseX, mouseY, String.valueOf(turret.stattrak));
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.hbm.handler.BulletConfiguration;
 import com.hbm.handler.GunConfiguration;
+import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.items.ModItems;
 import com.hbm.lib.HbmCollection;
 import com.hbm.lib.HbmCollection.EnumGunManufacturer;
@@ -40,6 +41,12 @@ public class Gun45ACPFactory
 		
 		config.config = new ArrayList<Integer>();
 		config.config.addAll(HbmCollection.fourtyFiveACP);
+		
+		config.advLore.add("The Thompson submachine gun (also known as the \"Tommy Gun\", \"Chicago Typewriter\",");
+		config.advLore.add("\"Chicago Piano\", or \"Trench Broom\") is a blowback-operated, air-cooled, magazine-fed");
+		config.advLore.add("selective-fire submachine gun, invented by the United States Army Brigadier general John T.");
+		config.advLore.add("Thompson in 1918. It was originally designed to break the stalemate of trench warfare of World");
+		config.advLore.add("War I, but was not finished until after the war ended.");
 		
 		return config;
 	}
@@ -109,15 +116,40 @@ public class Gun45ACPFactory
 		
 		return config;
 	}
-
-	public static BulletConfiguration get45ACPConfig()
+	static byte i = 0;
+	public static BulletConfiguration get45AutoConfig()
 	{
 		BulletConfiguration bullet = Gun9mmFactory.get9mmConfig();
 		
-		bullet.ammo = ModItems.ammo_45;
+		bullet.ammo = new ComparableStack(ModItems.ammo_45, 1, i++);
 		bullet.dmgMax = 30;
 		bullet.dmgMin = 27;
+		bullet.penetration *= 1.5;
 		bullet.spread /= 2.5;
+		
+		return bullet;
+	}
+	
+	public static BulletConfiguration get45AutoAPConfig()
+	{
+		BulletConfiguration bullet = get45AutoConfig().clone();
+		
+		bullet.ammo = new ComparableStack(ModItems.ammo_45, 1, i++);
+		bullet.dmgMax *= 1.5;
+		bullet.dmgMin *= 1.5;
+		bullet.penetration *= 1.5;
+		
+		return bullet;
+	}
+	
+	public static BulletConfiguration get45AutoDUConfig()
+	{
+		BulletConfiguration bullet = get45AutoAPConfig().clone();
+		
+		bullet.ammo = new ComparableStack(ModItems.ammo_45, 1, i++);
+		bullet.dmgMax *= 1.5;
+		bullet.dmgMin *= 1.5;
+		bullet.penetration *= 1.5;
 		
 		return bullet;
 	}

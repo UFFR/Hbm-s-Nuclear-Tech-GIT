@@ -1,8 +1,9 @@
 package com.hbm.tileentity.machine;
 
 import com.hbm.blocks.BlockDummyable;
-import com.hbm.handler.FluidTypeHandler.FluidType;
 import com.hbm.inventory.FluidTank;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.Fluids;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -15,8 +16,8 @@ public class TileEntityDeuteriumTower extends TileEntityDeuteriumExtractor {
 
 	public TileEntityDeuteriumTower() {
 		tanks = new FluidTank[2];
-		tanks[0] = new FluidTank(FluidType.WATER, 50000, 0);
-		tanks[1] = new FluidTank(FluidType.HEAVYWATER, 5000, 0);
+		tanks[0] = new FluidTank(Fluids.WATER, 50000, 0);
+		tanks[1] = new FluidTank(Fluids.HEAVYWATER, 5000, 0);
 	}
 
 	public void fillFluidInit(FluidType type) {

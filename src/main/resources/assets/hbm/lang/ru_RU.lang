@@ -174,6 +174,10 @@ weapon.ability.chainsaw=Бензоболь
 <<<<<<< HEAD
 =======
 weapon.ability.fire=Горение
+<<<<<<< HEAD
+>>>>>>> master
+=======
+weapon.ability.bobble=Удача коллекционера
 >>>>>>> master
 
 info.coil=Сила катушки
@@ -228,7 +232,6 @@ hazard.sand=Раздражителей глаз
 trait.asbestos=Содержит асбест
 >>>>>>> master
 trait.blinding=Ослепление
-trait.breeding=Даёт %s операций в реакторе-размножителе
 trait.digamma=Дигамма радиация
 trait.drop=Опасно выкидывать
 trait.furnace=Даёт %s операций в ядерной печи
@@ -307,6 +310,7 @@ rbmk.rod.coreTemp=Температура стержня: %s
 rbmk.rod.skinTemp=Температура оболочки стержня: %s / %s
 
 hbm.key=NTM Hotkeys
+hbm.key.calculator=Калькулятор
 hbm.key.craneLoad=Загрузить/Разгрузить кран
 hbm.key.craneMoveDown=Двигать кран назад
 hbm.key.craneMoveLeft=Двигать кран влево
@@ -315,6 +319,13 @@ hbm.key.craneMoveUp=Двигать кран вперёд
 hbm.key.toggleBack=Включить ранец
 hbm.key.toggleHUD=Включить HUD
 hbm.key.reload=Перезарядить
+
+bomb.detonated=Успешно взорвано!
+bomb.incompatible=Устройство не может быть взорвано!
+bomb.launched=Успешно запущено!
+bomb.missingComponent=Отсутствует компонент!
+bomb.nobomb=Позиция не совместима или не прогружена!
+bomb.triggered=Успешно взорвано!
 
 contents.data.blueprints1=Сборочные шаблоны
 contents.data.blueprints2=Химические шаблоны
@@ -355,9 +366,28 @@ desc.gui.lunarOni.mode=Выключено$Существа$Свободный о
 desc.gui.lunarOni.percentage=Уровень энергии
 desc.gui.lunarOni.power=Питание
 desc.gui.reactorAmat.box=Уровень реакции: %s %%$Соотношение смешивания: %s / %s$Температура: %s°C$Давление: %s БАР$Сила: %s терадин/сек$Текущее ядро: %s$Срок службы ядра: %s$Текущий катализатор: %s$Срок службы катализатора: %s$Текущий ускоритель: %s$Срок службы ускорителя: %s
-desc.gui.rtgBFurnace.desc=Требует хотя бы 15 единиц тепла$Чем больше тепла добавляется, тем быстрее оно работает$Нагрев, превышающий максимальную скорость, не будет иметь никакого эффекта$Золото-198 может распадаться на ртуть
-desc.gui.rtgBFurnace.heat=§eТекущий уровень тепла: %s
-desc.gui.rtgBFurnace.pellets=Допустимые пеллеты:$  Пеллета плутония-238 (+5 heat)$  Слабая пеллета урана-238 (+1 heat)$  Пеллета полония-210 (+25 heat)$  Пеллета золота-198 (+150 heat)
+desc.item.rtgDecay=Распадается на: %s
+desc.gui.rtgBFurnace.desc=Требует хотя бы 15 единиц тепла$Чем больше тепла добавляется, тем быстрее оно работает$Нагрев, превышающий максимальную скорость, не будет иметь никакого эффекта$Короткоживущие пеллеты могут распадаться
+desc.gui.rtg.heat=§eТекущий уровень тепла: %s
+desc.gui.rtg.pellets=Принимаемые пеллеты:
+desc.gui.rtg.pelletHeat=%s (%s тепла)
+desc.gui.rtg.pelletPower=%s (%s HE/тик)
+desc.gui.radiolysis.desc=§9Описание§r$Этот РИТЭГ более эффективен, чем другие, и$оснащен камерой радиолиза для$крекинга и стерилизации.
+desc.gui.zirnox.coolant=§3Охлаждение§r$CO2 перемещает тепло из активной зоны в воду.$Вода будет нагреваться до перегретого пара.$Эффективность охлаждения и производства пара$зависит от давления.
+desc.gui.zirnox.pressure=§6Давление§r$Давление можно снизить, выпустив CO2.$Однако при слишком низком давлении$эффективность охлаждения и выработка пара будут снижены.$Избегайте расплавления!
+desc.gui.zirnox.warning1=§cВнимание:§r Вода необходима для$правильной работы реактора!
+desc.gui.zirnox.warning2=§cВнимание:§r CO2 необходим для$правильной работы реактора!
+desc.gui.gasCent.enrichment=§2Обогащение§r$Для обогащения урана требуются каскады.$Каскады с двумя центрифугами дадут$урановое топливо, каскады с четырьмя центрифугами$обеспечат полное разделение.
+desc.gui.gasCent.output=§6Перемещение жидкости§r$Жидкость может быть перемещена$через выходной порт для дальнейшей обработки.
+desc.gui.assembler.warning=§cОшибка:§r Требуется шаблон сборочной машины!
+desc.gui.chemplant.warning=§cОшибка:§r Требуется шаблон химической машины!
+desc.gui.template=§9Шаблоны§r$Шаблоны могут быть сделаны$в Папке шаблонов машин.
+desc.gui.upgrade=§lПринимаемые улучшения:§r
+desc.gui.upgrade.afterburner= * §dФорсаж§r: Стакается до 3-х уровней
+desc.gui.upgrade.effectiveness= * §aЭффективность§r: Стакается до 3-х уровней
+desc.gui.upgrade.overdrive= * §7Перегруз§r: Стакается до 3-х уровней
+desc.gui.upgrade.power= * §1Энергосбережение§r: Стакается до 3-х уровней
+desc.gui.upgrade.speed= * §4Скорость§r: Стакается до 3-х уровней
 desc.item.ammo.con_accuracy2=- Сильно сниженная точность
 desc.item.ammo.con_damage=- Сильно сниженный урон
 desc.item.ammo.con_heavy_wear=- Сильно увеличенный износ
@@ -497,6 +527,18 @@ desc.watz.pelHeat=Выделяет тепла:   %s тепла
 desc.watz.pelHeatMulti=Множитель тепла:   %s%%
 desc.watz.pelPower=Энергии за тик:  %sHE
 desc.watz.pelPowerMulti=Множитель энергии: %s%%
+desc.item.wasteCooling=Охладите в бочке с отработанным топливом
+
+wavelengths.name.ir=Инфракрасный
+wavelengths.name.visible=Видимый свет
+wavelengths.name.uv=Ультрафиолет
+wavelengths.name.gamma=Гамма
+wavelengths.name.drx=Дигамма
+wavelengths.waveRange.ir=780нм-1мм
+wavelengths.waveRange.visible=400нм-780нм
+wavelengths.waveRange.uv=100нм-400нм
+wavelengths.waveRange.gamma=<100пм
+wavelengths.waveRange.drx=1916169 планковских длин
 
 gun.make.ARMALITE=Armalite
 gun.make.AUTO_ORDINANCE=Корпорация Авто-Орденс
@@ -603,6 +645,26 @@ gun.name.win20Poly=Winchester Model 20 Polymer
 gun.name.win20Satur=Winchester Model 20 D-25A
 gun.name.zomg=EMC101 Prismatic Negative Energy Cannon
 
+book.error.cover=Адронный Коллайдер:$Диагностирование проблем
+book.error.title1=Ошибка 0x01 [NC]
+book.error.page1=§lНазвание:§r "ERROR_NO_CHARGE" §lОписание:§r Частица достигла сегмента, у которого недостаточно заряда. §lПотенциальное решение:§r Либо замените один из портов питания, через который частица успешно проходит, на более мощный порт питания, либо добавьте еще один порт питания немного раньше сегмента, где исчезает частица.
+book.error.title2=Ошибка 0x02 [NA]
+book.error.page2=§lНазвание:§r "ERROR_NO_ANALYSIS" §lОписание:§r Частица достигла ядра, несмотря на то, что она не прошла камеру анализа. §lПотенциальное решение:§r Проверьте что ваш ускоритель имеет камеру анализа и также проверьте режим работы (линейный/циклический).
+book.error.title3=Ошибка 0x03 [OC]
+book.error.page3=§lНазвание:§r "ERROR_OBSTRUCTED_CHANNEL" §lОписание:§r Частица столкнулась с блоком внутри коллайдера. §lПотенциальное решение:§r Проверьте, что внутренний канал вашего коллайдера свободен от любых препятствий, кроме диодов и ядра.
+book.error.title4=Ошибка 0x04 [EC]
+book.error.page4=§lНазвание:§r "ERROR_EXPECTED_COIL" §lОписание:§r Частица пересекла сегмент, у которого не хватает одной или нескольких катушек. §lПотенциальное решение:§r Снимите обшивку с коллайдера в предполагаемой области и проверьте наличие всех катушек. Эта ошибка также возникает при T-образных пересечениях которые были построены без диодов.
+book.error.title5=Ошибка 0x05 [MS]
+book.error.page5=§lНазвание:§r "ERROR_MALFORMED_SEGMENT" §lОписание:§r Частица пересекла сегмент, который был неправильно построен (но не заблокирован или не имеет катушек). §lПотенциальное решение:§r Проверьте, что предполагаемый сегмент имеет обшивку во все требуемых местах, не оставляя открытых катушек.
+book.error.title6=Ошибка 0x06 [ATL]
+book.error.page6=§lНазвание:§r "ERROR_ANALYSIS_TOO_LONG" §lОписание:§r Частица прошла более трех требуемых допустимых сегментов камеры анализа. §lПотенциальное решение:§r Проверьте, что камера анализа точно 3 блока в длину для циклического ускорителя и хотя бы 2 блока в длину для линейного. Также проверьте, не проходит ли частица через несколько камер анализа в разветвленном и/или закольцованном ускорителе.
+book.error.title7=Ошибка 0x07 [ATS]
+book.error.page7=§lНазвание:§r "ERROR_ANALYSIS_TOO_SHORT" §lОписание:§r Частица покинула камеру анализа, несмотря на несоответствие требованиям по длине. §lПотенциальное решение:§r Убедитесь, что камера анализа ускорителя имеет длину ровно 3 блока. Допустимые сегменты камеры не имеют катушек, а покрытие полностью состоит из стенок/окон камеры анализа. Камеры анализа с катушками в них считаются правильными сегментами.
+book.error.title8=Ошибка 0x08 [DC]
+book.error.page8=§lНазвание:§r "ERROR_DIODE_COLLISION" §lОписание:§r Частица столкнулась с не входящей стороной диода частиц Шоттки. §lПотенциальное решение:§r Проверьте что ваши диоды настроены правильно. Частицы могут входить только со сторон с зелеными стрелками, направленными внутрь.
+book.error.title9=Ошибка 0x09 [BT]
+book.error.page9=§lНазвание:§r "ERROR_BRANCHING_TURN" §lОписание:§r Частица достигла поворота с несколькими выходами. §lПотенциальное решение:§r Если ваш поворот нормальный, проверьте есть ли там все катушки (то есть нет дыр в слоях). Если поворот предназначен для разветвления, для этого требуется правильно сконфигурированный диод частиц Шоттки.
+
 book.test.cover=HOW 2 SEX
 book.test.page1=Test Page 1
 book.rbmk.cover=Мой первый РБМК:$Основы$строительства реактора$
@@ -682,6 +744,45 @@ book.custCores.page8=Он имеет плотность ~19,05 г/см3 и кр�
 book.custCores.page9.title=Уран-235
 book.custCores.page9=Наиболее широко известный расщепляющийся материал, полученный путем обогащения природного урана, это единственный природный расщепляющийся материал.
 
+book.starter.cover=Руководство промышленника$по восстановлению$общества
+book.starter.title1=Вступление
+book.starter.page1=Если вы читаете это, то весьма вероятно, что общество, так или иначе, полностью рухнуло. Правительства, страны и власть - это концепция прошлого, вместе со всеми удобствами цивилизованной жизни. Таким образом, это руководство расскажет вам, как изменить это, воссоздав индустрию и технологии прошлого для улучшения вашей собственной жизни.
+book.starter.title2=Уголь и горчичный газ
+book.starter.page2=Хотя невозможно предсказать фактическое состояние мира в постапокалиптическое время, вполне вероятно, что война и промышленность в ее нынешнем виде, возможно, еще не закончились. Чтобы защитить свои собственные легкие, эффективный и дешевый способ - помочиться на какую-нибудь тряпку, чтобы сделать §lтраншейную маску§r, чтобы защитить вас от угольной пыли или горчичного газа, если вы когда-нибудь столкнетесь с ними.
+book.starter.title3=Наковальни и прессы
+book.starter.page3=Квинтэссенцией для начала вашего промышленного возрождения являются §lнаковальня§r и §lпресс§r. Наковальня позволит вам вручную создавать ранние механизмы, такие как сборочная машина, в то время как пресс позволит вам изготавливать пластины, провода и схемы, которые вы не можете сделать с помощью наковальни.
+book.starter.title4=Шаблоны
+book.starter.page4=Чтобы штамповать металл в полезные формы, собирать оборудование и проводить химические реакции, вам нужно будет создать §lПапку шаблонов машин§r для создания различных штампов и шаблонов, показанных справа.
+book.starter.title5=Собирательство
+book.starter.page5=В зависимости от того, насколько серьезным было первоначальное апокалиптическое событие для ранее существовавших структур мира, существует вероятность того, что многие полезные материалы и машины могут быть извлечены непосредственно из них. Вас могут ожидать металлические сплавы, такие как сталь, детали, такие как микросхемы, и даже расщепляющийся материал с атомной электростанции. Однако остерегайтесь определенных руин, так как там могут таиться опасности, как змея в траве; ожидая, чтобы поразить вас радиацией, ловушками или неописуемыми ужасами...
+book.starter.title6=Ранние механизмы
+book.starter.page6a=Две из первых машин, которые вы должны собрать, - это §lДоменная печь§r и §lСборочная машина§r. Первое позволит вам создавать сплавы, такие как §lсталь§r, §lкрасная медь§r и §lпродвинутый сплав§r; вам нужно будет использовать эти металлы для корпусов машин, подключения цепей, усовершенствованных электромагнитов и многого другого.
+book.starter.page6b=Сборщик будет использоваться для создания практически любой другой машины, описанной в этом руководстве. Вам понадобится источник питания, такой как например §lГенератор внутреннего сгорания§r или §lБойлер солнечной башни§r.
+book.starter.page7a=§lИзмельчитель§r вместе с парой лезвий измельчителя будет очень полезен для удвоения производительности большинства руд путем измельчения в плавящиеся порошки. Эти порошки также имеют решающее значение для начала создания схем для различных машин, таких как §lУсовершенствованная§r и §lРазогнанная§r микросхемы.
+book.starter.page7b=Используя свое новое оборудование, вы можете создать §lХимический завод§r, используемый для синтеза улучшенных микросхем, бетона, переработки продуктов нефтехимии и многого другого.
+book.starter.title8=Чёрное золото
+book.starter.page8a=Используя §lДетектор нефтяных пластов§r, вы можете найти подземные залежи нефти для установки §lСтанка-качалки§r или §lНефтяной вышки§r, обследовав местность. Помните, что залежи нефти со временем иссякнут.
+book.starter.page8b=Прежде чем нефть может быть переработанна и разделена на составные части в §lНефтеперерабатывающем заводе§r, вы должны нагреть нефть до 300 ° C в §lИндустриальном котле§r.
+book.starter.title9=Продукты нефтехимии
+book.starter.page9=Используя §lХимические заводы§r, §lРектификационные§r §lколонны§r, и §lБашни§r §lкаталитического крекинга§r, вы можете превратить переработанную нефть в различные полезные продукты. Например: §lПолимер§r, прочный и гибкий пластик; §lДеш§r, чрезвычайно прочный и термостойкий сплав редкоземельных металлов; §lТвёрдое топливо§r, которое можно сжигать для получения энергии; или даже §lЖидкое топливо§r, такое как §lБензин§r, §lДизель§r, §lКеросин§r, и т.д.
+book.starter.title10=Продвинутые механизмы
+book.starter.page10=Имея за плечами переработку нефти, вы можете создать §lЦентрифугу§r, которая утроит выход руды; §lРудный §lокислитель§r, который будет кристаллизовать руды, увеличивая выход; и §lSILEX + §lFEL§r, два чуда современной инженерии, которые могут легко отделять изотопы материалов. Для их питания вам потребуется значительно больше энергии, которую можно получить с помощью таких источников, как §lДизельный генератор§r, §lПромышленный генератор§r или даже ядерный реактор.
+book.starter.title11=Пласт
+book.starter.page11=Под землей, по которой вы ходите, есть несколько естественных §lпластов§r, или особых минеральных слоев и образований. §lСланцевые пласты§r - это голубые литийсодержащие слои, заполненные ураном, железом, медью, асбестом и другими рудами для вашего собственного использования. §lГлубинная порода§r содержит большое количество более редких минералов, таких как §lцирконий§r и §lбор§r, но для правильного сбора требуется взрывчатка.
+book.starter.title12=Радиация
+book.starter.page12a=§oОстальная часть этой книги будет посвящена вопросам, связанным с §oрадиацией. Для вашей безопасности и безопасности других людей я дам вам §oсоветы о том, как смягчить воздействие и справиться с ней.
+book.starter.page12b=Достаточное воздействие радиации может привести и приведет к телесным повреждениям. Первый шаг - это внешняя защита; обязательно ограничьте свое воздействие и наденьте защитное снаряжение, например §lЗащитный костюм§r, или прикрепить §lОбшивку§r к вашей одежде или броне; вы также можете принять §lРад-X§r чтобы ограничить получаемую дозу. Спасибо современной медицине, вторым шагом может быть удаление, если это необходимо; например, §l"Обеззараживатель §lигрока"§r будет медленно уменьшать излучение, поглощённое вашим телом. §lАнтирадин§r может быть использован как профилактика при облучении, быстро и эффективно устраняя повреждения, причиненные вашему организму ионизирующим излучением.
+book.starter.title13=Обогащение урана
+book.starter.page13=Существует несколько простых вариантов топлива для ядерного реактора; например, топливо из §lПриродного урана§r или §lТория§r. Однако, если вы ищете что-то более мощное, вы можете настроить каскад обогащения из двух §lГазовых центрифуг§r для производства §lУранового топлива§r с остатками §lУрана-238§r. Для этого вам придется превратить природный уран в §lЙеллоукейк§r, а затем в §lГексафторид §lурана§r.
+book.starter.title14=Чикагская поленница
+book.starter.page14=В качестве альтернативы вы можете получить §lРеакторный плутоний§r, более мощное топливо, из природного урана, используя §lЧикагскую поленницу§r. Укладывая графитовые блоки и сверля их, вы можете вставить топливные стержни для размножения в плутоний и стержни источников нейтронов, такие как §lРадий-Бериллий§r, чтобы начать реакцию. Обязательно протестируйте свои конструкции; для предотвращения перегрева может потребоваться разделение или ограничение количества блоков.
+book.starter.title15=ЦИРНОКС РГО
+book.starter.page15=Наконец, вы можете создать свой первый §oреальный§r источник энергии: ядерный реактор §lЦИРНОКС§r. Ядерные реакторы требуют большей настройки, чем другие источники энергии; во-первых, вам понадобится хороший источник воды, такой как §lУсиленный §lбесконечный резервуар воды§r. Чтобы удалить тепло из активной зоны реактора и вскипятить воду в пар, вам понадобится достаточное количество §lУглекислого газа§r. Вам нужно достаточное давление, но не §oслишком§r сильное. Вам также понадобятся три паровые турбины для использования созданного пара для производства энергии; §lПаровая §lтурбина§r или §lПромышленная паровая §lтурбина§r будут оптимальными. Наконец, §lКонденсатор§r или §lВспомогательная§r градирня необходимы для конденсации оставшегося пара в воду, где он может быть удален или переработан в контуре охлаждения.
+book.starter.title16=Заключение
+book.starter.page16=Если вы зашли так далеко, значит, вы на пути к тому, чтобы помочь восстановить цивилизацию. Вы успешно воссоздали передовую технику доапокалипсиса - с помощью ядерной энергетики, нефтехимии и многого другого. Я не могу знать, §oкак§r вы будете использовать эти новообретенные преимущества, но я лично надеюсь, что вы используете их на благо себе и другим - или, по крайней мере, в целях самообороны. До свидания!
+book.starter.title18=Об авторе
+book.starter.page18=vær - просто парень, который слишком долго был пойман в ловушку серой пустоты, показанной в фильме "Говорящая голова" §o"Раз в жизни"§r. Однажды он нашел дверь студии, но, к своему ужасу, обнаружил, что она была вырезана из картона.
+
 hbmfluid.none=Ничего
 hbmfluid.water=Вода
 hbmfluid.steam=Пар
@@ -760,6 +861,16 @@ hbmfluid.helium3=Гелий-3
 hbmfluid.heavywater=Тяжёлая вода
 hbmfluid.ethanol=Этанол
 hbmfluid.carbondioxide=Углекислый газ
+hbmfluid.aromatics=Ароматические углеводороды
+hbmfluid.coaloil=Фотоген
+hbmfluid.crackoil=Крекированная нефть
+hbmfluid.diesel_crack=Крекированный дизель
+hbmfluid.hotcrackoil=Горячая крекированная нефть
+hbmfluid.lightoil_crack=Крекированная легкая нефть
+hbmfluid.naphtha_crack=Крекированная нафта
+hbmfluid.unsaturateds=Непредельные углеводороды
+hbmfluid.salient=Зелёный сойлент
+hbmfluid.coalgas=Угольный газ
 
 //Special for 1.12.2 version//
 fluid.hbmsteam=Пар
@@ -815,7 +926,16 @@ geiger.title.dosimeter=ДОЗИМЕТР
 hadron.analysis=Анализ...
 hadron.buttonOn=Камера анализа (если есть) включена
 hadron.buttonOff=Камера анализа выключена
-hadron.error=Ошибка!
+hadron.error_generic=Ошибка!
+hadron.error_no_charge=Ошибка 0x01 [NC]
+hadron.error_no_analysis=Ошибка 0x02 [NA]
+hadron.error_obstructed_channel=Ошибка 0x03 [OC]
+hadron.error_expected_coil=Ошибка 0x04 [EC]
+hadron.error_malformed_segment=Ошибка 0x05 [MS]
+hadron.error_analysis_too_long=Ошибка 0x06 [ATL]
+hadron.error_analysis_too_short=Ошибка 0x07 [ATS]
+hadron.error_diode_collision=Ошибка 0x08 [DC]
+hadron.error_branching_turn=Ошибка 0x09 [BT]
 hadron.noresult=Нет результата.
 hadron.success=Завершено!
 hadron.idle=Ожидание
@@ -1088,7 +1208,7 @@ item.custom_amat.name=Антивещественный заряд кастомн
 item.custom_dirty.name=Грязный заряд кастомной бомбы
 item.custom_schrab.name=Шрабидиевый заряд кастомной бомбы
 item.custom_fall.name=Улучшение кастомной бомбы (Удар с неба)
->>>>>>> master
+item.custom_fall.desc=Это то, чего вы все тааааааак ждали!$Сбрасывает бомбу при активации
 
 container.nukeGadget=Гаджет
 container.nukeBoy=Малыш
@@ -1174,9 +1294,12 @@ item.turret_biometry.name=Карта телелинка
 
 item.key.name=Ключ
 item.key_red.name=Красный ключ
+item.key_red.desc=Исследуй другую сторону.
+item.key_red.desc.P11=§4e§r
 item.key_kit.name=Набор имитации ключей
 item.key_fake.name=Поддельный ключ
 item.pin.name=Отмычка
+item.pin.desc="*Немодифицированный* вероятность успешного взлома обычного замка составляет ~10%.
 item.padlock_rusty.name=Ржавый замок
 item.padlock.name=Замок
 item.padlock_reinforced.name=Защищенный замок
@@ -1220,8 +1343,7 @@ container.uf6_tank=Бочка UF6
 tile.machine_puf6_tank.name=Бочка гексафторида плутония
 container.puf6_tank=Бочка PuF6
 tile.machine_reactor.name=Реактор-размножитель
-tile.machine_reactor_on.name=Реактор-размножитель
-container.reactor=Реактор-размножитель
+container.reactorBreeding=Реактор-размножитель
 tile.machine_nuke_furnace_off.name=Ядерная печь
 tile.machine_nuke_furnace_on.name=Ядерная печь
 container.nukeFurnace=Ядерная печь
@@ -1325,6 +1447,7 @@ container.assembler=Сборочная машина
 tile.machine_chemplant.name=Химическая установка
 container.chemplant=Химическая установка
 tile.fluid_duct.name=Универсальная жидкостная труба
+tile.fluid_duct_solid.name=Покрытая универсальная жидкостная труба
 tile.machine_fluidtank.name=Цистерна
 <<<<<<< HEAD
 item.fluid_duct.name=Жидкостная труба:
@@ -1366,10 +1489,10 @@ tile.machine_radgen.name=Радиационный двигатель
 container.radGen=Радиационный двигатель
 tile.machine_selenium.name=Радиальный двигатель
 container.machineSelenium=Радиальный двигатель
-tile.machine_reactor_small.name=Ядерный реактор
-container.reactorSmall=Ядерный реактор
+container.reactorResearch=Исследовательский реактор
 container.reactorZirnox=Ядерный реактор Цирнокс
 container.zirnox=Ядерный реактор Цирнокс
+tile.machine_reactor_small.name=Исследовательский реактор
 tile.machine_zirnox.name=Ядерный реактор Цирнокс
 tile.machine_controller.name=Блок удалённого доступа к реактору
 container.reactorControl=Блок удалённого доступа к реактору
@@ -1425,6 +1548,7 @@ tile.anvil_schrabidate.name=Наковальня из шрабидата жел�
 tile.anvil_starmetal.name=Наковальня из звёздного металла
 tile.anvil_steel.name=Стальная наковальня
 tile.anvil_bismuth.name=Висмутовая наковальня
+tile.anvil_osmiridium.name=Осмиридиевая наковальня
 tile.fraction_spacer.name=Разделитель ректификационной колонны
 tile.machine_fraction_tower.name=Ректификационная колонна
 tile.machine_orbus.name=Тяжёлый магнитный контейнер для антиматерии
@@ -1438,6 +1562,16 @@ container.machineSingGen=Супер-компрессор Ватцза
 container.reactorAmat=FTL Реактор (ALPHA)
 container.turretLunarOni=Божественный Свет
 container.turretTWR=Лорд Цукуеми
+tile.machine_fel.name=Лазер на свободных электронах (FEL)
+container.machineFEL=FEL
+tile.substation.name=Подстанция
+tile.red_pylon_large.name=ЛЭП
+tile.charge_dynamite.name=Бомба с таймером
+tile.charge_miner.name=Шахтёрский заряд с таймером
+container.machineLiquefactor=Разжижитель
+tile.machine_liquefactor.name=Промышленный разжижитель
+container.machineSolidifier=Отвердитель
+tile.machine_solidifier.name=Промышленный отвердитель
 
 container.hadron=Ускоритель частиц
 tile.hadron_access.name=Терминал доступа ускорителя частиц
@@ -1604,6 +1738,8 @@ container.fusionaryWatzPlant=Реактор Ватцз-установки
 
 tile.machine_rtg_grey.name=РИТЭГ-генератор
 container.rtg=РИТЭГ-генератор
+tile.machine_radiolysis.name=Радиоизотопный термоэлектрический генератор и камера радиолиза
+container.radiolysis=РИТЭГ и Камера Радиолиза
 tile.machine_powerrtg.name=ПТ-изотопная ячейка
 tile.machine_rtg_red.name=Фульминационный генератор
 tile.machine_rtg_orange.name=Сильный RT генератор
@@ -1674,6 +1810,7 @@ item.fuse.name=Предохранитель
 item.arc_electrode.name=Графитовый электрод
 item.arc_electrode_burnt.name=Расплавленный электрод
 item.arc_electrode_desh.name=Электрод из деш
+item.crt_display.name=Электронно-Лучевая трубка
 
 tile.test_nuke.name=Тестовая бомба
 
@@ -1705,12 +1842,17 @@ item.ingot_americium_fuel.name=Слиток америциевого топли�
 item.ingot_titanium.name=Титановый слиток
 item.ingot_cobalt.name=Кобальтовый слиток
 item.ingot_tantalium.name=Танталовый слиток
->>>>>>> master
+item.ingot_tantalium.desc='Танталум'
+item.ingot_tantalium.desc.P11=АКА Танталум.
 item.ingot_meteorite.name=Метеоритовый слиток
 item.ingot_osmiridium.name=Осмиридиевый слиток
 item.ingot_meteorite_forged.name=Выкованный метеоритовый слиток
-item.ingot_bakelite.name=Бакелитовый слиток
+item.ingot_bakelite.name=Бакелит
 item.sulfur.name=Сера
+item.ingot_sr90.name=Слиток стронция-90
+item.ingot_pb209.name=Слиток свинца-209
+item.ingot_gh336.name=Слиток гиорсия-336
+item.ingot_gh336.desc=Коллега Сиборгиума.
 
 item.niter.name=Селитра
 item.ingot_copper.name=Слиток промышленной меди
@@ -1729,6 +1871,7 @@ item.plate_steel.name=Стальная пластина
 item.ingot_beryllium.name=Бериллевый слиток
 item.plate_schrabidium.name=Шрабидиевая пластина
 item.ingot_schraranium.name=Шрараниевый слиток
+item.ingot_schraranium.desc=Делается из урана в шрабидиевом трансмутаторе
 item.ingot_semtex.name=Семтекс
 item.ingot_schrabidate.name=Слиток шрабидата железа
 item.powder_schrabidate.name=Порошок шрабидата железа
@@ -1747,6 +1890,8 @@ item.lithium.name=Куб лития
 item.ingot_phosphorus.name=Брусок белого фосфора
 item.ingot_magnetized_tungsten.name=Намагниченный слиток вольфрама
 item.ingot_combine_steel.name=Слиток стали Альянса
+item.ingot_combine_steel.desc=*вставьте референс на Гражданскую Оборону*
+item.ingot_combine_steel.desc.11="Я имею в виду, это глагол для громкого крика.$Инопланетяне - это не глаголы. Это существительные!"$"На самом деле, я думаю, что это также название $какого-то сельскохозяйственного оборудования, такого как $молотилка за доллар или что-то в этом роде."$"Это еще хуже. Теперь у нас есть слово,$которое может означать "смешивать вещи вместе",$часть сельскохозяйственного оборудования, и давайте посмотрим...$а да, это также может означать "самая продвинутая $форма жизни в известной вселенной".."$"И?"$"'И?' Да ладно, чувак, они же ИНОПЛАНЕТЯНЕ!"
 item.plate_combine_steel.name=Пластина стали Альянса
 item.ingot_zirconium.name=Циркониевый куб
 <<<<<<< HEAD
@@ -1787,7 +1932,8 @@ item.quartz_plutonium.name=Плутонический кварц
 item.serum.name=Сыворотка
 item.spider_milk.name=Бутылка паучьего молока
 item.scrumpy.name=Бутылка "Скрампи"
-item.cladding_obsidian.name=Обсидиановая прокладка
+item.cladding_obsidian.name=Прокладка из обсидиана
+item.cladding_ghiorsium.name=Прокладка из гиорсия
 item.heart_booster.name=Усилитель сердца
 item.heart_container.name=Контейнер для сердца
 item.heart_piece.name=Частичка сердца
@@ -1796,6 +1942,7 @@ item.back_tesla.name=Ранцевая катушка теслы
 item.insert_du.name=Урановая пластина
 item.insert_era.name=Взрывоопасная реактивная бронепластина
 item.insert_polonium.name=Полониевая пластина
+item.insert_ghiorsium.name=Гиорсиевая пластина
 item.insert_yharonite.name=Яронитовая пластина
 item.insert_doxium.name=Астольфий-легированная Доксиевая пластина
 item.wd40.name=VT-40
@@ -1804,7 +1951,7 @@ item.wd40.name=VT-40
 item.injector_5htp.name=Автоинъектор 5-гидрокситриптофана
 item.injector_knife.name=Автоинъектор 8 дюймового лезвия
 item.v1.name=V1
->>>>>>> master
+item.holotape_image.name=Голодиск
 
 item.wire_magnetized_tungsten.name=4000K Высокотемпературный проводник
 item.coil_magnetized_tungsten.name=4000K Высокотемпературная сверхпроводящая катушка
@@ -1875,14 +2022,19 @@ item.ingot_saturnite.name=Сатурнитовый слиток
 item.plate_saturnite.name=Сатурнитовая пластина
 item.ingot_electronium.name=Электрониевый слиток
 item.ingot_fiberglass.name=Стекловолокно
+item.ingot_fiberglass.desc=С высоким содержанием волокна, с высоким содержанием стекла. Все, что нужно организму.
 item.ingot_asbestos.name=Асбестовый лист
+item.ingot_asbestos.desc=§o\"Наполненный жизнью, неуверенностью в себе и асбестом. Это приходит вместе с воздухом.\"§r
 
 item.solid_fuel.name=Твердое топливо
-item.solid_fuel_presto.name=Топливные полена
+item.solid_fuel_presto.name=Топливное полено
 item.solid_fuel_presto_triplet.name=Сжатые топливные полена
 item.stick_dynamite.name=Динамитная шашка
+item.stick_tnt.name=Шашка ТНТ
 item.rocket_fuel.name=Твердое топливо (Ракетное)
-item.coke.name=Коксовый уголь
+item.coke.coal.name=Угольный кокс
+item.coke.lignite.name=Бурый кокс
+item.coke.petroleum.name=Нефтяной кокс
 item.lignite.name=Бурый уголь
 <<<<<<< HEAD
 =======
@@ -1910,6 +2062,12 @@ item.nugget_am_mix.name=Самородок америция реакторног
 item.nugget_am241.name=Самородок америция-241
 item.nugget_am242.name=Самородок америция-242
 item.nugget_americium_fuel.name=Самородок америциевого топлива
+item.nugget_cobalt.name=Кобальтовый самородок
+item.nugget_sr90.name=Самородок стронция-90
+item.nugget_pb209.name=Самородок свинца-209
+item.nugget_actinium.name=Самородок актиния-227
+item.nugget_gh336.name=Самородок гиорсия-336
+item.nugget_gh336.desc=Коллега Сиборгиума.
 
 >>>>>>> master
 item.plate_titanium.name=Титановая пластина
@@ -1921,6 +2079,8 @@ item.nugget_beryllium.name=Бериллиевый самородок
 =======
 item.nugget_bismuth.name=Самородок висмута
 item.nugget_tantalium.name=Самородок тантала
+item.nugget_tantalium.desc='Танталум'
+item.nugget_tantalium.desc.P11=АКА Танталум.
 item.nugget_osmiridium.name=Самородок осмиридия
 
 item.crystal_iron.name=Кристаллизованное железо
@@ -1952,10 +2112,22 @@ item.crystal_coal.name=Кристаллизованный уголь
 item.crystal_cinnebar.name=Кристаллизованная киноварь
 item.crystal_lapis.name=Кристализованный лазурит
 item.gem_tantalium.name=Поликристалл тантала
+item.gem_tantalium.desc='Танталум'
+item.gem_tantalium.desc.P11=АКА Танталум.
+item.gem_alexandrite.name=Александрит
 item.gem_volcanic.name=Вулканический самоцвет
 item.black_diamond.name=Чёрный алмаз
 item.crystal_cobalt.name=Кристализованный кобальт
 item.crystal_osmiridium.name=Кристализованный осмиридий
+item.laser_crystal_bismuth.desc=Висмут-Самарий-Уран-Ториевая кристаллическая матрица
+item.laser_crystal_bismuth.name=Висмутовый лазерный кристалл
+item.laser_crystal_cmb.desc=Антишрабидий, заключенный в решётку из сплава Шрабидата и стали Альянса
+item.laser_crystal_cmb.name=CMB-Шрабидатовый антиматериальный лазерный кристалл
+item.laser_crystal_co2.desc=Двуокись углерода, заключенная в кристаллический Деш
+item.laser_crystal_co2.name=CO2-Деш лазерный кристалл
+item.laser_crystal_digamma.name=Дигамма-лазерный кристалл
+item.laser_crystal_dnt.desc=Динейтрониевый-Спарк фермионный суперкристалл
+item.laser_crystal_dnt.name=Спарк-лазерный кристалл
 
 item.wire_aluminium.name=Алюминиевый провод
 item.wire_copper.name=Медный провод
@@ -2206,10 +2378,14 @@ tile.ore_meteor_lead.name=Метеоритная свинцовая руда
 tile.ore_meteor_lithium.name=Метеоритная литиевая руда
 tile.ore_meteor_starmetal.name=Руда звёздного металла
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 tile.ore_tikite.name=Триксит
 
 =======
+=======
+tile.ore_alexandrite.name=Александритовая руда
+>>>>>>> master
 tile.ore_tikite.name=Триксит
 >>>>>>> master
 tile.ore_australium.name=Австралиевая руда
@@ -2237,6 +2413,7 @@ tile.cluster_depth_titanium.name=Глубинный титановый рудн�
 tile.cluster_depth_tungsten.name=Глубинный вольфрамовый рудный кластер
 tile.ore_depth_cinnebar.name=Глубинная киноварь
 tile.ore_depth_zirconium.name=Глубинная циркониевая руда
+tile.ore_depth_borax.name=Глубинная бура
 tile.ore_depth_nether_neodymium.name=Адская глубинная неодимовая руда
 tile.cluster_iron.name=Железорудный кластер
 tile.cluster_titanium.name=Титановый рудный кластер
@@ -2461,6 +2638,8 @@ item.nugget_neptunium.name=Нептуниевый самородок
 item.nugget_neptunium_fuel.name=Самородок нептуниевого топлива
 >>>>>>> master
 item.ingot_neptunium.name=Нептуниевый слиток
+item.ingot_neptunium.desc=Вот этот мой любимый!
+item.ingot_neptunium.desc.P11=УУУ, страшно!
 item.nugget_lead.name=Свинцовый самородок
 item.ingot_lead.name=Свинцовый слиток
 tile.block_lead.name=Свинцовый блок
@@ -2473,6 +2652,7 @@ item.powder_iron.name=Железный порошок
 item.powder_gold.name=Золотой порошок
 item.powder_aluminium.name=Алюминиевый порошок
 item.powder_asbestos.name=Асбестовый порошок
+item.powder_asbestos.desc=§o\"ФФФФФФФФФФ- ММХХХХХХХХХХХХХ\"§r
 item.powder_beryllium.name=Бериллиевый порошок
 item.powder_copper.name=Медный порошок
 item.powder_titanium.name=Титановый порошок
@@ -2480,6 +2660,9 @@ item.powder_tungsten.name=Вольфрамовый порошок
 item.powder_uranium.name=Урановый порошок
 item.powder_plutonium.name=Плутониевый порошок
 item.dust.name=Пыль
+item.dust.desc=Ненавижу пыль!
+item.dust.desc.P11=Ещё один падает в пыль!
+item.dust_tiny.name=Кучка пыли
 item.powder_chlorophyte.name=Хлорофитовый порошок
 item.powder_coal.name=Угольный порошок
 item.powder_lapis.name=Лазуритный порошок
@@ -2535,6 +2718,7 @@ item.powder_meteorite_tiny.name=Кучка метеоритной пыли
 =======
 item.powder_polonium.name=Порошок полония-210
 item.powder_polymer.name=Полимерный порошок
+item.powder_bakelite.name=Бакелитовый порошок
 item.powder_lanthanium.name=Лантановый порошок
 item.powder_actinium.name=Актиниевый порошок
 item.powder_coal_tiny.name=Кучка угольного порошка
@@ -2546,6 +2730,7 @@ item.powder_cerium_tiny.name=Кучка цериевого порошка
 item.powder_lanthanium_tiny.name=Кучка лантанового порошка
 item.powder_actinium_tiny.name=Кучка актиниевого порошка
 item.powder_euphemium.name=Эвфемиевый порошок
+item.powder_euphemium.desc=Измельченный розовый.$На вкус как клубника.
 item.powder_meteorite.name=Метеоритный порошок
 item.powder_meteorite_tiny.name=Кучка метеоритного порошка
 >>>>>>> master
@@ -2558,6 +2743,7 @@ item.powder_zirconium.name=Циркониевый порошок
 <<<<<<< HEAD
 =======
 item.powder_boron.name=Борный порошок
+item.powder_borax.name=Бура
 item.powder_boron_tiny.name=Кучка борного порошка
 item.powder_at209.name=Порошок астата-209
 item.powder_au198.name=Порошок золота-198
@@ -2571,21 +2757,29 @@ item.powder_cs137_tiny.name=Кучка порошка цезия-137
 item.powder_coltan.name=Очищенный танталит
 item.powder_coltan_ore.name=Измельченный Колтан
 item.powder_tantalium.name=Порошок тантала
+item.powder_tantalium.desc='Танталум'
+item.powder_tantalium.desc.P11=АКА Танталум.
 item.powder_impure_osmiridium.name=Порошок загрязнённого осмиридия
 item.powder_paleogenite.name=Порошок палеогенита
 item.powder_paleogenite_tiny.name=Кучка палеогенитового порошка
 item.powder_tektite.name=Порошок тектита
 item.powder_ra226.name=Порошок радия-226
+item.powder_sr90.name=Порошок стронция-90
+item.powder_sr90_tiny.name=Кучка порошка стронция-90
 
 item.fragment_neodymium.name=Неодимовый осколок
 item.fragment_cobalt.name=Кобальтовый осколок
 item.fragment_niobium.name=Ниобиевый осколок
 item.fragment_cerium.name=Цериевый осколок
 item.fragment_lanthanium.name=Лантановый осколок
+<<<<<<< HEAD
 item.fragment_actinium.name=Актиниевый осколок
 <<<<<<< HEAD
 item.fragment_meteorite.name=Метеоритный осколок
 =======
+=======
+item.fragment_actinium.name=Актиниевый-227 осколок
+>>>>>>> master
 item.fragment_boron.name=Борный осколок
 item.fragment_meteorite.name=Метеоритный осколок
 item.fragment_coltan.name=Колтан
@@ -2640,6 +2834,7 @@ item.battery_sc_plutonium.name=Самозаряжающаяся батарея �
 item.battery_sc_polonium.name=Самозаряжающаяся батарея с полонием-210
 item.battery_sc_technetium.name=Самозаряжающаяся батарея с технецием-98
 item.battery_sc_uranium.name=Самозаряжающаяся батарея с ураном-238
+item.battery_sc_lead.name=Самозаряжающаяся батарея со свинцом-209
 
 item.upgrade_template.name=Шаблон улучшения механизма
 item.upgrade_speed_1.name=Улучшение механизма "Скорость" уровня I
@@ -2702,13 +2897,40 @@ item.centrifuge_element.name=Элемент центрифуги
 item.centrifuge_tower.name=Башня центрифуги
 item.reactor_core.name=Активная зона реактора-размножителя
 item.pellet_rtg.name=РИТЭГ-пеллета из плутония-238
-item.pellet_rtg_weak.name=Слабая урановая РИТЭГ-пеллета
+item.pellet_rtg.desc=РИТЭГ-пеллета для бесконечной энергии! (почти)
+item.pellet_rtg_radium.name=РИТЭГ-пеллета из радия-226
+item.pellet_rtg_radium.desc=Отличная стартовая пеллета, полученная из натурального радия!
+item.pellet_rtg_weak.name=Слабая урановая РИТЭГ-топливная пеллета
+item.pellet_rtg_weak.desc=Более дешевая и слабая пеллета, теперь с большим количеством U238!
 item.pellet_rtg_polonium.name=РИТЭГ-пеллета из полония-210
+item.pellet_rtg_polonium.desc=Мощная РИТЭГ-пеллета, изготовленная из лучшего полония!
 item.pellet_rtg_gold.name=РИТЭГ-пеллета из золота-198
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 item.pellet_rtg_americium.name=РИТЭГ-пеллета из америция-241
 >>>>>>> master
+=======
+item.pellet_rtg_gold.desc=Изготовлена из редкого, очень нестабильного изотопа золота.
+item.pellet_rtg_strontium.name=РИТЭГ-пеллета из стронция-90
+item.pellet_rtg_strontium.desc=Известен штату Калифорния...
+item.pellet_rtg_americium.name=РИТЭГ-пеллета из америция-241
+item.pellet_rtg_americium.desc=Редкий и надежный, старый добрый Америций!
+<<<<<<< HEAD
+>>>>>>> master
+=======
+item.pellet_rtg_lead.name=РИТЭГ-пеллета из свинца-209
+item.pellet_rtg_lead.desc=Излучение приведет к неминуемой смерти.
+item.pellet_rtg_cobalt.name=РИТЭГ-пеллета из кобальта-60
+item.pellet_rtg_cobalt.desc=Не лучший для РИТЭГ энергии, но хорош для гамма-радиации!
+item.pellet_rtg_actinium.name=РИТЭГ-пеллета из актиния-227
+item.pellet_rtg_actinium.desc=Сияние голубого света и бета-лучей.
+item.pellet_rtg_depleted.bismuth.name=Распавшаяся РИТЭГ-пеллета висмута
+item.pellet_rtg_depleted.lead.name=Распавшаяся РИТЭГ-пеллета свинца
+item.pellet_rtg_depleted.neptunium.name=Распавшаяся РИТЭГ-пеллета нептуния
+item.pellet_rtg_depleted.mercury.name=Распавшаяся РИТЭГ-пеллета ртути
+item.pellet_rtg_depleted.zirconium.name=Распавшаяся РИТЭГ-пеллета циркония
+item.pellet_rtg_depleted.nickel.name=Распавшаяся РИТЭГ-пеллета никеля
 item.rtg_unit.name=РИТЭГ-элемент
 item.hazmat_cloth.name=Защитная ткань
 item.hazmat_cloth_red.name=Дополнительная защитная ткань
@@ -2722,8 +2944,10 @@ item.gas_mask_filter_piss.name=Самодельный продвинутый ф�
 item.gas_mask_filter_rag.name=Самодельный фильтр для противогаза
 >>>>>>> master
 item.tritium_deuterium_cake.name=Тритий-дейтериевый пирог
+item.tritium_deuterium_cake.desc=Не настоящий пирог, но зато отличное$универсальное термоядерное топливо!
 item.telepad.name=Телепад
 item.entanglement_kit.name=Комплект для квантового запутывания
+item.entanglement_kit.desc=Предмет для создания телепорта.$Позволяет смещать измерения с помощью сканера ресурсов, улучшенного бериллием.
 item.toothpicks.name=Зубочистки
 item.ducttape.name=Скотч
 item.magnet_dee.name=Ди-магниты
@@ -2779,15 +3003,16 @@ item.inf_water.name=Бесконечный резервуар воды
 item.inf_water_mk2.name=Усиленный бесконечный резервуар воды
 item.oil_canola.name=Сырое рапсовое масло
 item.pellet_coal.name=Плотный угольный брикет
-item.oil_tar.name=Нефтяная смола
->>>>>>> master
-
+item.oil_tar.crude.name=Нефтяная смола
+item.oil_tar.crack.name=Крекинговая нефтяная смола
+item.oil_tar.coal.name=Угольная смола
 
 item.canister_empty.name=Пустая канистра
 item.canister_smear.name=Канистра с промышленным маслом
 item.canister_canola.name=Машинная смазка
 item.canister_oil.name=Канистра с неочищенной нефтью
 item.canister_fuel.name=Канистра с дизелем
+item.canister_fuel.desc=Да здравствует носик!
 item.canister_kerosene.name=Канистра с керосином
 item.canister_reoil.name=Канистра с восстановленным промышленным маслом
 item.canister_petroil.name=Канистра с бензином
@@ -2819,6 +3044,7 @@ item.fluid_tank_lead_empty.name=Пустой резервуар для опас�
 item.fluid_tank_lead_full.name=Резервуар с опасными материалами:
 item.fluid_barrel_infinite.name=Бесконечная жидкостная бочка
 
+<<<<<<< HEAD
 item.rod_empty.name=Пустой стержень
 item.rod_th232.name=Стержень с торием-232
 item.rod_uranium.name=Урановый стержень
@@ -2851,9 +3077,29 @@ item.rod_dual_balefire.name=Сдвоенный жар-стержень
 item.rod_dual_balefire_blazing.name=Сдвоенный пылающий жар-стержень
 item.rod_quad_balefire.name=Счетверённый жар-стержень
 item.rod_quad_balefire_blazing.name=Счетверённый пылающий жар-стержень
+=======
+>>>>>>> master
 item.rod_of_discord.name=Жезл раздора
-
+item.rod_empty.name=Пустой стержень
+item.rod.lithium.name=Литиевый стержень
+item.rod.tritium.name=Тритиевый стержень
+item.rod.co.name=Кобальтовый стержень
+item.rod.co60.name=Стержень с кобальтом-60
+item.rod.th232.name=Стержень с торием-232
+item.rod.thf.name=Стержень с ториевым топливом
+item.rod.u235.name=Стержень с ураном-235
+item.rod.np237.name=Стержень с нептунием-237
+item.rod.u238.name=Стержень с ураном-238
+item.rod.pu238.name=Стержень с плутонием-238
+item.rod.pu239.name=Стержень с плутонием-239
+item.rod.ra226.name=Стержень с радием-226
+item.rod.ac227.name=Стержень с актинием-227
+item.rod.rgp.name=Стержень с плутонием реакторного качества
+item.rod.waste.name=Стержень с ядерными отходами
+item.rod.lead.name=Свинцовый стержень
+item.rod.uranium.name=Урановый стержень
 item.rod_dual_empty.name=Пустой сдвоенный стержень
+<<<<<<< HEAD
 item.rod_dual_th232.name=Сдвоенный стержень с торием-232
 item.rod_dual_uranium.name=Сдвоенный стержень с ураном
 item.rod_dual_u233.name=Сдвоенный стержень с ураном-233
@@ -2892,6 +3138,43 @@ item.rod_quad_neptunium.name=Счетверённый стержень с неп
 item.rod_quad_lead.name=Счетверённый стержень со свинцом
 item.rod_quad_schrabidium.name=Счетверённый стержень с шрабидием-326
 item.rod_quad_solinium.name=Счетверённый стержень с шрабидием-327
+=======
+item.rod_dual.lithium.name=Сдвоенный литиевый стержень
+item.rod_dual.tritium.name=Сдвоенный тритиевый стержень
+item.rod_dual.co.name=Сдвоенный кобальтовый стержень
+item.rod_dual.co60.name=Сдвоенный стержень с кобальтом-60
+item.rod_dual.th232.name=Сдвоенный стержень с торием-232
+item.rod_dual.thf.name=Сдвоенный стержень с ториевым топливом
+item.rod_dual.u235.name=Сдвоенный стержень с ураном-235
+item.rod_dual.np237.name=Сдвоенный стержень с нептунием-237
+item.rod_dual.u238.name=Сдвоенный стержень с ураном-238
+item.rod_dual.pu238.name=Сдвоенный стержень с плутонием-238
+item.rod_dual.pu239.name=Сдвоенный стержень с плутонием-239
+item.rod_dual.ra226.name=Сдвоенный стержень с радием-226
+item.rod_dual.ac227.name=Сдвоенный стержень с актинием-227
+item.rod_dual.rgp.name=Сдвоенный стержень с плутонием реакторного качества
+item.rod_dual.waste.name=Сдвоенный стержень с ядерными отходами
+item.rod_dual.lead.name=Сдвоенный свинцовый стержень
+item.rod_dual.uranium.name=Сдвоенный урановый стержень
+item.rod_quad_empty.name=Пустой счетверённый стержень
+item.rod_quad.lithium.name=Счетверённый литиевый стержень
+item.rod_quad.tritium.name=Счетверённый тритиевый стержень
+item.rod_quad.co.name=Счетверённый кобальтовый стержень
+item.rod_quad.co60.name=Счетверённый стержень с кобальтом-60
+item.rod_quad.th232.name=Счетверённый стержень с торием-232
+item.rod_quad.thf.name=Счетверённый стержень с ториевым топливом
+item.rod_quad.u235.name=Счетверённый стержень с ураном-235
+item.rod_quad.np237.name=Счетверённый стержень с нептунием-237
+item.rod_quad.u238.name=Счетверённый стержень с ураном-238
+item.rod_quad.pu238.name=Счетверённый стержень с плутонием-238
+item.rod_quad.pu239.name=Счетверённый стержень с плутонием-239
+item.rod_quad.ra226.name=Счетверённый стержень с радием-226
+item.rod_quad.ac227.name=Счетверённый стержень с актинием-227
+item.rod_quad.rgp.name=Счетверённый стержень с плутонием реакторного качества
+item.rod_quad.waste.name=Счетверённый стержень с ядерными отходами
+item.rod_quad.lead.name=Счетверённый свинцовый стержень
+item.rod_quad.uranium.name=Счетверённый урановый стержень
+>>>>>>> master
 
 <<<<<<< HEAD
 item.billet_mox_fuel.name=Заготовка MOX-топлива
@@ -2899,6 +3182,7 @@ item.billet_neptunium.name=Заготовка нептуния
 item.billet_polonium.name=Заготовка полония
 =======
 item.billet_mox_fuel.name=Заготовка МОКС-топлива
+item.billet_mox_fuel.desc=Карманный Мокси!
 item.billet_neptunium.name=Заготовка нептуния
 item.billet_polonium.name=Заготовка полония-210
 >>>>>>> master
@@ -2926,6 +3210,8 @@ item.billet_yharonite.name=Заготовка яронита
 item.billet_au198.name=Заготовка золота-198
 item.billet_australium.name=Заготовка австралия
 item.billet_co60.name=Заготовка кобальта-60
+item.billet_cobalt.name=Заготовка кобальта
+item.billet_sr90.name=Заготовка стронция-90
 item.billet_australium_greater.name=Заготовка высшего австралия
 item.billet_australium_lesser.name=Заготовка низшего австралия
 item.billet_neptunium_fuel.name=Заготовка нептуниевого топлива
@@ -2933,6 +3219,10 @@ item.billet_po210be.name=Заготовка Полоний-210-Бериллия
 item.billet_pu238be.name=Заготовка Плутоний-210-Бериллия
 item.billet_ra226be.name=Заготовка Радий-226-Бериллия
 item.billet_balefire_gold.name=Заготовка флэшголда
+item.billet_flashlead.name=Заготовка флэшлида
+item.billet_flashlead.desc=Решетка распадается, вызывая реакции аннигиляции антивещества и материи, вызывая высвобождение$пионов, распадающихся на мюоны, катализирующих слияние$ядер, создавая новый элемент.$Пожалуйста, постарайся не отставать.
+item.billet_gh336.name=Заготовка гиорсия-336
+item.billet_gh336.desc=Коллега Сиборгиума.
 item.billet_technetium.name=Заготовка технеция-99
 item.billet_am_mix.name=Заготовка америция реакторного качества
 item.billet_am241.name=Заготовка америция-241
@@ -2948,9 +3238,12 @@ item.billet_zfb_pu241.name=Заготовка ЦТС плутония-241
 item.billet_zirconium.name=Заготовка циркония
 item.billet_nuclear_waste.name=Заготовка ядерных отходов
 item.billet_ra226.name=Заготовка радия-226
+item.billet_pb209.name=Заготовка свинца-209
+item.billet_actinium.name=Заготовка актиния-227
 
 item.rbmk_pellet_balefire.name=Жар-топливная пеллета
 item.rbmk_pellet_balefire_gold.name=Флэшголд-топливная пеллета
+item.rbmk_pellet_flashlead.name=Флэшлид-топливная пеллета
 item.rbmk_pellet_drx.name=§cДигамма топливная пеллета§r
 item.rbmk_pellet_heaus.name=Высокообогащенная австралиевая топливная пеллета
 item.rbmk_pellet_hes.name=Высокообогащенная шрабидиевая топливная пеллета
@@ -3013,23 +3306,36 @@ item.gun_panzerschreck.name=Панцершрек
 item.gun_rpg_ammo.name=Ракета (LEGACY)
 item.gun_stinger.name=FIM-92 "Стингер"
 item.gun_skystinger.name="Небесный Стингер"
-item.gun_stinger_ammo.name=Ракета-Стингер
+item.gun_stinger_ammo.name=Ракета-Стингер (LEGACY)
+item.ammo_stinger_rocket.name=Ракета-Стингер
+item.ammo_stinger_rocket_he.name=Ракета-Стингер (Фугасная)
+item.ammo_stinger_rocket_incendiary.name=Ракета-Стингер (Зажигательная)
+item.ammo_stinger_rocket_nuclear.name=Ракета-Стингер (Привет)
+item.ammo_stinger_rocket_bones.name=Ракета-Стингер (Поиск мобов)
 item.gun_hk69.name=Гранатомет
 item.gun_quadro.name="Четыре Сыра"
 item.gun_sauer.name=Дробовик Стэна Зауэра
 item.gun_thompson.name=Пистолет-пулемёт Томпсона
 
 item.flame_pony.name=Картинка цветной лошади
+item.flame_pony.desc=Желтая лошадь побеждает синюю лошадь, это доказанный факт!
 item.flame_conspiracy.name=Конспирологическая теория
+item.flame_conspiracy.desc=Стальные балки не могут расплавить реактивное топливо!
 item.flame_politics.name=Политическая тема
+item.flame_politics.desc=Дональд Дак построит стену!
 item.flame_opinion.name=Собственное мнение
+item.flame_opinion.desc=Что ж, мне это нравится...
 item.pellet_cluster.name=Взрывчатые гранулы
+item.pellet_cluster.desc=Используется в многоцелевых бомбах:$Добавляет больше бабахов!
 item.pellet_buckshot.name=Свинцовые гранулы
 item.pellet_flechette.name=Флешетты
 item.powder_fire.name=Красный фосфор
+item.powder_fire.desc=Используется в многоцелевых бомбах:$Зажигательные бомбы - это весело!
 item.powder_ice.name=Крио-порошок
 item.powder_poison.name=Ядовитый порошок
+item.powder_poison.desc=Используется в многоцелевых бомбах:$Внимание: Ядовито!
 item.pellet_gas.name=Ядовитый газовый баллон
+item.pellet_gas.desc=Используется в многоцелевых бомбах:$*кхе-кхе* Астанавитесь пжлст!
 item.magnetron.name=Магнетрон
 item.powder_thermite.name=Термит
 
@@ -3054,6 +3360,8 @@ item.solinium_kit.name=Солиниевый комплект
 item.hazmat_kit.name=Набор химической и радиационной защиты
 item.hazmat_red_kit.name=Расширенный комплект химической и радиационной защиты
 item.hazmat_grey_kit.name=Высокопроизводительный набор химической и радиационной защиты
+item.kit_toolbox.name=Ящик для инструментов
+item.kit_toolbox_empty.name=Пустой ящик для инструментов
 
 tile.burning_earth.name=Горящая трава
 tile.waste_earth.name=Мертвая трава
@@ -3086,6 +3394,7 @@ item.waste_plutonium.name=Обедненное плутониевое топли
 item.waste_mox.name=Обедненное МОКС-топливо
 >>>>>>> master
 item.waste_schrabidium.name=Обедненное шрабидиевое топливо
+<<<<<<< HEAD
 item.waste_uranium_hot.name=Обедненное урановое топливо (Горячее)
 item.waste_thorium_hot.name=Обедненное ториевое топливо (Горячее)
 item.waste_plutonium_hot.name=Обедненное плутониевое топливо (Горячее)
@@ -3095,12 +3404,11 @@ item.waste_mox_hot.name=Обедненное MOX-топливо (Горячее)
 item.waste_mox_hot.name=Обедненное МОКС-топливо (Горячее)
 >>>>>>> master
 item.waste_schrabidium_hot.name=Обедненное шрабидиевое топливо (Горячее)
+=======
+>>>>>>> master
 item.waste_u235.name=Обедненное уран-235 топливо
-item.waste_u235_hot.name=Обедненное уран-235 топливо (Горячее)
 item.waste_u233.name=Обедненное уран-233 топливо
-item.waste_u233_hot.name=Обедненное уран-233 топливо (Горячее)
 item.waste_natural_uranium.name=Обедненное природное урановое топливо 
-item.waste_natural_uranium_hot.name=Обедненное природное урановое топливо (Горячее)
 item.nuclear_waste_pearl.name=Жемчужина из ядерных отходов
 item.nuclear_waste_long.name=Долгоживущие ядерные отходы
 item.nuclear_waste_long_tiny.name=Кучка долгоживущих ядерных отходов
@@ -3122,8 +3430,8 @@ item.debris_shrapnel.name=Металлическая шрапнель
 item.debris_element.name=Повреждённый топливный элемент
 item.debris_exchanger.name=Обломок теплообменика
 item.cinnebar.name=Киноварь
->>>>>>> master
-item.nugget_mercury.name=Маленькая капля ртути
+item.nugget_mercury_tiny.name=Маленькая капля ртути
+item.nugget_mercury.name=Капля ртути
 item.bottle_mercury.name=Пузырёк ртути
 
 item.ingot_uranium_fuel.name=Слиток уранового топлива
@@ -3144,7 +3452,7 @@ item.nugget_mox_fuel.name=Самородок MOX топлива
 =======
 item.nugget_polonium.name=Самородок полония-210
 item.nugget_mox_fuel.name=Самородок МОКС топлива
->>>>>>> master
+item.nugget_mox_fuel.desc=Мокси говорит: §lНЕУПЛАТА НАЛОГОВ.§r
 item.nugget_schrabidium_fuel.name=Самородок шрабидиевого топлива
 
 item.grenade_generic.name=Граната
@@ -3249,6 +3557,7 @@ item.rbmk_fuel_ra226be.name=Радий-226-Бериллевый источник
 item.rbmk_fuel_thmeu.name=Ториево-урановый среднеобогащённый топливный стержень РБМК
 item.rbmk_fuel_balefire.name=Жар-топливный стержень РБМК
 item.rbmk_fuel_balefire_gold.name=Флэшголд-топливный стержень РБМК
+item.rbmk_fuel_flashlead.name=Флэшлид-топливный стержень РБМК
 item.rbmk_fuel_drx.name=§cДигамма топливный стержень РБМК§r
 item.rbmk_fuel_heaus.name=Высокообогащенный австралиевый топливный стержень РБМК
 item.rbmk_fuel_leaus.name=Низкообогащенный австралиевый топливный стержень РБМК
@@ -3279,12 +3588,6 @@ item.rod_quad_water.name=Счетверённый стержень с водой
 item.rod_coolant.name=Охлаждающий стержень
 item.rod_dual_coolant.name=Сдвоенный охлаждающий стержень
 item.rod_quad_coolant.name=Счетверённый охлаждающий стержень
-item.rod_lithium.name=Литиевый стержень
-item.rod_dual_lithium.name=Сдвоенный литиевый стержень
-item.rod_quad_lithium.name=Счетверённый литиевый стержень
-item.rod_tritium.name=Тритиевый стержень
-item.rod_dual_tritium.name=Сдвоенный тритиевый стержень
-item.rod_quad_tritium.name=Счетверённый тритиевый стержень
 
 item.levitation_unit.name=Гравитационный манипулятор
 item.thermo_unit_empty.name=Термический распределительный узел
@@ -3310,6 +3613,7 @@ item.twinkie.name=Твинки
 item.static_sandwich.name=Сэндвич с помехами
 item.pancake.name=Блинчики из металлолома, гвоздей и драгоценной пыли
 item.peas.name=Горошек
+item.bio_wafer.name=Вафля из водорослей
 
 tile.frozen_grass.name=Замороженная трава
 tile.frozen_dirt.name=Замороженная земля
@@ -3380,6 +3684,7 @@ item.gun_mp.name=Пулемет Пацифистов
 item.gun_zomg.name=ZOMG-пушка
 item.gun_emp.name=ЭМИ-пушка
 item.gun_super_shotgun.name=Супердробовик
+item.gun_super_shotgun.desc=Он супер сломан!
 item.gun_supershotgun.name=Супердробовик
 item.gun_moist_nugget.name=Мосин-Наган
 item.gun_revolver_inverted.name=Перевернутый револьвер
@@ -3467,6 +3772,7 @@ item.ammo_4gauge_slug.name=Твёрдая Стальная пуля 4 калиб
 item.ammo_4gauge_claw.name=Картечь 4 калибра (Клешни)
 item.ammo_4gauge_vampire.name=Картечь 4 калибра (Осиновый кол)
 item.ammo_4gauge_void.name=Картечь 4 калибра (Пустотная оболочка)
+item.ammo_4gauge_titan.name=Картечь 4 калибра (кряк)
 item.ammo_4gauge_explosive.name=23мм граната
 item.ammo_5mm.name=5-мм патрон
 item.ammo_5mm_chlorophyte.name=5-мм патрон (Хлорофит)
@@ -3607,6 +3913,7 @@ item.ammo_fireext_sand.name=Бак с песком для огнетушител
 item.cordite.name=Кордит
 item.ballistite.name=Баллистит
 item.ball_dynamite.name=Динамит
+item.ball_tnt.name=ТНТ
 item.plate_kevlar.name=Кевларо-керамический состав
 
 item.weaponized_starblaster_cell.name=§cСмонтированная энергетическая ячейка Звездного бластера§r
@@ -3735,9 +4042,14 @@ item.medal_liquidator.name=Медаль Ликвидатора
 item.stealth_boy.name=Стелс-Бой
 item.meltdown_tool.name=Аппликатор мгновенного расплавления Дятлова
 item.hand_drill.name=Ручная дрель
+item.hand_drill_desh.name=Ручная дрель из деша
 item.rag.name=Тряпка
 item.rag_damp.name=Влажная тряпка
 item.rag_piss.name=Пропитанная мочой тряпка
+<<<<<<< HEAD
+>>>>>>> master
+=======
+item.safety_fuse.name=Фитиль
 >>>>>>> master
 
 entity.hbm.entity_bullet.name=Пуля
@@ -3805,14 +4117,33 @@ item.chopper_wing.name=Крыло Вертолета-охотника
 item.chopper_blades.name=Лопасти Вертолёта-охотника
 
 item.igniter.name=Зажигатель
+item.igniter.desc=(Щёлкните правой кнопкой мыши по Прототипу)$Это зеленая металлическая ручка с $ярко-красной кнопкой и маленькой крышкой.$Внизу выгравированы инициалы N.E.$. Кем бы ни был N.E., у него был отличный вкус в оттенках зеленого.
 item.watch.name=Сломанные карманные часы
+item.watch.desc=Маленькие синие карманные часы.$На стекле есть несколько трещин,$и несколько осколков отсутствуют.$Перестали тикать в 2:34.
 item.apple_euphemium.name=Эвфемиевое Яблоко
 item.ingot_euphemium.name=Эвфемиевый слиток
+item.ingot_euphemium.desc=Совершенно особый и в то же время странный элемент.
 item.nugget_euphemium.name=Эвфемиевый самородок
+item.nugget_euphemium.desc=Маленький кусочек розового металла.$Его свойства до сих пор неизвестны,$ОБРАЩАЙТЕСЬ С НИМ осторожно.
 item.rod_quad_euphemium.name=Выгоревший счетверённый шрабидиевый топливный стержень
 item.plate_euphemium.name=Составная пластина из эвфемия
 item.plate_dineutronium.name=Составная пластина из динейтрония
 item.plate_desh.name=Составная пластина из деш
+
+item.plate_fuel_mox.name=МОКС-топливная пластина
+item.plate_fuel_pu238be.name=Плутоний-238-Бериллевая топливная пластина
+item.plate_fuel_pu239.name=Высокообогащенная плутониевая-239 топливная пластина
+item.plate_fuel_ra226be.name=Радий-226-Бериллевая топливная пластина
+item.plate_fuel_sa326.name=Высокообогащенная шрабидий-326 топливная пластина
+item.plate_fuel_u233.name=Высокообогащенная уран-233 топливная пластина
+item.plate_fuel_u235.name=Высокообогащенная уран-235 топливная пластина
+item.waste_plate_mox.name=Обеднённая МОКС-топливная пластина
+item.waste_plate_pu239.name=Обеднённая высокообогащенная плутониевая-239 топливная пластина
+item.waste_plate_pu238be.name=Обеднённая плутоний-238-бериллевая топливная пластина
+item.waste_plate_ra226be.name=Обеднённая радий-226-бериллевая топливная пластина
+item.waste_plate_sa326.name=Обеднённая высокообогащенная шрабидий-326 топливная пластина
+item.waste_plate_u233.name=Обеднённая высокообогащенная уран-233 топливная пластина
+item.waste_plate_u235.name=Обеднённая высокообогащенная уран-235 топливная пластина
 
 item.euphemium_helmet.name=Эвфемиевый шлем
 item.euphemium_plate.name=Эвфемиевый нагрудник
@@ -3863,6 +4194,8 @@ item.memespoon.name=§eЗемлекоп
 
 item.mask_of_infamy.name=Маска Позора
 
+tile.dynamite.name=Динамит
+tile.tnt_ntm.name=Настоящий ТНТ
 tile.det_cord.name=Детонирующий шнур
 tile.det_charge.name=Заряд взрывчатки
 tile.det_nuke.name=Ядерный заряд
@@ -4060,6 +4393,7 @@ item.missile_custom.name=Пользовательская Ракета
 item.missile_carrier.name=Ракета-носитель HTR-01
 item.missile_soyuz.name=Союз-ФГ
 item.missile_soyuz_lander.name=Орбитальный Модуль
+item.missile_soyuz_lander.desc=Также и паршивый посадочный модуль!
 item.sat_mapper.name=Спутник для Картографирования Поверхности
 item.sat_scanner.name=Спутник с модулем глубинно-ресурсного сканирования
 item.sat_radar.name=Спутник с Радиолокационным Зондированием
@@ -4164,6 +4498,10 @@ item.fau_boots.name=Фау-ботинки
 item.fau_helmet.name=Фау-шлем
 item.fau_legs.name=Фау-поножи
 item.fau_plate.name=Фау-нагрудник
+item.rpa_boots.name=Ботинки силовой брони Оставшихся
+item.rpa_helmet.name=Шлем силовой брони Оставшихся
+item.rpa_legs.name=Поножи силовой брони Оставшихся
+item.rpa_plate.name=Нагрудник силовой брони Оставшихся
 
 item.bj_boots.name=Лунные шипованные ботинки
 item.bj_helmet.name=Повязка с тепловым сенсором
@@ -4230,9 +4568,13 @@ item.wand_k.name=Строительная палочка
 item.wand_s.name=Структурная палочка
 item.wand_d.name=Отладочная палочка
 item.analyzer.name=Анализатор
-
 item.screwdriver.name=Отвёртка
+item.screwdriver_desh.name=Деш-отвёртка
+item.chemistry_set.name=Лабораторная посуда
+item.chemistry_set_boron.name=Лабораторная посуда (Борное стекло)
+item.screwdriver.desc=Может использоваться вместо предохранителя...
 item.overfuse.name=Сингулярная отвёртка
+item.overfuse.desc=Что
 
 item.steel_helmet.name=Стальной шлем
 item.steel_plate.name=Стальной нагрудник
@@ -4406,6 +4748,7 @@ item.shimmer_axe.name=Отлитый топор
 item.euphemium_stopper.name=Ограничитель
 item.matchstick.name=Спичка
 item.mech_key.name=Большой серебряный ключ
+item.mech_key.desc=Он пульсирует энергией.
 item.balefire_and_steel.name=Жар-огниво
 item.remote.name=Сломанный пульт дистанционного управления
 item.diamond_gavel.name=Алмазный молоток
@@ -4660,10 +5003,11 @@ item.ams_catalyst_dineutronium.name=Динейтрониевый реакцио�
 
 item.ams_focus_blank.name=Пустой стабилизирующий фокус
 item.ams_focus_limiter.name=Ограничительный стабилизирующий фокус
+item.ams_focus_limiter.desc=Максимальная производительность для сдерживающего поля:$Стандартное охлаждение, без бонуса за энергию.
 item.ams_focus_booster.name=Усиливающий стабилизирующий фокус
-
+item.ams_focus_booster.desc=Более слабое сдерживающее поле и закачка энергии в ядро:$Больше выработки тепла, дополнительная энергия.
 item.ams_muzzle.name=Лучеиспускательное дуло
-
+item.ams_muzzle.desc=...он испускает штуковину с энергетическим лучом.
 item.ams_lens.name=Линза Стабилизатора
 
 =======
@@ -4732,6 +5076,7 @@ item.multitool_sky.name=Силовая перчатка (Небесный раз
 item.multitool_mega.name=Силовая Перчатка (Суперудар)
 item.multitool_joule.name=Силовая Перчатка (Гигаджоуль)
 item.multitool_decon.name=Силовая Перчатка (Обеззараживатель)
+item.rubber_gloves.name=Толстые резиновые перчатки
 
 item.australium_iii.name=Увеличитель жизни Марк III
 item.australium_iv.name=Увеличитель жизни Марк IV
@@ -4767,14 +5112,21 @@ item.book_secret.name=3-596-50802-9
 item.book_of_.name=Книга Вагонов
 item.book_guide.name=Руководство
 item.burnt_bark.name=Обожженная кора
+item.burnt_bark.desc=Кусок коры взорванного золотого дуба.
 item.loot_10.name=Ящик с запчастями от Ракеты 10-го размера
 item.loot_15.name=Ящик с запчастями от Ракеты 15-го размера
 item.loot_misc.name=Общий ящик с запчастями от Ракеты
 >>>>>>> master
 item.crystal_horn.name=Кристалльный рог
+item.crystal_horn.desc=Не настоящий рог.
+item.crystal_horn.desc.P11=Настоящий рог.
 item.crystal_charred.name=Обугленный кристалл
+item.crystal_charred.desc=Высококачественный силикат, слегка обожженный.
+item.crystal_charred.desc.P11=Также настоящий рог. Странно, правда?
 item.ingot_lanthanium.name=Полустабильный слиток лантана
-item.ingot_actinium.name=Полустабильный слиток актиния
+item.ingot_lanthanium.desc='Лантанум'
+item.ingot_lanthanium.desc.P11=Вообще лантанум, но ладно.
+item.ingot_actinium.name=Слиток актиния-227
 
 <<<<<<< HEAD
 =======
@@ -4859,16 +5211,13 @@ item.billet_bk249.name=Berkelium-249 Billet
 item.billet_cf252.name=Californium-252 Billet
 item.billet_cf252be.name=Cf252Be Billet
 item.billet_euphemium.name=Euphemium Billet
-item.billet_mox_fuel.desc=§oPocket-Moxie!
 item.billet_sa327be.name=Sa327Be Billet
 item.billet_tha.name=Activated Thorium Billet
 item.billet_u234.name=Uranium-234 Billet
 item.black_hole.desc=Contains a regular singularity$in the center. Large enough to$stay stable. It's not the end$of the world as we know it,$and I don't feel fine.
 item.bolt_staballoy.name=Staballoy Bolt
 item.bottle_sr90.name=Bottle of Bone Hurting Juice
-item.burnt_bark.desc=A piece of bark from an exploded golden oak tree.
 item.can_breen.name=Dr. Breens Private Reserve
-item.canister_fuel.desc=All hail the spout!
 item.canteen_13.desc.11=Cooldown: 1 minute$Restores 2.5 hearts$ $You sip a sip from your trusty Vault 13 SIPPP
 item.canteen_13.desc=Cooldown: 1 minute$Restores 2.5 hearts$ $You take a sip from your trusty Vault 13 canteen.
 item.canteen_fab.desc=Cooldown: 2 minutes$Engages the fab drive
@@ -4883,16 +5232,10 @@ item.coil_warp.name=Antimass Gravity Manipulation Coil
 item.coil_warp_coated.name=FTL Drive Coil with WCo Alloy and Desh Coating
 item.core_plut_boosted.name=Plutonium Core with Schrabidium Booster
 item.core_uran_boosted.name=Uranium Core with Schrabidium Booster
-item.crystal_charred.desc.11=Also a real horn. Weird, right?
-item.crystal_charred.desc=High quality silicate, slightly burned.
 item.crystal_energy.desc=Densely packed energy powder.$Not edible.
 item.custom_core.name=Nuclear Fission Core
-item.custom_fall.desc=That's what you've aaaaaaall been waiting for!$Makes bomb drop upon activation
 item.detonator_de.desc=Explodes when dropped!
 item.detonator_deadman.desc=Shift right-click to set position,$drop to detonate!
-item.dust.desc.11=Another one bites the dust!
-item.dust.desc=I hate dust!
-item.entanglement_kit.desc=Teleporter crafting item.$Enables dimension-shifting via$beryllium-enhanced resource scanner.
 item.euphemium_capacitor.name=Redcoil Capacitor with Euphemium Positive Energy Negator
 item.eye.desc.11=§c"All humans, are afraid of monsters, the monsters they keep inside of them.$§cThey drove the species who are able to expose the monsters in them down the$§cpurgatory underground. There, in the purgatory deep inside the earth where$§cpeople are made, he was born. He hated, and loved, the monster that is$§cforming inside of him more than anyone else. Together with his second$§cmother, he climbed up to the world where the people who have driven him into$§cthe underground live. However, at that time, it was too late. This world$§cabove ground is waiting for its slow death, same as the people who are$§ccontinue to stay there. This world, this surface, is the realm of the dead.$§cAnd this species called humans, they have built for themselves a world of$§ctwilight. There, he met a ghost called 'father'. His second mother, who has$§ccome to this netherworld with him, remained there, while he returned to the$§cpurgatory where he was born. That place, the place where he lives, that$§cpurgatory. That should be the last world of humans."§r
 item.eye.desc=It's looking at me despite being closed,$or rather, through me...$into my soul.$It makes me uncomfortable
@@ -4908,11 +5251,6 @@ item.ferrouranium_shovel.name=Ferrouranium Shovel
 item.ferrouranium_sword.name=Ferrouranium Sword
 item.filter_fiberglass.name=Bound Fiberglass Filter
 item.five_htp.desc=Removes all DRX, Stability for 10 minutes
-item.flame_conspiracy.desc=Steel beams can't melt jet fuel!
-item.flame_opinion.desc=Well, I like it...
-item.flame_politics.desc=Donald Duck will build the wall!
-item.flame_pony.desc.alt=Blue horse beats yellow horse, look it up!
-item.flame_pony.desc=Yellow horse beats blue horse, that's a proven fact!
 item.fmn.desc=Removes all DRX above 2,000mDRX
 item.fragment_orichalcum.desc=Gem shard, retains its hardness and$resistance to pressure and heat, but$requires further refinement
 item.fragment_orichalcum.name=§6Orichalcum Shard§r
@@ -4961,7 +5299,6 @@ item.gun_m60=M60 Machine Gun
 item.gun_mlr.name=Lunatic Rifle
 item.gun_moist_nugget.desc=A Mosin-Na...no wait, it's$just a moist nugget.
 item.gun_mp40_ammo.name=Submachine Gun Round (DEPRECATED)
-item.gun_super_shotgun.desc=It's super broken!
 item.gun_twr.desc.0=§c"You can't dodge a bullet that's already hit"
 item.gun_twr.desc.1="Where's the exit!?"$§c§l"Nowhere"
 item.gun_twr.desc.2=§c"I'm not about to have a little fly like you get away"
@@ -4975,8 +5312,6 @@ item.gun_uac_dmr.name=UAC DMR
 item.gun_uac_lmg.name=UAC LMG
 item.gun_uac_pistol.name=UAC .45 Pistol
 item.gun_uac_smg.name=UAC SMG
-item.igniter.desc=(Used by right-clicking the Prototype)$It's a green metal handle with a$bright red button and a small lid.$At the bottom, the initials N.E. are$engraved. Whoever N.E. was, he had$a great taste in shades of green.
-item.ingot_asbestos.desc=§o"Filled with life, self-doubt and asbestos. That comes with the air."
 item.ingot_bk247.name=Berkelium-247 Ingot
 item.ingot_bk248.name=Berkelium-248 Ingot
 item.ingot_bk249.name=Berkelium-249 Ingot
@@ -4993,19 +5328,13 @@ item.ingot_cm248.name=Curium-248 Ingot
 item.ingot_cm250.name=Curium-250 Ingot
 item.ingot_cn285.name=Coperinicium-285 Ingot
 item.ingot_cn286.name=Coperinicium-286 Ingot
-item.ingot_combine_steel.desc.11="I mean, it's a verb for crying out loud.$The aliens aren't verbs. They're nouns!"$"Actually, I think it's also the name$of some kind of farm equipment, like a$thresher or something."$"That's even worse. Now we have a word$that could mean 'to mix things together',$a piece of farm equipment, and let's see...$oh yea, it can also mean 'the most advanced$form of life in the known universe'."$"So?"$"'So?' C'mon man, they're ALIENS!"
-item.ingot_combine_steel.desc=*insert Civil Protection reference here*
 item.ingot_dineutronium_forged.name=§5Forged Dineutronium Ingot§r
 item.ingot_du_dioxide.name=Uranium Dioxide Pellet
 item.ingot_es254.name=Einsteinium-254 Ingot
-item.ingot_euphemium.desc=A very special and yet strange element.
 item.ingot_ferrouranium.name=Ferrouranium Ingot
-item.ingot_fiberglass.desc=High in fiber, high in glass. Everything the body needs.
 item.ingot_md258.name=Mendelevium-258 Ingot
 item.ingot_nbbe.name=Niobium-Beryllium Alloy Ingot
 item.ingot_neodymium.name=Neodymium Ingot
-item.ingot_neptunium.desc.11=Woo, scary!
-item.ingot_neptunium.desc=That one's my favourite!
 item.ingot_niobium_alloy.name=Niobium Refractory Superalloy Ingot
 item.ingot_orichalcum.desc=Very high density provides protection$against kinetic force and structural backbone
 item.ingot_orichalcum.name=§6Orichalcum Ingot§r
@@ -5013,9 +5342,7 @@ item.ingot_orichalcum_small.desc=Solidified amalgamation, ready$to accept irradi
 item.ingot_orichalcum_small.name=§6Orichalcum Brick§r
 item.ingot_orichalcum_small_irr.desc=Neutron irradiation transmutates the$amalgamation, allowing protection$against directed energy
 item.ingot_orichalcum_small_irr.name=§6Activated Orichalcum Brick§r
-item.ingot_schraranium.desc=Made from uranium in a schrabidium transmutator
 item.ingot_silicon.name=Silicon Brick
-item.ingot_sr90.name=Strontium-90 Ingot
 item.ingot_staballoy.desc=Hehe, get it?$§o§nStab§7alloy, because it's an armor penetrator alloy?
 item.ingot_staballoy.name=Staballoy Ingot
 item.ingot_tha.name=Ingot of Activated Thorium
@@ -5023,52 +5350,28 @@ item.ingot_u234.name=Uranium-234 Ingot
 item.ingot_w-co.name=Tungsten-Cobalt Alloy Ingot
 item.jetpack_tank.desc=Fills worn jetpack with up to 1000mB of kerosene
 item.journal_lunar.name=Lunar Defense Corp Blueprint Folder
-item.key_red.desc.11=§4§le
-item.key_red.desc=Explore the other side.
 item.lunar_kit.name=Lunar Kit
-item.mech_key.desc=It pulses with power.
 item.med_bag.desc=Full heal, regardless of max health$Removes negative effects
 item.nugget_cf252.name=Californium-252 Nugget
 item.nugget_cm248.name=Curium-248 Nugget
 item.nugget_dineutronium.name=§5Dineutronium Nugget§r
-item.nugget_euphemium.desc=A small piece of a pink metal.$Its properties are still unknown,$DEAL WITH IT carefully.
 item.nugget_silicon.name=Silicon Nugget
 item.nugget_tha.name=Nugget of Activated Thorium
 item.nugget_u234.name=Uranium-234 Nugget
-item.overfuse.desc=Say what?
 item.paa_filter.name=PaA - CMB Watz Filter
 item.pack_fdd.name=10-Pack Box of Floppy Disks
 item.part_einsteinium.name=Box of Einsteinium-254 Dust
 item.particle_graviton.name=Graviton Capsule
 item.pellet_antimatter.desc=Very heavy antimatter cluster.$Gets rid of black holes.
 item.pellet_australium.name=Australium Watz Pellet
-item.pellet_cluster.desc=Used in multi purpose bombs:$Adds some extra boom!
-item.pellet_coolant.desc=Deprecated item
-item.pellet_gas.desc=Used in multi purpose bombs:$*cough cough* Halp pls!
-item.pellet_rtg.desc.11=Contains ~100%% Plutonium-238 oxide.
-item.pellet_rtg.desc=RTG fuel pellet for infinite energy! (almost)
-item.pellet_rtg_actinium.desc=Glowey isn't it?
 item.pellet_rtg_actinium.name=РИТЭГ-пеллета из актиния-227
-item.pellet_rtg_berkelium.desc=Pu-238: Who are you?$Bk-248: I'm you, but stronger
 item.pellet_rtg_berkelium.name=РИТЭГ-пеллета из берклия-248
-item.pellet_rtg_gold.desc.11=it's that spicy gold
-item.pellet_rtg_gold.desc=Made from a rare, highly unstable gold isotope.
-item.pellet_rtg_polonium.desc.11=Polonium 4 U and me.
-item.pellet_rtg_polonium.desc=More powderful RTG pellet, made from finest polonium!
-item.pellet_rtg_strontium.desc=It's coming, it's coming for your bones!
-item.pellet_rtg_strontium.name=Strontium-90 RTG Pellet
-item.pellet_rtg_weak.desc.11=Meh.
-item.pellet_rtg_weak.desc=Cheaper and weaker pellet, now with more Uranium-238!
 item.pellet_solinium.name=Solinum Watz Target Pellet
 item.pellet_solinium_laced.name=Euphemium-Laced Solinium Watz Target Pellet
 item.pellet_zirconium.name=Zirconium Reflector Pellet
 item.pill_iodine.desc=Removes negative effects
 item.pill_strontium.desc=Bone §mhurting§r§7 healing pill
 item.pill_strontium.name=Strontium Pill
-item.pin.desc.100=Success rate of picking standard lock is 100%!
-item.pin.desc.10=Success rate of picking standard lock is ~10%
-item.pin.desc=Can be used with a screwdriver to pick locks.
-item.plan_c.desc=Deadly
 item.plate_armor_du.desc.0=Tier: %s
 item.plate_armor_du.desc=Very heavy depleted Uranium armor plate$Originally made for tanks
 item.plate_armor_du.name=Tank-Grade DU Armor Plating
@@ -5080,17 +5383,12 @@ item.plate_orichalcum.name=§6Orichalcum Compound Plate§r
 item.powder_acrylic.name=Acrylic Compound
 item.powder_du_dioxide.name=Uranium Dioxide Powder
 item.powder_es254.name=Einsteinium-254 Powder
-item.powder_euphemium.desc=Pulverized pink.$Tastes like strawberries.
-item.powder_fire.desc=Used in multi purpose bombs:$Incendiary bombs are fun!
 item.powder_nbbe.name=Niobium-Beryllium Powder
 item.powder_niobium_alloy.name=Niobium Refractory Superalloy Powder
 item.powder_orichalcum_mix.desc=Blend of high strength elements and$amalgams ready for solidification
 item.powder_orichalcum_mix.name=§6Orichalcum Blend§r
-item.powder_poison.desc=Used in multi purpose bombs:$Warning: Poisonous!
 item.powder_pu239.name=Plutonium-239 Powder
 item.powder_silicon.name=Silicon Powder
-item.powder_sr90.name=Strontium-90 Powder
-item.powder_sr90_tiny.name=Tiny Pile of Strontium-90 Powder
 item.powder_tennessine.desc=§lAAAAAAAAAAAA
 item.powder_u235.name=Uranium-235 Powder
 item.powder_u238.name=Uranium-238 Powder
@@ -5114,7 +5412,6 @@ item.rod_quad_u234.name=Uranium-234 Quad Rod
 item.rod_tha.name=Activated Thorium Rod
 item.rod_u234.name=Uranium-234 Rod
 item.saturnite_filter.name=Saturnite - Desh Watz Filter
-item.screwdriver.desc=Could be used instead of a fuse...$Also used to disassemble supercomputer matrices.
 item.screwdriver_chad.name=High-Grade Screwdriver
 item.shield.0.name=Riot Shield
 item.shield.1.name=Heavy Duty Shield
@@ -5207,7 +5504,6 @@ item.thruster_nuclear_liq.desc=Uses high-power liquid fuel reactor for$higher ef
 item.thruster_nuclear_liq.name=LV-N Liquid Fueled Nuclear Rocket Engine
 item.thruster_warp.desc=Uses antimass coils to manipulate space-time$to allow for superluminal speed$Works better when has direct line of sight$with another nacelle
 item.thruster_warp.name=FTL Drive Nacelle
-item.tritium_deuterium_cake.desc=Not actual cake, but great$universal fusion fuel!
 item.upgrade_clock_1.name=Atomic Clock Accuracy Upgrade Mk.I
 item.upgrade_clock_2.name=Atomic Clock Accuracy Upgrade Mk.II
 item.upgrade_clock_3.name=Atomic Clock Accuracy Upgrade Mk.III
@@ -5221,11 +5517,10 @@ item.warhead_biological.name=Biological Warhead
 item.warhead_chemical.name=Chemical Warhead
 item.warhead_fusion.name=Pure Fusion Warhead
 item.warhead_gravimetric.name=Gravimetric Warhead
-item.watch.desc=A small blue pocket watch.$It's glass has a few cracks in it,$and some shards are missing.$It stopped ticking at 2:34.
 item.wire_glass.name=Fiber Optic Wire
 item.wire_glass.name=Optical Fiber
 item.wire_glass_insulated.name=Insulated Optical Fiber
-item.xanax.desc=Removes 500mDRX
+item.xanax.desc=Снимает 500mDRX
 potion.hbm_fragile=Fragility
 potion.hbm_hollow=Hollow
 potion.hbm_paralysis=Paralysis

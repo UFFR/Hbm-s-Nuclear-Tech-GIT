@@ -3,7 +3,6 @@ package com.hbm.blocks.machine;
 import java.util.Random;
 
 import com.hbm.blocks.ModBlocks;
-import com.hbm.handler.EnumGUI;
 import com.hbm.lib.RefStrings;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.machine.TileEntityMachineTeleLinker;
@@ -66,7 +65,7 @@ public class MachineTeleLinker extends BlockContainer {
 			TileEntityMachineTeleLinker entity = (TileEntityMachineTeleLinker) world.getTileEntity(x, y, z);
 			if(entity != null)
 			{
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.TELELINKER.ordinal(), world, x, y, z);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_telelinker, world, x, y, z);
 			}
 			return true;
 		} else {

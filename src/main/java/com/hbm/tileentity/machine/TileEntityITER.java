@@ -5,10 +5,11 @@ import java.util.List;
 
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.machine.MachineITER;
-import com.hbm.handler.FluidTypeHandler.FluidType;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidSource;
 import com.hbm.inventory.FluidTank;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.recipes.BreederRecipes;
 import com.hbm.inventory.recipes.FusionRecipes;
 import com.hbm.inventory.recipes.BreederRecipes.BreederRecipe;
@@ -51,9 +52,9 @@ public class TileEntityITER extends TileEntityMachineBase implements IEnergyUser
 	public TileEntityITER() {
 		super(5);
 		tanks = new FluidTank[2];
-		tanks[0] = new FluidTank(FluidType.WATER, 1280000, 0);
-		tanks[1] = new FluidTank(FluidType.ULTRAHOTSTEAM, 128000, 1);
-		plasma = new FluidTank(FluidType.PLASMA_DT, 16000, 2);
+		tanks[0] = new FluidTank(Fluids.WATER, 1280000, 0);
+		tanks[1] = new FluidTank(Fluids.ULTRAHOTSTEAM, 128000, 1);
+		plasma = new FluidTank(Fluids.PLASMA_DT, 16000, 2);
 	}
 
 	@Override
@@ -83,7 +84,7 @@ public class TileEntityITER extends TileEntityMachineBase implements IEnergyUser
 			}
 			
 			//explode either if there's plasma that is too hot or if the reactor is turned on but the magnets have no power
-			if(plasma.getFill() > 0 && (this.plasma.getTankType().temperature >= this.getShield() || (this.isOn && this.power < this.powerReq))) {
+			if(plasma.getFill() > 0 && (this.plasma.getTankType().temperature >= this.getShield() || (this.isOn && this.power < powerReq))) {
 				this.disassemble();
 				Vec3 vec = Vec3.createVectorHelper(5.5, 0, 0);
 				vec.rotateAroundY(worldObj.rand.nextFloat() * (float)Math.PI * 2F);
@@ -169,7 +170,7 @@ public class TileEntityITER extends TileEntityMachineBase implements IEnergyUser
 			
 			this.lastRotor = this.rotor;
 			
-			if(this.isOn && this.power >= this.powerReq) {
+			if(this.isOn && this.power >= powerReq) {
 				
 				this.rotor += 15F;
 				
@@ -191,10 +192,10 @@ public class TileEntityITER extends TileEntityMachineBase implements IEnergyUser
 		BreederRecipe out = BreederRecipes.getOutput(slots[1]);
 		
 		if(slots[1] != null && slots[1].getItem() == ModItems.meteorite_sword_irradiated)
-			out = new BreederRecipe(ModItems.meteorite_sword_fused, 1);
+			out = new BreederRecipe(ModItems.meteorite_sword_fused, 1000);
 		
 		if(slots[1] != null && slots[1].getItem() == ModItems.meteorite_sword_fused)
-			out = new BreederRecipe(ModItems.meteorite_sword_baleful, 4);
+			out = new BreederRecipe(ModItems.meteorite_sword_baleful, 4000);
 		
 		if(out == null) {
 			this.progress = 0;
@@ -208,14 +209,14 @@ public class TileEntityITER extends TileEntityMachineBase implements IEnergyUser
 		
 		int level = FusionRecipes.getBreedingLevel(plasma.getTankType());
 		
-		if(out.heat > level) {
+		if(out.flux > level) {
 			this.progress = 0;
 			return;
 		}
 		
 		progress++;
 		
-		if(progress > this.duration) {
+		if(progress > duration) {
 			
 			if(slots[2] != null) {
 				slots[2].stackSize++;
@@ -317,11 +318,11 @@ public class TileEntityITER extends TileEntityMachineBase implements IEnergyUser
 
 	@Override
 	public void setFluidFill(int i, FluidType type) {
-		if (type.name().equals(tanks[0].getTankType().name()))
+		if (type.getName().equals(tanks[0].getTankType().getName()))
 			tanks[0].setFill(i);
-		else if (type.name().equals(tanks[1].getTankType().name()))
+		else if (type.getName().equals(tanks[1].getTankType().getName()))
 			tanks[1].setFill(i);
-		else if (type.name().equals(plasma.getTankType().name()))
+		else if (type.getName().equals(plasma.getTankType().getName()))
 			plasma.setFill(i);
 	}
 
@@ -336,21 +337,21 @@ public class TileEntityITER extends TileEntityMachineBase implements IEnergyUser
 
 	@Override
 	public List<FluidTank> getTanks() {
-		List<FluidTank> list = new ArrayList();
-		list.add(tanks[0]);
-		list.add(tanks[1]);
-		list.add(plasma);
+		List<FluidTank> t = new ArrayList();
+		t.add(tanks[0]);
+		t.add(tanks[1]);
+		t.add(plasma);
 		
-		return list;
+		return t;
 	}
 
 	@Override
 	public int getFluidFill(FluidType type) {
-		if (type.name().equals(tanks[0].getTankType().name()))
+		if (type.getName().equals(tanks[0].getTankType().getName()))
 			return tanks[0].getFill();
-		else if (type.name().equals(tanks[1].getTankType().name()))
+		else if (type.getName().equals(tanks[1].getTankType().getName()))
 			return tanks[1].getFill();
-		else if (type.name().equals(plasma.getTankType().name()))
+		else if (type.getName().equals(plasma.getTankType().getName()))
 			return plasma.getFill();
 		else
 			return 0;
@@ -388,11 +389,11 @@ public class TileEntityITER extends TileEntityMachineBase implements IEnergyUser
 
 	@Override
 	public int getMaxFluidFill(FluidType type) {
-		if (type.name().equals(tanks[0].getTankType().name()))
+		if (type.getName().equals(tanks[0].getTankType().getName()))
 			return tanks[0].getMaxFill();
-		else if (type.name().equals(tanks[1].getTankType().name()))
+		else if (type.getName().equals(tanks[1].getTankType().getName()))
 			return tanks[1].getMaxFill();
-		else if (type.name().equals(plasma.getTankType().name()))
+		else if (type.getName().equals(plasma.getTankType().getName()))
 			return plasma.getMaxFill();
 		else
 			return 0;

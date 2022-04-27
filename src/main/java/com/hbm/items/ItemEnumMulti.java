@@ -2,6 +2,8 @@ package com.hbm.items;
 
 import java.util.List;
 
+import com.hbm.interfaces.IHasLore;
+import com.hbm.items.ItemEnums.IItemEnum;
 import com.hbm.lib.RefStrings;
 import com.hbm.util.EnumUtil;
 
@@ -9,23 +11,50 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
 
-public class ItemEnumMulti extends Item {
+public class ItemEnumMulti extends Item implements IHasLore {
 	
 	//hell yes, now we're thinking with enums!
-	private Class<? extends Enum> theEnum;
-	private boolean multiName;
-	private boolean multiTexture;
+	protected Class<? extends Enum> theEnum;
+	protected boolean multiName;
+	protected boolean multiTexture;
 
 	public ItemEnumMulti(Class<? extends Enum> theEnum, boolean multiName, boolean multiTexture) {
 		this.setHasSubtypes(true);
 		this.theEnum = theEnum;
 		this.multiName = multiName;
 		this.multiTexture = multiTexture;
+	}
+	
+	@Override
+	public void addInformation(ItemStack stack, EntityPlayer player, List tooltip, boolean b)
+	{
+		standardLore(stack, tooltip);
+	}
+	
+	@Override
+	public EnumRarity getRarity(ItemStack stack)
+	{
+		Enum e = EnumUtil.grabEnumSafely(theEnum, stack.getItemDamage());
+		if (e instanceof IItemEnum)
+			return ((IItemEnum) e).getRarity();
+		else
+			return EnumRarity.common;
+	}
+	
+	@Override
+	public boolean hasEffect(ItemStack stack)
+	{
+		Enum e = EnumUtil.grabEnumSafely(theEnum, stack.getItemDamage());
+		if (e instanceof IItemEnum)
+			return ((IItemEnum) e).getHasEffect();
+		else
+			return false;
 	}
 
 	@Override
@@ -43,8 +72,9 @@ public class ItemEnumMulti extends Item {
 		return this;
 	}
 	
-	private IIcon[] icons;
+	protected IIcon[] icons;
 
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister reg) {
 		
@@ -61,11 +91,11 @@ public class ItemEnumMulti extends Item {
 		}
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getIconFromDamage(int meta) {
 		
 		if(multiTexture) {
-			Enum[] enums = theEnum.getEnumConstants();
 			Enum num = EnumUtil.grabEnumSafely(theEnum, meta);
 			return this.icons[num.ordinal()];
 		} else {

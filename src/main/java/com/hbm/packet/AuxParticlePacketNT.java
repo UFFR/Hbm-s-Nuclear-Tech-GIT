@@ -2,7 +2,6 @@ package com.hbm.packet;
 
 import java.io.IOException;
 
-import com.hbm.calc.EasyLocation;
 import com.hbm.main.MainRegistry;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -20,11 +19,6 @@ public class AuxParticlePacketNT implements IMessage {
 
 	public AuxParticlePacketNT() { }
 
-	public AuxParticlePacketNT(NBTTagCompound nbt, EasyLocation loc)
-	{
-		this(nbt, loc.posX, loc.posY, loc.posZ);
-	}
-	
 	public AuxParticlePacketNT(NBTTagCompound nbt, double x, double y, double z) {
 		
 		this.buffer = new PacketBuffer(Unpooled.buffer());
@@ -66,9 +60,10 @@ public class AuxParticlePacketNT implements IMessage {
 			
 			if(Minecraft.getMinecraft().theWorld == null)
 				return null;
+
 			
 			try {
-				
+
 				NBTTagCompound nbt = m.buffer.readNBTTagCompoundFromBuffer();
 				
 				if(nbt != null)

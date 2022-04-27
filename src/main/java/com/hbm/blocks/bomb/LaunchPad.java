@@ -7,7 +7,6 @@ import org.apache.logging.log4j.Level;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.config.GeneralConfig;
 import com.hbm.entity.missile.*;
-import com.hbm.handler.EnumGUI;
 import com.hbm.interfaces.IBomb;
 import com.hbm.interfaces.Spaghetti;
 import com.hbm.items.ModItems;
@@ -103,7 +102,7 @@ public class LaunchPad extends BlockContainer implements IBomb {
 		} else if(!player.isSneaking()) {
 			TileEntityLaunchPad entity = (TileEntityLaunchPad) world.getTileEntity(x, y, z);
 			if(entity != null) {
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.LAUNCH_PAD.ordinal(), world, x, y, z);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_launch_pad, world, x, y, z);
 			}
 			return true;
 		} else {
@@ -171,17 +170,17 @@ public class LaunchPad extends BlockContainer implements IBomb {
 
 	@Spaghetti("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA *takes breath* AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 	@Override
-	public void explode(World world, int x, int y, int z) {
+	public BombReturnCode explode(World world, int x, int y, int z) {
 
 		TileEntityLaunchPad entity = (TileEntityLaunchPad) world.getTileEntity(x, y, z);
 		
 		if(entity.slots[0] == null || world.isRemote)
-			return;
+			return BombReturnCode.ERROR_MISSING_COMPONENT;
 		
 		if(entity.slots[1] != null && entity.slots[1].getItem() instanceof IDesignatorItem && entity.power >= 75000) {
 			
 			if(!((IDesignatorItem)entity.slots[1].getItem()).isReady(world, entity.slots[1], x, y, z))
-				return;
+				return BombReturnCode.ERROR_MISSING_COMPONENT;
 			
 			int xCoord = entity.slots[1].stackTagCompound.getInteger("xCoord");
 			int zCoord = entity.slots[1].stackTagCompound.getInteger("zCoord");
@@ -268,13 +267,18 @@ public class LaunchPad extends BlockContainer implements IBomb {
 				missile = new EntityMissileShuttle(world, x + 0.5F, y + 2F, z + 0.5F, xCoord, zCoord);
 			}
 
-			world.spawnEntityInWorld(missile);
-			world.playSoundEffect(x, y, z, "hbm:weapon.missileTakeOff", 2.0F, 1.0F);
-			entity.power -= 75000;
-			entity.slots[0] = null;
-
-			if(GeneralConfig.enableExtendedLogging)
-				MainRegistry.logger.log(Level.INFO, "[MISSILE] Tried to launch missile at " + x + " / " + y + " / " + z + " to " + xCoord + " / " + zCoord + "!");
+			if(missile != null) {
+				world.spawnEntityInWorld(missile);
+				world.playSoundEffect(x, y, z, "hbm:weapon.missileTakeOff", 2.0F, 1.0F);
+				entity.power -= 75000;
+				entity.slots[0] = null;
+	
+				if(GeneralConfig.enableExtendedLogging)
+					MainRegistry.logger.log(Level.INFO, "[MISSILE] Tried to launch missile at " + x + " / " + y + " / " + z + " to " + xCoord + " / " + zCoord + "!");
+				return BombReturnCode.LAUNCHED;
+			}
+			
+			return BombReturnCode.ERROR_MISSING_COMPONENT;
 		}
 		
 		if(entity.slots[0] != null && entity.slots[0].getItem() == ModItems.missile_carrier && entity.power >= 75000) {
@@ -292,6 +296,7 @@ public class LaunchPad extends BlockContainer implements IBomb {
 			entity.slots[0] = null;
 			entity.slots[1] = null;
 			world.playSoundEffect(x, y, z, "hbm:entity.rocketTakeoff", 100.0F, 1.0F);
+			return BombReturnCode.LAUNCHED;
 		}
 
 		if(entity.slots[0] != null && entity.slots[0].getItem() == ModItems.missile_anti_ballistic && entity.power >= 75000) {
@@ -305,7 +310,10 @@ public class LaunchPad extends BlockContainer implements IBomb {
 
 			entity.slots[0] = null;
 			world.playSoundEffect(x, y, z, "hbm:weapon.missileTakeOff", 2.0F, 1.0F);
+			return BombReturnCode.LAUNCHED;
 		}
+		
+		return BombReturnCode.ERROR_MISSING_COMPONENT;
 	}
 
 }

@@ -6,7 +6,6 @@ import org.lwjgl.opengl.GL11;
 import com.hbm.inventory.container.ContainerBishamonten;
 import com.hbm.lib.RefStrings;
 import com.hbm.packet.AuxButtonPacket;
-import com.hbm.packet.NBTControlPacket;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.tileentity.turret.TileEntityBishamonten;
 import com.hbm.util.I18nUtil;
@@ -14,15 +13,16 @@ import com.hbm.util.I18nUtil;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
+@SuppressWarnings("deprecation")
 public class GUIBishamonten extends GuiInfoContainer
 {
-	private static ResourceLocation texture = new ResourceLocation(RefStrings.MODID, "textures/gui/weapon/gui_turret_lunar_oni.png");
-	private TileEntityBishamonten luna;
-	private NumberDisplay[] displays = new NumberDisplay[3];
+	private static final ResourceLocation texture = new ResourceLocation(RefStrings.MODID, "textures/gui/weapon/gui_turret_bishamonten.png");
+	private final TileEntityBishamonten luna;
+	private final NumberDisplay[] displays = new NumberDisplay[3];
 	private GuiTextField tField;
+	private byte timer = 0;
 	public GUIBishamonten(InventoryPlayer invPlayer, TileEntityBishamonten te)
 	{
 		super(new ContainerBishamonten(invPlayer, te));
@@ -32,6 +32,12 @@ public class GUIBishamonten extends GuiInfoContainer
 		displays[0] = new NumberDisplay(69, 26).setMaxMin(360, 0);
 		displays[1] = new NumberDisplay(69, 51).setMaxMin(50, -50);
 		displays[2] = new NumberDisplay(98, 26).setDigitLength((byte) 4).setMaxMin(100, 0);
+		componentList.add(new GUIComponent(20, 18, 35, 13).setClickAction(gui -> PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(luna, 0, 0))));
+		componentList.add(new GUIComponent(20, 45, 35, 13).setClickAction(gui -> PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(luna, 0, 1))));
+		componentList.add(new GUIComponent(20, 72, 35, 13).setClickAction(gui -> PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(luna, 0, 2))));
+		componentList.add(new GUIComponent(20, 99, 35, 13).setClickAction(gui -> PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(luna, 0, 3))));
+		componentList.add(new GUIComponent(109, 59, 35, 13).setClickAction(gui -> {PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(luna, 2, validateTextInput(tField.getText(), 0, 100).byteValue()));tField.setText("");timer = 20;}));
+		componentList.add(new GUIComponent(63, 92, 35, 13).setClickAction(gui -> PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(luna, 1, 0))));
 	}
 
 	@Override
@@ -53,39 +59,21 @@ public class GUIBishamonten extends GuiInfoContainer
 		super.drawScreen(mouseX, mouseY, f);
 		drawElectricityInfo(this, mouseX, mouseY, guiLeft + 166, guiTop + 19, 16, 95, luna.getPower(), luna.getMaxPower());
 		drawElectricityInfo(this, mouseX, mouseY, guiLeft + 148, guiTop + 19, 16, 95, luna.getBuffer(), TileEntityBishamonten.maxBuffer);
-		final String[] dir = new String[] {new Float(luna.getDirection()).toString()};
-		final String[] ele = new String[] {new Float(luna.getElevation()).toString()};
-		final String[] pow = new String[] {new Byte(displays[2].getNumber().byteValue()).toString() + "%"};
-		final String[] purify = I18nUtil.resolveKeyArray("twr.gui.purify");
+		String dir = String.valueOf(luna.getDirection()), ele = String.valueOf(luna.getElevation()), pow = String.valueOf(displays[2].getNumber().byteValue()) + '%', purify = I18nUtil.resolveKey("twr.gui.purify");
 		drawCustomInfoStat(mouseX, mouseY, guiLeft + 67, guiTop + 24, 28, 16, mouseX, mouseY, dir);
 		drawCustomInfoStat(mouseX, mouseY, guiLeft + 67, guiTop + 49, 28, 16, mouseX, mouseY, ele);
 		drawCustomInfoStat(mouseX, mouseY, guiLeft + 111, guiTop + 24, 32, 16, mouseX, mouseY, pow);
 		drawCustomInfoStat(mouseX, mouseY, guiLeft + 62, guiTop + 92, 35, 16, guiLeft + 85, guiTop + 107, purify);
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int i)
 	{
 		super.mouseClicked(mouseX, mouseY, i);
 		tField.setFocused(getTextBool(mouseX, mouseY, tField));
-		if (getButtonBool(mouseX, mouseY, 20, 18, 35, 13))
-			PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(luna, 0, 0));
-		if (getButtonBool(mouseX, mouseY, 20, 45, 35, 13))
-			PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(luna, 0, 1));
-		if (getButtonBool(mouseX, mouseY, 20, 72, 35, 13))
-			PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(luna, 0, 2));
-		if (getButtonBool(mouseX, mouseY, 20, 99, 35, 13))
-			PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(luna, 0, 3));
-		if (getButtonBool(mouseX, mouseY, 109, 59, 35, 13))
-		{
-			PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(luna, 2, validateTextInput(tField.getText(), 0, 100).byteValue()));
-			tField.setText("");
-		}
-		if (getButtonBool(mouseX, mouseY, 63, 92, 35, 13))
-			PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(luna, 1, 0));
+		defaultClickHandling(mouseX, mouseY);
 	}
-	
+	static final float scale = 2F;
 	@Override
 	protected void drawGuiContainerForegroundLayer(int p_146979_1_, int p_146979_2_)
 	{
@@ -99,17 +87,11 @@ public class GUIBishamonten extends GuiInfoContainer
 			currText = currText.substring(0, tField.getCursorPosition()) + cursor + currText.substring(tField.getCursorPosition(), currText.length());
 		fontRendererObj.drawString(currText, 116, 47, color1);
 
-		final float scale = 2F;
 		GL11.glScalef(1F / scale, 1F / scale, 1F);
-		final String[] modes = I18nUtil.resolveKeyArray("desc.gui.lunarOni.mode");
+		final String[] modes = I18nUtil.resolveKeyArray("desc.gui.bishamonten.mode");
 		for (int i = 0; i < 4; i++)
-			fontRendererObj.drawString(modes[i], 37 * 2 - fontRendererObj.getStringWidth(modes[i]) / 2, ((luna.currMode.ordinal() == i ? 23 : 21) + (i * 27)) * 2, 0);
-		final String dir = I18nUtil.resolveKey("desc.gui.lunarOni.direction");
-		final String ele = I18nUtil.resolveKey("desc.gui.lunarOni.elevation");
-		final String per = I18nUtil.resolveKey("desc.gui.lunarOni.percentage");
-		final String buf = I18nUtil.resolveKey("desc.gui.lunarOni.buffer");
-		final String pow = I18nUtil.resolveKey("desc.gui.lunarOni.power");
-		final String cor = I18nUtil.resolveKey("desc.gui.lunarOni.coordinates");
+			fontRendererObj.drawString(modes[i], 37 * 2 - fontRendererObj.getStringWidth(modes[i]) / 2, ((luna.getModeData()[2] == i ? 23 : 21) + (i * 27)) * 2, 0);
+		String dir = I18nUtil.resolveKey("desc.gui.bishamonten.direction"),	ele = I18nUtil.resolveKey("desc.gui.bishamonten.elevation"), per = I18nUtil.resolveKey("desc.gui.bishamonten.percentage"), buf = I18nUtil.resolveKey("desc.gui.bishamonten.buffer"), pow = I18nUtil.resolveKey("desc.gui.bishamonten.power"), cor = I18nUtil.resolveKey("desc.gui.bishamonten.coordinates");
 		fontRendererObj.drawString(dir, 80 * 2 - fontRendererObj.getStringWidth(dir) / 2, 20 * 2, 0);
 		fontRendererObj.drawString(ele, 80 * 2 - fontRendererObj.getStringWidth(ele) / 2, 45 * 2, 0);
 		fontRendererObj.drawString(per, 127 * 2 - fontRendererObj.getStringWidth(per) / 2, 14 * 2, 0);
@@ -126,38 +108,25 @@ public class GUIBishamonten extends GuiInfoContainer
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int p_146976_2_, int p_146976_3_)
 	{
-		displays[0].setNumber((int) luna.getDirection());
-		displays[1].setNumber((int) luna.getElevation());
+		displays[0].setNumber(luna.getDirection() > 0 ? luna.getDirection() : 360f + luna.getDirection());
+//		displays[0].setNumber(luna.getDirection());
+		displays[1].setNumber(luna.getElevation());
 		displays[2].setNumber(luna.getLevel());
 
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(texture);
 		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
-		int lightOffset = 0;
-		int buttonOffset = 0;
-		switch(luna.currMode)
-		{
-		case DISABLED:
-			lightOffset = 22;
-			buttonOffset = 18;
-			break;
-		case TARG_ENTITY:
-			lightOffset = 49;
-			buttonOffset = 45;
-			break;
-		case TARG_MISC:
-			lightOffset = 76;
-			buttonOffset = 72;
-			break;
-		case FLOOD:
-			lightOffset = 103;
-			buttonOffset = 99;
-			break;
-		}
-		drawTexturedModalRect(guiLeft + 8, guiTop + lightOffset, 213, 90, 7, 7);
-		drawTexturedModalRect(guiLeft + 19, guiTop + buttonOffset, 219, 127, 37, 15);
+		int[] offsets = luna.getModeData();
+		drawTexturedModalRect(guiLeft + 8, guiTop + offsets[0], 213, 90, 7, 7);
+		drawTexturedModalRect(guiLeft + 19, guiTop + offsets[1], 219, 127, 37, 15);
 		if (luna.isCharging())
 			drawTexturedModalRect(guiLeft + 62, guiTop + 92, 219, 97, 37, 15);
+		
+		if (timer > 0)
+		{
+			timer--;
+			drawTexturedModalRect(guiLeft + 108, guiTop + 59, 219, 112, 37, 15);
+		}
 		
 		for (int i = 0; i < 3; i++)
 			displays[i].drawNumber();

@@ -3,7 +3,6 @@ package com.hbm.blocks.machine;
 import java.util.Random;
 
 import com.hbm.blocks.ModBlocks;
-import com.hbm.handler.EnumGUI;
 import com.hbm.lib.RefStrings;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.machine.TileEntityCoreAdvanced;
@@ -126,7 +125,7 @@ public class FactoryHatch extends Block {
 					{
 						if(((TileEntityCoreTitanium)world.getTileEntity(x, y, z + 1)).isStructureValid(world))
 						{
-							FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.FACTORY_TITANIUM.ordinal(), world, x, y, z + 1);
+							FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_factory_titanium, world, x, y, z + 1);
 						} else {
 							player.addChatMessage(new ChatComponentText("[Basic Factory] Error: Factory Structure not valid!"));
 						}
@@ -140,7 +139,7 @@ public class FactoryHatch extends Block {
 					{
 						if(((TileEntityCoreTitanium)world.getTileEntity(x, y, z - 1)).isStructureValid(world))
 						{
-							FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.FACTORY_TITANIUM.ordinal(), world, x, y, z - 1);
+							FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_factory_titanium, world, x, y, z - 1);
 						} else {
 							player.addChatMessage(new ChatComponentText("[Basic Factory] Error: Factory Structure not valid!"));
 						}
@@ -154,7 +153,7 @@ public class FactoryHatch extends Block {
 					{
 						if(((TileEntityCoreTitanium)world.getTileEntity(x + 1, y, z)).isStructureValid(world))
 						{
-							FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.FACTORY_TITANIUM.ordinal(), world, x + 1, y, z);
+							FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_factory_titanium, world, x + 1, y, z);
 						} else {
 							player.addChatMessage(new ChatComponentText("[Basic Factory] Error: Factory Structure not valid!"));
 						}
@@ -168,7 +167,7 @@ public class FactoryHatch extends Block {
 					{
 						if(((TileEntityCoreTitanium)world.getTileEntity(x - 1, y, z)).isStructureValid(world))
 						{
-							FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.FACTORY_TITANIUM.ordinal(), world, x - 1, y, z);
+							FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_factory_titanium, world, x - 1, y, z);
 						} else {
 							player.addChatMessage(new ChatComponentText("[Basic Factory] Error: Factory Structure not valid!"));
 						}
@@ -186,7 +185,7 @@ public class FactoryHatch extends Block {
 					{
 						if(((TileEntityCoreAdvanced)world.getTileEntity(x, y, z + 1)).isStructureValid(world))
 						{
-							FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.FACTORY_ADVANCED.ordinal(), world, x, y, z + 1);
+							FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_factory_advanced, world, x, y, z + 1);
 						} else {
 							player.addChatMessage(new ChatComponentText("[Advanced Factory] Error: Factory Structure not valid!"));
 						}
@@ -200,7 +199,7 @@ public class FactoryHatch extends Block {
 					{
 						if(((TileEntityCoreAdvanced)world.getTileEntity(x, y, z - 1)).isStructureValid(world))
 						{
-							FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.FACTORY_ADVANCED.ordinal(), world, x, y, z - 1);
+							FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_factory_advanced, world, x, y, z - 1);
 						} else {
 							player.addChatMessage(new ChatComponentText("[Advanced Factory] Error: Factory Structure not valid!"));
 						}
@@ -214,7 +213,7 @@ public class FactoryHatch extends Block {
 					{
 						if(((TileEntityCoreAdvanced)world.getTileEntity(x + 1, y, z)).isStructureValid(world))
 						{
-							FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.FACTORY_ADVANCED.ordinal(), world, x + 1, y, z);
+							FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_factory_advanced, world, x + 1, y, z);
 						} else {
 							player.addChatMessage(new ChatComponentText("[Advanced Factory] Error: Factory Structure not valid!"));
 						}
@@ -228,7 +227,7 @@ public class FactoryHatch extends Block {
 					{
 						if(((TileEntityCoreAdvanced)world.getTileEntity(x - 1, y, z)).isStructureValid(world))
 						{
-							FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.FACTORY_ADVANCED.ordinal(), world, x - 1, y, z);
+							FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_factory_advanced, world, x - 1, y, z);
 						} else {
 							player.addChatMessage(new ChatComponentText("[Advanced Factory] Error: Factory Structure not valid!"));
 						}

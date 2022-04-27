@@ -8,6 +8,7 @@ import com.hbm.config.VersatileConfig;
 import com.hbm.interfaces.IHasLore;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -18,6 +19,7 @@ public class ItemPill extends ItemFood implements IHasLore
 		public void onConsume(ItemStack stack, World world, EntityPlayer player);
 	}
 	private Optional<PillConsumed> consumeAction = Optional.empty();
+	private EnumAction action = EnumAction.none;
 	public ItemPill(int hunger) {
 		super(hunger, false);
 		this.setAlwaysEdible();
@@ -27,6 +29,18 @@ public class ItemPill extends ItemFood implements IHasLore
 	{
 		this(hunger);
 		consumeAction = Optional.of(action);
+	}
+	
+	@Override
+	public EnumAction getItemUseAction(ItemStack p_77661_1_)
+	{
+		return action;
+	}
+	
+	public ItemPill setActionType(EnumAction action)
+	{
+		this.action = action;
+		return this;
 	}
 	
 	Random rand = new Random();

@@ -22,9 +22,7 @@ public abstract class TileEntityMachineBase extends TileEntity implements ISided
 
 	public ItemStack slots[];
 	
-	private String customName;
-	
-	protected EasyLocation coord;
+	protected String customName;
 	
 	public static final Random rand = new Random();
 	public static final String buttonPress = "gui.button.press";
@@ -37,11 +35,6 @@ public abstract class TileEntityMachineBase extends TileEntity implements ISided
 		slots = new ItemStack[scount];
 	}
 
-	public EasyLocation getLocation()
-	{
-		return coord.clone();
-	}
-	
 	@Override
 	public int getSizeInventory() {
 		return slots.length;
@@ -160,7 +153,7 @@ public abstract class TileEntityMachineBase extends TileEntity implements ISided
 	//was it update? onUpdate? updateTile? did it have any args?
 	//shit i don't know man
 	@Override
-    public abstract void updateEntity();
+	public abstract void updateEntity();
 	
 	@Deprecated
 	public void updateGauge(int val, int id, int range) {

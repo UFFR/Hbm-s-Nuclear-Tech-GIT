@@ -38,7 +38,7 @@ public class TileEntitySellafield extends TileEntity {
 		radius = nbt.getDouble("radius");
 	}
 
-	public void writeToNBT(NBTTagCompound nbt) {
+	public void storeInNBT(NBTTagCompound nbt) {
 		super.writeToNBT(nbt);
 		nbt.setDouble("radius", radius);
 	}

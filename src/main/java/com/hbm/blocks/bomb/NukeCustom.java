@@ -3,7 +3,6 @@ package com.hbm.blocks.bomb;
 import java.util.Random;
 
 import com.hbm.blocks.ModBlocks;
-import com.hbm.config.BombConfig;
 import com.hbm.entity.effect.EntityCloudFleija;
 import com.hbm.entity.effect.EntityNukeCloudSmall;
 import com.hbm.entity.grenade.EntityGrenadeZOMG;
@@ -13,9 +12,7 @@ import com.hbm.entity.logic.EntityNukeExplosionMK4;
 import com.hbm.entity.projectile.EntityFallingNuke;
 import com.hbm.explosion.ExplosionChaos;
 import com.hbm.explosion.ExplosionLarge;
-import com.hbm.handler.EnumGUI;
 import com.hbm.interfaces.IBomb;
-import com.hbm.interfaces.Untested;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.bomb.TileEntityNukeCustom;
 
@@ -114,7 +111,7 @@ public class NukeCustom extends BlockContainer implements IBomb {
 			TileEntityNukeCustom entity = (TileEntityNukeCustom) world.getTileEntity(x, y, z);
 			
 			if (entity != null) {
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.NUKE_CUSTOM.ordinal(), world, x, y, z);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_nuke_custom, world, x, y, z);
 			}
 			return true;
 			
@@ -126,7 +123,7 @@ public class NukeCustom extends BlockContainer implements IBomb {
 	@Override
 	public void onNeighborBlockChange(World world, int x, int y, int z, Block p_149695_5_) {
 		
-		if (world.isBlockIndirectlyGettingPowered(x, y, z) && !world.isRemote) {
+		if(world.isBlockIndirectlyGettingPowered(x, y, z)) {
 			this.explode(world, x, y, z);
 		}
 	}
@@ -237,25 +234,30 @@ public class NukeCustom extends BlockContainer implements IBomb {
 	}
 
 	@Override
-	public void explode(World world, int x, int y, int z) {
+	public BombReturnCode explode(World world, int x, int y, int z) {
 		
-		TileEntityNukeCustom entity = (TileEntityNukeCustom) world.getTileEntity(x, y, z);
-		
-		if(!entity.isFalling()) {
+		if(!world.isRemote) {
+			TileEntityNukeCustom entity = (TileEntityNukeCustom) world.getTileEntity(x, y, z);
 			
-			entity.clearSlots();
-			world.func_147480_a(x, y, z, false);
-			NukeCustom.explodeCustom(world, x + 0.5, y + 0.5, z + 0.5, entity.tnt, entity.nuke, entity.hydro, entity.amat, entity.dirty, entity.schrab, entity.euph);
-			
-		} else {
-			
-			EntityFallingNuke bomb = new EntityFallingNuke(world, entity.tnt, entity.nuke, entity.hydro, entity.amat, entity.dirty, entity.schrab, entity.euph);
-			bomb.getDataWatcher().updateObject(20, (byte)world.getBlockMetadata(x, y, z));
-			bomb.setPositionAndRotation(x + 0.5, y, z + 0.5, 0, 0);
-			entity.clearSlots();
-			world.setBlockToAir(x, y, z);
-			world.spawnEntityInWorld(bomb);
+			if(!entity.isFalling()) {
+				
+				entity.clearSlots();
+				world.func_147480_a(x, y, z, false);
+				NukeCustom.explodeCustom(world, x + 0.5, y + 0.5, z + 0.5, entity.tnt, entity.nuke, entity.hydro, entity.amat, entity.dirty, entity.schrab, entity.euph);
+				return BombReturnCode.DETONATED;
+				
+			} else {
+				
+				EntityFallingNuke bomb = new EntityFallingNuke(world, entity.tnt, entity.nuke, entity.hydro, entity.amat, entity.dirty, entity.schrab, entity.euph);
+				bomb.getDataWatcher().updateObject(20, (byte)world.getBlockMetadata(x, y, z));
+				bomb.setPositionAndRotation(x + 0.5, y, z + 0.5, 0, 0);
+				entity.clearSlots();
+				world.setBlockToAir(x, y, z);
+				world.spawnEntityInWorld(bomb);
+				return BombReturnCode.TRIGGERED;
+			}
 		}
 		
+		return BombReturnCode.UNDEFINED;
 	}
 }

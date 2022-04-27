@@ -1,34 +1,17 @@
 package com.hbm.items.machine;
 
-import java.util.List;
-
-import com.hbm.lib.Library;
-
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
 
 public class ItemFuelRod extends Item {
 
 	public int lifeTime;
-	public int heat;
 	
-	public ItemFuelRod(int life, int heat) {
+	public ItemFuelRod(int life) {
 		this.lifeTime = life;
-		this.heat = heat;
 		this.canRepair = false;
-	}
-	
-	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer player, List list, boolean bool) {
-		
-		list.add(EnumChatFormatting.YELLOW + "[Reactor Fuel Rod]");
-		list.add(EnumChatFormatting.DARK_AQUA + "  Generates " + heat + " heat per tick");
-		list.add(EnumChatFormatting.DARK_AQUA + "  Lasts " + Library.getShortNumber(lifeTime) + " ticks");
-		
-		super.addInformation(itemstack, player, list, bool);
+		setMaxStackSize(1);
 	}
 	
 	public static void setLifeTime(ItemStack stack, int time) {

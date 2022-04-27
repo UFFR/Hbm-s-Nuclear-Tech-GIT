@@ -22,8 +22,7 @@ public class BlockHadronCoil extends Block implements IBlockCT, ITooltipProvider
 	
 	public int factor;
 
-	public BlockHadronCoil(Material mat, int factor)
-	{
+	public BlockHadronCoil(Material mat, int factor) {
 		super(mat);
 		this.factor = factor;
 	}

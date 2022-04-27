@@ -2,54 +2,38 @@ package com.hbm.items.weapon;
 
 import java.util.List;
 
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-
-import com.hbm.config.GeneralConfig;
-import com.hbm.entity.projectile.EntityBulletBase;
-import com.hbm.handler.BulletConfigSyncingUtil;
-import com.hbm.handler.BulletConfiguration;
-import com.hbm.handler.GunConfiguration;
 import com.hbm.handler.GunConfigurationEnergy;
-import com.hbm.interfaces.IFastChargable;
+import com.hbm.interfaces.IFastChargeable;
 import com.hbm.interfaces.IHoldableWeapon;
-import com.hbm.interfaces.IItemHUD;
 import com.hbm.items.ModItems;
-import com.hbm.items.machine.ItemBattery;
 import com.hbm.items.machine.ItemBatteryFast;
 import com.hbm.lib.HbmCollection;
-import com.hbm.lib.Library;
-import com.hbm.packet.AuxParticlePacketNT;
 import com.hbm.packet.GunAnimationPacket;
-import com.hbm.packet.GunButtonPacket;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.render.anim.HbmAnimations.AnimType;
 import com.hbm.render.util.RenderScreenOverlay;
 import com.hbm.render.util.RenderScreenOverlay.Crosshair;
+import com.hbm.util.BobMathUtil;
 import com.hbm.util.I18nUtil;
 
 import api.hbm.energy.IBatteryItem;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.Pre;
 
-public class ItemGunEnergyBase extends ItemGunBase implements IHoldableWeapon, IItemHUD, IBatteryItem, IFastChargable
+public class ItemGunEnergyBase extends ItemGunBase implements IFastChargeable
 {
+	@SuppressWarnings("hiding")
 	public GunConfigurationEnergy mainConfig;
+	@SuppressWarnings("hiding")
 	public GunConfigurationEnergy altConfig;
 	public long maxCharge;
 	public long chargeRate;
@@ -85,23 +69,23 @@ public class ItemGunEnergyBase extends ItemGunBase implements IHoldableWeapon, I
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean bool)
 	{
-		GunConfigurationEnergy mainConfigEnergy = (GunConfigurationEnergy)mainConfig;
-		GunConfigurationEnergy altConfigEnergy = (GunConfigurationEnergy)altConfig;
+		GunConfigurationEnergy mainConfigEnergy = mainConfig;
+		GunConfigurationEnergy altConfigEnergy = altConfig;
 		long gunChargeMax = mainConfigEnergy.ammoCap;
 		long gunCurrentCharge = getGunCharge(stack);
-		String gunChargeMaxString = Library.getShortNumber(gunChargeMax);
-		String gunCurrentChargeString = Library.getShortNumber(gunCurrentCharge);
+		String gunChargeMaxString = BobMathUtil.getShortNumber(gunChargeMax);
+		String gunCurrentChargeString = BobMathUtil.getShortNumber(gunCurrentCharge);
 		list.add(I18nUtil.resolveKey(HbmCollection.charge, gunCurrentChargeString, gunChargeMaxString));
-		list.add(I18nUtil.resolveKey(HbmCollection.chargeRate, Library.getShortNumber(chargeRate)));
+		list.add(I18nUtil.resolveKey(HbmCollection.chargeRate, BobMathUtil.getShortNumber(chargeRate)));
 //		list.add(String.format("Ammo: %s / %s", Math.floorDiv(gunCurrentCharge, mainConfigEnergy.ammoRate), Math.floorDiv(gunChargeMax, mainConfigEnergy.ammoRate)));
 		
 		list.add(I18nUtil.resolveKey(HbmCollection.ammo, I18nUtil.resolveKey(HbmCollection.ammoMag, Math.floorDiv(gunCurrentCharge, mainConfigEnergy.ammoRate), Math.floorDiv(gunChargeMax, mainConfigEnergy.ammoRate))));
 		
 //		list.add(String.format("Ammo Type: Energy; %sHE per shot%s", Library.getShortNumber(mainConfigEnergy.ammoRate), altConfig != null ? "; " + Library.getShortNumber(altConfigEnergy.ammoRate) + "HE per alt shot" : ""));
 		
-		list.add(I18nUtil.resolveKey(HbmCollection.ammoEnergy, Library.getShortNumber(mainConfigEnergy.ammoRate)));
+		list.add(I18nUtil.resolveKey(HbmCollection.ammoEnergy, BobMathUtil.getShortNumber(mainConfigEnergy.ammoRate)));
 		if (altConfig != null)
-			list.add(I18nUtil.resolveKey(HbmCollection.altAmmoEnergy, Library.getShortNumber(altConfigEnergy.ammoRate)));
+			list.add(I18nUtil.resolveKey(HbmCollection.altAmmoEnergy, BobMathUtil.getShortNumber(altConfigEnergy.ammoRate)));
 		
 		addAdditionalInformation(stack, list);
 	}
@@ -140,7 +124,7 @@ public class ItemGunEnergyBase extends ItemGunBase implements IHoldableWeapon, I
 			boolean hasReloaded = false;
 			for (ItemStack playerSlot : player.inventory.mainInventory)
 			{
-				ItemBatteryFast battery;
+//				ItemBatteryFast battery;
 				System.out.println("Checking slot...");
 				if (playerSlot == null || !(playerSlot.getItem() instanceof ItemBatteryFast))
 					continue;
@@ -284,23 +268,20 @@ public class ItemGunEnergyBase extends ItemGunBase implements IHoldableWeapon, I
 	@SideOnly(Side.CLIENT)
 	public void renderHUD(Pre event, ElementType type, EntityPlayer player, ItemStack stack)
 	{
-		ItemGunEnergyBase gun = (ItemGunEnergyBase)stack.getItem();
+//		ItemGunEnergyBase gun = (ItemGunEnergyBase)stack.getItem();
 		if (type == ElementType.HOTBAR)
 		{
 			int ammoRemaining = (int)Math.floorDiv(getCharge(stack), mainConfig.ammoRate);
 			int ammoMax = (int)Math.floorDiv(getMaxCharge(), mainConfig.ammoRate);
-			int dura = ItemGunEnergyBase.getItemWear(stack) * 50 / mainConfig.durability;
+			int dura = getItemWear(stack) * 50 / mainConfig.durability;
 			
-			RenderScreenOverlay.renderAmmo(event.resolution, Minecraft.getMinecraft().ingameGUI, ModItems.battery_creative, ammoRemaining, ammoMax, dura, mainConfig.showAmmo);
+			RenderScreenOverlay.renderAmmo(event.resolution, Minecraft.getMinecraft().ingameGUI, new ItemStack(ModItems.battery_creative), ammoRemaining, ammoMax, dura, mainConfig.showAmmo);
 		}
 		if (type == ElementType.CROSSHAIRS)
 		{
 			event.setCanceled(true);
 			
-			if(!(mainConfig.hasSights && player.isSneaking()))
-				RenderScreenOverlay.renderCustomCrosshairs(event.resolution, Minecraft.getMinecraft().ingameGUI, ((IHoldableWeapon)player.getHeldItem().getItem()).getCrosshair());
-			else
-				RenderScreenOverlay.renderCustomCrosshairs(event.resolution, Minecraft.getMinecraft().ingameGUI, Crosshair.NONE);
+			RenderScreenOverlay.renderCustomCrosshairs(event.resolution, Minecraft.getMinecraft().ingameGUI, !(mainConfig.hasSights && player.isSneaking()) ? ((IHoldableWeapon)player.getHeldItem().getItem()).getCrosshair() : Crosshair.NONE);
 		}
 	}
 	

@@ -1,25 +1,28 @@
 package com.hbm.items.machine;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 
 import com.google.common.collect.ImmutableList;
-import com.hbm.tileentity.IRadioisotopeFuel;
+import com.hbm.config.VersatileConfig;
 import com.hbm.items.ModItems;
+import com.hbm.items.machine.ItemRTGPelletDepleted.DepletedRTGMaterial;
+import com.hbm.items.special.ItemCustomLore;
+import com.hbm.tileentity.IRadioisotopeFuel;
 import com.hbm.util.I18nUtil;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
-public class ItemRTGPellet extends Item implements IRadioisotopeFuel
+public class ItemRTGPellet extends ItemCustomLore implements IRadioisotopeFuel
 {
 	
 	private short heat = 0;
@@ -27,7 +30,8 @@ public class ItemRTGPellet extends Item implements IRadioisotopeFuel
 	private ItemStack decayItem = null;
 	private long lifespan = 0;
 	// An enum would be a bit excessive
-	public static final byte LEAD = 0, U234 = 1, MERCURY = 2, ZIRCONIUM = 3, NP237 = 4, CM244 = 5;
+	// The irony is not lost on me ~ UFFR
+//	public static final byte LEAD = 0, U234 = 1, MERCURY = 2, ZIRCONIUM = 3, NP237 = 4, CM244 = 5;
 	
 	private static final ArrayList<ItemRTGPellet> pelletList = new ArrayList<>();
 	
@@ -56,20 +60,14 @@ public class ItemRTGPellet extends Item implements IRadioisotopeFuel
 			"In the 1920s, uranium was considered a useless byproduct of the production of radium.",
 			"The Manhattan Project referred to refined natural uranium as tuballoy, enriched uranium as oralloy, and depleted uranium as depletalloy."
 	};
-
-	@Override
-	public ItemRTGPellet setDecays(@Nonnull ItemStack itemIn, long life) {
+	
+	public ItemRTGPellet setDecays(DepletedRTGMaterial mat, long life) {
 		doesDecay = true;
-		decayItem = itemIn;
+		decayItem = new ItemStack(ModItems.pellet_rtg_depleted, 1, mat.ordinal());
 		lifespan = life;
 		return this;
 	}
-	
-	public ItemRTGPellet setDecays(byte b, long life)
-	{
-		return setDecays(new ItemStack(ModItems.pellet_rtg_depleted, 1, b), life);
-	}
-	
+		
 	@CheckForNull
 	@Override
 	public ItemStack getDecayItem()
@@ -84,7 +82,53 @@ public class ItemRTGPellet extends Item implements IRadioisotopeFuel
 
 	@Override
 	public boolean getDoesDecay() {
-		return doesDecay;
+		return this.doesDecay;
+	}
+	
+	public static ItemStack handleDecay(ItemStack stack, ItemRTGPellet instance) {
+		if (instance.getDoesDecay() && VersatileConfig.rtgDecay()) {
+			if (instance.getLifespan(stack) <= 0)
+				return instance.getDecayItem();
+			else
+				instance.decay(stack);
+		}
+		
+		return stack;
+	}
+	
+	@Override
+	public void decay(ItemStack stack) {
+		if (stack != null && stack.getItem() instanceof ItemRTGPellet) {
+			if (!((ItemRTGPellet) stack.getItem()).getDoesDecay())
+				return;
+			if (stack.hasTagCompound())
+				stack.stackTagCompound.setLong("PELLET_DEPLETION", getLifespan(stack) - 1);
+			else {
+				stack.stackTagCompound = new NBTTagCompound();
+				stack.stackTagCompound.setLong("PELLET_DEPLETION", getMaxLifespan());
+			}
+		}
+	}
+	
+	@Override
+	public long getLifespan(ItemStack stack)
+	{
+		if (stack != null && stack.getItem() instanceof ItemRTGPellet)
+		{
+			if (stack.hasTagCompound())
+				return stack.stackTagCompound.getLong("PELLET_DEPLETION");
+			else
+			{
+				stack.stackTagCompound = new NBTTagCompound();
+				stack.stackTagCompound.setLong("PELLET_DEPLETION", getMaxLifespan());
+				return getMaxLifespan();
+			}
+		}
+		return 0;
+	}
+	
+	public static short getScaledPower(ItemRTGPellet fuel, ItemStack stack) {
+		return (short) Math.ceil(fuel.getHeat() * ((double)fuel.getLifespan(stack) / (double)fuel.getMaxLifespan()));
 	}
 	
 	@Override
@@ -102,7 +146,6 @@ public class ItemRTGPellet extends Item implements IRadioisotopeFuel
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean bool)
 	{
 		super.addInformation(stack, player, list, bool);
-		list.add(I18nUtil.resolveKey(this.getUnlocalizedName() + ".desc"));
 		IRadioisotopeFuel.addTooltip(list, stack, bool);
 	}
 	
@@ -123,7 +166,7 @@ public class ItemRTGPellet extends Item implements IRadioisotopeFuel
 		return String.format("%s (%s HE/t) %s", I18nUtil.resolveKey(getUnlocalizedName().concat(".name")), getHeat(), (getDoesDecay() ? " (decays)" : ""));
 	}
 	
-	public static ImmutableList<ItemRTGPellet> getPellets()
+	public static List<ItemRTGPellet> getPellets()
 	{
 		return ImmutableList.copyOf(pelletList);
 	}
@@ -132,5 +175,23 @@ public class ItemRTGPellet extends Item implements IRadioisotopeFuel
 	public short getHeat()
 	{
 		return heat;
+	}
+	public static HashMap<ItemStack, ItemStack> getRecipeMap() {
+		HashMap<ItemStack, ItemStack> map = new HashMap<ItemStack, ItemStack>();
+		
+		for(ItemRTGPellet pellet : pelletList) {
+			if(pellet.decayItem != null) {
+				map.put(new ItemStack(pellet), pellet.decayItem.copy());
+			}
+		}
+		
+		return map;
+	}
+
+	@Override
+	public IRadioisotopeFuel setDecays(ItemStack stack, long lifespan)
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
