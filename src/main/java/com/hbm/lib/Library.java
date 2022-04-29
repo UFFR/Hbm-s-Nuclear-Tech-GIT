@@ -32,6 +32,8 @@ import com.hbm.interfaces.IFluidSource;
 import com.hbm.interfaces.Spaghetti;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.items.ModItems;
+import com.hbm.main.DeserializationException;
+import com.hbm.main.MainRegistry;
 import com.hbm.saveddata.TimeSavedData.TimeDurationType;
 import com.hbm.tileentity.TileEntityProxyBase;
 import com.hbm.tileentity.TileEntityProxyInventory;
@@ -230,20 +232,26 @@ public class Library
 		return buf.array();
 	}
 	
-	public static Collection<String> decompressStringBytes(byte[] bytes)
+	public static Collection<String> decompressStringBytes(byte[] bytes) throws DeserializationException
 	{
-		ByteBuf buf = Unpooled.copiedBuffer(bytes);
-		final int size = buf.readInt();
-		ArrayList<String> strings = new ArrayList<String>(size);
-		
-		for (int i = 0; i < size; i++)
+		try
 		{
-			byte[] stringBytes = new byte[buf.readInt()];
-			buf.writeBytes(stringBytes);
-			strings.add(new String(stringBytes));
+			ByteBuf buf = Unpooled.copiedBuffer(bytes);
+			final int size = buf.readInt();
+			ArrayList<String> strings = new ArrayList<String>(size);
+			
+			for (int i = 0; i < size; i++)
+			{
+				byte[] stringBytes = new byte[buf.readInt()];
+				buf.writeBytes(stringBytes);
+				strings.add(new String(stringBytes));
+			}
+			
+			return strings;
+		} catch (Exception e)
+		{
+			throw new DeserializationException(e);
 		}
-		
-		return strings;
 	}
 	
 	@CheckForNull
@@ -603,9 +611,13 @@ public class Library
 	
 	public enum EnumHashAlgorithm
 	{
+		MD2("MD2"),
 		MD5("MD5"),
 		SHA1("SHA-1"),
-		SHA256("SHA-256");
+		SHA224("SHA-224"),
+		SHA256("SHA-256"),
+		SHA384("SHA-384"),
+		SHA512("SHA-512");
 		final String name;
 		private EnumHashAlgorithm(String name)
 		{
@@ -633,13 +645,14 @@ public class Library
 			StringBuilder output = new StringBuilder(256);
 			
 			for (byte b : bytes)
-				output.append(Integer.toString((b & 0xFF) + 256, 16).substring(1));
+				output.append(Integer.toHexString(0xFF & b));
 			
 			return output.toString();
 		}
 		catch (NoSuchAlgorithmException e)
 		{
 			e.printStackTrace();
+			MainRegistry.logger.catching(e);
 			return "";
 		}
 	}

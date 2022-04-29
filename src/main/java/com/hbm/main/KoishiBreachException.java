@@ -4,7 +4,7 @@ import javax.swing.JOptionPane;
 
 import com.hbm.lib.Library;
 
-public class KoishiBreachException extends Exception
+public class KoishiBreachException extends RuntimeException
 {
 	private static final String[] messages =
 		{

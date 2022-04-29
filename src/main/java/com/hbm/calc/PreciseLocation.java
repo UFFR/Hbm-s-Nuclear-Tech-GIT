@@ -20,7 +20,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 @Beta
-public class PreciseLocation implements Cloneable, Comparable<PreciseLocation>, Serializable, ISerializable
+public class PreciseLocation implements Cloneable, Comparable<PreciseLocation>, Serializable, ISerializable<PreciseLocation>
 {
 	/**
 	 * 
@@ -335,12 +335,11 @@ public class PreciseLocation implements Cloneable, Comparable<PreciseLocation>, 
 		BigDecimal myDist = distance(this, zero);
 		if (equals(o))
 			return 0;
-		else
-			return myDist.compareTo(testDist);
+		return myDist.compareTo(testDist);
 	}
 
 	@Override
-	public ISerializable deserialize(byte[] bytes)
+	public PreciseLocation deserialize(byte[] bytes)
 	{
 		return new PreciseLocation(bytes);
 	}

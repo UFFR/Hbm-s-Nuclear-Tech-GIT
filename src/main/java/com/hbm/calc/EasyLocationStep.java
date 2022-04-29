@@ -24,8 +24,8 @@ public final class EasyLocationStep extends EasyLocation implements Iterable<Eas
 	}
 	/**Origin coordinates**/
 	private final EasyLocation origin;
-	private final Vec3 vector;
-	private ConcludeIteration conclude = (start, current, vec) -> {return current.posY > 255 || current.posY < 0 || distanceFromOrigin() >= 1000;};
+	protected final Vec3 vector;
+	protected ConcludeIteration conclude = (start, current, vec) -> {return current.posY > 255 || current.posY < 0 || distanceFromOrigin() >= 1000;};
 	static
 	{
 		ISerializable.register(EasyLocationStep.class, new EasyLocationStep(0, 0, 0, Vec3.createVectorHelper(0, 0, 0)));
@@ -95,7 +95,7 @@ public final class EasyLocationStep extends EasyLocation implements Iterable<Eas
 	}
 	
 	@Override
-	public ISerializable deserialize(byte[] bytes)
+	public EasyLocationStep deserialize(byte[] bytes)
 	{
 		return fromBytes(bytes);
 	}

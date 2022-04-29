@@ -19,8 +19,8 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
-
-public class File implements Cloneable, Serializable, ISerializable
+@Deprecated
+public class File implements Cloneable, Serializable, ISerializable<File>
 {
 	public enum FileType
 	{
@@ -265,7 +265,7 @@ public class File implements Cloneable, Serializable, ISerializable
 		return String.format("[NAME=%s; TYPE=%s; SIZE=%s; CREATION_DATE=%s; LAST_MODIFIED_DATE=%s; DATA=%s; EXPECTED_HASH=%s; ACTUAL_HASH=%s]", getName(), getType(), getSize(), getCreated(), getLastModified(), data, data.getInteger(KEY_HASH), hashCode());
 	}
 	@Override
-	public ISerializable deserialize(byte[] bytes)
+	public File deserialize(byte[] bytes)
 	{
 		return fromBytes(bytes);
 	}

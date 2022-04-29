@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 import com.hbm.lib.HbmCollection;
 
-public class Date implements Comparable<Date>, Serializable, Cloneable, ISerializable
+public class Date implements Comparable<Date>, Serializable, Cloneable, ISerializable<Date>
 {
 	static
 	{
@@ -159,7 +159,7 @@ public class Date implements Comparable<Date>, Serializable, Cloneable, ISeriali
 	}
 
 	@Override
-	public ISerializable deserialize(byte[] bytes)
+	public Date deserialize(byte[] bytes)
 	{
 		return new Date(new BigInteger(bytes));
 	}

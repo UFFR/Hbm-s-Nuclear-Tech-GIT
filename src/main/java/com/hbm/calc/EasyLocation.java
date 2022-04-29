@@ -14,7 +14,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-public class EasyLocation implements Cloneable, Comparable<EasyLocation>, Serializable, ISerializable
+public class EasyLocation implements Cloneable, Comparable<EasyLocation>, Serializable, ISerializable<EasyLocation>
 {
 	/**
 	 * 
@@ -321,12 +321,11 @@ public class EasyLocation implements Cloneable, Comparable<EasyLocation>, Serial
 		double myDist = distance(this, zero);
 		if (equals(o) || testDist == myDist)
 			return 0;
-		else
-			return myDist < testDist ? 1 : -1;
+		return myDist < testDist ? 1 : -1;
 	}
 
 	@Override
-	public ISerializable deserialize(byte[] bytes)
+	public EasyLocation deserialize(byte[] bytes)
 	{
 		return new EasyLocation(bytes);
 	}

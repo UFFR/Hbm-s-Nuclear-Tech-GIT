@@ -81,6 +81,7 @@ public class ModBlocks {
 	public static Block ore_cinnebar;
 	public static Block ore_coltan;
 	public static Block ore_alexandrite;
+	public static Block ore_nickel;
 
 	public static Block ore_random;
 	
