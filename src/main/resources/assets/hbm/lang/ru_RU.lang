@@ -8,6 +8,7 @@ itemGroup.tabNuke=Бомбы NTM
 itemGroup.tabMissile=Ракеты и спутники NTM
 itemGroup.tabWeapon=Оружие и турели NTM
 itemGroup.tabConsumable=Расходные материалы и снаряжение NTM
+soundCategory.ntmMachines=Механизмы NTM
 
 achievement.acidizer.desc=уфф ай моя кожа
 achievement.acidizer=Кислюка
@@ -141,6 +142,12 @@ achievement.watz.desc=Поля Фолквангра также присутст�
 achievement.watz=Сила Е-126
 achievement.ZIRNOXBoom.desc=cope, seethe, mald
 achievement.ZIRNOXBoom=ЦИРНОКС
+achievement.slimeball.desc=
+achievement.slimeball=я должен окунуть свои яйца в серную кислоту.
+achievement.sulfuric.desc=
+achievement.sulfuric=я не должен был окунать свои яйца в серную кислоту.
+achievement.witchtaunter.desc=Эти твари ничего тебе не сделают!
+achievement.witchtaunter=Насмехайтесь над ведьмами
 
 potion.hbm_taint=Порча
 potion.hbm_mutation=Заражённое порчей сердце
@@ -153,6 +160,7 @@ potion.hbm_telekinesis=! ! !
 potion.hbm_phosphorus=Фосфорные ожоги
 potion.hbm_stability=Стабильность
 potion.hbm_potionsickness=Послезельевая болезнь
+potion.hbm_death=Серьёзная мутация
 
 tool.ability.recursion=Жилковый Майнер
 tool.ability.hammer=Зона действия
@@ -174,11 +182,7 @@ weapon.ability.chainsaw=Бензоболь
 <<<<<<< HEAD
 =======
 weapon.ability.fire=Горение
-<<<<<<< HEAD
->>>>>>> master
-=======
 weapon.ability.bobble=Удача коллекционера
->>>>>>> master
 
 info.coil=Сила катушки
 info.templatefolder=Создано с помощью %s
@@ -213,8 +217,9 @@ armor.explosionImmune=Не может получить никакого урон
 armor.fastFall=Быстрое падение
 armor.ignoreLimit=Сопротивление не зависит от предела сопротивления
 armor.rocketBoots=Ракетные ботинки
-armor.sprintBoost=Ускоренный спринт
+armor.sprintBoost=Ускоренный бег
 armor.projectileProtection=Модификатор урона %s от снарядов
+armor.dash=Даёт %s дешей
 
 hazard.prot=Защищает от:
 hazard.noprot=НЕ защищает от:
@@ -316,6 +321,7 @@ hbm.key.craneMoveDown=Двигать кран назад
 hbm.key.craneMoveLeft=Двигать кран влево
 hbm.key.craneMoveRight=Двигать кран вправо
 hbm.key.craneMoveUp=Двигать кран вперёд
+hbm.key.dash=Деш
 hbm.key.toggleBack=Включить ранец
 hbm.key.toggleHUD=Включить HUD
 hbm.key.reload=Перезарядить
@@ -804,12 +810,15 @@ hbmfluid.diesel=Дизель
 hbmfluid.kerosene=Керосин
 hbmfluid.gas=Природный газ
 hbmfluid.coolant=Хладагент
+hbmfluid.coolant_hot=Горячий хладагент
+hbmfluid.mug=Пиво "Mug Root"
+hbmfluid.mug_hot=Горячее пиво "Mug Root"
 hbmfluid.amat=Антиматерия
 hbmfluid.aschrab=Антишрабидий
 hbmfluid.heavyoil=Тяжелая нефть
 hbmfluid.bitumen=Битум
 hbmfluid.heatingoil=Мазут
-hbmfluid.naphtha=Лигроин
+hbmfluid.naphtha=Нафта
 hbmfluid.lightoil=Легкая нефть
 hbmfluid.petroleum=Попутный нефтяной газ
 hbmfluid.lpg=Сжиженный попутный газ (СПГ)
@@ -841,7 +850,9 @@ hbmfluid.schrabidic=Шрабидиевая кислота
 
 =======
 hbmfluid.pain=Пандемониум(III)Раствор танталита
-hbmfluid.gasoline=Этилированный бензин
+hbmfluid.gasoline=Газолин
+hbmfluid.gasoline_leaded=Этилированный газолин
+hbmfluid.petroil_leaded=Этилированный бензин
 hbmfluid.spentsteam=Пар низкого давления
 hbmfluid.fracksol=Жидкость для гидроразрыва пласта
 hbmfluid.alcohol=Изопропиловый спирт
@@ -871,6 +882,10 @@ hbmfluid.naphtha_crack=Крекированная нафта
 hbmfluid.unsaturateds=Непредельные углеводороды
 hbmfluid.salient=Зелёный сойлент
 hbmfluid.coalgas=Угольный газ
+hbmfluid.enderjuice=Эндер-сок
+hbmfluid.xpjuice=Жидкий опыт
+hbmfluid.coalgas_leaded=Этилированный угольный газ
+hbmfluid.sulfuric_acid=Серная кислота
 
 //Special for 1.12.2 version//
 fluid.hbmsteam=Пар
@@ -944,6 +959,12 @@ hadron.hopper0=§eОбычный режим:$Все предметы будут 
 hadron.hopper1=§eРежим воронки:$Один предмет всегда останется.
 hadron.modeCircular=§eРежим циклического ускорителя:$Магниты должны замкнуться обратно в сердечник.$Открывает больше рецептов.
 hadron.modeLine=§eРежим линейного ускорителя:$Ускоритель заканчивается камерой анализа.$Меньше рецептов.
+hadron.noresult_too_slow=Недостат. ускорение!
+hadron.noresult_wrong_ingredient=Неверный рецепт!
+hadron.noresult_wrong_mode=Неверный режим!
+hadron.stats=Предыдущие результаты:
+hadron.stats_coord=Ошибка: %s / %s / %s
+hadron.stats_momentum=Ускорение: %s
 radar.detectMissiles=Обнаружение ракет
 radar.detectPlayers=Обнаружение игроков
 radar.smartMode=Умный режим$Выход редстоуна игнорирует восходящие ракеты
@@ -955,7 +976,7 @@ radar.redMode=Режим красного камня$Включён: Сигна�
 chem.TEST=Тест
 chem.FP_HEAVYOIL=Переработка тяжелой нефти
 chem.FP_SMEAR=Переработка промышленного масла
-chem.FP_NAPHTHA=Переработка лигроина
+chem.FP_NAPHTHA=Переработка нафты
 chem.FP_LIGHTOIL=Переработка легкой нефти
 chem.FR_REOIL=Воссоздание нефти
 chem.FR_PETROIL=Смешивание бензина
@@ -969,7 +990,7 @@ chem.CC_OIL=Сжижение угля
 chem.CC_I=Улучшенное сжижение угля
 chem.CC_HEATING=Усовершенствованное сжижение угля
 chem.CC_HEAVY=Базовое сжижение угля
-chem.CC_NAPHTHA=Сжижение тяжелого бензина
+chem.CC_NAPHTHA=Сжижение нафты
 chem.LPG=Сжижение попутного газа
 chem.ASPHALT=Производство асфальта
 chem.CONCRETE=Производство бетона
@@ -986,7 +1007,7 @@ chem.SF_HEATINGOIL=Затвердевание битума
 chem.SF_RECLAIMED=Затвердевание очищенного масла
 chem.SF_PETROIL=Затвердевание бензина
 chem.SF_LUBRICANT=Затвердевание машинной смазки
-chem.SF_NAPHTHA=Затвердевание лигроина
+chem.SF_NAPHTHA=Затвердевание нафты
 chem.SF_DIESEL=Затвердевание дизеля
 chem.SF_LIGHTOIL=Затвердевание легкой нефти
 chem.SF_KEROSENE=Затвердевание керосина
@@ -1026,7 +1047,7 @@ chem.COLTAN_CRYSTAL=Кристаллизация тантала
 chem.COLTAN_PAIN=Производство Пандемониум(III)танталита
 chem.VIT_GAS=Остекловывание газообразных ядерных отходов
 chem.VIT_LIQUID=Остекловывание жидких ядерных отходов
-chem.GASOLINE=Производство бензина
+chem.GASOLINE=Производство газолина
 chem.TEL=Смешивание тетраэтилсвинца
 chem.ACRYLIC=Полимеризация акрила
 chem.ALCOHOL=Гидратация изопропилового спирта
@@ -1050,6 +1071,18 @@ chem.HELIUM3=Извлечение гелия-3 из лунного грунта
 chem.HEAVY_ELECTROLYSIS=Электролиз тяжёлой воды
 chem.ETHANOL=Производство этанола
 chem.CO2=Получение CO2 путём сжигания природного газа
+chem.EPEARL=Синтез жемчужин Эндера
+chem.BAKELITE=Производство бакелита
+chem.C4=Синтез C-4
+chem.COALGAS_LEADED=Смешивание этилированного угольного газа
+chem.GASOLINE_LEADED=Смешивание этилированного газолина
+chem.LUBRICANT=Смешивание машинной смазки
+chem.PETROIL_LEADED=Смешивание этилированного бензина
+chem.RUBBER=Производство резины
+chem.TNT=Синтез ТНТ
+chem.DYNAMITE=Синтез динамита
+chem.ARSENIC=Экстракция мышьяка
+chem.SULFURIC_ACID=Производство серной кислоты
 
 item.record.lc.desc=Valve - Diabolic Adrenaline Guitar/Lambda Core
 item.record.ss.desc=Valve - Sector Sweep
@@ -1142,6 +1175,7 @@ death.attack.twr1=%1$s обнаружил, что выхода нет.
 death.attack.twr2=%2$s разбил %1$s на миллион осколков света.
 death.attack.twr3=%2$s показал %1$s, что здесь нету выхода.
 death.attack.overdose=%1$s умер от передоза метамфетамином.
+death.attack.microwave=%1$s взорвался от микроволнового излучения.
 
 item.redstone_sword.name=Меч из красного камня
 item.big_sword.name=Большой меч
@@ -1191,6 +1225,7 @@ item.n2_charge.name=Крупный взрывной заряд
 item.egg_balefire_shard.name=Жар-осколок
 item.egg_balefire.name=Жар-яйцо
 item.egg_balefire.desc=Какая птица откладывает радиоактивные яйца?
+item.spawn_duck.name=Золотое яйцо
 
 <<<<<<< HEAD
 item.custom_tnt.name=Взрывной заряд Персональной бомбы
@@ -1360,6 +1395,8 @@ tile.machine_generator.name=Ядерный реактор (Устаревший)
 container.generator=Ядерный реактор
 tile.red_wire_coated.name=Медный кабель с покрытием
 tile.cable_switch.name=Рубильник
+tile.cable_detector.name=Редстоун-рубильник
+tile.cable_diode.name=Диод из красной меди
 tile.machine_deuterium.name=Дейтериевый экстрактор
 container.machine_deuterium=Дейтериевый экстрактор
 tile.machine_battery_potato.name=Картофельная батарея
@@ -1446,6 +1483,7 @@ tile.machine_assembler.name=Сборочная машина
 container.assembler=Сборочная машина
 tile.machine_chemplant.name=Химическая установка
 container.chemplant=Химическая установка
+tile.machine_chemfac.name=Химический завод
 tile.fluid_duct.name=Универсальная жидкостная труба
 tile.fluid_duct_solid.name=Покрытая универсальная жидкостная труба
 tile.machine_fluidtank.name=Цистерна
@@ -1479,6 +1517,7 @@ tile.sand_quartz.name=Кварцевый песок
 tile.sand_boron_layer.name=Слой борного песка
 >>>>>>> master
 tile.machine_press.name=Пресс
+tile.press_preheater.name=Внешний нагреватель пресса
 container.press=Пресс
 tile.machine_epress.name=Электрический пресс
 container.epress=Электрический пресс
@@ -1568,6 +1607,8 @@ tile.substation.name=Подстанция
 tile.red_pylon_large.name=ЛЭП
 tile.charge_dynamite.name=Бомба с таймером
 tile.charge_miner.name=Шахтёрский заряд с таймером
+tile.charge_c4.name=Подрывной заряд
+tile.charge_semtex.name=Шахтёрский заряд с семтексом
 container.machineLiquefactor=Разжижитель
 tile.machine_liquefactor.name=Промышленный разжижитель
 container.machineSolidifier=Отвердитель
@@ -1611,6 +1652,7 @@ container.barrel=Бочка
 tile.broadcaster_pc.name=Повреждённый передатчик
 
 tile.tesla.name=Катушка Теслы
+tile.charger.name=Станция зарядки
 tile.radiobox.name=Коробка управления вредителями Розенберга
 tile.radiorec.name=Сломанное FM радио
 container.radiobox=FM передатчик
@@ -1677,8 +1719,11 @@ container.rbmkOutgasser=Стержень облучения РБМК
 container.rbmkRod=Топливные стержни РБМК
 container.rbmkReaSim=Топливные стержни РБМК (РеаСим)
 container.rbmkStorage=Колонна-хранилище РБМК
+container.rbmkHeater=Жидкостный нагреватель РБМК
 tile.rbmk_storage.name=Колонна-хранилище РБМК
 tile.rbmk_cooler.name=Охладитель РБМК
+tile.rbmk_heater.name=Жидкостный нагреватель РБМК
+tile.rbmk_heatex.name=Теплообменник РБМК
 tile.block_graphite_drilled.name=Просверленный графит
 tile.block_graphite_fuel.name=Топливо поленницы
 tile.block_graphite_plutonium.name=Куча топлива (Переработанное)
@@ -1873,6 +1918,7 @@ item.plate_schrabidium.name=Шрабидиевая пластина
 item.ingot_schraranium.name=Шрараниевый слиток
 item.ingot_schraranium.desc=Делается из урана в шрабидиевом трансмутаторе
 item.ingot_semtex.name=Семтекс
+item.ingot_c4.name=Брусок C-4
 item.ingot_schrabidate.name=Слиток шрабидата железа
 item.powder_schrabidate.name=Порошок шрабидата железа
 item.ingot_schrabidium.name=Шрабидиевый слиток
@@ -1952,6 +1998,7 @@ item.injector_5htp.name=Автоинъектор 5-гидрокситрипто�
 item.injector_knife.name=Автоинъектор 8 дюймового лезвия
 item.v1.name=V1
 item.holotape_image.name=Голодиск
+item.holotape_damaged.name=Повреждённый голодиск
 
 item.wire_magnetized_tungsten.name=4000K Высокотемпературный проводник
 item.coil_magnetized_tungsten.name=4000K Высокотемпературная сверхпроводящая катушка
@@ -1959,11 +2006,7 @@ item.plate_mixed.name=Смешанная пластина
 item.plate_paa.name=Пластина сплава PaA
 item.ingot_dura_steel.name=Высокоскоростная сталь
 item.ingot_polymer.name=Полимер
-<<<<<<< HEAD
-item.ingot_polonium.name=Полониевый слиток
-item.bolt_dura_steel.name=Высокоскоростной стальной стержень
-item.pipes_steel.name=Стальные трубы
-=======
+item.ingot_rubber.name=Резина
 item.ingot_polonium.name=Слиток полония-210
 item.bolt_dura_steel.name=Высокоскоростной стальной стержень
 item.pipes_steel.name=Стальные трубы
@@ -2024,13 +2067,17 @@ item.ingot_electronium.name=Электрониевый слиток
 item.ingot_fiberglass.name=Стекловолокно
 item.ingot_fiberglass.desc=С высоким содержанием волокна, с высоким содержанием стекла. Все, что нужно организму.
 item.ingot_asbestos.name=Асбестовый лист
-item.ingot_asbestos.desc=§o\"Наполненный жизнью, неуверенностью в себе и асбестом. Это приходит вместе с воздухом.\"§r
+item.ingot_asbestos.desc=§o"Наполненный жизнью, неуверенностью в себе и асбестом. Это приходит вместе с воздухом."§r
+item.ingot_arsenic.name=Слиток мышьяка
+item.nugget_arsenic.name=Самородок мышьяка
 
 item.solid_fuel.name=Твердое топливо
 item.solid_fuel_presto.name=Топливное полено
 item.solid_fuel_presto_triplet.name=Сжатые топливные полена
 item.stick_dynamite.name=Динамитная шашка
 item.stick_tnt.name=Шашка ТНТ
+item.stick_c4.name=Шашка C-4
+item.stick_semtex.name=Шашка семтекса
 item.rocket_fuel.name=Твердое топливо (Ракетное)
 item.coke.coal.name=Угольный кокс
 item.coke.lignite.name=Бурый кокс
@@ -2139,6 +2186,7 @@ item.circuit_raw.name=Сборка простой микросхемы
 =======
 item.circuit_raw.name=Сборка простой микросхемы
 item.circuit_bismuth_raw.name=Сборка универсального чипсета
+item.circuit_arsenic_raw.name=Сборка гибкой микросхемы
 item.circuit_tantalium_raw.name=Сборка конденсаторной платы
 >>>>>>> master
 item.circuit_aluminium.name=Простая микросхема
@@ -2149,6 +2197,7 @@ item.circuit_schrabidium.name=Высокопроизводительная ми�
 <<<<<<< HEAD
 =======
 item.circuit_bismuth.name=Универсальный чипсет
+item.circuit_arsenic.name=Гибкая микросхема
 item.circuit_tantalium.name=Конденсаторная плата
 >>>>>>> master
 item.circuit_targeting_tier1.name=Печатная плата военного класса (Уровень 1)
@@ -2216,7 +2265,7 @@ item.assembly_actionexpress.name=Сборка .50 AE пули
 item.assembly_calamity.name=Сборка .50 BMG пули
 item.assembly_lacunae.name=Сборка .5мм пули
 
-item.piston_selenium.name=Поршень радиального двигателя
+item.piston_selenium.name=Поршень двигателя внутреннего сгорания
 
 tile.block_aluminium.name=Алюминиевый блок
 tile.block_copper.name=Медный блок
@@ -2291,9 +2340,13 @@ tile.block_bismuth.name=Блок висмута
 tile.block_coltan.name=Блок колтана
 tile.block_tantalium.name=Блок тантала
 tile.block_semtex.name=Блок семтекса
+tile.semtex.name=Семтекс
+tile.block_c4.name=Блок C-4
+tile.c4.name=C-4
 tile.block_smore.name=Блок с'мора
 tile.block_niobium.name=Блок ниобия
->>>>>>> master
+tile.block_bakelite.name=Блок бакелита
+tile.block_rubber.name=Блок резины
 
 tile.block_ra226.name=Блок радия-226
 tile.block_u233.name=Блок урана-233
@@ -2377,9 +2430,7 @@ tile.ore_meteor_thorium.name=Метеоритная ториевая руда
 tile.ore_meteor_lead.name=Метеоритная свинцовая руда
 tile.ore_meteor_lithium.name=Метеоритная литиевая руда
 tile.ore_meteor_starmetal.name=Руда звёздного металла
-<<<<<<< HEAD
-<<<<<<< HEAD
-
+tile.ore_alexandrite.name=Александритовая руда
 tile.ore_tikite.name=Триксит
 
 =======
@@ -2423,7 +2474,7 @@ tile.ore_bedrock_coltan.name=Бедроковая колтановая руда
 tile.ore_bedrock_oil.name=Бедроковый нефтяной пласт
 tile.ore_cobalt.name=Кобальтовая руда
 tile.stone_porous.name=Пористый камень
->>>>>>> master
+tile.ore_random.name=%s руды
 
 tile.bobblehead.name=Болванчик
 tile.deco_titanium.name=Титановый декоративный блок
@@ -2475,7 +2526,15 @@ tile.block_cap_sunset.name=Блок крышек от Сансет Сарсап�
 tile.block_tritium.name=Блок тритиевых пробирок
 >>>>>>> master
 tile.hazmat.name=Блок защитной ткани
+tile.deco_emitter.name=Декоративный источник света
+tile.plant_flower.foxglove.name=Наперстянка
+tile.plant_flower.nightshade.name=Белладонна
+tile.plant_flower.tobacco.name=Табак
+tile.plant_flower.weed.name=Конопля
+item.plant_item.rope.name=Верёвка
+item.plant_item.tobacco.name=Табак
 
+tile.stone_cracked.name=Треснутый камень
 tile.reinforced_brick.name=Усиленный камень
 tile.reinforced_glass.name=Усиленное стекло
 tile.reinforced_sand.name=Усиленный песчаник
@@ -2572,6 +2631,12 @@ tile.tile_lab.name=Лабораторная плитка
 tile.tile_lab_broken.name=Разбитая лабораторная плитка
 tile.tile_lab_cracked.name=Треснувшая лабораторная плитка
 tile.spikes.name=Шипы
+tile.stalactite.sulfur.name=Сернистый сталактит
+tile.stalagmite.sulfur.name=Сернистый сталагмит
+tile.stalactite.asbestos.name=Асбестовый сталактит
+tile.stalagmite.asbestos.name=Асбестовый сталагмит
+tile.stone_resource.asbestos.name=Хризотил
+tile.stone_resource.sulfur.name=Сернистый камень
 tile.gas_asbestos.name=Частицы асбеста в воздухе
 tile.gas_flammable.name=Горючий газ
 tile.gas_monoxide.name=Угарный газ
@@ -2594,7 +2659,8 @@ tile.ladder_sturdy.name=Прочная деревянная лестница
 tile.ladder_titanium.name=Титановая лестница
 tile.ladder_tungsten.name=Вольфрамовая лестница
 tile.volcano_core.name=Вулканическое ядро
->>>>>>> master
+tile.concrete_super.name=Убер-бетон
+tile.concrete_super_broken.name=Замшелые бетонные обломки
 
 tile.gravel_obsidian.name=Измельченный обсидиан
 tile.gravel_diamond.name=Измельченные алмазы
@@ -2625,6 +2691,7 @@ tile.seal_hatch.name=Люк пусковой щахты
 
 tile.vault_door.name=Дверь убежища Vault-Tec
 tile.blast_door.name=Раздвижные двери
+tile.transition_seal.name=Переходной люк
 
 item.door_metal.name=Металлическая дверь
 item.door_office.name=Офисная дверь
@@ -2772,14 +2839,7 @@ item.fragment_cobalt.name=Кобальтовый осколок
 item.fragment_niobium.name=Ниобиевый осколок
 item.fragment_cerium.name=Цериевый осколок
 item.fragment_lanthanium.name=Лантановый осколок
-<<<<<<< HEAD
-item.fragment_actinium.name=Актиниевый осколок
-<<<<<<< HEAD
-item.fragment_meteorite.name=Метеоритный осколок
-=======
-=======
 item.fragment_actinium.name=Актиниевый-227 осколок
->>>>>>> master
 item.fragment_boron.name=Борный осколок
 item.fragment_meteorite.name=Метеоритный осколок
 item.fragment_coltan.name=Колтан
@@ -2864,6 +2924,7 @@ item.upgrade_crystallizer.name=Улучшение "Кристаллизатор"
 item.upgrade_nullifier.name=Улучшение "Уничтожитель мусора"
 item.upgrade_screm.name=Улучшение "Кричащий учёный"
 item.upgrade_gc_speed.name=Улучшение "Разгон газовой центрифуги"
+item.upgrade_5g.name=Улучшение "5G излучение"
 
 item.fusion_core.name=Ядерный блок
 item.energy_core.name=Импровизированный энергоблок
@@ -2905,20 +2966,11 @@ item.pellet_rtg_weak.desc=Более дешевая и слабая пеллет
 item.pellet_rtg_polonium.name=РИТЭГ-пеллета из полония-210
 item.pellet_rtg_polonium.desc=Мощная РИТЭГ-пеллета, изготовленная из лучшего полония!
 item.pellet_rtg_gold.name=РИТЭГ-пеллета из золота-198
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-item.pellet_rtg_americium.name=РИТЭГ-пеллета из америция-241
->>>>>>> master
-=======
 item.pellet_rtg_gold.desc=Изготовлена из редкого, очень нестабильного изотопа золота.
 item.pellet_rtg_strontium.name=РИТЭГ-пеллета из стронция-90
 item.pellet_rtg_strontium.desc=Известен штату Калифорния...
 item.pellet_rtg_americium.name=РИТЭГ-пеллета из америция-241
 item.pellet_rtg_americium.desc=Редкий и надежный, старый добрый Америций!
-<<<<<<< HEAD
->>>>>>> master
-=======
 item.pellet_rtg_lead.name=РИТЭГ-пеллета из свинца-209
 item.pellet_rtg_lead.desc=Излучение приведет к неминуемой смерти.
 item.pellet_rtg_cobalt.name=РИТЭГ-пеллета из кобальта-60
@@ -3008,27 +3060,26 @@ item.oil_tar.crack.name=Крекинговая нефтяная смола
 item.oil_tar.coal.name=Угольная смола
 
 item.canister_empty.name=Пустая канистра
-item.canister_smear.name=Канистра с промышленным маслом
-item.canister_canola.name=Машинная смазка
-item.canister_oil.name=Канистра с неочищенной нефтью
-item.canister_fuel.name=Канистра с дизелем
+item.canister_smear.name=Канистра с промышленным маслом (LEGACY)
+item.canister_canola.name=Машинная смазка (LEGACY)
+item.canister_oil.name=Канистра с неочищенной нефтью (LEGACY)
+item.canister_fuel.name=Канистра с дизелем (LEGACY)
 item.canister_fuel.desc=Да здравствует носик!
-item.canister_kerosene.name=Канистра с керосином
-item.canister_reoil.name=Канистра с восстановленным промышленным маслом
-item.canister_petroil.name=Канистра с бензином
+item.canister_kerosene.name=Канистра с керосином (LEGACY)
+item.canister_reoil.name=Канистра с восстановленным промышленным маслом (LEGACY)
+item.canister_petroil.name=Канистра с бензином (LEGACY)
 item.canister_napalm.name=Напалм Б
-item.canister_NITAN.name=100-октановое сверхтопливо NITAN© 
-item.canister_heavyoil.name=Канистра с тяжелой нефтью
-item.canister_bitumen.name=Канистра с битумом
-item.canister_heatingoil.name=Канистра с мазутом
-item.canister_naphtha.name=Канистра тяжелого бензина
-item.canister_lightoil.name=Канистра с лёгкой нефтью
-item.canister_biofuel.name=Канистра с биотопливом
-<<<<<<< HEAD
-=======
-item.canister_gasoline.name=Канистра с этилированным бензином
-item.canister_fracksol.name=Канистра с жидкостью для гидроразрыва пласта
-item.canister_ethanol.name=Канистра с этанолом
+item.canister_NITAN.name=100-октановое сверхтопливо NITAN© (LEGACY) 
+item.canister_heavyoil.name=Канистра с тяжелой нефтью (LEGACY)
+item.canister_bitumen.name=Канистра с битумом (LEGACY)
+item.canister_heatingoil.name=Канистра с мазутом (LEGACY)
+item.canister_naphtha.name=Канистра нафты (LEGACY)
+item.canister_lightoil.name=Канистра с лёгкой нефтью (LEGACY)
+item.canister_biofuel.name=Канистра с биотопливом (LEGACY)
+item.canister_gasoline.name=Канистра с этилированным бензином (LEGACY)
+item.canister_fracksol.name=Канистра с жидкостью для гидроразрыва пласта (LEGACY)
+item.canister_ethanol.name=Канистра с этанолом (LEGACY)
+item.canister_full.name=Канистра:
 item.canister_gasoline.desc=свинец - это друг$впусти друга в свой кровоток$*достаёт пистолет* живо.
 >>>>>>> master
 item.gas_empty.name=Пустой газовый баллон
@@ -3044,41 +3095,6 @@ item.fluid_tank_lead_empty.name=Пустой резервуар для опас�
 item.fluid_tank_lead_full.name=Резервуар с опасными материалами:
 item.fluid_barrel_infinite.name=Бесконечная жидкостная бочка
 
-<<<<<<< HEAD
-item.rod_empty.name=Пустой стержень
-item.rod_th232.name=Стержень с торием-232
-item.rod_uranium.name=Урановый стержень
-item.rod_u233.name=Стержень с ураном-233
-item.rod_u235.name=Стержень с ураном-235
-item.rod_u238.name=Стержень с ураном-238
-item.rod_plutonium.name=Плутониевый стержень
-<<<<<<< HEAD
-item.rod_polonium.name=Стержень с полонием
-=======
-item.rod_polonium.name=Стержень с полонием-210
->>>>>>> master
-item.rod_pu238.name=Стержень с плутонием-238
-item.rod_pu239.name=Стержень с плутонием-239
-item.rod_pu240.name=Стержень с плутонием-240
-item.rod_neptunium.name=Нептуниевый стержень
-item.rod_lead.name=Свинцовый стержень
-item.rod_schrabidium.name=Стержень с шрабидием-326
-item.rod_solinium.name=Стержень с шрабидием-327
-item.rod_euphemium.name=Эвфемиевый стержень
-item.rod_australium.name=Австралиевый стержень
-item.rod_weidanium.name=Вейданиевый стержень
-item.rod_reiium.name=Реиевый стержень
-item.rod_unobtainium.name=Недостатиевый стержень
-item.rod_daffergon.name=Даффергоновый стержень
-item.rod_verticium.name=Вертициевый стержень
-item.rod_balefire.name=Жар-стержень
-item.rod_balefire_blazing.name=Пылающий жар-стержень
-item.rod_dual_balefire.name=Сдвоенный жар-стержень
-item.rod_dual_balefire_blazing.name=Сдвоенный пылающий жар-стержень
-item.rod_quad_balefire.name=Счетверённый жар-стержень
-item.rod_quad_balefire_blazing.name=Счетверённый пылающий жар-стержень
-=======
->>>>>>> master
 item.rod_of_discord.name=Жезл раздора
 item.rod_empty.name=Пустой стержень
 item.rod.lithium.name=Литиевый стержень
@@ -3099,46 +3115,6 @@ item.rod.waste.name=Стержень с ядерными отходами
 item.rod.lead.name=Свинцовый стержень
 item.rod.uranium.name=Урановый стержень
 item.rod_dual_empty.name=Пустой сдвоенный стержень
-<<<<<<< HEAD
-item.rod_dual_th232.name=Сдвоенный стержень с торием-232
-item.rod_dual_uranium.name=Сдвоенный стержень с ураном
-item.rod_dual_u233.name=Сдвоенный стержень с ураном-233
-item.rod_dual_u235.name=Сдвоенный стержень с ураном-235
-item.rod_dual_u238.name=Сдвоенный стержень с ураном-238
-item.rod_dual_plutonium.name=Сдвоенный стержень с плутонием
-<<<<<<< HEAD
-item.rod_dual_polonium.name=Сдвоенный стержень с полонием
-=======
-item.rod_dual_polonium.name=Сдвоенный стержень с полонием-210
->>>>>>> master
-item.rod_dual_pu238.name=Сдвоенный стержень с плутонием-238
-item.rod_dual_pu239.name=Сдвоенный стержень с плутонием-239
-item.rod_dual_pu240.name=Сдвоенный стержень с плутонием-240
-item.rod_dual_neptunium.name=Сдвоенный стержень с нептунием
-item.rod_dual_lead.name=Сдвоенный стержень со свинцом
-item.rod_dual_schrabidium.name=Сдвоенный стержень с шрабидием-326
-item.rod_dual_solinium.name=Сдвоенный стержень с шрабидием-327
-
-item.rod_quad_empty.name=Пустой счетверённый стержень
-item.rod_quad_th232.name=Счетверённый стержень с торием-232
-item.rod_quad_uranium.name=Счетверённый стержень с ураном
-item.rod_quad_u233.name=Счетверённый стержень с ураном-233
-item.rod_quad_u235.name=Счетверённый стержень с ураном-235
-item.rod_quad_u238.name=Счетверённый стержень с ураном-238
-item.rod_quad_plutonium.name=Счетверённый стержень с плутонием
-<<<<<<< HEAD
-item.rod_quad_polonium.name=Счетверённый стержень с полонием
-=======
-item.rod_quad_polonium.name=Счетверённый стержень с полонием-210
->>>>>>> master
-item.rod_quad_pu238.name=Счетверённый стержень с плутонием-238
-item.rod_quad_pu239.name=Счетверённый стержень с плутонием-239
-item.rod_quad_pu240.name=Счетверённый стержень с плутонием-240
-item.rod_quad_neptunium.name=Счетверённый стержень с нептунием
-item.rod_quad_lead.name=Счетверённый стержень со свинцом
-item.rod_quad_schrabidium.name=Счетверённый стержень с шрабидием-326
-item.rod_quad_solinium.name=Счетверённый стержень с шрабидием-327
-=======
 item.rod_dual.lithium.name=Сдвоенный литиевый стержень
 item.rod_dual.tritium.name=Сдвоенный тритиевый стержень
 item.rod_dual.co.name=Сдвоенный кобальтовый стержень
@@ -3174,7 +3150,6 @@ item.rod_quad.rgp.name=Счетверённый стержень с плутон
 item.rod_quad.waste.name=Счетверённый стержень с ядерными отходами
 item.rod_quad.lead.name=Счетверённый свинцовый стержень
 item.rod_quad.uranium.name=Счетверённый урановый стержень
->>>>>>> master
 
 <<<<<<< HEAD
 item.billet_mox_fuel.name=Заготовка MOX-топлива
@@ -3315,6 +3290,7 @@ item.ammo_stinger_rocket_bones.name=Ракета-Стингер (Поиск мо
 item.gun_hk69.name=Гранатомет
 item.gun_quadro.name="Четыре Сыра"
 item.gun_sauer.name=Дробовик Стэна Зауэра
+item.gun_spas12.name=Дробовик SPAS-12
 item.gun_thompson.name=Пистолет-пулемёт Томпсона
 
 item.flame_pony.name=Картинка цветной лошади
@@ -3373,11 +3349,13 @@ tile.dirt_oily.name=Пропитанная нефтью земля
 tile.waste_trinitite.name=Тринититовая руда
 tile.waste_trinitite_red.name=Красная тринититовая руда
 tile.waste_leaves.name=Мёртвые листья
+tile.leaves_layer.name=Упавшие листья
 tile.waste_log.name=Обугленное бревно
 tile.waste_planks.name=Обугленные деревянные доски
 item.trinitite.name=Тринитит
 item.nuclear_waste.name=Ядерные отходы
 item.scrap_nuclear.name=Радиоактивный мусор
+item.scrap_oil.name=Нефтяные отходы
 item.scrap_plastic.name=Куски пластмассы
 item.nuclear_waste_tiny.name=Маленькая кучка ядерных отходов
 <<<<<<< HEAD
@@ -3394,18 +3372,6 @@ item.waste_plutonium.name=Обедненное плутониевое топли
 item.waste_mox.name=Обедненное МОКС-топливо
 >>>>>>> master
 item.waste_schrabidium.name=Обедненное шрабидиевое топливо
-<<<<<<< HEAD
-item.waste_uranium_hot.name=Обедненное урановое топливо (Горячее)
-item.waste_thorium_hot.name=Обедненное ториевое топливо (Горячее)
-item.waste_plutonium_hot.name=Обедненное плутониевое топливо (Горячее)
-<<<<<<< HEAD
-item.waste_mox_hot.name=Обедненное MOX-топливо (Горячее)
-=======
-item.waste_mox_hot.name=Обедненное МОКС-топливо (Горячее)
->>>>>>> master
-item.waste_schrabidium_hot.name=Обедненное шрабидиевое топливо (Горячее)
-=======
->>>>>>> master
 item.waste_u235.name=Обедненное уран-235 топливо
 item.waste_u233.name=Обедненное уран-233 топливо
 item.waste_natural_uranium.name=Обедненное природное урановое топливо 
@@ -3611,7 +3577,7 @@ item.loop_stew.name=Завтрак IT-шника
 item.fooditem.name=пищевой продукт
 item.twinkie.name=Твинки
 item.static_sandwich.name=Сэндвич с помехами
-item.pancake.name=Блинчики из металлолома, гвоздей и драгоценной пыли
+item.pancake.name=Блинчики с металлоломом, гвоздями и самоцветной пылью
 item.peas.name=Горошек
 item.bio_wafer.name=Вафля из водорослей
 
@@ -3722,6 +3688,7 @@ item.ammo_mirv_special.name=МИЛВ-минизаряд
 item.ammo_mirv_high.name=МИРВ-минизаряд (Высокомощный)
 item.ammo_mirv_low.name=МИРВ-минизаряд (Маломощный)
 item.ammo_mirv_safe.name=МИРВ-минизаряд (Безопасный)
+item.ammo_nuke_barrel.name=Мини-бочка с ядерными отходами
 item.ammo_nuke.name=Ядерный минизаряд
 item.ammo_nuke_high.name=Ядерный минизаряд (Высокомощный)
 item.ammo_nuke_low.name=Ядерный минизаряд (Маломощный)
@@ -4046,11 +4013,7 @@ item.hand_drill_desh.name=Ручная дрель из деша
 item.rag.name=Тряпка
 item.rag_damp.name=Влажная тряпка
 item.rag_piss.name=Пропитанная мочой тряпка
-<<<<<<< HEAD
->>>>>>> master
-=======
 item.safety_fuse.name=Фитиль
->>>>>>> master
 
 entity.hbm.entity_bullet.name=Пуля
 entity.hbm.entity_rocket.name=Ракета
@@ -4129,6 +4092,8 @@ item.rod_quad_euphemium.name=Выгоревший счетверённый шр�
 item.plate_euphemium.name=Составная пластина из эвфемия
 item.plate_dineutronium.name=Составная пластина из динейтрония
 item.plate_desh.name=Составная пластина из деш
+item.plate_bismuth.name=Составная пластина из висмута
+item.plate_bismuth.desc=Ребята, клянусь, это алхимический символ Висмута.
 
 item.plate_fuel_mox.name=МОКС-топливная пластина
 item.plate_fuel_pu238be.name=Плутоний-238-Бериллевая топливная пластина
@@ -4502,13 +4467,15 @@ item.rpa_boots.name=Ботинки силовой брони Оставшихс�
 item.rpa_helmet.name=Шлем силовой брони Оставшихся
 item.rpa_legs.name=Поножи силовой брони Оставшихся
 item.rpa_plate.name=Нагрудник силовой брони Оставшихся
-
+item.steamsuit_boots.name=Ботинки парового костюма
+item.steamsuit_helmet.name=Респираторный шлем парового костюма
+item.steamsuit_legs.name=Поножи парового костюма
+item.steamsuit_plate.name=Нагрудник парового костюма
 item.bj_boots.name=Лунные шипованные ботинки
 item.bj_helmet.name=Повязка с тепловым сенсором
 item.bj_legs.name=Лунные кибернетические замены ног
 item.bj_plate.name=Лунная кибернетическая обшивка
 item.bj_plate_jetpack.name=Лунная кибернетическая обшивка (с крыльями)
-
 item.hev_boots.name=Ботинки H.E.V Модели IV
 item.hev_plate.name=Нагрудник H.E.V Модели IV
 item.hev_helmet.name=Шлем H.E.V Модели IV
@@ -4517,7 +4484,10 @@ item.hev_battery.name=Батарея костюма
 <<<<<<< HEAD
 =======
 tile.hev_battery.name=Батарея костюма
->>>>>>> master
+item.bismuth_boots.name=Сандали из висмута
+item.bismuth_helmet.name=Головной убор из висмута
+item.bismuth_legs.name=Наколенники из висмута
+item.bismuth_plate.name=Наплечники, ожерелье и набедренная повязка из висмута
 
 tile.mush.name=Светящийся гриб
 tile.waste_mycelium.name=Светящийся мицелий
@@ -4608,13 +4578,10 @@ item.dnt_boots.name=даенайтриевые ботинки
 item.dnt_legs.name=динейтроновые поножи
 item.dnt_helmet.name=динотрониму шлем
 item.dnt_plate.name=динейтромы нагрудник
-<<<<<<< HEAD
-item.zirconium_legs.name=Циркониевые штаны
-=======
-item.dns_boots.name=Ботинки DNT Нанокостюма
-item.dns_legs.name=Поножи DNT Нанокостюма
-item.dns_helmet.name=Шлем DNT Нанокостюма
-item.dns_plate.name=Нагрудник DNT Нанокостюма
+item.dns_boots.name=Ботинки DNT-Нанокостюма
+item.dns_legs.name=Поножи DNT-Нанокостюма
+item.dns_helmet.name=Шлем DNT-Нанокостюма
+item.dns_plate.name=Нагрудник DNT-Нанокостюма
 item.zirconium_legs.name=Циркониевые штаны
 item.robes_boots.name=Полевые ботинки
 item.robes_helmet.name=Повседневная толстовка с капюшоном
@@ -4690,6 +4657,7 @@ item.bismuth_pickaxe.name=Висмутовая кирка
 >>>>>>> master
 
 tile.red_cable.name=Провод из красной меди
+tile.red_cable_classic.name=Провод из красной меди (Старый)
 tile.red_connector.name=Электрический коннектор
 
 tile.block_meteor.name=Блок метеорита
@@ -4711,6 +4679,7 @@ tile.tektite.name=Тектит
 item.cape_radiation.name=Плащ (Радиация)
 item.cape_gasmask.name=Плащ (Противогаз)
 item.cape_schrabidium.name=Плащ (Шрабидий)
+item.cape_hidden.name=Скрытый плащ
 item.cape_hbm.name=Hbm's Cape
 item.cape_dafnik.name=Dafnik's Cape
 item.cape_lpkukin.name=LPkukin's Cape
@@ -4815,6 +4784,7 @@ tile.toxic_block.name=Стереотипная зелёная слизь
 fluid.toxic_fluid=Стереотипная зелёная слизь
 item.bucket_toxic.name=Ведро стереотипной зелёной слизи
 item.bucket_schrabidic_acid.name=Ведро шрабидиевой кислоты
+item.bucket_sulfuric_acid.name=Ведро серной кислоты
 item.tank_waste_0.name=Контейнер с отходами
 item.tank_waste_1.name=Контейнер с отходами
 item.tank_waste_2.name=Контейнер с отходами
@@ -4888,6 +4858,7 @@ item.canned_kerosene.name=Консервированный керосин
 item.canned_recursion.name=Консервированная рекурсия
 item.canned_bark.name=Консервы вяленой сосновой коры
 item.spongebob_macaroni.name=Сырные макаронны "Губка Боб"
+item.can_mug.name=MUG Root Beer
 item.can_key.name=Винтовой ключ
 item.nugget.name=Куриный наггетс
 <<<<<<< HEAD
@@ -5064,7 +5035,7 @@ item.rbmk_tool.linked=Позиция установлена!
 item.rbmk_tool.set=РБМК соединён!
 item.bismuth_tool.name=Магнитный экстрактор
 item.reacher.name=Вольфрамовые хваталки
->>>>>>> master
+item.power_net_tool.name=Анализатор энергосети
 
 item.multitool_dig.name=Силовая перчатка (Добывающий коготь)
 item.multitool_silk.name=Силовая перчатка (Коготь шёлкового касания)
@@ -5116,7 +5087,7 @@ item.burnt_bark.desc=Кусок коры взорванного золотого
 item.loot_10.name=Ящик с запчастями от Ракеты 10-го размера
 item.loot_15.name=Ящик с запчастями от Ракеты 15-го размера
 item.loot_misc.name=Общий ящик с запчастями от Ракеты
->>>>>>> master
+item.parts_legendary.name=Легендарные запчасти
 item.crystal_horn.name=Кристалльный рог
 item.crystal_horn.desc=Не настоящий рог.
 item.crystal_horn.desc.P11=Настоящий рог.
@@ -5276,6 +5247,7 @@ item.grenade_if_spark.desc.11=§o"31-31-31-31-31-31-31-31-31-31-31-31-31"
 item.grenade_if_spark.desc=§o"We can't rewind, we've gone too far."
 item.grenade_if_sticky.desc=§o"This one is the booger grenade."
 item.grenade_if_toxic.desc=§o"TOXIC SHOCK"
+item.grenade_kyiv.name=The Kyiv Special
 item.grenade_lunatic.desc.11=§c§o"The Moon dams collapse, flooding you with Lunar light"
 item.grenade_lunatic.desc=§o"Here, have some Xanax, you're not you under the influence of DRX."
 item.grenade_lunatic.name=Lunatic Grenade
@@ -5312,6 +5284,7 @@ item.gun_uac_dmr.name=UAC DMR
 item.gun_uac_lmg.name=UAC LMG
 item.gun_uac_pistol.name=UAC .45 Pistol
 item.gun_uac_smg.name=UAC SMG
+item.gun_detonator.name=Лазерный детонатор
 item.ingot_bk247.name=Berkelium-247 Ingot
 item.ingot_bk248.name=Berkelium-248 Ingot
 item.ingot_bk249.name=Berkelium-249 Ingot
@@ -5558,7 +5531,9 @@ tile.block_circuit_tier_5.name=High Performance Supercomputer Calculation Matrix
 tile.block_circuit_tier_6.name=Spark Supercomputer Calculation Matrix
 tile.block_electronium.name=§bBlock of Electronium§r
 tile.block_ferrouranium.name=Reinforced Block of Ferrouranium
-tile.block_polymer.name=Block of Polymer
+tile.block_polymer.name=Блок полимера
+tile.block_bakelite.name=Блок бакелита
+tile.block_rubber.name=Блок резины
 tile.block_saturnite.name=Reinforced Block of Saturnite
 tile.block_silicon.name=Block of Silicon
 tile.block_staballoy.name=Reinforced Block of Staballoy
@@ -5590,7 +5565,6 @@ tile.mush_block_stem.name=Giant Glowing Mushroom Stem
 tile.ore_oil.desc=You weren't supposed to mine that.$Come on, get a derrick you doofus.
 tile.pane_acrylic.name=Acrylic Pane
 tile.pane_actinium.name=Actinium Glass Pane
-tile.reinforced_ducrete.name=Heavy Rebar Reinforced DUCRETE
 tile.storage_aux_fdd.name=Auxiliary Floppy Disk Drive
 tile.storage_aux_optical_bd=Auxiliary Elite Optical Drive
 tile.storage_aux_optical_cd=Auxiliary Basic Optical Drive

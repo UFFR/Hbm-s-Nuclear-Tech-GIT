@@ -1,14 +1,11 @@
 package com.hbm.inventory.recipes;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import com.hbm.inventory.FluidStack;
-import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemFluidIcon;
@@ -26,7 +23,7 @@ public class GasCentrifugeRecipes {
 		MEUF6		(200,	100,	"HEUF6",		"Medium Enriched UF6",		false,	new ItemStack(ModItems.nugget_u238, 1)),
 		HEUF6		(300,	0,		"NONE",			"High Enriched UF6",		true,	new ItemStack(ModItems.nugget_u238, 2), new ItemStack(ModItems.nugget_u235, 1), new ItemStack(ModItems.fluorite, 1)),
 		
-		PF6			(300,	0,		"NONE",			"Plutonium hexafluoride",	false,	new ItemStack(ModItems.nugget_pu238, 1), new ItemStack(ModItems.nugget_pu_mix, 2), new ItemStack(ModItems.fluorite, 1)),
+		PF6			(300,	0,		"NONE",			"Plutonium Hexafluoride",	false,	new ItemStack(ModItems.nugget_pu238, 1), new ItemStack(ModItems.nugget_pu_mix, 2), new ItemStack(ModItems.fluorite, 1)),
 
 		MUD			(1000,	500,	"MUD_HEAVY",	"Poisonous Mud",			false,	new ItemStack(ModItems.powder_lead, 1), new ItemStack(ModItems.dust, 1)),
 		MUD_HEAVY	(500,	0,		"NONE",			"Heavy Mud Fraction",		false,	new ItemStack(ModItems.powder_iron, 1), new ItemStack(ModItems.dust, 1), new ItemStack(ModItems.nuclear_waste_tiny, 1));

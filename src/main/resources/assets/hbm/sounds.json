@@ -41,6 +41,8 @@
     "block.chungusLever": {"category": "block", "sounds": [{"name": "block/chungusLever", "stream": false}]},
     "block.bobble": {"category": "block", "sounds": [{"name": "block/bobble", "stream": false}]},
     
+    "door.TransitionSealOpen": {"category": "block", "sounds": [{"name": "block/door/transition_seal_open", "stream": true}]},
+    
 	"item.techBleep": {"category": "player", "sounds": [{"name": "tool/techBleep", "stream": false}]},
     "item.techBoop": {"category": "player", "sounds": [{"name": "tool/techBoop", "stream": false}]},
     "item.geiger1": {"category": "player", "sounds": [{"name": "tool/geiger1", "stream": false}]},
@@ -178,6 +180,7 @@
     "weapon.shotgunDrumPB3": {"category": "player", "sounds": ["weapon/ASGDRM1", "weapon/ASGDRM2"]},
     "weapon.extinguisher": {"category": "player", "sounds": [{"name": "weapon/extinguisher", "stream": false}]},
     "weapon.robin_explosion": {"category": "player", "sounds": [{"name": "weapon/robin_explosion", "stream": false}]},
+    "weapon.shotgunPump": {"category": "player", "sounds": [{"name": "weapon/shotgunShootPump", "stream": false}]},
     
     "weapon.dFlash": {"category": "player", "sounds": [{"name": "weapon/dFlash", "stream": false}]},
 
@@ -370,6 +373,13 @@
     "step.iron_jump": {"category": "player", "sounds": [{"name": "footsteps/iron_jump", "stream": false}]},
     "step.iron_land": {"category": "player", "sounds": [{"name": "footsteps/iron_land", "stream": false}]},
     "step.iron": {"category": "player", "sounds": ["footsteps/iron1", "footsteps/iron2", "footsteps/iron3", "footsteps/iron4"]},
+    "step.metalBlock": {"category": "block", "sounds": ["footsteps/metalStep1", "footsteps/metalStep2", "footsteps/metalStep3", "footsteps/metalStep4"]},
+    "step.powered": {"category": "player", "sounds": ["footsteps/powered1", "footsteps/powered2", "footsteps/powered3"]},
+    
+    "player.vomit": {"category": "player", "sounds": [{"name": "player/vomit", "stream": false}]},
+    "player.cough": {"category": "player", "sounds": ["player/cough1", "player/cough2", "player/cough3", "player/cough4"]},
+    "player.dash": {"category": "player", "sounds": [{"name": "player/dash", "stream": false}]},
+    "player.dashRecharge": {"category": "player", "sounds": [{"name": "player/dashRecharge", "stream": false}]},
     
     "potatos.random": {"category": "player", "sounds": ["potatos/randResponse0", "potatos/randResponse1", "potatos/randResponse2", "potatos/randResponse3", "potatos/randResponse4", "potatos/randResponse5", "potatos/randResponse6", "potatos/randResponse7"]},
     

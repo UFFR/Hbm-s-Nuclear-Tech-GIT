@@ -56,13 +56,17 @@ import com.hbm.tileentity.bomb.TileEntityNukeCustom;
 import com.hbm.tileentity.bomb.TileEntityNukeCustom.CustomNukeEntry;
 import com.hbm.tileentity.bomb.TileEntityNukeCustom.EnumEntryType;
 import com.hbm.tileentity.machine.TileEntityNukeFurnace;
+import com.hbm.util.I18nUtil;
+import com.hbm.util.LoggingUtil;
 import com.hbm.util.ArmorRegistry;
+import com.hbm.util.ArmorUtil;
 import com.hbm.util.ArmorRegistry.HazardClass;
 import com.hbm.util.ArmorUtil;
 import com.hbm.util.I18nUtil;
 import com.hbm.util.LoggingUtil;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
+import api.hbm.energy.IEnergyConductor;
 import api.hbm.item.IButtonReceiver;
 import api.hbm.item.IClickReceiver;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -268,6 +272,16 @@ public class ModEventHandlerClient {
 				tess.draw();
 				
 				GL11.glEnable(GL11.GL_TEXTURE_2D);
+				
+			}
+			
+		}
+		if(!event.isCanceled() && event.type == event.type.HOTBAR) {
+			
+			HbmPlayerProps props = HbmPlayerProps.getData(player);
+			if(props.getDashCount() > 0) {
+				RenderScreenOverlay.renderDashBar(event.resolution, Minecraft.getMinecraft().ingameGUI, props);
+					
 			}
 		}
 	}
@@ -359,7 +373,9 @@ public class ModEventHandlerClient {
 			if(player.getUniqueID().toString().equals(Library.SolsticeUnlimitd) || player.getDisplayName().equals("SolsticeUnlimitd"))
 				RenderAccessoryUtility.renderSol(event);
 			if(player.getUniqueID().toString().equals(Library.HbMinecraft) || player.getDisplayName().equals("HbMinecraft"))
-				RenderAccessoryUtility.renderWings(event);
+				RenderAccessoryUtility.renderWings(event, 2);
+			if(player.getUniqueID().toString().equals(Library.the_NCR) || player.getDisplayName().equals("the_NCR"))
+				RenderAccessoryUtility.renderWings(event, 3);
 		}
 	}
 
@@ -573,7 +589,7 @@ public class ModEventHandlerClient {
 		int breeder = TileEntityNukeFurnace.getFuelValue(stack);
 		
 		if(breeder != 0) {
-			list.add(EnumChatFormatting.YELLOW + I18nUtil.resolveKey("trait.furnace", (breeder * 5)));
+			list.add(EnumChatFormatting.YELLOW + I18nUtil.resolveKey("trait.furnace", breeder));
 		}
 		
 		/// CUSTOM NUKE ///
@@ -598,7 +614,7 @@ public class ModEventHandlerClient {
 	private static final ResourceLocation ashes = new ResourceLocation(RefStrings.MODID + ":textures/misc/overlay_ash.png");
 	private static final ResourceLocation scope = new ResourceLocation(RefStrings.MODID, "textures/misc/overlay_scope.png");
 	@SideOnly(Side.CLIENT)
-	@SubscribeEvent
+	//@SubscribeEvent
 	public void onRenderStorm(RenderHandEvent event) {
 		Minecraft mc = Minecraft.getMinecraft();
 		EntityPlayer player = mc.thePlayer;
@@ -702,12 +718,12 @@ public class ModEventHandlerClient {
 			if(BlockAshes.ashes < 0) BlockAshes.ashes = 0;
 			
 			if(mc.theWorld.getTotalWorldTime() % 20 == 0) {
-				ModEventHandlerClient.lastBrightness = ModEventHandlerClient.currentBrightness;
+				this.lastBrightness = this.currentBrightness;
 				currentBrightness = mc.theWorld.getLightBrightnessForSkyBlocks(MathHelper.floor_double(mc.thePlayer.posX), MathHelper.floor_double(mc.thePlayer.posY), MathHelper.floor_double(mc.thePlayer.posZ), 0);
 			}
 			
 			if(ArmorUtil.isWearingEmptyMask(mc.thePlayer)) {
-				MainRegistry.proxy.displayTooltip(EnumChatFormatting.RED + "Your mask has no filter!");
+				MainRegistry.proxy.displayTooltip(EnumChatFormatting.RED + "Your mask has no filter!", MainRegistry.proxy.ID_FILTER);
 			}
 		}
 	}
@@ -836,52 +852,6 @@ public class ModEventHandlerClient {
 				RenderOverhead.renderThermalSight(event.partialTicks);
 		}
 	}
-	
-	/*private static final ResourceLocation digammaStar = new ResourceLocation("hbm:textures/misc/star_digamma.png");
-	
-	@SideOnly(Side.CLIENT)
-	public void onRenderDigammaStar(RenderWorldLastEvent event) {
-		
-		World world = Minecraft.getMinecraft().theWorld;
-		
-		if(world.provider.dimensionId != 0)
-			return;
-		
-		GL11.glPushMatrix();
-		GL11.glDepthMask(false);
-
-		GL11.glEnable(3553);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_ALPHA_TEST);
-		OpenGlHelper.glBlendFunc(770, 1, 1, 0);
-		
-		float partialTicks = event.partialTicks;
-		
-		GL11.glRotatef(-90.0F, 0.0F, 1.0F, 0.0F);
-		GL11.glRotatef(world.getCelestialAngle(partialTicks) * 360.0F, 1.0F, 0.0F, 0.0F);
-		GL11.glRotatef(140.0F, 1.0F, 0.0F, 0.0F);
-		GL11.glRotatef(-40.0F, 0.0F, 0.0F, 1.0F);
-		
-		FMLClientHandler.instance().getClient().renderEngine.bindTexture(digammaStar);
-		
-		float var12 = 2.5F;
-		double dist = 150D;
-		
-		Tessellator tessellator = Tessellator.instance;
-		tessellator.startDrawingQuads();
-		tessellator.addVertexWithUV(-var12, dist, -var12, 0.0D, 0.0D);
-		tessellator.addVertexWithUV(var12, dist, -var12, 0.0D, 1.0D);
-		tessellator.addVertexWithUV(var12, dist, var12, 1.0D, 1.0D);
-		tessellator.addVertexWithUV(-var12, dist, var12, 1.0D, 0.0D);
-		tessellator.draw();
-		
-		GL11.glDepthMask(true);
-		
-		GL11.glDisable(3042);
-		GL11.glEnable(GL11.GL_ALPHA_TEST);
-		
-		GL11.glPopMatrix();
-	}*/
 	
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void preRenderEventFirst(RenderLivingEvent.Pre event) {

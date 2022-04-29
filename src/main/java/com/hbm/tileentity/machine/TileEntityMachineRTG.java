@@ -1,11 +1,11 @@
 package com.hbm.tileentity.machine;
 
-import java.math.BigInteger;
-
 import com.hbm.config.VersatileConfig;
 import com.hbm.items.machine.ItemRTGPellet;
 import com.hbm.packet.AuxElectricityPacket;
 import com.hbm.packet.PacketDispatcher;
+import com.hbm.tileentity.TileEntityLoadedBase;
+import com.hbm.util.RTGUtil;
 import com.hbm.tileentity.IRTGUser;
 
 import api.hbm.energy.IEnergyGenerator;
@@ -15,7 +15,6 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntityMachineRTG extends TileEntity implements ISidedInventory, IEnergyGenerator, IRTGUser

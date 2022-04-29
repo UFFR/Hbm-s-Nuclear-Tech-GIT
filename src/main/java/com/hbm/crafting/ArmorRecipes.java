@@ -3,8 +3,11 @@ package com.hbm.crafting;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.config.GeneralConfig;
 import com.hbm.inventory.OreDictManager;
+import com.hbm.inventory.fluid.Fluids;
+
 import static com.hbm.inventory.OreDictManager.*;
 import com.hbm.items.ModItems;
+import com.hbm.items.ItemEnums.EnumLegendaryType;
 import com.hbm.main.CraftingManager;
 
 import api.hbm.energy.IBatteryItem;
@@ -99,6 +102,12 @@ public class ArmorRecipes {
 		CraftingManager.addRecipeAuto(IBatteryItem.emptyBattery(ModItems.dns_legs), new Object[] { "PCP", "PBP", "PSP", 'P', ModItems.plate_armor_dnt, 'S', ModItems.ingot_chainsteel, 'B', ModItems.bj_legs, 'C', ModItems.coin_worm });
 		CraftingManager.addRecipeAuto(IBatteryItem.emptyBattery(ModItems.dns_boots), new Object[] { "PCP", "PBP", "PSP", 'P', ModItems.plate_armor_dnt, 'S', ModItems.ingot_chainsteel, 'B', ModItems.bj_boots, 'C', ModItems.demon_core_closed });
 
+		//Bismuth fursui- I mean armor
+		CraftingManager.addRecipeAuto(new ItemStack(ModItems.bismuth_helmet, 1), new Object[] { "GPP", "P  ", "FPP", 'G', Items.gold_ingot, 'P', ModItems.plate_bismuth, 'F', ModItems.rag });
+		CraftingManager.addRecipeAuto(new ItemStack(ModItems.bismuth_plate, 1), new Object[] { "RWR", "PCP", "SFS", 'R', ModItems.crystal_rare, 'W', ModItems.wire_gold, 'P', ModItems.plate_bismuth, 'C', ModItems.laser_crystal_bismuth, 'S', ModItems.ring_starmetal, 'F', ModItems.rag });
+		CraftingManager.addRecipeAuto(new ItemStack(ModItems.bismuth_legs, 1), new Object[] { "FSF", "   ", "FSF", 'F', ModItems.rag, 'S', ModItems.ring_starmetal });
+		CraftingManager.addRecipeAuto(new ItemStack(ModItems.bismuth_boots, 1), new Object[] { "W W", "P P", 'W', ModItems.wire_gold, 'P', ModItems.plate_bismuth });
+		
 		//Euphemium armor
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.euphemium_helmet, 1), new Object[] { "EEE", "E E", 'E', ModItems.plate_euphemium });
 		CraftingManager.addRecipeAuto(new ItemStack(ModItems.euphemium_plate, 1), new Object[] { "EWE", "EEE", "EEE", 'E', ModItems.plate_euphemium, 'W', ModItems.watch });
@@ -160,7 +169,7 @@ public class ArmorRecipes {
 		
 		GameRegistry.addRecipe(new ItemStack(ModItems.robes_boots, 1), new Object[] { "R R", "P P", 'R', ModItems.rag, 'P', ModItems.plate_polymer });
 		//Configged
-		if(GeneralConfig.enableBabyMode) {
+		if(GeneralConfig.enableLBSM && GeneralConfig.enableLBSMSimpleArmorRecipes) {
 			addHelmet(	STAR.ingot(), ModItems.starmetal_helmet);
 			addChest(	STAR.ingot(), ModItems.starmetal_plate);
 			addLegs(	STAR.ingot(), ModItems.starmetal_legs);

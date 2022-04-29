@@ -3,16 +3,14 @@ package com.hbm.tileentity.machine;
 import java.math.BigInteger;
 
 import com.hbm.blocks.machine.MachineDiFurnaceRTG;
-import com.hbm.inventory.recipes.BlastFurnaceRecipes;
-import com.hbm.items.machine.ItemRTGPellet;
-import com.hbm.tileentity.IRTGUser;
-import com.hbm.tileentity.IRadioisotopeFuel;
+import com.hbm.inventory.recipes.MachineRecipes;
+import com.hbm.util.RTGUtil;
 import com.hbm.tileentity.TileEntityMachineBase;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class TileEntityDiFurnaceRTG extends TileEntityMachineBase implements IRTGUser
+public class TileEntityDiFurnaceRTG extends TileEntityMachineBase
 {
 	public short progress;
 	private short processSpeed = 0;
@@ -167,11 +165,13 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase implements IRT
 	}
 
 	@Override
-	public String getName() {
-		return "container.diFurnaceRTG";
+	public boolean canExtractItem(int slot, ItemStack stack, int side) {
+		return slot == 2;
 	}
 
 	@Override
+	public String getName() {
+		return "container.diFurnaceRTG";
 	public int getHeat()
 	{
 		return (updateRTGs() / 10);

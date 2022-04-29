@@ -100,7 +100,7 @@ public class TileEntityRBMKCooler extends TileEntityRBMKBase implements IFluidAc
 	}
 
 	@Override
-	public void setFillstate(int fill, int index) {
+	public void setFillForSync(int fill, int index) {
 		tank.setFill(fill);
 	}
 
@@ -111,13 +111,8 @@ public class TileEntityRBMKCooler extends TileEntityRBMKBase implements IFluidAc
 	}
 
 	@Override
-	public void setType(FluidType type, int index) {
+	public void setTypeForSync(FluidType type, int index) {
 		tank.setTankType(type);
-	}
-
-	@Override
-	public List<FluidTank> getTanks() {
-		return new ArrayList() {{ add(tank); }};
 	}
 
 	@Override

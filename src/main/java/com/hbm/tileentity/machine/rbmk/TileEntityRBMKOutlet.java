@@ -15,7 +15,6 @@ import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-import scala.actors.threadpool.Arrays;
 
 public class TileEntityRBMKOutlet extends TileEntity implements IFluidSource {
 	
@@ -69,7 +68,7 @@ public class TileEntityRBMKOutlet extends TileEntity implements IFluidSource {
 	}
 
 	@Override
-	public void setFillstate(int fill, int index) {
+	public void setFillForSync(int fill, int index) {
 		steam.setFill(fill);
 	}
 
@@ -79,13 +78,8 @@ public class TileEntityRBMKOutlet extends TileEntity implements IFluidSource {
 	}
 
 	@Override
-	public void setType(FluidType type, int index) {
+	public void setTypeForSync(FluidType type, int index) {
 		steam.setTankType(type);
-	}
-
-	@Override
-	public List<FluidTank> getTanks() {
-		return Arrays.asList(new FluidTank[] {steam});
 	}
 
 	@Override

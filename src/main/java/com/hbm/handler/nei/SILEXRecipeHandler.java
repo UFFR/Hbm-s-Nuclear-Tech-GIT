@@ -10,7 +10,6 @@ import java.util.Map;
 import com.hbm.inventory.gui.GUISILEX;
 import com.hbm.inventory.recipes.SILEXRecipes;
 import com.hbm.inventory.recipes.SILEXRecipes.SILEXRecipe;
-import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemFELCrystal.EnumWavelengths;
 import com.hbm.lib.RefStrings;
 import com.hbm.util.I18nUtil;
@@ -48,7 +47,7 @@ public class SILEXRecipeHandler extends TemplateRecipeHandler {
 			this.outputs = new ArrayList<PositionedStack>();
 			this.chances = new ArrayList<Double>();
 			this.produced = recipe.fluidProduced / recipe.fluidConsumed;
-			this.crystalStrength = EnumWavelengths.values()[recipe.laserStrength];
+			this.crystalStrength = recipe.laserStrength;
 			
 			double weight = 0;
 			

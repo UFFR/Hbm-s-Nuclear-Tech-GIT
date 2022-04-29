@@ -3,6 +3,7 @@ package com.hbm.items.machine;
 import java.text.NumberFormat;
 import java.util.List;
 
+import com.hbm.inventory.FluidStack;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.items.ModItems;
@@ -57,6 +58,10 @@ public class ItemFluidIcon extends Item {
 		return stack;
 	}
 
+	public static ItemStack make(FluidStack stack) {
+		return make(stack.type, stack.fill);
+	}
+
 	public static ItemStack make(FluidType fluid, int i) {
 		return addQuantity(new ItemStack(ModItems.fluid_icon, 1, fluid.getID()), i);
 	}
@@ -69,7 +74,6 @@ public class ItemFluidIcon extends Item {
 		return stack.getTagCompound().getInteger("fill");
 	}
 
-	@Override
 	public String getItemStackDisplayName(ItemStack stack) {
 		String s = (I18n.format(Fluids.fromID(stack.getItemDamage()).getUnlocalizedName())).trim();
 

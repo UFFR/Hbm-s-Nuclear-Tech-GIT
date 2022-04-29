@@ -1,8 +1,5 @@
 package com.hbm.tileentity.machine;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidContainer;
 import com.hbm.inventory.FluidTank;
@@ -12,9 +9,11 @@ import com.hbm.items.ModItems;
 import com.hbm.lib.Library;
 import com.hbm.packet.AuxElectricityPacket;
 import com.hbm.packet.PacketDispatcher;
+import com.hbm.tileentity.TileEntityLoadedBase;
 
 import api.hbm.energy.IBatteryItem;
 import api.hbm.energy.IEnergyUser;
+import api.hbm.fluid.IFluidStandardReceiver;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -22,10 +21,8 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityMachineCMBFactory extends TileEntity implements ISidedInventory, IEnergyUser, IFluidContainer, IFluidAcceptor {
+public class TileEntityMachineCMBFactory extends TileEntityLoadedBase implements ISidedInventory, IEnergyUser, IFluidContainer, IFluidAcceptor, IFluidStandardReceiver {
 
 	private ItemStack slots[];
 	
@@ -312,21 +309,18 @@ public class TileEntityMachineCMBFactory extends TileEntity implements ISidedInv
 	}
 	
 	private void updateConnections() {
-		
-		for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
-			this.trySubscribe(worldObj, xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ, dir);
+		this.updateStandardConnections(worldObj, this);
+		this.subscribeToAllAround(tank.getTankType(), this);
 	}
 
 	@Override
 	public void setPower(long i) {
 		power = i;
-		
 	}
 
 	@Override
 	public long getPower() {
 		return power;
-		
 	}
 
 	@Override
@@ -335,12 +329,12 @@ public class TileEntityMachineCMBFactory extends TileEntity implements ISidedInv
 	}
 
 	@Override
-	public void setFillstate(int fill, int index) {
+	public void setFillForSync(int fill, int index) {
 		tank.setFill(fill);
 	}
 
 	@Override
-	public void setType(FluidType type, int index) {
+	public void setTypeForSync(FluidType type, int index) {
 		tank.setTankType(type);
 	}
 
@@ -361,10 +355,7 @@ public class TileEntityMachineCMBFactory extends TileEntity implements ISidedInv
 	}
 
 	@Override
-	public List<FluidTank> getTanks() {
-		List<FluidTank> list = new ArrayList();
-		list.add(tank);
-		
-		return list;
+	public FluidTank[] getReceivingTanks() {
+		return new FluidTank[] {tank};
 	}
 }

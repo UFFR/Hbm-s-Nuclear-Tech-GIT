@@ -1,7 +1,5 @@
 package com.hbm.tileentity.machine;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import com.hbm.interfaces.IFluidAcceptor;
@@ -14,6 +12,7 @@ import com.hbm.items.ModItems;
 import com.hbm.lib.Library;
 import com.hbm.packet.AuxElectricityPacket;
 import com.hbm.packet.PacketDispatcher;
+import com.hbm.tileentity.TileEntityLoadedBase;
 import com.hbm.world.machine.FWatz;
 
 import api.hbm.energy.IEnergyGenerator;
@@ -24,10 +23,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class TileEntityFWatzCore extends TileEntity implements ISidedInventory, IReactor, IEnergyGenerator, IFluidContainer, IFluidAcceptor {
+public class TileEntityFWatzCore extends TileEntityLoadedBase implements ISidedInventory, IReactor, IEnergyGenerator, IFluidContainer, IFluidAcceptor {
 
 	public long power;
 	public final static long maxPower = 10000000000L;
@@ -386,13 +384,13 @@ public class TileEntityFWatzCore extends TileEntity implements ISidedInventory, 
 	}
 
 	@Override
-	public void setFillstate(int fill, int index) {
+	public void setFillForSync(int fill, int index) {
 		if(index < 3 && tanks[index] != null)
 			tanks[index].setFill(fill);
 	}
 
 	@Override
-	public void setType(FluidType type, int index) {
+	public void setTypeForSync(FluidType type, int index) {
 		if(index < 3 && tanks[index] != null)
 			tanks[index].setTankType(type);
 	}
@@ -423,15 +421,5 @@ public class TileEntityFWatzCore extends TileEntity implements ISidedInventory, 
 			return tanks[2].getMaxFill();
 		else
 			return 0;
-	}
-
-	@Override
-	public List<FluidTank> getTanks() {
-		List<FluidTank> list = new ArrayList();
-		list.add(tanks[0]);
-		list.add(tanks[1]);
-		list.add(tanks[2]);
-		
-		return list;
 	}
 }

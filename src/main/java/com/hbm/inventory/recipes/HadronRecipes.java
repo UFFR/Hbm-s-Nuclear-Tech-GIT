@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.items.ModItems;
-import com.hbm.util.I18nUtil;
+import com.hbm.tileentity.machine.TileEntityHadron.EnumHadronState;
 
 import api.hbm.computer.Researchable;
 import net.minecraft.init.Items;
@@ -120,6 +120,8 @@ public class HadronRecipes {
 				));
 	}
 	
+	public static EnumHadronState returnCode = EnumHadronState.NORESULT;
+	
 	/**
 	 * Resolves recipes, simple enough.
 	 * @param in1
@@ -130,16 +132,20 @@ public class HadronRecipes {
 	 */
 	public static ItemStack[] getOutput(ItemStack in1, ItemStack in2, int momentum, boolean analysisOnly) {
 		
+		returnCode = EnumHadronState.NORESULT_WRONG_INGREDIENT;
+		
 		for(HadronRecipe r : recipes) {
 			
 			if((r.in1.isApplicable(in1) && r.in2.isApplicable(in2)) ||
 					(r.in1.isApplicable(in2) && r.in2.isApplicable(in1))) {
+
+				if(analysisOnly && !r.analysisOnly)	returnCode = EnumHadronState.NORESULT_WRONG_MODE;
+				if(momentum < r.momentum)			returnCode = EnumHadronState.NORESULT_TOO_SLOW;
 				
 				if(momentum >= r.momentum && analysisOnly == r.analysisOnly)
 					return new ItemStack[] {r.out1, r.out2};
 			}
 		}
-		
 		return null;
 	}
 	

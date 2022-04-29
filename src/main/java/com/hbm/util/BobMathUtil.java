@@ -13,6 +13,9 @@ import com.hbm.calc.EasyLocation;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
+import javax.annotation.Nonnegative;
+
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -37,6 +40,16 @@ public class BobMathUtil {
 		return x + (y - x) * interp;
 	}
 	
+	public static double safeClamp(double val, double min, double max) {
+
+		val = MathHelper.clamp_double(val, min, max);
+		
+		if(val == Double.NaN) {
+			val = (min + max) / 2D;
+		}
+		
+		return val;
+	}
 	public static double getAngleFrom2DVecs(double x1, double z1, double x2, double z2) {
 		
 		double upper = x1 * x2 + z1 * z2;
@@ -178,27 +191,6 @@ public class BobMathUtil {
 		
 		return Long.toString(l);
 	}
-	
-	public static void offsetForHand(EntityPlayer player, EasyLocation loc)
-	{
-		loc.modifyCoord
-			(
-				-(Math.cos(player.rotationYaw / 180 * Math.PI) * 0.16),
-				-0.1,
-				-(Math.sin(player.rotationYaw / 180 * Math.PI) * 0.16)
-			);
-	}
-	
-	public static Vec3 stepFromPlayerAngles(EntityPlayer player)
-	{
-		return Vec3.createVectorHelper
-				(
-					-(Math.sin(player.rotationYaw / 180 * Math.PI) * Math.cos(player.rotationPitch / 180 * Math.PI)),
-					-Math.sin(player.rotationPitch / 180 * Math.PI),
-					Math.cos(player.rotationYaw / 180 * Math.PI) * Math.cos(player.rotationPitch / 180 * Math.PI)
-				);
-	}
-	
 	public static double durabilityBarDisplay(double cur, double max)
 	{
 		return 1d - cur / max;

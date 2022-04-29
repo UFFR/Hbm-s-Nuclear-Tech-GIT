@@ -13,6 +13,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.logging.log4j.Level;
 
 import com.google.common.collect.Multimap;
+import com.hbm.blocks.IStepTickReceiver;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.config.GeneralConfig;
 import com.hbm.config.MobConfig;
@@ -27,6 +28,7 @@ import com.hbm.entity.projectile.EntityBurningFOEQ;
 import com.hbm.extprop.HbmLivingProps;
 import com.hbm.extprop.HbmPlayerProps;
 import com.hbm.handler.ArmorModHandler;
+import com.hbm.handler.BobmazonOfferFactory;
 import com.hbm.handler.BossSpawnHandler;
 import com.hbm.handler.EntityEffectHandler;
 import com.hbm.handler.HTTPHandler;
@@ -180,7 +182,7 @@ public class ModEventHandler {
 			}
 			
 			if(MobConfig.enableDucks && event.player instanceof EntityPlayerMP && !event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean("hasDucked"))
-				PacketDispatcher.wrapper.sendTo(new PlayerInformPacket("Press O to Duck!"), (EntityPlayerMP) event.player);
+				PacketDispatcher.wrapper.sendTo(new PlayerInformPacket("Press O to Duck!", MainRegistry.proxy.ID_DUCK, 30_000), (EntityPlayerMP) event.player);
 		}
 		
 	}
@@ -410,10 +412,16 @@ public class ModEventHandler {
 			return;
 
 		if(entity instanceof EntityZombie) {
-			if(rand.nextInt(64) == 0)
-				entity.setCurrentItemOrArmor(4, new ItemStack(ModItems.gas_mask_m65, 1, world.rand.nextInt(100)));
-			if(rand.nextInt(128) == 0)
-				entity.setCurrentItemOrArmor(4, new ItemStack(ModItems.gas_mask_olde, 1, world.rand.nextInt(100)));
+			if(rand.nextInt(64) == 0) {
+				ItemStack mask = new ItemStack(ModItems.gas_mask_m65);
+				ArmorUtil.installGasMaskFilter(mask, new ItemStack(ModItems.gas_mask_filter));
+				entity.setCurrentItemOrArmor(4, mask);
+			}
+			if(rand.nextInt(128) == 0) {
+				ItemStack mask = new ItemStack(ModItems.gas_mask_olde);
+				ArmorUtil.installGasMaskFilter(mask, new ItemStack(ModItems.gas_mask_filter));
+				entity.setCurrentItemOrArmor(4, mask);
+			}
 			if(rand.nextInt(256) == 0)
 				entity.setCurrentItemOrArmor(4, new ItemStack(ModItems.mask_of_infamy, 1, world.rand.nextInt(100)));
 			if(rand.nextInt(1024) == 0)
@@ -439,8 +447,11 @@ public class ModEventHandler {
 				entity.setCurrentItemOrArmor(0, new ItemStack(ModItems.chernobylsign));
 		}
 		if(entity instanceof EntitySkeleton) {
-			if(rand.nextInt(16) == 0)
-				entity.setCurrentItemOrArmor(4, new ItemStack(ModItems.gas_mask_m65, 1, world.rand.nextInt(100)));
+			if(rand.nextInt(16) == 0) {
+				ItemStack mask = new ItemStack(ModItems.gas_mask_m65);
+				ArmorUtil.installGasMaskFilter(mask, new ItemStack(ModItems.gas_mask_filter));
+				entity.setCurrentItemOrArmor(4, mask);
+			}
 			if(rand.nextInt(64) == 0)
 				entity.setCurrentItemOrArmor(3, new ItemStack(ModItems.steel_plate, 1, world.rand.nextInt(ModItems.steel_plate.getMaxDamage())));
 		}
@@ -569,6 +580,8 @@ public class ModEventHandler {
 	public void onLoad(WorldEvent.Load event) {
 		DimensionManager.unregisterProviderType(0);
 		DimensionManager.registerProviderType(0, WorldProviderNTM.class, true);
+		
+		BobmazonOfferFactory.init();
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
@@ -1064,9 +1077,10 @@ public class ModEventHandler {
 			if(player.getCurrentArmor(2) == null && !player.onGround) {
 				
 				boolean isBob = player.getUniqueID().toString().equals(Library.HbMinecraft) || player.getDisplayName().equals("HbMinecraft");
-				boolean isSol = player.getUniqueID().toString().equals(Library.SolsticeUnlimitd) || player.getDisplayName().equals("SolsticeUnlimitd");
+				boolean isOther = player.getUniqueID().toString().equals(Library.SolsticeUnlimitd) || player.getDisplayName().equals("SolsticeUnlimitd") ||
+						player.getUniqueID().toString().equals(Library.the_NCR) || player.getDisplayName().equals("the_NCR");
 				
-				if(isBob || isSol) {
+				if(isBob || isOther) {
 					
 					ArmorUtil.resetFlightTime(player);
 					
@@ -1089,7 +1103,7 @@ public class ModEventHandler {
 							else
 								player.motionY = cap + 0.15D;
 							
-							if(isSol) {
+							if(isOther) {
 								if(player.getFoodStats().getSaturationLevel() > 0F)
 									player.addExhaustion(4F); //burn up saturation so that super-saturating foods have no effect
 								else
@@ -1105,7 +1119,7 @@ public class ModEventHandler {
 							else if(player.motionY < 0)
 								player.motionY = 0;
 
-							if(isSol && !player.onGround) {
+							if(isOther && !player.onGround) {
 								if(player.getFoodStats().getSaturationLevel() > 0F)
 									player.addExhaustion(4F);
 								else
@@ -1161,6 +1175,18 @@ public class ModEventHandler {
 		if(player.ticksExisted == 100 || player.ticksExisted == 200)
 			CraftingManager.crumple();
 		
+		if(event.phase == TickEvent.Phase.START) {
+			int x = MathHelper.floor_double(player.posX);
+			int y = MathHelper.floor_double(player.posY - player.yOffset - 0.5);
+			int z = MathHelper.floor_double(player.posZ);
+			Block b = player.worldObj.getBlock(x, y, z);
+			
+			if(b instanceof IStepTickReceiver) {
+				IStepTickReceiver step = (IStepTickReceiver) b;
+				step.onPlayerStep(player.worldObj, x, y, z, player);
+			}
+		}
+		
 		if(!player.worldObj.isRemote && event.phase == TickEvent.Phase.START) {
 			
 			/// GHOST FIX START ///
@@ -1210,6 +1236,17 @@ public class ModEventHandler {
 			}
 			
 			/// PU RADIATION END ///
+			
+			/*if(player instanceof EntityPlayerMP) {
+
+				int x = (int) Math.floor(player.posX);
+				int y = (int) Math.floor(player.posY - 0.01);
+				int z = (int) Math.floor(player.posZ);
+				
+				if(player.worldObj.getTileEntity(x, y, z) instanceof IEnergyConductor) {
+					PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(((IEnergyConductor) player.worldObj.getTileEntity(x, y, z)).getPowerNet() + ""), (EntityPlayerMP) player);
+				}
+			}*/
 
 			/// NEW ITEM SYS START ///
 			HazardSystem.updatePlayerInventory(player);
@@ -1315,6 +1352,8 @@ public class ModEventHandler {
 	public void onItemPickup(PlayerEvent.ItemPickupEvent event) {
 		if(event.pickedUp.getEntityItem().getItem() == ModItems.canned_jizz)
 			event.player.triggerAchievement(MainRegistry.achC20_5);
+		if(event.pickedUp.getEntityItem().getItem() == Items.slime_ball)
+			event.player.triggerAchievement(MainRegistry.achSlimeball);
 	}
 	
 	@SubscribeEvent
@@ -1339,11 +1378,6 @@ public class ModEventHandler {
 				if(event.world.rand.nextInt(2) == 0 && event.world.getBlock(x, y, z) == Blocks.air)
 					event.world.setBlock(x, y, z, ModBlocks.gas_coal);
 			}
-		}
-		
-		if(event.block == ModBlocks.pink_log && !((EntityPlayerMP) event.getPlayer()).func_147099_x().hasAchievementUnlocked(MainRegistry.achImpossible)) {
-			event.getPlayer().triggerAchievement(MainRegistry.achImpossible);
-			event.setExpToDrop(3000);
 		}
 	}
 	

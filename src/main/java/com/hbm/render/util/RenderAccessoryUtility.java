@@ -41,6 +41,8 @@ public class RenderAccessoryUtility {
 	private static final ResourceLocation tankish = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/CapeTankish.png");
 	private static final ResourceLocation blaze2 = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/CapeBlaze2.png");
 	private static final ResourceLocation frizzlefrazzle = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/CapeFrizzleFrazzle.png");
+	private static ResourceLocation pheo = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/CapePheo.png");
+	private static ResourceLocation vaer = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/CapeVaer.png");
 	
 	public static ResourceLocation getCloakFromPlayer(EntityPlayer player)
 	{
@@ -97,6 +99,23 @@ public class RenderAccessoryUtility {
 			else
 				return null;
 		}
+		if(uuid.equals(Library.FrizzleFrazzle)) {
+			return frizzlefrazzle;
+		}
+		if(uuid.equals(Library.Barnaby99_x)) {
+			return pheo;
+		}
+		if(uuid.equals(Library.Ma118)) {
+			return vaer;
+		}
+		if(Library.contributors.contains(uuid)) {
+			return wiki;
+		}
+		if(name.startsWith("Player")) {
+			return test;
+		}
+		
+		return null;
 	}
 	
 	private static ModelBiped solModel;
@@ -121,17 +140,17 @@ public class RenderAccessoryUtility {
 		solModel.render(event.entityPlayer, 0.0F, 0.0F, yawWrapped, yaw, pitch, 0.0625F);
 	}
 	
-	private static ModelBiped wingModel;
-	public static void renderWings(RenderPlayerEvent.SetArmorModel event) {
+	private static ModelBiped[] wingModels = new ModelBiped[10];
+	public static void renderWings(RenderPlayerEvent.SetArmorModel event, int mode) {
 
-		if(wingModel == null)
-			wingModel = new ModelArmorWings(2);
+		if(wingModels[mode] == null)
+			wingModels[mode] = new ModelArmorWings(mode);
 		
 		RenderPlayer renderer = event.renderer;
 		ModelBiped model = renderer.modelArmor;
 		EntityPlayer player = event.entityPlayer;
 
-		wingModel.isSneak = model.isSneak;
+		wingModels[mode].isSneak = model.isSneak;
 		
 		float interp = event.partialRenderTick;
 		float yawHead = player.prevRotationYawHead + (player.rotationYawHead - player.prevRotationYawHead) * interp;
@@ -140,6 +159,6 @@ public class RenderAccessoryUtility {
 		float yawWrapped = MathHelper.wrapAngleTo180_float(yawHead - yawOffset);
 		float pitch = player.rotationPitch;
 		
-		wingModel.render(event.entityPlayer, 0.0F, 0.0F, yawWrapped, yaw, pitch, 0.0625F);
+		wingModels[mode].render(event.entityPlayer, 0.0F, 0.0F, yawWrapped, yaw, pitch, 0.0625F);
 	}
 }

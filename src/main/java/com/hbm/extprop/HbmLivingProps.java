@@ -8,8 +8,7 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.UUID;
 
-import com.hbm.hazard.HazardRegistry;
-import com.hbm.hazard.type.HazardTypeBase;
+import com.hbm.config.RadiationConfig;
 import com.hbm.entity.mob.EntityDuck;
 import com.hbm.lib.ModDamageSource;
 import com.hbm.main.MainRegistry;
@@ -96,14 +95,21 @@ public class HbmLivingProps implements IExtendedEntityProperties, IHasAge
 	
 	/// RADIATION ///
 	public static float getRadiation(EntityLivingBase entity) {
+		if(!RadiationConfig.enableContamination)
+			return 0;
+
 		return getData(entity).radiation;
 	}
 	
 	public static void setRadiation(EntityLivingBase entity, float rad) {
-		getData(entity).radiation = rad;
+		if(RadiationConfig.enableContamination)
+			getData(entity).radiation = rad;
 	}
 	
 	public static void incrementRadiation(EntityLivingBase entity, float rad) {
+		if(!RadiationConfig.enableContamination)
+			return;
+		
 		HbmLivingProps data = getData(entity);
 		float radiation = data.radiation + rad;
 		
@@ -237,10 +243,12 @@ public class HbmLivingProps implements IExtendedEntityProperties, IHasAge
 	
 	/// ASBESTOS ///
 	public static int getAsbestos(EntityLivingBase entity) {
+		if(RadiationConfig.disableAsbestos) return 0;
 		return getData(entity).asbestos;
 	}
 	
 	public static void setAsbestos(EntityLivingBase entity, int asbestos) {
+		if(RadiationConfig.disableAsbestos) return;
 		getData(entity).asbestos = asbestos;
 		
 		if(asbestos >= maxAsbestos) {
@@ -250,6 +258,7 @@ public class HbmLivingProps implements IExtendedEntityProperties, IHasAge
 	}
 	
 	public static void incrementAsbestos(EntityLivingBase entity, int asbestos) {
+		if(RadiationConfig.disableAsbestos) return;
 		setAsbestos(entity, getAsbestos(entity) + asbestos);
 		incrementFibrosis(entity, asbestos);
 	}
@@ -257,10 +266,12 @@ public class HbmLivingProps implements IExtendedEntityProperties, IHasAge
 	
 	/// BLACK LUNG DISEASE ///
 	public static int getBlackLung(EntityLivingBase entity) {
+		if(RadiationConfig.disableCoal) return 0;
 		return getData(entity).blacklung;
 	}
 	
 	public static void setBlackLung(EntityLivingBase entity, int blacklung) {
+		if(RadiationConfig.disableCoal) return;
 		getData(entity).blacklung = blacklung;
 		
 		if(blacklung >= maxBlacklung) {
@@ -270,16 +281,19 @@ public class HbmLivingProps implements IExtendedEntityProperties, IHasAge
 	}
 	
 	public static void incrementBlackLung(EntityLivingBase entity, int blacklung) {
+		if(RadiationConfig.disableCoal) return;
 		setBlackLung(entity, getBlackLung(entity) + blacklung);
 		incrementFibrosis(entity, blacklung);
 	}
 	
 	/// PULMONARY FIBROSIS ///
 	public static int getFibrosis(EntityLivingBase entity) {
+		if(RadiationConfig.disableFibrosis) return 0;
 		return getData(entity).fibrosis;
 	}
 	
 	public static void setFibrosis(EntityLivingBase entity, int fibrosis) {
+		if(RadiationConfig.disableFibrosis) return;
 		getData(entity).fibrosis = fibrosis;
 		
 		if (fibrosis >= maxFibrosis) {
@@ -289,6 +303,7 @@ public class HbmLivingProps implements IExtendedEntityProperties, IHasAge
 	}
 	
 	public static void incrementFibrosis(EntityLivingBase entity, int fibrosis) {
+		if(RadiationConfig.disableFibrosis) return;
 		setFibrosis(entity, getFibrosis(entity) + fibrosis);
 	}
 	

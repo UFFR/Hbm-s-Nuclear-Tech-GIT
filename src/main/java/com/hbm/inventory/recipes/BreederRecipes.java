@@ -20,7 +20,7 @@ public class BreederRecipes {
 		setRecipe(BreedingRodType.LITHIUM, BreedingRodType.TRITIUM, 200);
 		setRecipe(BreedingRodType.CO, BreedingRodType.CO60, 100);
 		setRecipe(BreedingRodType.RA226, BreedingRodType.AC227, 300);
-		setRecipe(BreedingRodType.TH232, BreedingRodType.THA, 500);
+		setRecipe(BreedingRodType.TH232, BreedingRodType.THF, 500);
 		setRecipe(BreedingRodType.U235, BreedingRodType.NP237, 300);
 		setRecipe(BreedingRodType.NP237, BreedingRodType.PU238, 200);
 		setRecipe(BreedingRodType.PU238, BreedingRodType.PU239, 1000);

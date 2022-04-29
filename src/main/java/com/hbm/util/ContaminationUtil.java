@@ -1,6 +1,6 @@
 package com.hbm.util;
 
-import com.hbm.config.GeneralConfig;
+import com.hbm.entity.mob.EntityDuck;
 import com.hbm.entity.mob.EntityNuclearCreeper;
 import com.hbm.entity.mob.EntityQuackos;
 import com.hbm.extprop.HbmLivingProps;
@@ -38,44 +38,6 @@ public class ContaminationUtil {
 		}
 		
 		return 1;
-	}
-	
-	/// RADIATION ///
-	private static void applyRadData(Entity e, float f) {
-
-		if(!(e instanceof EntityLivingBase))
-			return;
-
-		if(isRadImmune(e))
-			return;
-		
-		EntityLivingBase entity = (EntityLivingBase)e;
-		
-		if(e instanceof EntityPlayer && ((EntityPlayer)e).capabilities.isCreativeMode)
-			return;
-		
-		if(e instanceof EntityPlayer && e.ticksExisted < 200)
-			return;
-		
-		f *= calculateRadiationMod(entity);
-
-		HbmLivingProps.incrementRadiation(entity, f);
-	}
-	
-	private static void applyRadDirect(Entity e, float f) {
-
-		if(!(e instanceof EntityLivingBase))
-			return;
-		
-		EntityLivingBase entity = (EntityLivingBase)e;
-
-		if(isRadImmune(e))
-			return;
-		
-		if(e instanceof EntityPlayer && ((EntityPlayer)e).capabilities.isCreativeMode)
-			return;
-
-		HbmLivingProps.incrementRadiation(entity, f);
 	}
 	
 	public static float getRads(Entity e) {
@@ -142,6 +104,9 @@ public class ContaminationUtil {
 	public static void applyDigammaData(Entity e, float f) {
 
 		if(!(e instanceof EntityLivingBase))
+			return;
+		
+		if(e instanceof EntityDuck || e instanceof EntityOcelot)
 			return;
 		
 		if(e instanceof EntityPlayer && ((EntityPlayer)e).capabilities.isCreativeMode)
@@ -306,7 +271,7 @@ public class ContaminationUtil {
 	 * This system is nice but the cont types are a bit confusing. Cont types should have much better names and multiple cont types should be applicable.
 	 */
 	@SuppressWarnings("incomplete-switch") //just shut up
-	@Deprecated // instead of this does-everything-but-nothing-well solution, please use the ArmorRegistry to check for protection and the HBM Props for applying contamination
+	//instead of this does-everything-but-nothing-well solution, please use the ArmorRegistry to check for protection and the HBM Props for applying contamination. still good for regular radiation tho
 	public static boolean contaminate(EntityLivingBase entity, HazardType hazard, ContaminationType cont, float amount) {
 		
 		if(hazard == HazardType.RADIATION) {
@@ -333,7 +298,7 @@ public class ContaminationUtil {
 				return false;
 		}
 		
-		if(hazard == HazardType.RADIATION && (isRadImmune(entity) || !GeneralConfig.enableRads))
+		if(hazard == HazardType.RADIATION && isRadImmune(entity))
 			return false;
 		
 		switch(hazard) {

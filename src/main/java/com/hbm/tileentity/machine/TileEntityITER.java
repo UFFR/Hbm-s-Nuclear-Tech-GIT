@@ -20,6 +20,7 @@ import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.TileEntityMachineBase;
 
 import api.hbm.energy.IEnergyUser;
+import api.hbm.fluid.IFluidStandardTransceiver;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,7 +30,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityITER extends TileEntityMachineBase implements IEnergyUser, IFluidAcceptor, IFluidSource {
+public class TileEntityITER extends TileEntityMachineBase implements IEnergyUser, IFluidAcceptor, IFluidSource, IFluidStandardTransceiver /* TODO: finish fluid API impl */ {
 	
 	public long power;
 	public static final long maxPower = 10000000;
@@ -308,7 +309,7 @@ public class TileEntityITER extends TileEntityMachineBase implements IEnergyUser
 	}
 
 	@Override
-	public void setFillstate(int fill, int index) {
+	public void setFillForSync(int fill, int index) {
 		if (index < 2 && tanks[index] != null)
 			tanks[index].setFill(fill);
 		
@@ -327,22 +328,12 @@ public class TileEntityITER extends TileEntityMachineBase implements IEnergyUser
 	}
 
 	@Override
-	public void setType(FluidType type, int index) {
+	public void setTypeForSync(FluidType type, int index) {
 		if (index < 2 && tanks[index] != null)
 			tanks[index].setTankType(type);
 		
 		if(index == 2)
 			plasma.setTankType(type);
-	}
-
-	@Override
-	public List<FluidTank> getTanks() {
-		List<FluidTank> t = new ArrayList();
-		t.add(tanks[0]);
-		t.add(tanks[1]);
-		t.add(plasma);
-		
-		return t;
 	}
 
 	@Override
@@ -487,5 +478,15 @@ public class TileEntityITER extends TileEntityMachineBase implements IEnergyUser
 		for(EntityPlayer player : players) {
 			player.triggerAchievement(MainRegistry.achMeltdown);
 		}
+	}
+
+	@Override
+	public FluidTank[] getSendingTanks() {
+		return new FluidTank[] {tanks[1]};
+	}
+
+	@Override
+	public FluidTank[] getReceivingTanks() {
+		return new FluidTank[] {tanks[0]};
 	}
 }

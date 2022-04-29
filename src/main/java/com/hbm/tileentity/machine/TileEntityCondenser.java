@@ -11,12 +11,13 @@ import com.hbm.inventory.fluid.Fluids;
 import com.hbm.lib.Library;
 import com.hbm.main.ModEventHandler;
 
+import api.hbm.fluid.IFluidStandardTransceiver;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityCondenser extends TileEntity implements IFluidAcceptor, IFluidSource {
+public class TileEntityCondenser extends TileEntity implements IFluidAcceptor, IFluidSource, IFluidStandardTransceiver {
 
 	public int age = 0;
 	public FluidTank[] tanks;
@@ -52,6 +53,9 @@ public class TileEntityCondenser extends TileEntity implements IFluidAcceptor, I
 			} else {
 				tanks[1].setFill(tanks[1].getFill() + convert);
 			}
+			
+			this.subscribeToAllAround(tanks[0].getTankType(), this);
+			this.sendFluidToAll(tanks[1].getTankType(), this);
 			
 			fillFluidInit(tanks[1].getTankType());
 			
@@ -128,24 +132,15 @@ public class TileEntityCondenser extends TileEntity implements IFluidAcceptor, I
 	}
 
 	@Override
-	public void setFillstate(int fill, int index) {
+	public void setFillForSync(int fill, int index) {
 		if(index < 2 && tanks[index] != null)
 			tanks[index].setFill(fill);
 	}
 
 	@Override
-	public void setType(FluidType type, int index) {
+	public void setTypeForSync(FluidType type, int index) {
 		if(index < 2 && tanks[index] != null)
 			tanks[index].setTankType(type);
-	}
-
-	@Override
-	public List<FluidTank> getTanks() {
-		List<FluidTank> list = new ArrayList();
-		list.add(tanks[0]);
-		list.add(tanks[1]);
-		
-		return list;
 	}
 	
 	@Override
@@ -156,5 +151,15 @@ public class TileEntityCondenser extends TileEntity implements IFluidAcceptor, I
 	@Override
 	public void clearFluidList(FluidType type) {
 		list.clear();
+	}
+
+	@Override
+	public FluidTank[] getSendingTanks() {
+		return new FluidTank[] {tanks [1]};
+	}
+
+	@Override
+	public FluidTank[] getReceivingTanks() {
+		return new FluidTank[] {tanks [0]};
 	}
 }

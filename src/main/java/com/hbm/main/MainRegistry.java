@@ -15,6 +15,7 @@ import net.minecraft.stats.Achievement;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.AchievementPage;
 import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.common.ForgeChunkManager;
@@ -30,7 +31,7 @@ import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.Mod.Metadata;
 import cpw.mods.fml.common.ModMetadata;
 
-import java.lang.reflect.InvocationTargetException;
+import java.io.File;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -40,19 +41,29 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableList;
 import com.hbm.blocks.ModBlocks;
+import com.hbm.blocks.generic.BlockMotherOfAllOres;
+import com.hbm.blocks.generic.BlockNTMFlower.EnumFlowerType;
 import com.hbm.config.*;
 import com.hbm.creativetabs.*;
 import com.hbm.entity.EntityMappings;
 import com.hbm.entity.grenade.*;
 import com.hbm.entity.logic.*;
+import com.hbm.entity.missile.*;
+import com.hbm.entity.mob.*;
+import com.hbm.entity.mob.botprime.*;
 import com.hbm.entity.mob.siege.*;
+import com.hbm.entity.particle.*;
+import com.hbm.entity.projectile.*;
+import com.hbm.entity.qic.EntitySPV;
 import com.hbm.handler.*;
 import com.hbm.handler.imc.*;
+import com.hbm.handler.radiation.ChunkRadiationManager;
 import com.hbm.hazard.HazardRegistry;
 import com.hbm.inventory.*;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.recipes.*;
 import com.hbm.inventory.recipes.anvil.AnvilRecipes;
+import com.hbm.inventory.recipes.loader.SerializableRecipe;
 import com.hbm.items.ModItems;
 import com.hbm.items.weapon.ItemGrenade;
 import com.hbm.lib.HbmWorld;
@@ -66,7 +77,7 @@ import com.hbm.tileentity.bomb.TileEntityNukeCustom;
 import com.hbm.tileentity.machine.*;
 import com.hbm.tileentity.machine.rbmk.RBMKDials;
 import com.hbm.util.ArmorUtil;
-import com.hbm.util.Tuple.Pair;
+import com.hbm.world.feature.OreCave;
 import com.hbm.world.feature.SchistStratum;
 import com.hbm.world.generator.CellularDungeonFactory;
 
@@ -137,6 +148,7 @@ public class MainRegistry {
 	public static ArmorMaterial aMatSecurity = EnumHelper.addArmorMaterial("HBM_SECURITY", 100, new int[] { 3, 8, 6, 3 }, 15);
 	public static ArmorMaterial aMatCobalt = EnumHelper.addArmorMaterial("HBM_COBALT", 70, new int[] { 3, 8, 6, 3 }, 25);
 	public static ArmorMaterial aMatStarmetal = EnumHelper.addArmorMaterial("HBM_STARMETAL", 150, new int[] { 3, 8, 6, 3 }, 100);
+	public static ArmorMaterial aMatBismuth = EnumHelper.addArmorMaterial("HBM_BISMUTH", 100, new int[] { 3, 8, 6, 3 }, 100);
 	public static ArmorMaterial aMatFerrouranium = EnumHelper.addArmorMaterial("HBM_FERROURANIUM", 100, new int[] { 3, 8, 6, 3 }, 20);
 	public static ArmorMaterial aMatStaballoy = EnumHelper.addArmorMaterial("HBM_STABALLOY", 150, new int[] { 3, 8, 6, 3 }, 30);
 
@@ -167,6 +179,9 @@ public class MainRegistry {
 	public static Achievement achStratum;
 	public static Achievement achOmega12;
 	public static Achievement achSomeWounds;
+	public static Achievement achSlimeball;
+	public static Achievement achSulfuric;
+	public static Achievement achWitchtaunter;
 	public static Achievement bobHidden;
 	public static Achievement horizonsStart;
 	public static Achievement horizonsEnd;
@@ -222,13 +237,9 @@ public class MainRegistry {
 	public static int generalOverride = 11;
 	public static int polaroidID = 1;
 	public static boolean isPolaroid11;
-
-	public static int x;
-	public static int y;
-	public static int z;
-	public static long time;
 	
 	public static long startupTime = 0;
+	public static File configDir;
 
 	Random rand = new Random();
 
@@ -236,6 +247,7 @@ public class MainRegistry {
 	public void PreLoad(FMLPreInitializationEvent PreEvent) {
 		
 		startupTime = System.currentTimeMillis();
+		configDir = PreEvent.getModConfigurationDirectory();
 		
 		logger.info("Let us celebrate the fact that the logger finally works again!");
 
@@ -268,6 +280,7 @@ public class MainRegistry {
 		SiegeTier.registerTiers();
 		HazardRegistry.registerItems();
 		HazardRegistry.registerTrafos();
+		OreDictManager.registerGroups();
 
 		Library.superuser.add("192af5d7-ed0f-48d8-bd89-9d41af8524f8");
 		Library.superuser.add("5aee1e3d-3767-4987-a222-e7ce1fbdf88e");
@@ -709,12 +722,11 @@ public class MainRegistry {
 		achStratum = new Achievement("achievement.stratum", "stratum", -4, -2, new ItemStack(ModBlocks.stone_gneiss), null).initIndependentStat().setSpecial().registerStat();
 		achOmega12 = new Achievement("achievement.omega12", "omega12", -4, 2, ModItems.particle_digamma, null).initIndependentStat().setSpecial().registerStat();
 
-//		bobMetalworks = new Achievement("achievement.metalworks", "metalworks", -2, 2, ModItems.bob_metalworks, null).initIndependentStat().registerStat();
-//		bobAssembly = new Achievement("achievement.assembly", "assembly", 0, 2, ModItems.bob_assembly, bobMetalworks).initIndependentStat().registerStat();
-//		bobChemistry = new Achievement("achievement.chemistry", "chemistry", 2, 2, ModItems.bob_chemistry, bobAssembly).initIndependentStat().registerStat();
-//		bobOil = new Achievement("achievement.oil", "oil", 4, 2, ModItems.bob_oil, bobChemistry).initIndependentStat().registerStat();
-//		bobNuclear = new Achievement("achievement.nuclear", "nuclear", 6, 2, ModItems.bob_nuclear, bobOil).initIndependentStat().registerStat();
-		bobHidden = new Achievement("achievement.hidden", "hidden", 8, 2, ModItems.gun_dampfmaschine, null).initIndependentStat().registerStat();
+		achWitchtaunter = new Achievement("achievement.witchtaunter", "witchtaunter", -8, 7, ModItems.ammo_4gauge_vampire, null).initIndependentStat().setSpecial().registerStat();
+		achSlimeball = new Achievement("achievement.slimeball", "slimeball", -10, 6, Items.slime_ball, null).initIndependentStat().registerStat();
+		achSulfuric = new Achievement("achievement.sulfuric", "sulfuric", -10, 8, ModItems.bucket_sulfuric_acid, achSlimeball).initIndependentStat().setSpecial().registerStat();
+
+		bobHidden = new Achievement("achievement.hidden", "hidden", 15, -4, ModItems.gun_dampfmaschine, null).initIndependentStat().registerStat();
 
 		horizonsStart = new Achievement("achievement.horizonsStart", "horizonsStart", -2, 4, ModItems.sat_gerald, null).initIndependentStat().registerStat();
 		horizonsEnd = new Achievement("achievement.horizonsEnd", "horizonsEnd", 0, 4, ModItems.sat_gerald, horizonsStart).initIndependentStat().registerStat();
@@ -802,6 +814,9 @@ public class MainRegistry {
 				horizonsBonus,
 				achRadPoison,
 				achRadDeath,
+				achWitchtaunter,
+				achSlimeball,
+				achSulfuric,
 				bossCreeper,
 				bossMeltdown,
 				bossMaskman,
@@ -889,6 +904,7 @@ public class MainRegistry {
 		TileEntityNukeFurnace.registerFuels();
 		BreederRecipes.registerRecipes();
 		AssemblerRecipes.loadRecipes();
+		//ChemplantRecipes.register(); //moved to SerializableRecipe
 		CyclotronRecipes.register();
 		HadronRecipes.register();
 		MagicRecipes.register();
@@ -905,7 +921,10 @@ public class MainRegistry {
 		GasCentrifugeRecipes.register();
 		LiquefactionRecipes.register();
 		SolidificationRecipes.register();
-		FuelPoolRecipes.register();
+
+		//the good stuff
+		SerializableRecipe.registerAllHandlers();
+		SerializableRecipe.initialize();
 
 		TileEntityNukeCustom.registerBombItems();
 		ArmorUtil.register();
@@ -915,8 +934,20 @@ public class MainRegistry {
 
 		proxy.registerMissileItems();
 		
+		BlockMotherOfAllOres.init();
+		
 		//expand for the largest entity we have (currently Quackos who is 17.5m in diameter, that's one fat duck)
 		World.MAX_ENTITY_RADIUS = Math.max(World.MAX_ENTITY_RADIUS, 8.75);
+
+		new OreCave(ModBlocks.stone_resource, 0).setThreshold(1.5D).setRangeMult(20).setYLevel(30).setMaxRange(20).withFluid(ModBlocks.sulfuric_acid_block);	//sulfur
+		new OreCave(ModBlocks.stone_resource, 1).setThreshold(1.75D).setRangeMult(20).setYLevel(25).setMaxRange(20);											//asbestos
+		//new OreLayer(Blocks.coal_ore, 0.2F).setThreshold(4).setRangeMult(3).setYLevel(70);
+
+		//imagine adding flower entries but they don't actually do shit with the world generator
+		//"well but at least they work with bone meal, as advertised" except they fucking don't
+		/*BiomeGenBase.plains.addFlower(ModBlocks.plant_flower, EnumFlowerType.FOXGLOVE.ordinal(), 10);
+		BiomeGenBase.roofedForest.addFlower(ModBlocks.plant_flower, EnumFlowerType.NIGHTSHADE.ordinal(), 10);
+		BiomeGenBase.jungle.addFlower(ModBlocks.plant_flower, EnumFlowerType.TOBACCO.ordinal(), 10);*/
 	}
 
 	@EventHandler
@@ -935,6 +966,12 @@ public class MainRegistry {
 		
 		OreDictManager oreMan = new OreDictManager();
 		MinecraftForge.EVENT_BUS.register(oreMan); //OreRegisterEvent
+		
+		PacketDispatcher.registerPackets();
+
+		ChunkRadiationManager radiationSystem = new ChunkRadiationManager();
+		MinecraftForge.EVENT_BUS.register(radiationSystem);
+		FMLCommonHandler.instance().bus().register(radiationSystem);
 		
 		PacketDispatcher.registerPackets();
 	}

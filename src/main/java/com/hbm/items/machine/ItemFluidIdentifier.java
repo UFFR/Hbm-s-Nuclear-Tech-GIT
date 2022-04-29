@@ -25,7 +25,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class ItemFluidIdentifier extends Item {
+public class ItemFluidIdentifier extends Item implements IItemFluidIdentifier {
 
 	IIcon overlayIcon;
 
@@ -34,7 +34,6 @@ public class ItemFluidIdentifier extends Item {
 		this.setMaxDamage(0);
 	}
 
-	@Override
 	public ItemStack getContainerItem(ItemStack stack) {
 		return stack.copy();
 	}
@@ -84,6 +83,16 @@ public class ItemFluidIdentifier extends Item {
 	}
 
 	@Override
+	public FluidType getType(World world, int x, int y, int z, ItemStack stack) {
+		return Fluids.fromID(stack.getItemDamage());
+	}
+
+	@Override
+	public boolean doesSneakBypassUse(World world, int x, int y, int z, EntityPlayer player) {
+		return true;
+	}
+
+	@Override
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int i, float f1, float f2, float f3) {
 		TileEntity te = world.getTileEntity(x, y, z);
 		if(te instanceof TileEntityFluidDuctSimple) {
@@ -100,7 +109,7 @@ public class ItemFluidIdentifier extends Item {
 				}
 			}
 			
-			//world.markBlockForUpdate(x, y, z);
+			world.markBlockForUpdate(x, y, z);
 
 			player.swingItem();
 		}
@@ -111,6 +120,7 @@ public class ItemFluidIdentifier extends Item {
 		markDuctsRecursively(world, x, y, z, type, 64);
 	}
 
+	@Deprecated
 	private void markDuctsRecursively(World world, int x, int y, int z, FluidType type, int maxRecursion) {
 		TileEntity start = world.getTileEntity(x, y, z);
 		
@@ -136,7 +146,7 @@ public class ItemFluidIdentifier extends Item {
 				if (te instanceof TileEntityFluidDuctSimple && ((TileEntityFluidDuctSimple) te).getType() == oldType) {
 					
 					TileEntityFluidDuctSimple nextDuct = (TileEntityFluidDuctSimple) te;
-					long connectionsCount = Arrays.stream(nextDuct.connections).filter(Objects::nonNull).count();
+					long connectionsCount = Arrays.stream(nextDuct.connections).filter(Objects::nonNull).count(); // (o -> Objects.nonNull(o))
 					
 					if (connectionsCount > 1) {
 						markDuctsRecursively(world, nextX, nextY, nextZ, type, maxRecursion - currentRecursion);
@@ -186,5 +196,4 @@ public class ItemFluidIdentifier extends Item {
 			return j;
 		}
 	}
-
 }

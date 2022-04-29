@@ -36,6 +36,7 @@ import com.hbm.main.DeserializationException;
 import com.hbm.main.MainRegistry;
 import com.hbm.saveddata.TimeSavedData.TimeDurationType;
 import com.hbm.tileentity.TileEntityProxyBase;
+import com.hbm.tileentity.TileEntityProxyBase;
 import com.hbm.tileentity.TileEntityProxyInventory;
 import com.hbm.tileentity.conductor.TileEntityFluidDuctSimple;
 import com.hbm.tileentity.conductor.TileEntityGasDuct;
@@ -43,16 +44,12 @@ import com.hbm.tileentity.conductor.TileEntityGasDuctSolid;
 import com.hbm.tileentity.conductor.TileEntityOilDuct;
 import com.hbm.tileentity.conductor.TileEntityOilDuctSolid;
 import com.hbm.tileentity.machine.TileEntityDummy;
-import com.hbm.util.ContaminationUtil;
-import com.hbm.util.ContaminationUtil.ContaminationType;
-import com.hbm.util.ContaminationUtil.HazardType;
 
 import api.hbm.energy.IBatteryItem;
 import api.hbm.energy.IEnergyConnector;
 import api.hbm.energy.IEnergyConnectorBlock;
-import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import api.hbm.fluid.IFluidConnector;
+import api.hbm.fluid.IFluidConnectorBlock;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -100,10 +97,11 @@ public class Library
 	public static final String ShimmeringBlaze = "061bc566-ec74-4307-9614-ac3a70d2ef38";
 	public static final String FifeMiner = "37e5eb63-b9a2-4735-9007-1c77d703daa3";
 	public static final String lag_add = "259785a0-20e9-4c63-9286-ac2f93ff528f";
-	public static final String Pu_238 = "c95fdfd3-bea7-4255-a44b-d21bc3df95e3";
 	public static final String Tankish = "609268ad-5b34-49c2-abba-a9d83229af03";
-	public static final String SolsticeUnlimitd = "f5574fd2-ec28-4927-9d11-3c0c731771f4";
 	public static final String FrizzleFrazzle = "fc4cc2ee-12e8-4097-b26a-1c6cb1b96531";
+	public static String the_NCR = "28ae585f-4431-4491-9ce8-3def6126e3c6";
+	public static String Barnaby99_x = "711aaf78-a862-4b7e-921a-216349716e9a";
+	public static String Ma118 = "1121cb7a-8773-491f-8e2b-221290c93d81";
 
 	public static final Set<String> contributors = Sets.newHashSet(new String[] {
 			"06ab7c03-55ce-43f8-9d3c-2850e3c652de", //mustang_rudolf
@@ -432,6 +430,31 @@ public class Library
 		
 		return false;
 	}
+
+	public static boolean canConnectFluid(IBlockAccess world, int x, int y, int z, ForgeDirection dir, FluidType type) {
+		
+		if(y > 255 || y < 0)
+			return false;
+		
+		Block b = world.getBlock(x, y, z);
+		TileEntity te = world.getTileEntity(x, y, z);
+		
+		if(b instanceof IFluidConnectorBlock) {
+			IFluidConnectorBlock con = (IFluidConnectorBlock) b;
+			
+			if(con.canConnect(type, world, x, y, z, dir))
+				return true;
+		}
+		
+		if(te instanceof IFluidConnector) {
+			IFluidConnector con = (IFluidConnector) te;
+			
+			if(con.canConnect(type, dir))
+				return true;
+		}
+		
+		return false;
+	}
 	
 	public static boolean checkFluidConnectables(World world, int x, int y, int z, FluidType type)
 	{
@@ -441,7 +464,6 @@ public class Library
 		if((tileentity != null && (tileentity instanceof IFluidAcceptor || 
 				tileentity instanceof IFluidSource)) || 
 				world.getBlock(x, y, z) == ModBlocks.dummy_port_flare ||
-				world.getBlock(x, y, z) == ModBlocks.dummy_port_chemplant ||
 				world.getBlock(x, y, z) == ModBlocks.dummy_port_fluidtank ||
 				world.getBlock(x, y, z) == ModBlocks.dummy_port_refinery ||
 				world.getBlock(x, y, z) == ModBlocks.dummy_port_pumpjack ||
@@ -762,11 +784,8 @@ public class Library
 		return power;
 	}
 	
-	//TODO: jesus christ kill it
 	//Flut-Füll gesteuerter Energieübertragungsalgorithmus
 	//Flood fill controlled energy transmission algorithm
-	//TODO: bring back the @Cursed annotation just for garbage like this
-	@Deprecated
 	public static void ffgeua(int x, int y, int z, boolean newTact, Object that, World worldObj) {
 		
 		/*
@@ -780,11 +799,6 @@ public class Library
 		Block block = worldObj.getBlock(x, y, z);
 		TileEntity tileentity = worldObj.getTileEntity(x, y, z);
 		
-		//Chemplant
-		if(block == ModBlocks.dummy_port_chemplant)
-		{
-			tileentity = worldObj.getTileEntity(((TileEntityDummy)worldObj.getTileEntity(x, y, z)).targetX, ((TileEntityDummy)worldObj.getTileEntity(x, y, z)).targetY, ((TileEntityDummy)worldObj.getTileEntity(x, y, z)).targetZ);
-		}
 		//Fluid Tank
 		if(block == ModBlocks.dummy_port_fluidtank)
 		{
@@ -889,7 +903,7 @@ public class Library
 		
 		if(tileentity instanceof IFluidDuct)
 		{
-			if(tileentity instanceof TileEntityFluidDuctSimple && ((TileEntityFluidDuctSimple)tileentity).getType() == type)
+			if(tileentity instanceof TileEntityFluidDuctSimple && ((TileEntityFluidDuctSimple)tileentity).getType().name().equals(type.name()))
 			{
 				if(Library.checkUnionListForFluids(((TileEntityFluidDuctSimple)tileentity).uoteab, that))
 				{
@@ -1011,28 +1025,29 @@ public class Library
 			}
 		}
 		
-		if(tileentity instanceof IFluidAcceptor && newTact && ((IFluidAcceptor)tileentity).getMaxFluidFill(type) > 0 &&
-				((IFluidAcceptor)tileentity).getMaxFluidFill(type) - ((IFluidAcceptor)tileentity).getFluidFill(type) > 0) {
+		if(tileentity instanceof IFluidAcceptor && newTact && ((IFluidAcceptor)tileentity).getMaxFluidFillForReceive(type) > 0 &&
+				((IFluidAcceptor)tileentity).getMaxFluidFillForReceive(type) - ((IFluidAcceptor)tileentity).getFluidFillForReceive(type) > 0) {
 			that.getFluidList(type).add((IFluidAcceptor)tileentity);
 		}
 		
-		if(!newTact)
-		{
+		if(!newTact) {
 			int size = that.getFluidList(type).size();
-			if(size > 0)
-			{
-				int part = that.getFluidFill(type) / size;
-				for(IFluidAcceptor consume : that.getFluidList(type))
-				{
-					if(consume.getFluidFill(type) < consume.getMaxFluidFill(type))
-					{
-						if(consume.getMaxFluidFill(type) - consume.getFluidFill(type) >= part)
-						{
-							that.setFluidFill(that.getFluidFill(type) - part, type);
-							consume.setFluidFill(consume.getFluidFill(type) + part, type);
+			
+			if(size > 0) {
+				int part = that.getFluidFillForTransfer(type) / size;
+				
+				for(IFluidAcceptor consume : that.getFluidList(type)) {
+					
+					if(consume.getFluidFillForReceive(type) < consume.getMaxFluidFillForReceive(type)) {
+						
+						if(consume.getMaxFluidFillForReceive(type) - consume.getFluidFillForReceive(type) >= part) {
+							that.transferFluid(part, type);
+							consume.receiveFluid(part, type);
+							
 						} else {
-							that.setFluidFill(that.getFluidFill(type) - (consume.getMaxFluidFill(type) - consume.getFluidFill(type)), type);
-							consume.setFluidFill(consume.getMaxFluidFill(type), type);
+							int transfer = consume.getMaxFluidFillForReceive(type) - consume.getFluidFillForReceive(type);
+							that.transferFluid(transfer, type);
+							consume.receiveFluid(transfer, type);
 						}
 					}
 				}
@@ -1055,11 +1070,6 @@ public class Library
 		}
 		
 		return flag;
-	}
-	
-	public static ItemStack carefulCopy(ItemStack stack)
-	{
-		return stack == null ? null : stack.copy();
 	}
 	
 	public static boolean isObstructed(World world, double x, double y, double z, double a, double b, double c) {

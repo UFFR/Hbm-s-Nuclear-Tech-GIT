@@ -509,13 +509,13 @@ public class TileEntityAMSBase extends TileEntity implements ISidedInventory, IF
 	}
 
 	@Override
-	public void setFillstate(int fill, int index) {
+	public void setFillForSync(int fill, int index) {
 		if(index < 4 && tanks[index] != null)
 			tanks[index].setFill(fill);
 	}
 
 	@Override
-	public void setType(FluidType type, int index) {
+	public void setTypeForSync(FluidType type, int index) {
 		if(index < 4 && tanks[index] != null)
 			tanks[index].setTankType(type);
 	}
@@ -530,16 +530,5 @@ public class TileEntityAMSBase extends TileEntity implements ISidedInventory, IF
 	public double getMaxRenderDistanceSquared()
 	{
 		return 65536.0D;
-	}
-
-	@Override
-	public List<FluidTank> getTanks() {
-		List<FluidTank> list = new ArrayList<FluidTank>();
-		list.add(tanks[0]);
-		list.add(tanks[1]);
-		list.add(tanks[2]);
-		list.add(tanks[3]);
-		
-		return list;
 	}
 }

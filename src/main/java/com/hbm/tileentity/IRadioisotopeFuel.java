@@ -6,6 +6,8 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import com.hbm.config.VersatileConfig;
+import com.hbm.config.MachineConfig;
+import com.hbm.interfaces.ICustomWarhead.SaltedFuel.HalfLifeType;
 import com.hbm.lib.Library;
 import com.hbm.saveddata.TimeSavedData.TimeDurationType;
 import com.hbm.util.BobMathUtil;

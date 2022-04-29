@@ -4,10 +4,14 @@ import com.hbm.blocks.BlockDummyable;
 import com.hbm.inventory.FluidTank;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
+import com.hbm.lib.Library;
+import com.hbm.util.fauxpointtwelve.DirPos;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntityDeuteriumTower extends TileEntityDeuteriumExtractor {
@@ -15,9 +19,9 @@ public class TileEntityDeuteriumTower extends TileEntityDeuteriumExtractor {
 	public static final long maxPower = 1000000;
 
 	public TileEntityDeuteriumTower() {
-		tanks = new FluidTank[2];
+		super();
 		tanks[0] = new FluidTank(Fluids.WATER, 50000, 0);
-		tanks[1] = new FluidTank(Fluids.HEAVYWATER, 5000, 0);
+		tanks[1] = new FluidTank(Fluids.HEAVYWATER, 5000, 1);
 	}
 
 	public void fillFluidInit(FluidType type) {
@@ -71,6 +75,27 @@ public class TileEntityDeuteriumTower extends TileEntityDeuteriumExtractor {
 	}
 	
 	protected void updateConnections() {
+
+		for(DirPos pos : getConPos()) {
+			this.trySubscribe(worldObj, pos.getX(), pos.getY(), pos.getZ(), pos.getDir());
+		}
+	}
+	
+	public void subscribeToAllAround(FluidType type, World world, int x, int y, int z) {
+
+		for(DirPos pos : getConPos()) {
+			this.trySubscribe(type, world, pos.getX(), pos.getY(), pos.getZ(), pos.getDir());
+		}
+	}
+	
+	public void sendFluidToAll(FluidType type, TileEntity te) {
+
+		for(DirPos pos : getConPos()) {
+			this.sendFluid(type, worldObj, pos.getX(), pos.getY(), pos.getZ(), pos.getDir());
+		}
+	}
+	
+	private DirPos[] getConPos() {
 		
 		int offsetX = 0;
 		int offsetZ = 0;
@@ -85,14 +110,16 @@ public class TileEntityDeuteriumTower extends TileEntityDeuteriumExtractor {
 			offsetZ = dir.offsetZ;
 		}
 
-		this.trySubscribe(worldObj, this.xCoord + offsetX * 2, this.yCoord, this.zCoord - offsetZ * 1, ForgeDirection.UNKNOWN); //TODO: figure this one out without dying
-		this.trySubscribe(worldObj, this.xCoord + offsetX * 2, this.yCoord, this.zCoord - offsetZ * 0, ForgeDirection.UNKNOWN);
-		this.trySubscribe(worldObj, this.xCoord + offsetX * 1, this.yCoord, this.zCoord - offsetZ * 2, ForgeDirection.UNKNOWN);
-		this.trySubscribe(worldObj, this.xCoord + offsetX * 0, this.yCoord, this.zCoord - offsetZ * 2, ForgeDirection.UNKNOWN);
-		this.trySubscribe(worldObj, this.xCoord + offsetX * 1, this.yCoord, this.zCoord + offsetZ * 1, ForgeDirection.UNKNOWN);
-		this.trySubscribe(worldObj, this.xCoord + offsetX * 0, this.yCoord, this.zCoord + offsetZ * 1, ForgeDirection.UNKNOWN);
-		this.trySubscribe(worldObj, this.xCoord - offsetX * 1, this.yCoord, this.zCoord + offsetZ * 0, ForgeDirection.UNKNOWN);
-		this.trySubscribe(worldObj, this.xCoord - offsetX * 1, this.yCoord, this.zCoord - offsetZ * 1, ForgeDirection.UNKNOWN);
+		return new DirPos[] {
+			new DirPos(this.xCoord + offsetX * 2, this.yCoord, this.zCoord - offsetZ * 1, Library.POS_X),
+			new DirPos(this.xCoord + offsetX * 2, this.yCoord, this.zCoord - offsetZ * 0, Library.POS_X),
+			new DirPos(this.xCoord + offsetX * 1, this.yCoord, this.zCoord - offsetZ * 2, Library.NEG_Z),
+			new DirPos(this.xCoord + offsetX * 0, this.yCoord, this.zCoord - offsetZ * 2, Library.NEG_Z),
+			new DirPos(this.xCoord + offsetX * 1, this.yCoord, this.zCoord + offsetZ * 1, Library.POS_Z),
+			new DirPos(this.xCoord + offsetX * 0, this.yCoord, this.zCoord + offsetZ * 1, Library.POS_Z),
+			new DirPos(this.xCoord - offsetX * 1, this.yCoord, this.zCoord + offsetZ * 0, Library.NEG_Z),
+			new DirPos(this.xCoord - offsetX * 1, this.yCoord, this.zCoord - offsetZ * 1, Library.NEG_Z)
+		};
 	}
 
 	AxisAlignedBB bb = null;
@@ -118,5 +145,10 @@ public class TileEntityDeuteriumTower extends TileEntityDeuteriumExtractor {
 	@SideOnly(Side.CLIENT)
 	public double getMaxRenderDistanceSquared() {
 		return 65536.0D;
+	}
+
+	@Override
+	public long getMaxPower() {
+		return maxPower;
 	}
 }

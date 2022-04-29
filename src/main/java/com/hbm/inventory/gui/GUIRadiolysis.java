@@ -37,7 +37,7 @@ public class GUIRadiolysis extends GuiInfoContainer {
 		radiolysis.tanks[1].renderTankInfo(this, mouseX, mouseY, guiLeft + 87, guiTop + 17, 12, 16);
 		radiolysis.tanks[2].renderTankInfo(this, mouseX, mouseY, guiLeft + 87, guiTop + 53, 12, 16);
 		
-		drawElectricityInfo(this, mouseX, mouseY, guiLeft + 8, guiTop + 17, 16, 34, radiolysis.power, TileEntityMachineRadiolysis.maxPower);
+		this.drawElectricityInfo(this, mouseX, mouseY, guiLeft + 8, guiTop + 17, 16, 34, radiolysis.power, radiolysis.maxPower);
 		
 		String[] descText = I18nUtil.resolveKeyArray("desc.gui.radiolysis.desc");
 		this.drawCustomInfoStat(mouseX, mouseY, guiLeft - 16, guiTop + 16, 16, 16, guiLeft - 8, guiTop + 16 + 16, descText);
@@ -45,17 +45,14 @@ public class GUIRadiolysis extends GuiInfoContainer {
 		String[] heatText = I18nUtil.resolveKeyArray("desc.gui.rtg.heat", radiolysis.heat);
 		this.drawCustomInfoStat(mouseX, mouseY, guiLeft - 16, guiTop + 16 + 18, 16, 16, guiLeft - 8, guiTop + 16 + 18 + 16, heatText);
 		
-		List<ItemRTGPellet> pellets = ItemRTGPellet.getPellets();
+		List<ItemRTGPellet> pellets = ItemRTGPellet.pelletList;
 		String[] pelletText = new String[pellets.size() + 1];
+		pelletText[0] = I18nUtil.resolveKey("desc.gui.rtg.pellets");
 		
-		pelletText = assembleRTGPellets();
-		
-//		pelletText[0] = I18nUtil.resolveKey("desc.gui.rtg.pellets");
-		
-//		for(int i = 0; i < pellets.size(); i++) {
-//			ItemRTGPellet pellet = pellets.get(i);
-//			pelletText[i + 1] = I18nUtil.resolveKey("desc.gui.rtg.pelletPower", I18nUtil.resolveKey(pellet.getUnlocalizedName() + ".name"), pellet.getHeat() * 10);
-//		}
+		for(int i = 0; i < pellets.size(); i++) {
+			ItemRTGPellet pellet = pellets.get(i);
+			pelletText[i + 1] = I18nUtil.resolveKey("desc.gui.rtg.pelletPower", I18nUtil.resolveKey(pellet.getUnlocalizedName() + ".name"), pellet.getHeat() * 10);
+		}
 		
 		this.drawCustomInfoStat(mouseX, mouseY, guiLeft - 16, guiTop + 16 + 36, 16, 16, guiLeft - 8, guiTop + 16 + 36 + 16, pelletText);
 	}

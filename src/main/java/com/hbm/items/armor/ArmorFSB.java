@@ -2,13 +2,16 @@ package com.hbm.items.armor;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 
 import org.apache.logging.log4j.Level;
 import org.lwjgl.opengl.GL11;
 
+import com.hbm.extprop.HbmPlayerProps;
 import com.hbm.handler.radiation.ChunkRadiationManager;
 import com.hbm.main.MainRegistry;
 import com.hbm.util.I18nUtil;
@@ -26,6 +29,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
@@ -42,7 +46,7 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
 //Armor with full set bonus
-public class ArmorFSB extends ItemArmor {
+public class ArmorFSB extends ItemArmor implements IArmorDisableModel {
 
 	private String texture = "";
 	private ResourceLocation overlay = null;
@@ -53,6 +57,7 @@ public class ArmorFSB extends ItemArmor {
 	public float damageCap = -1;
 	public float damageMod = -1;
 	public float damageThreshold = 0;
+	public float protectionYield = 100F;
 	public boolean fireproof = false;
 	public boolean noHelmet = false;
 	public boolean vats = false;
@@ -61,6 +66,7 @@ public class ArmorFSB extends ItemArmor {
 	public boolean customGeiger = false;
 	public boolean hardLanding = false;
 	public double gravity = 0;
+	public int dashCount = 0;
 	public String step;
 	public String jump;
 	public String fall;
@@ -92,6 +98,11 @@ public class ArmorFSB extends ItemArmor {
 
 	public ArmorFSB setThreshold(float threshold) {
 		this.damageThreshold = threshold;
+		return this;
+	}
+
+	public ArmorFSB setProtectionLevel(float damageYield) {
+		this.protectionYield = damageYield;
 		return this;
 	}
 
@@ -144,6 +155,11 @@ public class ArmorFSB extends ItemArmor {
 		this.gravity = gravity;
 		return this;
 	}
+	
+	public ArmorFSB setDashCount(int dashCount) {
+		this.dashCount = dashCount;
+		return this;
+	}
 
 	public ArmorFSB setStep(String step) {
 		this.step = step;
@@ -173,6 +189,7 @@ public class ArmorFSB extends ItemArmor {
 		this.damageCap = original.damageCap;
 		this.damageMod = original.damageMod;
 		this.damageThreshold = original.damageThreshold;
+		this.protectionYield = original.protectionYield;
 		this.blastProtection = original.blastProtection;
 		this.projectileProtection = original.projectileProtection;
 		this.fireproof = original.fireproof;
@@ -183,6 +200,7 @@ public class ArmorFSB extends ItemArmor {
 		this.customGeiger = original.customGeiger;
 		this.hardLanding = original.hardLanding;
 		this.gravity = original.gravity;
+		this.dashCount = original.dashCount;
 		this.step = original.step;
 		this.jump = original.jump;
 		this.fall = original.fall;
@@ -220,12 +238,10 @@ public class ArmorFSB extends ItemArmor {
 		}
 
 		if(blastProtection != -1) {
-
 			list.add(EnumChatFormatting.YELLOW + "  " + I18nUtil.resolveKey("armor.blastProtection", blastProtection));
 		}
 
 		if(projectileProtection != -1) {
-
 			list.add(EnumChatFormatting.YELLOW + "  " + I18nUtil.resolveKey("armor.projectileProtection", projectileProtection));
 		}
 
@@ -267,6 +283,14 @@ public class ArmorFSB extends ItemArmor {
 
 		if(gravity != 0) {
 			list.add(EnumChatFormatting.BLUE + "  " + I18nUtil.resolveKey("armor.gravity", gravity));
+		}
+		
+		if(dashCount > 0) {
+			list.add(EnumChatFormatting.AQUA + "  " + I18nUtil.resolveKey("armor.dash", dashCount));
+		}
+
+		if(protectionYield != 100F) {
+			list.add(EnumChatFormatting.BLUE + "  Protection applies to damage <" + protectionYield);
 		}
 	}
 
@@ -364,32 +388,37 @@ public class ArmorFSB extends ItemArmor {
 			if(ArmorFSB.hasFSBArmor(player)) {
 
 				ArmorFSB chestplate = (ArmorFSB) player.inventory.armorInventory[2].getItem();
+				
+				//store any damage above the yield
+				float overFlow = Math.max(0, event.ammount - chestplate.protectionYield);
+				//reduce the damage to the yield cap if it exceeds the yield
+				event.ammount = Math.min(event.ammount, chestplate.protectionYield);
 
-				if(event.ammount < 100) {
+				if(!event.source.isUnblockable())
+					event.ammount -= chestplate.damageThreshold;
 
-					if(!event.source.isUnblockable())
-						event.ammount -= chestplate.damageThreshold;
-
-					if(chestplate.damageMod != -1) {
-						event.ammount *= chestplate.damageMod;
-					}
-
-					if(chestplate.resistance.get(event.source.getDamageType()) != null) {
-						event.ammount *= chestplate.resistance.get(event.source.getDamageType());
-					}
-
-					if(chestplate.blastProtection != -1 && event.source.isExplosion()) {
-						event.ammount *= chestplate.blastProtection;
-					}
-
-					if(chestplate.projectileProtection != -1 && event.source.isProjectile()) {
-						event.ammount *= chestplate.projectileProtection;
-					}
-
-					if(chestplate.damageCap != -1) {
-						event.ammount = Math.min(event.ammount, chestplate.damageCap);
-					}
+				if(chestplate.damageMod != -1) {
+					event.ammount *= chestplate.damageMod;
 				}
+
+				if(chestplate.resistance.get(event.source.getDamageType()) != null) {
+					event.ammount *= chestplate.resistance.get(event.source.getDamageType());
+				}
+
+				if(chestplate.blastProtection != -1 && event.source.isExplosion()) {
+					event.ammount *= chestplate.blastProtection;
+				}
+
+				if(chestplate.projectileProtection != -1 && event.source.isProjectile()) {
+					event.ammount *= chestplate.projectileProtection;
+				}
+
+				if(chestplate.damageCap != -1) {
+					event.ammount = Math.min(event.ammount, chestplate.damageCap);
+				}
+				
+				//add back anything that was above the protection yield before
+				event.ammount += overFlow;
 			}
 		}
 	}
@@ -438,6 +467,46 @@ public class ArmorFSB extends ItemArmor {
 					MainRegistry.logger.catching(Level.INFO, x);
 				}
 			}
+			/*
+			if(dashCount > 0) {
+				
+				int perDash = 60;
+				
+				HbmPlayerProps props = (HbmPlayerProps) player.getExtendedProperties("NTM_EXT_PLAYER");
+				
+				props.setDashCount(dashCount);
+				
+				int stamina = props.getStamina();
+
+				if(props.getDashCooldown() <= 0) {
+					
+					if(!player.capabilities.isFlying && player.isSneaking() && stamina >= perDash) {
+						
+						Vec3 lookingIn = player.getLookVec();
+						lookingIn.yCoord = 0;
+						lookingIn.normalize();
+						player.addVelocity(lookingIn.xCoord, 0, lookingIn.zCoord);
+						player.playSound("hbm:player.dash", 1.0F, 1.0F);
+						
+						props.setDashCooldown(HbmPlayerProps.dashCooldownLength);
+						stamina -= perDash;
+					}
+				} else {	
+					props.setDashCooldown(props.getDashCooldown() - 1);
+				}
+				
+				if(stamina < props.getDashCount() * perDash) {
+					stamina++;
+					
+					if(stamina % perDash == perDash-1) {
+						
+						player.playSound("hbm:player.dashRecharge", 1.0F, (1.0F + ((1F/12F)*(stamina/perDash))));
+						stamina++;
+					}
+				}
+				
+				props.setStamina(stamina);
+			}	*/
 		}
 	}
 
@@ -466,6 +535,9 @@ public class ArmorFSB extends ItemArmor {
 				List<Entity> entities = player.worldObj.getEntitiesWithinAABBExcludingEntity(player, player.boundingBox.expand(3, 0, 3));
 
 				for(Entity e : entities) {
+					
+					if(e instanceof EntityItem)
+						continue;
 
 					Vec3 vec = Vec3.createVectorHelper(player.posX - e.posX, 0, player.posZ - e.posZ);
 
@@ -572,5 +644,23 @@ public class ArmorFSB extends ItemArmor {
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glEnable(GL11.GL_ALPHA_TEST);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+	}
+
+	private HashSet<EnumPlayerPart> hidden = new HashSet();
+	private boolean needsFullSet = false;
+	
+	public ArmorFSB hides(EnumPlayerPart... parts) {
+		Collections.addAll(hidden, parts);
+		return this;
+	}
+	
+	public ArmorFSB setFullSetForHide() {
+		needsFullSet = true;
+		return this;
+	}
+	
+	@Override
+	public boolean disablesPart(EntityPlayer player, ItemStack stack, EnumPlayerPart part) {
+		return hidden.contains(part) && (!needsFullSet || hasFSBArmorIgnoreCharge(player));
 	}
 }

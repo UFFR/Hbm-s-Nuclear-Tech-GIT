@@ -43,82 +43,20 @@ public class ItemEnergy extends ItemCustomLore
 			onConsume.accept(player);
 		}
 
-		if(!player.capabilities.isCreativeMode && this != ModItems.chocolate_milk) {
-			if(this == ModItems.can_creature || this == ModItems.can_mrsugar || this == ModItems.can_overcharge || this == ModItems.can_redbomb || this == ModItems.can_smart || this == ModItems.can_luna || this == ModItems.can_bepis || this == ModItems.can_breen) {
-				player.inventory.addItemStackToInventory(new ItemStack(ModItems.ring_pull));
-				if(stack.stackSize <= 0) {
-					return new ItemStack(ModItems.can_empty);
-				}
+		if(!player.capabilities.isCreativeMode) {
 
-				player.inventory.addItemStackToInventory(new ItemStack(ModItems.can_empty));
-			}
-
-			if(this == ModItems.bottle_cherry || this == ModItems.bottle_nuka) {
-				player.inventory.addItemStackToInventory(new ItemStack(ModItems.cap_nuka));
-				if(stack.stackSize <= 0) {
-					return new ItemStack(ModItems.bottle_empty);
-				}
-
-				player.inventory.addItemStackToInventory(new ItemStack(ModItems.bottle_empty));
-			}
-
-			if(this == ModItems.bottle_quantum) {
-				player.inventory.addItemStackToInventory(new ItemStack(ModItems.cap_quantum));
-				if(stack.stackSize <= 0) {
-					return new ItemStack(ModItems.bottle_empty);
-				}
-
-				player.inventory.addItemStackToInventory(new ItemStack(ModItems.bottle_empty));
-			}
-
-			if(this == ModItems.bottle2_korl || this == ModItems.bottle2_korl_special) {
-				player.inventory.addItemStackToInventory(new ItemStack(ModItems.cap_korl));
-				if(stack.stackSize <= 0) {
-					return new ItemStack(ModItems.bottle2_empty);
-				}
-
-				player.inventory.addItemStackToInventory(new ItemStack(ModItems.bottle2_empty));
-			}
-
-			if(this == ModItems.bottle2_fritz || this == ModItems.bottle2_fritz_special) {
-				player.inventory.addItemStackToInventory(new ItemStack(ModItems.cap_fritz));
-				if(stack.stackSize <= 0) {
-					return new ItemStack(ModItems.bottle2_empty);
-				}
-
-				player.inventory.addItemStackToInventory(new ItemStack(ModItems.bottle2_empty));
-			}
-
-			if(this == ModItems.bottle_sparkle) {
-				player.inventory.addItemStackToInventory(new ItemStack(ModItems.cap_sparkle));
-				if(stack.stackSize <= 0) {
-					return new ItemStack(ModItems.bottle_empty);
-				}
-
-				player.inventory.addItemStackToInventory(new ItemStack(ModItems.bottle_empty));
-			}
-
-			if(this == ModItems.bottle_rad) {
-				player.inventory.addItemStackToInventory(new ItemStack(ModItems.cap_rad));
-				if(stack.stackSize <= 0) {
-					return new ItemStack(ModItems.bottle_empty);
-				}
-
-				player.inventory.addItemStackToInventory(new ItemStack(ModItems.bottle_empty));
-			}
-
-			if(this == ModItems.bottle2_sunset) {
-
-				if(world.rand.nextInt(10) == 0)
+			if(this.cap != null) {
+				
+				if(this == ModItems.bottle2_sunset && world.rand.nextInt(20) == 0)
 					player.inventory.addItemStackToInventory(new ItemStack(ModItems.cap_star));
 				else
-					player.inventory.addItemStackToInventory(new ItemStack(ModItems.cap_sunset));
-
+					player.inventory.addItemStackToInventory(new ItemStack(this.cap));
+			}
+			if(this.container != null) {
 				if(stack.stackSize <= 0) {
-					return new ItemStack(ModItems.bottle2_empty);
+					return new ItemStack(this.container);
 				}
-
-				player.inventory.addItemStackToInventory(new ItemStack(ModItems.bottle2_empty));
+				player.inventory.addItemStackToInventory(new ItemStack(this.container));
 			}
 		}
 		player.inventory.addItemStackToInventory(getContainerItem(stack));
@@ -137,6 +75,7 @@ public class ItemEnergy extends ItemCustomLore
 		return EnumAction.drink;
 	}
 
+	@Spaghetti("cover yourself in oil")
 	@Override
 	public ItemStack onItemRightClick(ItemStack p_77659_1_, World p_77659_2_, EntityPlayer p_77659_3_) {
 

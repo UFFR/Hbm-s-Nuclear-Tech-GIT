@@ -9,6 +9,7 @@ import com.hbm.blocks.BlockDummyable;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.inventory.FluidTank;
 import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.FluidTypeFlammable;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemRTGPellet;
@@ -16,6 +17,8 @@ import com.hbm.lib.Library;
 import com.hbm.tileentity.IRTGUser;
 import com.hbm.tileentity.IRadioisotopeFuel;
 import com.hbm.tileentity.TileEntityMachineBase;
+import com.hbm.util.RTGUtil;
+
 import api.hbm.energy.IEnergyGenerator;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -34,8 +37,8 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 	public int spin;
 	public int[] burn = new int[4];
 	public boolean hasRTG = false;
-	public final static int[] RTGSlots = new int[]{ 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
-	private BigInteger date = BigInteger.ZERO;
+	public int[] RTGSlots = new int[]{ 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+
 	@SideOnly(Side.CLIENT)
 	public float rotation;
 	@SideOnly(Side.CLIENT)
@@ -130,8 +133,8 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 			}
 			
 			// RTG ///
-			this.hasRTG = getHeat() > 0;
-			this.spin += getHeat() * 0.2;
+			this.hasRTG = RTGUtil.hasHeat(slots, RTGSlots);
+			this.spin += RTGUtil.updateRTGs(slots, RTGSlots) * 0.2;
 			
 			if(this.spin > 0) {
 				
@@ -189,31 +192,14 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 	}
 	
 	public static final int coalGenRate = 75;
-	public static final HashMap<FluidType, Integer> fuels = new HashMap<>();
-	
-	static {
-		fuels.put(Fluids.SMEAR,			50);
-		fuels.put(Fluids.HEATINGOIL,	75);
-		fuels.put(Fluids.HYDROGEN,		5);
-		fuels.put(Fluids.DIESEL,		225);
-		fuels.put(Fluids.KEROSENE,		300);
-		fuels.put(Fluids.RECLAIMED,		100);
-		fuels.put(Fluids.PETROIL,		125);
-		fuels.put(Fluids.BIOFUEL,		200);
-		fuels.put(Fluids.GASOLINE,		700);
-		fuels.put(Fluids.NITAN,			2500);
-		fuels.put(Fluids.LPG,			200);
-		fuels.put(Fluids.ETHANOL,		75);
-	}
 	
 	public int getPowerFromFuel() {
 		FluidType type = tanks[1].getTankType();
-		Integer value = fuels.get(type);
-		return value != null ? value : 0;
+		return type instanceof FluidTypeFlammable ? (int)(((FluidTypeFlammable) type).getHeatEnergy() / 1000L) : 0;
 	}
 
 	@Override
-	public void setFillstate(int fill, int index) {
+	public void setFillForSync(int fill, int index) {
 		tanks[index].setFill(fill);
 	}
 
@@ -229,13 +215,8 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 	}
 
 	@Override
-	public void setType(FluidType type, int index) {
+	public void setTypeForSync(FluidType type, int index) {
 		tanks[index].setTankType(type);
-	}
-
-	@Override
-	public List<FluidTank> getTanks() {
-		return Arrays.asList(tanks);
 	}
 
 	@Override

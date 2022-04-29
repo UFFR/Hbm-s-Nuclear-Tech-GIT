@@ -14,6 +14,7 @@ import net.minecraft.block.Block;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
@@ -35,7 +36,6 @@ public class MineralRecipes {
 		add1To9Pair(ModBlocks.block_aluminium, ModItems.ingot_aluminium);
 		add1To9Pair(ModBlocks.block_graphite, ModItems.ingot_graphite);
 		add1To9Pair(ModBlocks.block_boron, ModItems.ingot_boron);
-		add1To9Pair(ModItems.powder_boron, ModItems.powder_boron_tiny);
 		add1To9Pair(ModBlocks.block_schraranium, ModItems.ingot_schraranium);
 		add1To9Pair(ModBlocks.block_lanthanium, ModItems.ingot_lanthanium);
 		add1To9Pair(ModBlocks.block_ra226, ModItems.ingot_ra226);
@@ -43,10 +43,12 @@ public class MineralRecipes {
 		add1To9Pair(ModBlocks.block_schrabidate, ModItems.ingot_schrabidate);
 		add1To9Pair(ModBlocks.block_coltan, ModItems.fragment_coltan);
 		add1To9Pair(ModBlocks.block_smore, ModItems.ingot_smore);
-		add1To9Pair(ModItems.nuclear_waste_vitrified, ModItems.nuclear_waste_vitrified_tiny);
-		add1To9Pair(ModBlocks.block_waste_vitrified, ModItems.nuclear_waste_vitrified);
 		add1To9Pair(ModBlocks.block_niobium, ModItems.ingot_niobium);
 		add1To9Pair(ModBlocks.block_semtex, ModItems.ingot_semtex);
+		add1To9Pair(ModBlocks.block_c4, ModItems.ingot_c4);
+		add1To9Pair(ModBlocks.block_polymer, ModItems.ingot_polymer);
+		add1To9Pair(ModBlocks.block_bakelite, ModItems.ingot_bakelite);
+		add1To9Pair(ModBlocks.block_rubber, ModItems.ingot_rubber);
 
 		add1To9Pair(ModBlocks.block_staballoy, ModItems.ingot_staballoy);
 		add1To9Pair(ModBlocks.block_ferrouranium, ModItems.ingot_ferrouranium);
@@ -58,7 +60,9 @@ public class MineralRecipes {
 		addMineralSet(ModItems.nugget_zirconium, ModItems.ingot_zirconium, ModBlocks.block_zirconium);
 		addMineralSet(ModItems.nugget_dineutronium, ModItems.ingot_dineutronium, ModBlocks.block_dineutronium);
 		addMineralSet(ModItems.nugget_silicon, ModItems.ingot_silicon, ModBlocks.block_silicon);
-		
+		addMineralSet(ModItems.nuclear_waste_vitrified_tiny, ModItems.nuclear_waste_vitrified, ModBlocks.block_waste_vitrified);
+
+		add1To9Pair(ModItems.powder_boron, ModItems.powder_boron_tiny);
 		add1To9Pair(ModItems.powder_sr90, ModItems.powder_sr90_tiny);
 		add1To9Pair(ModItems.powder_xe135, ModItems.powder_xe135_tiny);
 		add1To9Pair(ModItems.powder_cs137, ModItems.powder_cs137_tiny);
@@ -71,6 +75,7 @@ public class MineralRecipes {
 		add1To9Pair(ModItems.ingot_pb209, ModItems.nugget_pb209);
 		add1To9Pair(ModItems.ingot_ra226, ModItems.nugget_ra226);
 		add1To9Pair(ModItems.ingot_actinium, ModItems.nugget_actinium);
+		add1To9Pair(ModItems.ingot_arsenic, ModItems.nugget_arsenic);
 
 		add1To9Pair(ModItems.ingot_pu241, ModItems.nugget_pu241);
 		add1To9Pair(ModItems.ingot_am241, ModItems.nugget_am241);
@@ -253,7 +258,8 @@ public class MineralRecipes {
 		GameRegistry.addShapelessRecipe(new ItemStack(ModItems.ingot_mercury, 2), new Object[] { new ItemStack(ModItems.pellet_rtg_depleted, 1, DepletedRTGMaterial.MERCURY.ordinal()) });
 		GameRegistry.addShapelessRecipe(new ItemStack(ModItems.billet_neptunium, 3), new Object[] { new ItemStack(ModItems.pellet_rtg_depleted, 1, DepletedRTGMaterial.NEPTUNIUM.ordinal()) });
 		GameRegistry.addShapelessRecipe(new ItemStack(ModItems.billet_zirconium, 3), new Object[] { new ItemStack(ModItems.pellet_rtg_depleted, 1, DepletedRTGMaterial.ZIRCONIUM.ordinal()) });
-		GameRegistry.addShapelessRecipe(new ItemStack(ModItems.ingot_nickel, 2), new Object[] { new ItemStack(ModItems.pellet_rtg_depleted, 1, DepletedRTGMaterial.NICKEL.ordinal()) });
+		if(OreDictionary.doesOreNameExist("ingotNickel"))
+			GameRegistry.addShapelessRecipe(new ItemStack(OreDictionary.getOres("ingotNickel").get(0).getItem(), 2), new Object[] { new ItemStack(ModItems.pellet_rtg_depleted, 1, DepletedRTGMaterial.NICKEL.ordinal()) });
 		
 		GameRegistry.addRecipe(new ItemStack(Item.getItemFromBlock(ModBlocks.block_copper), 1), new Object[] { "###", "###", "###", '#', ModItems.ingot_copper });
 		GameRegistry.addRecipe(new ItemStack(Item.getItemFromBlock(ModBlocks.block_fluorite), 1), new Object[] { "###", "###", "###", '#', ModItems.fluorite });

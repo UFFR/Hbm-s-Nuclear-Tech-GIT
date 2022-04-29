@@ -6,11 +6,11 @@ import java.util.UUID;
 import com.google.common.collect.Multimap;
 import com.hbm.extprop.HbmPlayerProps;
 import com.hbm.items.ModItems;
-import com.hbm.lib.Library;
 import com.hbm.packet.AuxParticlePacketNT;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.render.model.ModelArmorDNT;
 import com.hbm.util.ArmorUtil;
+import com.hbm.util.BobMathUtil;
 import com.hbm.util.I18nUtil;
 
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
@@ -68,7 +68,7 @@ public class ArmorDNT extends ArmorFSBPowered
 		HbmPlayerProps props = HbmPlayerProps.getData(player);
 		
 		/// SPEED ///
-		Multimap multimap = super.getItemAttributeModifiers();
+		Multimap multimap = super.getAttributeModifiers(stack);
 		multimap.put(SharedMonsterAttributes.movementSpeed.getAttributeUnlocalizedName(), new AttributeModifier(speed, "DNT SPEED", 0.25, 0));
 		player.getAttributeMap().removeAttributeModifiers(multimap);
 		
@@ -172,7 +172,7 @@ public class ArmorDNT extends ArmorFSBPowered
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean bool) {
 
-		list.add("Charge: " + Library.getShortNumber(getCharge(stack)) + " / " + Library.getShortNumber(maxPower));
+		list.add("Charge: " + BobMathUtil.getShortNumber(getCharge(stack)) + " / " + BobMathUtil.getShortNumber(maxPower));
 
 		list.add(EnumChatFormatting.GOLD + I18nUtil.resolveKey("armor.fullSetBonus"));
 

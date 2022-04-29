@@ -58,7 +58,6 @@ public class TileEntityMachineReactorBreeding extends TileEntityMachineBase {
 		}
 	}
 	
-	@Override
 	public void networkUnpack(NBTTagCompound data) {
 		flux = data.getInteger("flux");
 		progress = data.getFloat("progress");

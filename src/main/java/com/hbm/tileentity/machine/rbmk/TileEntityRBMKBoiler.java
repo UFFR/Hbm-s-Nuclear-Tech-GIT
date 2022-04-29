@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hbm.blocks.ModBlocks;
-import com.hbm.entity.projectile.EntityDebrisBase.DebrisType;
+import com.hbm.entity.projectile.EntityRBMKDebris.DebrisType;
 import com.hbm.interfaces.IControlReceiver;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidSource;
@@ -66,7 +66,7 @@ public class TileEntityRBMKBoiler extends TileEntityRBMKSlottedBase implements I
 		super.updateEntity();
 	}
 	
-	public double getHeatFromSteam(FluidType type) {
+	public static double getHeatFromSteam(FluidType type) {
 		if(type == Fluids.STEAM) return 100D;
 		if(type == Fluids.HOTSTEAM) return 300D;
 		if(type == Fluids.SUPERHOTSTEAM) return 450D;
@@ -74,7 +74,7 @@ public class TileEntityRBMKBoiler extends TileEntityRBMKSlottedBase implements I
 		return 0D;
 	}
 	
-	public double getFactorFromSteam(FluidType type) {
+	public static double getFactorFromSteam(FluidType type) {
 		if(type == Fluids.STEAM) return 1D;
 		if(type == Fluids.HOTSTEAM) return 10D;
 		if(type == Fluids.SUPERHOTSTEAM) return 100D;
@@ -148,7 +148,7 @@ public class TileEntityRBMKBoiler extends TileEntityRBMKSlottedBase implements I
 	}
 
 	@Override
-	public void setFillstate(int fill, int index) {
+	public void setFillForSync(int fill, int index) {
 
 		if(index == 0)
 			feed.setFill(fill);
@@ -157,21 +157,12 @@ public class TileEntityRBMKBoiler extends TileEntityRBMKSlottedBase implements I
 	}
 
 	@Override
-	public void setType(FluidType type, int index) {
+	public void setTypeForSync(FluidType type, int index) {
 
 		if(index == 0)
 			feed.setTankType(type);
 		else if(index == 1)
 			steam.setTankType(type);
-	}
-
-	@Override
-	public List<FluidTank> getTanks() {
-		List<FluidTank> list = new ArrayList();
-		list.add(feed);
-		list.add(steam);
-		
-		return list;
 	}
 	
 	@Override
@@ -211,10 +202,10 @@ public class TileEntityRBMKBoiler extends TileEntityRBMKSlottedBase implements I
 		if(data.hasKey("compression")) {
 			
 			FluidType type = steam.getTankType();
-			if(type == Fluids.STEAM) { steam.setTankType(Fluids.HOTSTEAM); steam.setFill(steam.getFill() / 10); }
-			if(type == Fluids.HOTSTEAM) { steam.setTankType(Fluids.SUPERHOTSTEAM); steam.setFill(steam.getFill() / 10); }
-			if(type == Fluids.SUPERHOTSTEAM) { steam.setTankType(Fluids.ULTRAHOTSTEAM); steam.setFill(steam.getFill() / 10); }
-			if(type == Fluids.ULTRAHOTSTEAM) { steam.setTankType(Fluids.STEAM); steam.setFill(Math.min(steam.getFill() * 1000, steam.getMaxFill())); }
+			if(type == Fluids.STEAM) {			steam.setTankType(Fluids.HOTSTEAM);			steam.setFill(steam.getFill() / 10); }
+			if(type == Fluids.HOTSTEAM) {		steam.setTankType(Fluids.SUPERHOTSTEAM);	steam.setFill(steam.getFill() / 10); }
+			if(type == Fluids.SUPERHOTSTEAM) {	steam.setTankType(Fluids.ULTRAHOTSTEAM);	steam.setFill(steam.getFill() / 10); }
+			if(type == Fluids.ULTRAHOTSTEAM) {	steam.setTankType(Fluids.STEAM);			steam.setFill(Math.min(steam.getFill() * 1000, steam.getMaxFill())); }
 			
 			this.markDirty();
 		}

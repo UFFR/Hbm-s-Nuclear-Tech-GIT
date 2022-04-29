@@ -121,7 +121,7 @@ public class TileEntitySILEX extends TileEntityMachineBase implements IFluidAcce
 		return (currentFill * i) / maxFill;
 	}
 
-	public static final HashMap<FluidType, ComparableStack> fluidConversion = new HashMap<>();
+	public static final HashMap<FluidType, ComparableStack> fluidConversion = new HashMap();
 
 	static {
 		putFluid(Fluids.UF6);
@@ -166,7 +166,7 @@ public class TileEntitySILEX extends TileEntityMachineBase implements IFluidAcce
 
 			int load = recipe.fluidProduced;
 
-			if(load <= maxFill - this.currentFill && load <= tank.getFill()) {
+			if(load <= this.maxFill - this.currentFill && load <= tank.getFill()) {
 				this.currentFill += load;
 				this.current = new ComparableStack(slots[0]).makeSingular();
 				tank.setFill(tank.getFill() - load);
@@ -185,7 +185,7 @@ public class TileEntitySILEX extends TileEntityMachineBase implements IFluidAcce
 		if(recipe == null)
 			return false;
 
-		if(recipe.laserStrength > this.mode.ordinal())
+		if(recipe.laserStrength.ordinal() > this.mode.ordinal())
 			return false;
 
 		if(currentFill < recipe.fluidConsumed)
@@ -194,7 +194,7 @@ public class TileEntitySILEX extends TileEntityMachineBase implements IFluidAcce
 		if(slots[4] != null)
 			return false;
 
-		int progressSpeed = (int) Math.pow(2, this.mode.ordinal() - recipe.laserStrength + 1) / 2;
+		int progressSpeed = (int) Math.pow(2, this.mode.ordinal() - recipe.laserStrength.ordinal() + 1) / 2;
 
 		progress += progressSpeed;
 
@@ -291,7 +291,7 @@ public class TileEntitySILEX extends TileEntityMachineBase implements IFluidAcce
 	}
 
 	@Override
-	public void setFillstate(int fill, int index) {
+	public void setFillForSync(int fill, int index) {
 		tank.setFill(fill);
 	}
 
@@ -303,17 +303,8 @@ public class TileEntitySILEX extends TileEntityMachineBase implements IFluidAcce
 	}
 
 	@Override
-	public void setType(FluidType type, int index) {
+	public void setTypeForSync(FluidType type, int index) {
 		tank.setTankType(type);
-	}
-
-	@Override
-	public List<FluidTank> getTanks() {
-		return new ArrayList() {
-			{
-				add(tank);
-			}
-		};
 	}
 
 	@Override

@@ -3,6 +3,8 @@ package com.hbm.items.machine;
 import java.util.List;
 
 import com.hbm.items.special.ItemNuclearWaste;
+import com.hbm.lib.Library;
+import com.hbm.main.MainRegistry;
 import com.hbm.util.I18nUtil;
 
 import cpw.mods.fml.relauncher.Side;
@@ -12,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IIcon;
 
 public class ItemDepletedFuel extends ItemNuclearWaste {
 	

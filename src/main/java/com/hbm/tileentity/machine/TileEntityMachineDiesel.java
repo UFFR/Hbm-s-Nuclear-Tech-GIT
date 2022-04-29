@@ -1,8 +1,6 @@
 package com.hbm.tileentity.machine;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidContainer;
@@ -18,11 +16,12 @@ import com.hbm.tileentity.TileEntityMachineBase;
 
 import api.hbm.energy.IBatteryItem;
 import api.hbm.energy.IEnergyGenerator;
+import api.hbm.fluid.IFluidStandardReceiver;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityMachineDiesel extends TileEntityMachineBase implements IEnergyGenerator, IFluidContainer, IFluidAcceptor {
+public class TileEntityMachineDiesel extends TileEntityMachineBase implements IEnergyGenerator, IFluidContainer, IFluidAcceptor, IFluidStandardReceiver {
 
 	public long power;
 	public int soundCycle = 0;
@@ -104,9 +103,12 @@ public class TileEntityMachineDiesel extends TileEntityMachineBase implements IE
 				this.sendPower(worldObj, xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ, dir);
 
 			//Tank Management
-			tank.setType(3, 4, slots);
+			FluidType last = tank.getTankType();
+			if(tank.setType(3, 4, slots)) this.unsubscribeToAllAround(last, this);
 			tank.loadTank(0, 1, slots);
 			tank.updateTank(xCoord, yCoord, zCoord, worldObj.provider.dimensionId);
+			
+			this.subscribeToAllAround(tank.getTankType(), this);
 
 			FluidType type = tank.getTankType();
 			if(type == Fluids.NITAN)
@@ -206,12 +208,12 @@ public class TileEntityMachineDiesel extends TileEntityMachineBase implements IE
 	}
 
 	@Override
-	public void setFillstate(int fill, int index) {
+	public void setFillForSync(int fill, int index) {
 		tank.setFill(fill);
 	}
 
 	@Override
-	public void setType(FluidType type, int index) {
+	public void setTypeForSync(FluidType type, int index) {
 		tank.setTankType(type);
 	}
 
@@ -232,10 +234,7 @@ public class TileEntityMachineDiesel extends TileEntityMachineBase implements IE
 	}
 
 	@Override
-	public List<FluidTank> getTanks() {
-		List<FluidTank> list = new ArrayList();
-		list.add(tank);
-		
-		return list;
+	public FluidTank[] getReceivingTanks() {
+		return new FluidTank[] {tank};
 	}
 }

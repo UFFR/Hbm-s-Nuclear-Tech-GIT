@@ -21,12 +21,10 @@ public class SlotSmelting extends Slot {
 		this.thePlayer = player;
 	}
 	
-	@Override
 	public boolean isItemValid(ItemStack stack) {
 		return false;
 	}
 	
-	@Override
 	public ItemStack decrStackSize(int amount) {
 		
 		if(this.getHasStack()) {
@@ -36,19 +34,16 @@ public class SlotSmelting extends Slot {
 		return super.decrStackSize(amount);
 	}
 
-	@Override
 	public void onPickupFromSlot(EntityPlayer player, ItemStack stack) {
 		this.onCrafting(stack);
 		super.onPickupFromSlot(player, stack);
 	}
 	
-	@Override
 	protected void onCrafting(ItemStack stack, int amount) {
 		this.itemCountBuffer += amount;
 		this.onCrafting(stack);
 	}
 	
-	@Override
 	protected void onCrafting(ItemStack stack) {
 		
 		stack.onCrafting(this.thePlayer.worldObj, this.thePlayer, this.itemCountBuffer);
@@ -63,9 +58,9 @@ public class SlotSmelting extends Slot {
 				buffer = 0;
 				
 			} else if(exp < 1.0F) {
-				remainingExp = MathHelper.floor_float(buffer * exp);
+				remainingExp = MathHelper.floor_float((float) buffer * exp);
 
-				if(remainingExp < MathHelper.ceiling_float_int(buffer * exp) && (float) Math.random() < buffer * exp - remainingExp) {
+				if(remainingExp < MathHelper.ceiling_float_int((float) buffer * exp) && (float) Math.random() < (float) buffer * exp - (float) remainingExp) {
 					++remainingExp;
 				}
 

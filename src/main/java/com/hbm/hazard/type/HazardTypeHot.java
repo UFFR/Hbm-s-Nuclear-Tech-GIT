@@ -3,11 +3,10 @@ package com.hbm.hazard.type;
 import java.util.List;
 
 import com.hbm.config.GeneralConfig;
+import com.hbm.config.RadiationConfig;
 import com.hbm.handler.ArmorModHandler;
 import com.hbm.hazard.modifier.HazardModifier;
 import com.hbm.items.ModItems;
-import com.hbm.lib.ModDamageSource;
-import com.hbm.util.EntityDamageUtil;
 import com.hbm.items.armor.ItemModGloves;
 import com.hbm.util.ArmorUtil;
 import com.hbm.util.I18nUtil;
@@ -23,6 +22,9 @@ public class HazardTypeHot extends HazardTypeBase {
 
 	@Override
 	public void onUpdate(EntityLivingBase target, float level, ItemStack stack) {
+		
+		if(RadiationConfig.disableHot)
+			return;
 		
 		boolean reacher = false;
 		boolean gloves = false;
@@ -49,9 +51,6 @@ public class HazardTypeHot extends HazardTypeBase {
 				target.setFire((int) Math.ceil(level));
 			if(((!reacher || !gloves) && level > 2) || (!reacher && !gloves))
 				target.setFire((int) Math.ceil(level));
-
-			if (level >= 5)
-				EntityDamageUtil.attackEntityFromIgnoreIFrame(target, ModDamageSource.causeDamage(target, "burn"), level * 0.5f);
 		}
 	}
 

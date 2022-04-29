@@ -14,11 +14,12 @@ import com.hbm.packet.PacketDispatcher;
 import com.hbm.tileentity.TileEntityMachineBase;
 
 import api.hbm.energy.IEnergyUser;
+import api.hbm.fluid.IFluidStandardTransceiver;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityDeuteriumExtractor extends TileEntityMachineBase implements IFluidAcceptor, IFluidSource, IEnergyUser {
+public class TileEntityDeuteriumExtractor extends TileEntityMachineBase implements IFluidAcceptor, IFluidSource, IEnergyUser, IFluidStandardTransceiver {
 
 	public int age = 0;
 	public long power = 0;
@@ -30,7 +31,7 @@ public class TileEntityDeuteriumExtractor extends TileEntityMachineBase implemen
 		super(0);
 		tanks = new FluidTank[2];
 		tanks[0] = new FluidTank(Fluids.WATER, 1000, 0);
-		tanks[1] = new FluidTank(Fluids.HEAVYWATER, 100, 0);
+		tanks[1] = new FluidTank(Fluids.HEAVYWATER, 100, 1);
 	}
 
 	@Override
@@ -45,7 +46,8 @@ public class TileEntityDeuteriumExtractor extends TileEntityMachineBase implemen
 			
 			this.updateConnections();
 
-			this.tanks[0].updateTank(xCoord, yCoord, zCoord, worldObj.provider.dimensionId);
+			this.tanks[0].updateTank(this, 25);
+			this.tanks[1].updateTank(this, 25);
 
 			age++;
 			if(age >= 10) {
@@ -60,8 +62,9 @@ public class TileEntityDeuteriumExtractor extends TileEntityMachineBase implemen
 				data.setLong("power", power);
 				this.networkPack(data, 25);
 			}
-
-
+			
+			this.subscribeToAllAround(tanks[0].getTankType(), this);
+			this.sendFluidToAll(tanks[1].getTankType(), this);
 
 			if(power < 0)
 				power = 0;
@@ -87,7 +90,7 @@ public class TileEntityDeuteriumExtractor extends TileEntityMachineBase implemen
 	}
 
 	public boolean hasPower() {
-		return power > 0;
+		return power >= maxPower / 10;
 	}
 
 	public boolean hasEnoughWater() {
@@ -135,17 +138,17 @@ public class TileEntityDeuteriumExtractor extends TileEntityMachineBase implemen
 
 	@Override
 	public void setFluidFill(int i, FluidType type) {
-		if(type.name().equals(tanks[0].getTankType().name()))
+		if(type == tanks[0].getTankType())
 			tanks[0].setFill(i);
-		else if(type.name().equals(tanks[1].getTankType().name()))
+		else if(type == tanks[1].getTankType())
 			tanks[1].setFill(i);
 	}
 
 	@Override
 	public int getFluidFill(FluidType type) {
-		if(type.name().equals(tanks[0].getTankType().name()))
+		if(type == tanks[0].getTankType())
 			return tanks[0].getFill();
-		else if(type.name().equals(tanks[1].getTankType().name()))
+		else if(type == tanks[1].getTankType())
 			return tanks[1].getFill();
 
 		return 0;
@@ -153,31 +156,22 @@ public class TileEntityDeuteriumExtractor extends TileEntityMachineBase implemen
 
 	@Override
 	public int getMaxFluidFill(FluidType type) {
-		if(type.name().equals(tanks[0].getTankType().name()))
+		if(type == tanks[0].getTankType())
 			return tanks[0].getMaxFill();
 
 		return 0;
 	}
 
 	@Override
-	public void setFillstate(int fill, int index) {
+	public void setFillForSync(int fill, int index) {
 		if(index < 2 && tanks[index] != null)
 			tanks[index].setFill(fill);
 	}
 
 	@Override
-	public void setType(FluidType type, int index) {
+	public void setTypeForSync(FluidType type, int index) {
 		if(index < 2 && tanks[index] != null)
 			tanks[index].setTankType(type);
-	}
-
-	@Override
-	public List<FluidTank> getTanks() {
-		List<FluidTank> list = new ArrayList();
-		list.add(tanks[0]);
-		list.add(tanks[1]);
-
-		return list;
 	}
 
 	@Override
@@ -205,4 +199,13 @@ public class TileEntityDeuteriumExtractor extends TileEntityMachineBase implemen
 		return maxPower;
 	}
 
+	@Override
+	public FluidTank[] getSendingTanks() {
+		return new FluidTank[] {tanks [1]};
+	}
+
+	@Override
+	public FluidTank[] getReceivingTanks() {
+		return new FluidTank[] {tanks [0]};
+	}
 }

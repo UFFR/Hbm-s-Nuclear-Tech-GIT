@@ -2,7 +2,6 @@ package com.hbm.inventory.gui;
 
 import org.lwjgl.opengl.GL11;
 
-import com.hbm.inventory.FluidTank;
 import com.hbm.inventory.container.ContainerMachineChemplant;
 import com.hbm.items.ModItems;
 import com.hbm.lib.RefStrings;
@@ -68,10 +67,10 @@ public class GUIMachineChemplant extends GuiInfoContainer {
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
 		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 		
-		int i = (int)chemplant.getPowerScaled(52);
+		int i = (int) (chemplant.power * 52 / chemplant.maxPower);
 		drawTexturedModalRect(guiLeft + 44, guiTop + 70 - i, 176, 52 - i, 16, i);
 
-		int j = chemplant.getProgressScaled(90);
+		int j = chemplant.progress * 90 / chemplant.maxProgress;
 		drawTexturedModalRect(guiLeft + 43, guiTop + 89, 0, 222, j, 18);
 
 		this.drawInfoPanel(guiLeft + 105, guiTop + 40, 8, 8, 8);

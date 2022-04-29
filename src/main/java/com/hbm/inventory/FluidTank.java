@@ -11,6 +11,7 @@ import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.gui.GuiInfoContainer;
 import com.hbm.items.ModItems;
+import com.hbm.items.armor.ItemArmorMod;
 import com.hbm.items.machine.ItemFluidIdentifier;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.packet.TEFluidPacket;
@@ -30,8 +31,6 @@ public class FluidTank {
 	protected int fluid;
 	protected int maxFluid;
 	public int index;
-	public static final int x = 16;
-	public static final int y = 100;
 	
 	public FluidTank(FluidType type, int maxFluid, int index) {
 		this.type = type;
@@ -89,15 +88,20 @@ public class FluidTank {
 	
 	//Called on TE update
 	public void updateTank(TileEntity te) {
-		updateTank(te.xCoord, te.yCoord, te.zCoord, te.getWorldObj().provider.dimensionId);
+		updateTank(te, 100);
 	}
-	
+	public void updateTank(TileEntity te, int range) {
+		updateTank(te.xCoord, te.yCoord, te.zCoord, te.getWorldObj().provider.dimensionId, range);
+	}
 	public void updateTank(int x, int y, int z, int dim) {
-		PacketDispatcher.wrapper.sendToAllAround(new TEFluidPacket(x, y, z, fluid, index, type), new TargetPoint(dim, x, y, z, 100));
+		updateTank(x, y, z, dim, 100);
+	}
+	public void updateTank(int x, int y, int z, int dim, int range) {
+		PacketDispatcher.wrapper.sendToAllAround(new TEFluidPacket(x, y, z, fluid, index, type), new TargetPoint(dim, x, y, z, range));
 	}
 	
 	//Fills tank from canisters
-	public final void loadTank(int in, int out, ItemStack[] slots) {
+	public boolean loadTank(int in, int out, ItemStack[] slots) {
 		
 		FluidType inType = Fluids.NONE;
 		if(slots[in] != null) {
@@ -108,47 +112,54 @@ public class FluidTank {
 			
 			if(slots[in].getItem() == ModItems.fluid_barrel_infinite && type != Fluids.NONE) {
 				this.fluid = this.maxFluid;
-				return;
+				return true;
 			}
 			
 			if(slots[in].getItem() == ModItems.inf_water && this.type == Fluids.WATER) {
 				this.fluid += 50;
 				if(this.fluid > this.maxFluid)
 					this.fluid = this.maxFluid;
-				return;
+				return true;
 			}
 			
 			if(slots[in].getItem() == ModItems.inf_water_mk2 && this.type == Fluids.WATER) {
 				this.fluid += 500;
 				if(this.fluid > this.maxFluid)
 					this.fluid = this.maxFluid;
-				return;
+				return true;
 			}
 			
 			if(FluidContainerRegistry.getFluidContent(slots[in], type) <= 0)
-				return;
+				return false;
 		} else {
-			return;
+			return false;
 		}
 		
 		if(slots[in] != null && inType.getName().equals(type.getName()) && fluid + FluidContainerRegistry.getFluidContent(slots[in], type) <= maxFluid) {
+			
+			ItemStack emptyContainer = FluidContainerRegistry.getEmptyContainer(slots[in]);
+			
 			if(slots[out] == null) {
 				fluid += FluidContainerRegistry.getFluidContent(slots[in], type);
-				slots[out] = FluidContainerRegistry.getEmptyContainer(slots[in]);
+				slots[out] = emptyContainer;
 				slots[in].stackSize--;
 				if(slots[in].stackSize <= 0)
 					slots[in] = null;
-			} else if(slots[out] != null && (FluidContainerRegistry.getEmptyContainer(slots[in]) == null || slots[out].getItem() == FluidContainerRegistry.getEmptyContainer(slots[in]).getItem()) && slots[out].stackSize < slots[out].getMaxStackSize()) {
+			} else if(slots[out] != null && (emptyContainer == null || (slots[out].getItem() == emptyContainer.getItem() && slots[out].getItemDamage() == emptyContainer.getItemDamage() && slots[out].stackSize < slots[out].getMaxStackSize()))) {
 				fluid += FluidContainerRegistry.getFluidContent(slots[in], type);
 				
-				if(FluidContainerRegistry.getEmptyContainer(slots[in]) != null)
+				if(emptyContainer != null)
 					slots[out].stackSize++;
 				
 				slots[in].stackSize--;
 				if(slots[in].stackSize <= 0)
 					slots[in] = null;
 			}
+			
+			return true;
 		}
+		
+		return false;
 	}
 	
 	//Fills canisters from tank
@@ -164,7 +175,7 @@ public class FluidTank {
 				partial = ArmorModHandler.pryMods(partial)[ArmorModHandler.plate_only];
 				
 				if(partial == null)
-					return;
+					partial = slots[in];
 			}
 			
 			if(partial.getItem() instanceof IPartiallyFillable) {
@@ -183,7 +194,7 @@ public class FluidTank {
 					}
 				}
 				
-				if(slots[in].getItem() instanceof ItemArmor) {
+				if(slots[in].getItem() instanceof ItemArmor && partial.getItem() instanceof ItemArmorMod) {
 					ArmorModHandler.applyMod(slots[in], partial);
 				}
 				
@@ -215,13 +226,14 @@ public class FluidTank {
 			return;
 		
 		if(slots[in] != null && fluid - FluidContainerRegistry.getFluidContent(full, type) >= 0) {
+			ItemStack fullContainer = FluidContainerRegistry.getFullContainer(slots[in], type);
 			if(slots[out] == null) {
 				fluid -= FluidContainerRegistry.getFluidContent(full, type);
 				slots[out] = full.copy();
 				slots[in].stackSize--;
 				if(slots[in].stackSize <= 0)
 					slots[in] = null;
-			} else if(slots[out] != null && slots[out].getItem() == FluidContainerRegistry.getFullContainer(slots[in], type).getItem() && slots[out].stackSize < slots[out].getMaxStackSize()) {
+			} else if(slots[out] != null && slots[out].getItem() == fullContainer.getItem() && slots[out].getItemDamage() == fullContainer.getItemDamage() && slots[out].stackSize < slots[out].getMaxStackSize()) {
 				fluid -= FluidContainerRegistry.getFluidContent(full, type);
 				slots[in].stackSize--;
 				if(slots[in].stackSize <= 0)
@@ -231,12 +243,18 @@ public class FluidTank {
 		}
 	}
 
-	public void setType(int in, ItemStack[] slots) {
-		setType(in, in, slots);
+	public boolean setType(int in, ItemStack[] slots) {
+		return setType(in, in, slots);
 	}
 	
-	//Changes tank type
-	public final void setType(int in, int out, ItemStack[] slots) {
+	/**
+	 * Changes the tank type and returns true if successful
+	 * @param in
+	 * @param out
+	 * @param slots
+	 * @return
+	 */
+	public boolean setType(int in, int out, ItemStack[] slots) {
 		
 		if(slots[in] != null && slots[in].getItem() instanceof ItemFluidIdentifier) {
 			
@@ -246,6 +264,7 @@ public class FluidTank {
 				if(type != newType) {
 					type = newType;
 					fluid = 0;
+					return true;
 				}
 				
 			} else if(slots[out] == null) {
@@ -255,9 +274,12 @@ public class FluidTank {
 					slots[out] = slots[in].copy();
 					slots[in] = null;
 					fluid = 0;
+					return true;
 				}
 			}
 		}
+		
+		return false;
 	}
 	
 	/**

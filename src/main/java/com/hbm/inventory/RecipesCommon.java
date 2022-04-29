@@ -137,6 +137,14 @@ public class RecipesCommon {
 		 * @return
 		 */
 		public abstract List<ItemStack> extractForNEI();
+		
+		public ItemStack extractForCyclingDisplay(int cycle) {
+			List<ItemStack> list = extractForNEI();
+			
+			cycle *= 50;
+			
+			return list.get((int)(System.currentTimeMillis() % (cycle * list.size()) / cycle));
+		}
 	}
 	
 	public static class ComparableStack extends AStack {
@@ -647,7 +655,7 @@ public class RecipesCommon {
 	}
 	
 	public static class MetaBlock {
-		
+
 		public Block block;
 		public int meta;
 		
@@ -658,6 +666,14 @@ public class RecipesCommon {
 		
 		public MetaBlock(Block block) {
 			this(block, 0);
+		}
+		
+		public int getID() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + Block.getIdFromBlock(block);
+			result = prime * result + meta;
+			return result;
 		}
 	}
 

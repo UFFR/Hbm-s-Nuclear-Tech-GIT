@@ -315,8 +315,18 @@ public class AnvilRecipes {
 				}, new AnvilOutput(new ItemStack(ModBlocks.vitrified_barrel))).setTier(3));
 		
 		constructionRecipes.add(new AnvilConstructionRecipe(
-				new AStack[] {new OreDictStack(DESH.ingot(), 4), new OreDictStack(POLYMER.dust(), 2), new OreDictStack(DURA.ingot(), 1)},
+				new AStack[] {
+						new ComparableStack(ModItems.man_core, 1),
+						new OreDictStack(BE.ingot(), 4),
+						new ComparableStack(ModItems.screwdriver, 1)
+				}, new AnvilOutput(new ItemStack(ModItems.demon_core_open))).setTier(3));
+		
+		constructionRecipes.add(new AnvilConstructionRecipe(
+				new AStack[] {new OreDictStack(DESH.ingot(), 4), new OreDictStack(ANY_PLASTIC.dust(), 2), new OreDictStack(DURA.ingot(), 1)},
 				new AnvilOutput(new ItemStack(ModItems.plate_desh, 4))).setTier(3));
+		constructionRecipes.add(new AnvilConstructionRecipe(
+				new AStack[] {new ComparableStack(ModItems.nugget_bismuth, 2), new OreDictStack(U238.billet(), 2), new OreDictStack(NB.dust(), 1)},
+				new AnvilOutput(new ItemStack(ModItems.plate_bismuth, 1))).setTier(4));
 		constructionRecipes.add(new AnvilConstructionRecipe(
 				new AStack[] {new OreDictStack(EUPH.ingot(), 4), new OreDictStack(AT.dust(), 2), new OreDictStack(VOLCANIC.gem(), 1)},
 				new AnvilOutput(new ItemStack(ModItems.plate_euphemium))).setTier(6));
@@ -441,6 +451,10 @@ public class AnvilRecipes {
 //				}, new AnvilOutput(CustomWarheadWrapper.saltedBase.getStack())).setTier(4));
 		
 		pullFromAssembler(new ComparableStack(ModItems.plate_mixed, 4), 3);
+
+		constructionRecipes.add(new AnvilConstructionRecipe(
+				new AStack[] {new OreDictStack(AS.ingot()), new OreDictStack(REDSTONE.dust(), 4), new OreDictStack(ASBESTOS.ingot(), 2)},
+				new AnvilOutput(new ItemStack(ModItems.circuit_arsenic_raw))).setTier(5));
 		
 		constructionRecipes.add(new AnvilConstructionRecipe(new ComparableStack(ModItems.ingot_u233, 1), new AnvilOutput(new ItemStack(ModItems.plate_fuel_u233))).setTier(4));
 		constructionRecipes.add(new AnvilConstructionRecipe(new ComparableStack(ModItems.ingot_u235, 1), new AnvilOutput(new ItemStack(ModItems.plate_fuel_u235))).setTier(4));
@@ -802,7 +816,7 @@ public class AnvilRecipes {
 				new AnvilOutput[] {
 						new AnvilOutput(new ItemStack(Items.redstone, 4)),
 						new AnvilOutput(new ItemStack(ModItems.ingot_polymer, 2)),
-						new AnvilOutput(new ItemStack(GeneralConfig.enable528 ? ModItems.circuit_bismuth : ModItems.ingot_asbestos, 2)),
+						new AnvilOutput(new ItemStack(GeneralConfig.enable528 ? ModItems.circuit_tantalium : ModItems.ingot_asbestos, 2)),
 						new AnvilOutput(new ItemStack(ModItems.ingot_bismuth, 1))
 				}
 		).setTier(4));
@@ -812,7 +826,7 @@ public class AnvilRecipes {
 						new AnvilOutput(new ItemStack(Items.redstone, 2)),
 						new AnvilOutput(new ItemStack(ModItems.ingot_polymer, 1)),
 						new AnvilOutput(new ItemStack(ModItems.ingot_polymer, 1), 0.5F),
-						new AnvilOutput(new ItemStack(GeneralConfig.enable528 ? ModItems.circuit_bismuth : ModItems.ingot_asbestos, 1)),
+						new AnvilOutput(new ItemStack(GeneralConfig.enable528 ? ModItems.circuit_tantalium : ModItems.ingot_asbestos, 1)),
 						new AnvilOutput(new ItemStack(ModItems.ingot_bismuth, 1), 0.75F)
 				}
 		).setTier(4));
@@ -1091,7 +1105,7 @@ public class AnvilRecipes {
 		
 		public AnvilConstructionRecipe setTier(int tier) {
 			this.tierLower = tier;
-			if(GeneralConfig.enableBabyMode) this.tierLower = 1;
+			if(GeneralConfig.enableLBSM && GeneralConfig.enableLBSMUnlockAnvil) this.tierLower = 1;
 			return this;
 		}
 		
@@ -1104,7 +1118,7 @@ public class AnvilRecipes {
 		public AnvilConstructionRecipe setTierRange(int lower, int upper) {
 			this.tierLower = lower;
 			this.tierUpper = upper;
-			if(GeneralConfig.enableBabyMode) this.tierLower = this.tierUpper = 1;
+			if(GeneralConfig.enableLBSM && GeneralConfig.enableLBSMUnlockAnvil) this.tierLower = this.tierUpper = 1;
 			return this;
 		}
 		

@@ -67,7 +67,7 @@ public class TileEntitySolarBoiler extends TileEntity implements IFluidAcceptor,
 	}
 
 	@Override
-	public void setFillstate(int fill, int index) {
+	public void setFillForSync(int fill, int index) {
 		if(index == 0)
 			water.setFill(fill);
 		if(index == 1)
@@ -83,16 +83,11 @@ public class TileEntitySolarBoiler extends TileEntity implements IFluidAcceptor,
 	}
 
 	@Override
-	public void setType(FluidType type, int index) {
+	public void setTypeForSync(FluidType type, int index) {
 		if(index == 0)
 			water.setTankType(type);
 		if(index == 1)
 			steam.setTankType(type);
-	}
-
-	@Override
-	public List<FluidTank> getTanks() {
-		return Arrays.asList(new FluidTank[] {water, steam});
 	}
 
 	@Override

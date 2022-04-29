@@ -207,6 +207,7 @@ public abstract class ToolAbility
 			EnchantmentUtil.removeEnchantment(stack, Enchantment.silkTouch);
 			
 			world.setBlockToAir(x, y, z);
+			player.getHeldItem().damageItem(1, player);
 		}
 
 		@Override
@@ -253,6 +254,7 @@ public abstract class ToolAbility
 			EnchantmentUtil.removeEnchantment(stack, Enchantment.fortune);
 			
 			world.setBlockToAir(x, y, z);
+			player.getHeldItem().damageItem(1, player);
 		}
 
 		@Override
@@ -281,17 +283,24 @@ public abstract class ToolAbility
 		@Override
 		public void onDig(World world, int x, int y, int z, EntityPlayer player, Block block, int meta, IItemAbility tool) {
 			
-			//a band-aid on a gaping wound
-			if(block == Blocks.lit_redstone_ore)
-				block = Blocks.redstone_ore;
+			List<ItemStack> drops = block.getDrops(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
 			
-			ItemStack stack = new ItemStack(block, 1, meta);
-			ItemStack result = FurnaceRecipes.smelting().getSmeltingResult(stack);
-			
-			if(result != null) {
-				world.setBlockToAir(x, y, z);
-				world.spawnEntityInWorld(new EntityItem(world, x + 0.5, y + 0.5, z + 0.5, result.copy()));
+			for(int i = 0; i < drops.size(); i++) {
+				ItemStack stack = drops.get(i).copy();
+				ItemStack result = FurnaceRecipes.smelting().getSmeltingResult(stack);
+				
+				if(result != null) {
+					result = result.copy();
+					result.stackSize *= stack.stackSize;
+					drops.set(i, result);
+				}
 			}
+			
+			world.setBlockToAir(x, y, z);
+			player.getHeldItem().damageItem(1, player);
+			
+			for(ItemStack stack : drops)
+				world.spawnEntityInWorld(new EntityItem(world, x + 0.5, y + 0.5, z + 0.5, stack.copy()));
 		}
 
 		@Override
@@ -330,6 +339,7 @@ public abstract class ToolAbility
 			if(result != null && result.getItem() != ModItems.scrap) {
 				world.setBlockToAir(x, y, z);
 				world.spawnEntityInWorld(new EntityItem(world, x + 0.5, y + 0.5, z + 0.5, result.copy()));
+				player.getHeldItem().damageItem(1, player);
 			}
 		}
 
@@ -368,6 +378,7 @@ public abstract class ToolAbility
 			
 			if(result != null) {
 				world.setBlockToAir(x, y, z);
+				player.getHeldItem().damageItem(1, player);
 				
 				for(ItemStack st : result) {
 					if(st != null)
@@ -412,6 +423,7 @@ public abstract class ToolAbility
 			if(result != null) {
 				world.setBlockToAir(x, y, z);
 				world.spawnEntityInWorld(new EntityItem(world, x + 0.5, y + 0.5, z + 0.5, result.copy()));
+				player.getHeldItem().damageItem(1, player);
 			}
 		}
 
@@ -454,7 +466,8 @@ public abstract class ToolAbility
 			
 			if(mercury > 0) {
 				world.setBlockToAir(x, y, z);
-				world.spawnEntityInWorld(new EntityItem(world, x + 0.5, y + 0.5, z + 0.5, new ItemStack(ModItems.nugget_mercury, mercury)));
+				world.spawnEntityInWorld(new EntityItem(world, x + 0.5, y + 0.5, z + 0.5, new ItemStack(ModItems.ingot_mercury, mercury)));
+				player.getHeldItem().damageItem(1, player);
 			}
 		}
 

@@ -8,12 +8,13 @@ import java.util.List;
 import java.util.Optional;
 
 import com.hbm.blocks.ModBlocks;
-import com.hbm.entity.projectile.EntityDebrisBase.DebrisType;
+import com.hbm.entity.projectile.EntityRBMKDebris.DebrisType;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidSource;
 import com.hbm.inventory.FluidTank;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
-import com.hbm.inventory.fluid.*;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemBreedingRod.BreedingRodType;
 import com.hbm.items.machine.ItemFluidIcon;
@@ -83,35 +84,19 @@ public class TileEntityRBMKOutgasser extends TileEntityRBMKSlottedBase implement
 	private static final HashMap<Object, IrradiationRecipe> recipes = new HashMap<Object, IrradiationRecipe>();
 	
 	static {
-		recipes.put(LI.block(), newRecipe(ItemFluidIcon.addQuantity(new ItemStack(ModItems.fluid_icon, 1, Fluids.TRITIUM.getID()), 10000)));
-		recipes.put(LI.ingot(), newRecipe(ItemFluidIcon.addQuantity(new ItemStack(ModItems.fluid_icon, 1, Fluids.TRITIUM.getID()), 1000)));
-		recipes.put(LI.dust(), newRecipe(ItemFluidIcon.addQuantity(new ItemStack(ModItems.fluid_icon, 1, Fluids.TRITIUM.getID()), 1000)));
-		recipes.put(LI.dustTiny(), newRecipe(ItemFluidIcon.addQuantity(new ItemStack(ModItems.fluid_icon, 1, Fluids.TRITIUM.getID()), 100)));
-		recipes.put(AU.ingot(), newRecipe(new ItemStack(ModItems.ingot_au198)));
-		recipes.put(AU.nugget(), newRecipe(new ItemStack(ModItems.nugget_au198)));
-		recipes.put(AU.dust(), newRecipe(new ItemStack(ModItems.powder_au198)));
-		recipes.put(new ComparableStack(Blocks.brown_mushroom), newRecipe(new ItemStack(ModBlocks.mush)));
-		recipes.put(new ComparableStack(Blocks.red_mushroom), newRecipe(new ItemStack(ModBlocks.mush)));
-		recipes.put(new ComparableStack(Items.mushroom_stew), newRecipe(new ItemStack(ModItems.glowing_stew)));
-		recipes.put(TH232.block(), newRecipe(new ItemStack(ModBlocks.block_tha), 75));
-		recipes.put(TH232.ingot(), newRecipe(new ItemStack(ModItems.ingot_tha), 50));
-		recipes.put(TH232.nugget(), newRecipe(new ItemStack(ModItems.nugget_tha)));
-		recipes.put(TH232.billet(), newRecipe(new ItemStack(ModItems.billet_tha), 50));
-		recipes.put(new ComparableStack(ModItems.rod, 1, BreedingRodType.TH232.ordinal()), newRecipe(new ItemStack(ModItems.rod, 1, BreedingRodType.THA.ordinal())));
-		recipes.put(new ComparableStack(ModItems.rod_dual, 1, BreedingRodType.TH232.ordinal()), newRecipe(new ItemStack(ModItems.rod_dual, 1, BreedingRodType.THA.ordinal())));
-		recipes.put(new ComparableStack(ModItems.rod_quad, 1, BreedingRodType.TH232.ordinal()), newRecipe(new ItemStack(ModItems.rod_quad, 1, BreedingRodType.THA.ordinal())));
-		recipes.put(RA226.block(), newRecipe(new ItemStack(ModBlocks.block_ra226)));
-		recipes.put(RA226.nugget(), newRecipe(new ItemStack(ModItems.nugget_actinium)));
-		recipes.put(RA226.billet(), newRecipe(new ItemStack(ModItems.billet_actinium)));
-		recipes.put(RA226.ingot(), newRecipe(new ItemStack(ModItems.ingot_actinium)));
-		recipes.put(new ComparableStack(ModItems.shrimp_fry), newRecipe(new ItemStack(ModItems.shrimp_atomic)));
-		recipes.put(U234.nugget(), newRecipe(new ItemStack(ModItems.nugget_u235)));
-		recipes.put(U234.billet(), newRecipe(new ItemStack(ModItems.billet_u235)));
-		recipes.put(U234.ingot(), newRecipe(new ItemStack(ModItems.ingot_u235)));
-		recipes.put(CO.nugget(), newRecipe(new ItemStack(ModItems.nugget_co60)));
-		recipes.put(CO.ingot(), newRecipe(new ItemStack(ModItems.ingot_co60)));
-		recipes.put(CO.dust(), newRecipe(new ItemStack(ModItems.powder_co60)));
-		recipes.put(new ComparableStack(ModItems.orichalcum, 1, Orichalcum.INGOT_SMALL), new IrradiationRecipe(new ItemStack(ModItems.orichalcum, 1, Orichalcum.INGOT_SMALL_IRR), 100, duration * 2));
+		recipes.put("blockLithium", ItemFluidIcon.addQuantity(new ItemStack(ModItems.fluid_icon, 1, Fluids.TRITIUM.getID()), 10000));
+		recipes.put("ingotLithium", ItemFluidIcon.addQuantity(new ItemStack(ModItems.fluid_icon, 1, Fluids.TRITIUM.getID()), 1000));
+		recipes.put("dustLithium", ItemFluidIcon.addQuantity(new ItemStack(ModItems.fluid_icon, 1, Fluids.TRITIUM.getID()), 1000));
+		recipes.put(new ComparableStack(ModItems.powder_lithium_tiny), ItemFluidIcon.addQuantity(new ItemStack(ModItems.fluid_icon, 1, Fluids.TRITIUM.getID()), 100));
+		recipes.put("ingotGold", new ItemStack(ModItems.ingot_au198));
+		recipes.put("nuggetGold", new ItemStack(ModItems.nugget_au198));
+		recipes.put("dustGold", new ItemStack(ModItems.powder_au198));
+		recipes.put("ingotThorium", new ItemStack(ModItems.ingot_thorium_fuel));
+		recipes.put("nuggetThorium", new ItemStack(ModItems.nugget_thorium_fuel));
+		recipes.put("billetThorium", new ItemStack(ModItems.billet_thorium_fuel));
+		recipes.put(new ComparableStack(Blocks.brown_mushroom), new ItemStack(ModBlocks.mush));
+		recipes.put(new ComparableStack(Blocks.red_mushroom), new ItemStack(ModBlocks.mush));
+		recipes.put(new ComparableStack(Items.mushroom_stew), new ItemStack(ModItems.glowing_stew));
 	}
 	
 	private boolean canProcess() {
@@ -212,7 +197,7 @@ public class TileEntityRBMKOutgasser extends TileEntityRBMKSlottedBase implement
 	public boolean getTact() { return worldObj.getTotalWorldTime() % 20 < 10; }
 
 	@Override
-	public void setFillstate(int fill, int index) {
+	public void setFillForSync(int fill, int index) {
 
 		if(index == 0)
 			gas.setFill(fill);
@@ -226,15 +211,10 @@ public class TileEntityRBMKOutgasser extends TileEntityRBMKSlottedBase implement
 	}
 
 	@Override
-	public void setType(FluidType type, int index) {
+	public void setTypeForSync(FluidType type, int index) {
 
 		if(index == 0)
 			gas.setTankType(type);
-	}
-
-	@Override
-	public List<FluidTank> getTanks() {
-		return new ArrayList<FluidTank>() {{ add(gas); }};
 	}
 
 	@Override

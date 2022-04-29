@@ -10,6 +10,7 @@ import com.hbm.explosion.ExplosionNukeSmall;
 import com.hbm.handler.radiation.ChunkRadiationManager;
 import com.hbm.items.ModItems;
 import com.hbm.lib.Library;
+import com.hbm.main.ModEventHandler;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

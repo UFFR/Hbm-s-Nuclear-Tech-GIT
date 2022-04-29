@@ -387,12 +387,12 @@ public class TileEntityAMSEmitter extends TileEntity implements ISidedInventory,
 	}
 
 	@Override
-	public void setFillstate(int fill, int index) {
+	public void setFillForSync(int fill, int index) {
 			tank.setFill(fill);
 	}
 
 	@Override
-	public void setType(FluidType type, int index) {
+	public void setTypeForSync(FluidType type, int index) {
 			tank.setTankType(type);
 	}
 	
@@ -406,13 +406,5 @@ public class TileEntityAMSEmitter extends TileEntity implements ISidedInventory,
 	public double getMaxRenderDistanceSquared()
 	{
 		return 65536.0D;
-	}
-
-	@Override
-	public List<FluidTank> getTanks() {
-		List<FluidTank> list = new ArrayList();
-		list.add(tank);
-		
-		return list;
 	}
 }

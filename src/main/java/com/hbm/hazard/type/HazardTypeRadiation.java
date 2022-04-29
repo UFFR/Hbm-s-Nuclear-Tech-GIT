@@ -77,6 +77,10 @@ public class HazardTypeRadiation extends HazardTypeBase
 	public void addHazardInformation(EntityPlayer player, List<String> list, float level, ItemStack stack, List<HazardModifier> modifiers) {
 		
 		level = HazardModifier.evalAllModifiers(stack, player, level, modifiers);
+		
+		if(level < 1e-5)
+			return;
+		
 		list.add(EnumChatFormatting.GREEN + "[" + I18nUtil.resolveKey("trait.radioactive") + "]");
 		float[] radTypes = HazardSystem.getRadTypes(stack);
 		StringBuilder types = new StringBuilder();

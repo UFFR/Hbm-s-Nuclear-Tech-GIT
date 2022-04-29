@@ -62,7 +62,6 @@ public class GenericFluidBlock extends BlockFluidClassic {
 	}
 
 	/** Only temporary, will be moved into a subclass */
-	@SuppressWarnings("unchecked")
 	@Override
 	public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity) {
 		

@@ -2,12 +2,24 @@ package com.hbm.main;
 
 import com.hbm.handler.HbmKeybinds.EnumKeybind;
 import com.hbm.sound.AudioWrapper;
+import com.hbm.sound.nt.ISoundSourceTE;
+import com.hbm.sound.nt.SoundWrapper;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 
-public abstract class ServerProxy {
+public class ServerProxy {
+
+	//sort by estimated time of display. longer lasting ones should be sortet at the top.
+	public static final int ID_DUCK = 0;
+	public static final int ID_FILTER = 1;
+	public static final int ID_COMPASS = 2;
+	public static final int ID_CABLE = 3;
+	public static final int ID_JETPACK = 4;
+	public static final int ID_HUD = 5;
+	public static final int ID_DETONATOR = 6;
 	
 	public abstract void registerRenderInfo();
 	public abstract void registerTileEntitySpecialRenderer();

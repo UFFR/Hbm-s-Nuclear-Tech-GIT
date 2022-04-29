@@ -33,23 +33,24 @@ public class HazmatRegistry
 		static final double alloy = 0.07D; // 15%
 		static final double cobalt = 0.125D; // 25%
 		
-		static final double hazYellow = 0.6D; // 50%
-		static final double hazRed = 1.0D; // 90%
-		static final double hazGray = 2D; // 99%
-		static final double paa = 1.7D; // 97%
-		static final double liquidator = 2.4D; // 99.6%
+		double hazYellow = 0.6D; // 50%
+		double hazRed = 1.0D; // 90%
+		double hazGray = 2D; // 99%
+		double paa = 1.7D; // 97%
+		double liquidator = 2.4D; // 99.6%
 
-		static final double t45 = 1D; // 90%
-		static final double ajr = 1.3D; // 95%
-		static final double bj = 1D; // 90%
-		static final double hev = 1.3D; // 95%
-		static final double fau = 4D; // 99.99%
-		static final double dns = 5D; // 99.999%
-		static final double security = 0.825D; // 85%
-		static final double star = 1D; // 90%
-		static final double cmb = 1.3D; // 95%
-		static final double schrab = 3D; // 99.9%
-		static final double euph = 10D; // <100%
+		double t45 = 1D; // 90%
+		double ajr = 1.3D; // 95%
+		double bj = 1D; // 90%
+		double hev = 1.3D; // 95%
+		double rpa = 2D; // 99%
+		double fau = 4D; // 99.99%
+		double dns = 5D; // 99.999%
+		double security = 0.825D; // 85%
+		double star = 1D; // 90%
+		double cmb = 1.3D; // 95%
+		double schrab = 3D; // 99.9%
+		double euph = 10D; // <100%
 		
 	public static void registerHazmats()
 	{
@@ -111,15 +112,25 @@ public class HazmatRegistry
 		registerHazmat(ModItems.bj_legs, bj * legs);
 		registerHazmat(ModItems.bj_boots, bj * boots);
 
-		registerHazmat(ModItems.hev_helmet, hev * helmet);
-		registerHazmat(ModItems.hev_plate, hev * chest);
-		registerHazmat(ModItems.hev_legs, hev * legs);
-		registerHazmat(ModItems.hev_boots, hev * boots);
+		HazmatRegistry.registerHazmat(ModItems.steamsuit_helmet, 1.3 * helmet);
+		HazmatRegistry.registerHazmat(ModItems.steamsuit_plate, 1.3 * chest);
+		HazmatRegistry.registerHazmat(ModItems.steamsuit_legs, 1.3 * legs);
+		HazmatRegistry.registerHazmat(ModItems.steamsuit_boots, 1.3 * boots);
 
-		registerHazmat(ModItems.fau_helmet, fau * helmet);
-		registerHazmat(ModItems.fau_plate, fau * chest);
-		registerHazmat(ModItems.fau_legs, fau * legs);
-		registerHazmat(ModItems.fau_boots, fau * boots);
+		HazmatRegistry.registerHazmat(ModItems.hev_helmet, hev * helmet);
+		HazmatRegistry.registerHazmat(ModItems.hev_plate, hev * chest);
+		HazmatRegistry.registerHazmat(ModItems.hev_legs, hev * legs);
+		HazmatRegistry.registerHazmat(ModItems.hev_boots, hev * boots);
+
+		HazmatRegistry.registerHazmat(ModItems.rpa_helmet, rpa * helmet);
+		HazmatRegistry.registerHazmat(ModItems.rpa_plate, rpa * chest);
+		HazmatRegistry.registerHazmat(ModItems.rpa_legs, rpa * legs);
+		HazmatRegistry.registerHazmat(ModItems.rpa_boots, rpa * boots);
+
+		HazmatRegistry.registerHazmat(ModItems.fau_helmet, fau * helmet);
+		HazmatRegistry.registerHazmat(ModItems.fau_plate, fau * chest);
+		HazmatRegistry.registerHazmat(ModItems.fau_legs, fau * legs);
+		HazmatRegistry.registerHazmat(ModItems.fau_boots, fau * boots);
 
 		registerHazmat(ModItems.dns_helmet, dns * helmet);
 		registerHazmat(ModItems.dns_plate, dns * chest);

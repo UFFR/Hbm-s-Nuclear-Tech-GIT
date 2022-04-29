@@ -221,6 +221,7 @@ public class BulletConfigSyncingUtil {
 	public static int NUKE_TOTS = i++;
 	public static int NUKE_SAFE = i++;
 	public static int NUKE_PUMPKIN = i++;
+	public static int NUKE_BARREL = i++;
 	public static int NUKE_PROTO_NORMAL = i++;
 	public static int NUKE_PROTO_LOW = i++;
 	public static int NUKE_PROTO_HIGH = i++;
@@ -240,6 +241,7 @@ public class BulletConfigSyncingUtil {
 	public static int HLR_ALT = i++;
 	
 	public static int ZOMG_BOLT = i++;
+	public static int DET_BOLT = i++;
 
 	public static int TURBINE = i++;
 
@@ -476,6 +478,7 @@ public class BulletConfigSyncingUtil {
 		configSet.put(NUKE_TOTS, GunFatmanFactory.getNukeTotsConfig());
 		configSet.put(NUKE_SAFE, GunFatmanFactory.getNukeSafeConfig());
 		configSet.put(NUKE_PUMPKIN, GunFatmanFactory.getNukePumpkinConfig());
+		configSet.put(NUKE_BARREL, GunFatmanFactory.getNukeBarrelConfig());
 		configSet.put(NUKE_PROTO_NORMAL, GunFatmanFactory.getNukeConfig().accuracyMod(20F));
 		configSet.put(NUKE_PROTO_LOW, GunFatmanFactory.getNukeLowConfig().accuracyMod(20F));
 		configSet.put(NUKE_PROTO_HIGH, GunFatmanFactory.getNukeHighConfig().accuracyMod(20F));
@@ -495,6 +498,7 @@ public class BulletConfigSyncingUtil {
 		configSet.put(HLR_ALT, GunEnergyFactory.getHLRScatterConfig());
 
 		configSet.put(ZOMG_BOLT, GunEnergyFactory.getZOMGBoltConfig());
+		configSet.put(DET_BOLT, GunDetonatorFactory.getLaserConfig());
 
 		configSet.put(TURBINE, GunEnergyFactory.getTurbineConfig());
 

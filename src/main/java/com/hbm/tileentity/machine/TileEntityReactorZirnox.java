@@ -11,6 +11,7 @@ import com.hbm.entity.projectile.EntityDebrisBase.DebrisType;
 import com.hbm.entity.projectile.EntityZirnoxDebris;
 import com.hbm.explosion.ExplosionNukeGeneric;
 import com.hbm.handler.MultiblockHandlerXR;
+import com.hbm.handler.radiation.ChunkRadiationManager;
 import com.hbm.interfaces.IControlReceiver;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidSource;
@@ -35,7 +36,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityReactorZirnox extends TileEntityMachineBase implements IFluidAcceptor, IFluidSource, IControlReceiver {
+public class TileEntityReactorZirnox extends TileEntityMachineBase implements IFluidContainer, IFluidAcceptor, IFluidSource, IControlReceiver {
 
 	public int heat;
 	public static final int maxHeat = 100000;
@@ -205,7 +206,7 @@ public class TileEntityReactorZirnox extends TileEntityMachineBase implements IF
 			}
 			
 			//2(fill) + (x * fill%)
-			this.pressure = (this.carbonDioxide.getFill() * 2) + (int)(this.heat * ((float)this.carbonDioxide.getFill() / (float)this.carbonDioxide.getMaxFill()));
+			this.pressure = (this.carbonDioxide.getFill() * 2) + (int)((float)this.heat * ((float)this.carbonDioxide.getFill() / (float)this.carbonDioxide.getMaxFill()));
 
 			if(this.heat > 0 && this.heat < maxHeat) {
 				if(this.water.getFill() > 0 && this.carbonDioxide.getFill() > 0 && this.steam.getFill() < this.steam.getMaxFill()) {
@@ -237,7 +238,7 @@ public class TileEntityReactorZirnox extends TileEntityMachineBase implements IF
 		// function of SHS produced per tick
 		// heat - 10256/100000 * pressure / 50,000 * 25 * 5 (should get rid of any rounding errors)
 		if(this.heat > 10256) {
-			int Water = (int)(((heat - 10256F) / maxHeat) * Math.min((carbonDioxide.getFill() / 14000F), 1F) * 25F * 5F);
+			int Water = (int)((((float)heat - 10256F) / (float)maxHeat) * Math.min(((float)carbonDioxide.getFill() / 14000F), 1F) * 25F * 5F);
 			int Steam = Water * 1;
 			
 			water.setFill(water.getFill() - Water);
@@ -431,8 +432,7 @@ public class TileEntityReactorZirnox extends TileEntityMachineBase implements IF
 		return 0;
 	}
 
-	@Override
-	public void setFillstate(int fill, int index) {
+	public void setFillForSync(int fill, int index) {
 		switch (index) {
 		case 0: steam.setFill(fill);
 			break;
@@ -444,8 +444,7 @@ public class TileEntityReactorZirnox extends TileEntityMachineBase implements IF
 		}
 	}
 
-	@Override
-	public void setType(FluidType type, int index) {
+	public void setTypeForSync(FluidType type, int index) {
 		switch (index) {
 		case 0: steam.setTankType(type);
 			break;

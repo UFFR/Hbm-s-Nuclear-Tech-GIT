@@ -3,6 +3,9 @@ package com.hbm.items.special;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
+import com.hbm.items.ItemCustomLore;
+import com.hbm.items.ModItems;
+import com.hbm.potion.HbmPotion;
 import com.hbm.util.Tuple.Pair;
 
 import net.minecraft.entity.EntityLivingBase;

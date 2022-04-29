@@ -3,9 +3,6 @@ package com.hbm.tileentity.machine.oil;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
-
-import com.hbm.blocks.machine.MachineFractionTower;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidSource;
 import com.hbm.inventory.FluidStack;
@@ -14,6 +11,7 @@ import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.recipes.RefineryRecipes;
 import com.hbm.lib.Library;
+import com.hbm.tileentity.INBTPacketReceiver;
 import com.hbm.util.Tuple.Pair;
 
 import cpw.mods.fml.relauncher.Side;
@@ -27,9 +25,8 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.Pre;
 import net.minecraftforge.common.util.ForgeDirection;
-import scala.actors.threadpool.Arrays;
 
-public class TileEntityMachineFractionTower extends TileEntity implements IFluidSource, IFluidAcceptor {
+public class TileEntityMachineFractionTower extends TileEntity implements IFluidSource, IFluidAcceptor, INBTPacketReceiver {
 	
 	public FluidTank[] tanks;
 	public List<IFluidAcceptor> list1 = new ArrayList();
@@ -80,8 +77,21 @@ public class TileEntityMachineFractionTower extends TileEntity implements IFluid
 			if(worldObj.getTotalWorldTime() % 10 == 0) {
 				fillFluidInit(tanks[1].getTankType());
 				fillFluidInit(tanks[2].getTankType());
+				
+				NBTTagCompound data = new NBTTagCompound();
+
+				for(int i = 0; i < 3; i++)
+					tanks[i].writeToNBT(data, "tank" + i);
+				
+				INBTPacketReceiver.networkPack(this, data, 50);
 			}
 		}
+	}
+
+	@Override
+	public void networkUnpack(NBTTagCompound nbt) {
+		for(int i = 0; i < 3; i++)
+			tanks[i].readFromNBT(nbt, "tank" + i);
 	}
 	
 	private void setupTanks() {
@@ -136,7 +146,7 @@ public class TileEntityMachineFractionTower extends TileEntity implements IFluid
 	}
 
 	@Override
-	public void setFillstate(int fill, int index) {
+	public void setFillForSync(int fill, int index) {
 		if(index < 3 && tanks[index] != null)
 			tanks[index].setFill(fill);
 	}
@@ -151,13 +161,8 @@ public class TileEntityMachineFractionTower extends TileEntity implements IFluid
 	}
 
 	@Override
-	public void setType(FluidType type, int index) {
+	public void setTypeForSync(FluidType type, int index) {
 		this.tanks[index].setTankType(type);
-	}
-
-	@Override
-	public List<FluidTank> getTanks() {
-		return Arrays.asList(this.tanks);
 	}
 
 	@Override

@@ -50,6 +50,7 @@ public class HbmPotion extends Potion {
 	public static HbmPotion unconscious;
 	public static HbmPotion perforated;
 	public static HbmPotion hollow;
+	public static HbmPotion death;
 
 	public HbmPotion(int id, boolean isBad, int color) {
 		super(id, isBad, color);
@@ -72,6 +73,7 @@ public class HbmPotion extends Potion {
 		unconscious = registerPotion(PotionConfig.unconsciousID, false, 0xFF80ED, "potion.hbm_unconscious", 0, 2);
 		perforated = registerPotion(PotionConfig.perforatedID, true, 0xFF0000, "potion.hbm_perforated", 1, 2);
 		hollow = registerPotion(PotionConfig.hollowID, true, 0x000000, "potion.hbm_hollow", 2, 2);
+		death = registerPotion(PotionConfig.deathID, false, 1118481, "potion.hbm_death", 4, 1);
 	}
 
 	public static HbmPotion registerPotion(int id, boolean isBad, int color, String name, int x, int y) {

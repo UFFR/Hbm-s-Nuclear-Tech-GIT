@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.Multimap;
+import com.hbm.extprop.HbmLivingProps;
 import com.hbm.handler.ArmorModHandler;
 import com.hbm.items.ModItems;
 
@@ -108,7 +109,7 @@ public class ItemModInsert extends ItemArmorMod {
 	public void modUpdate(EntityLivingBase entity, ItemStack armor) {
 		
 		if(!entity.worldObj.isRemote && this == ModItems.insert_polonium) {
-			//HbmLivingProps.incrementRadiation(entity, 5);
+			HbmLivingProps.incrementRadiation(entity, 100F);
 		}
 	}
 	
@@ -117,9 +118,10 @@ public class ItemModInsert extends ItemArmorMod {
 		
 		if(speed == 1)
 			return null;
+
+		Multimap multimap = super.getAttributeModifiers(armor);
 		
 		Multimap<String, AttributeModifier> multimap = super.getItemAttributeModifiers();
-		
 		multimap.put(SharedMonsterAttributes.movementSpeed.getAttributeUnlocalizedName(),
 				new AttributeModifier(ArmorModHandler.UUIDs[((ItemArmor)armor.getItem()).armorType], "NTM Armor Mod Speed", -1F + speed, 2));
 		

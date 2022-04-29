@@ -28,7 +28,7 @@ public class EntitySiegeUFO extends EntityUFOBase implements IRadiationImmune {
 	@Override
 	protected void entityInit() {
 		super.entityInit();
-		this.getDataWatcher().addObject(12, 0);
+		this.getDataWatcher().addObject(12, (int) 0);
 	}
 	
 	public void setTier(SiegeTier tier) {

@@ -291,3 +291,8 @@ public class ItemEnums {
 		COAL
 	}
 }
+
+	public static enum EnumPlantType {
+		TOBACCO,
+		ROPE
+	}

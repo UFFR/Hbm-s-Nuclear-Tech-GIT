@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 
 import com.google.common.annotations.Beta;
 import com.hbm.config.VersatileConfig;
+import com.hbm.config.MachineConfig;
 import com.hbm.interfaces.Untested;
 import com.hbm.inventory.RecipesCommon.AStack;
 

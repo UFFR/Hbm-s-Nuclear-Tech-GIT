@@ -14,12 +14,13 @@ import com.hbm.lib.Library;
 import com.hbm.main.ModEventHandler;
 import com.hbm.tileentity.TileEntityMachineBase;
 
+import api.hbm.fluid.IFluidStandardTransceiver;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.EnumSkyBlock;
 
-public class TileEntityBarrel extends TileEntityMachineBase implements IFluidAcceptor, IFluidSource {
+public class TileEntityBarrel extends TileEntityMachineBase implements IFluidAcceptor, IFluidSource, IFluidStandardTransceiver {
 	
 	public FluidTank tank;
 	public short mode = 0;
@@ -51,6 +52,16 @@ public class TileEntityBarrel extends TileEntityMachineBase implements IFluidAcc
 			tank.loadTank(2, 3, slots);
 			tank.unloadTank(4, 5, slots);
 			tank.updateTank(xCoord, yCoord, zCoord, worldObj.provider.dimensionId);
+			
+			if(this.mode == 1 || this.mode == 2) {
+				this.sendFluidToAll(tank.getTankType(), this);
+			}
+			
+			if(this.mode == 0 || this.mode == 1) {
+				this.subscribeToAllAround(tank.getTankType(), worldObj, xCoord, yCoord, zCoord);
+			} else {
+				this.unsubscribeToAllAround(tank.getTankType(), worldObj, xCoord, yCoord, zCoord);
+			}
 			
 			age++;
 			if(age >= 20)
@@ -117,17 +128,16 @@ public class TileEntityBarrel extends TileEntityMachineBase implements IFluidAcc
 	}
 	
 	public void networkUnpack(NBTTagCompound data) {
-		
 		mode = data.getShort("mode");
 	}
 
 	@Override
-	public void setFillstate(int fill, int index) {
+	public void setFillForSync(int fill, int index) {
 		tank.setFill(fill);
 	}
 
 	@Override
-	public void setType(FluidType type, int index) {
+	public void setTypeForSync(FluidType type, int index) {
 		tank.setTankType(type);
 	}
 
@@ -184,14 +194,6 @@ public class TileEntityBarrel extends TileEntityMachineBase implements IFluidAcc
 	public void clearFluidList(FluidType type) {
 		this.list.clear();
 	}
-
-	@Override
-	public List<FluidTank> getTanks() {
-		List<FluidTank> list = new ArrayList();
-		list.add(tank);
-		
-		return list;
-	}
 	
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
@@ -207,5 +209,15 @@ public class TileEntityBarrel extends TileEntityMachineBase implements IFluidAcc
 		
 		nbt.setShort("mode", mode);
 		tank.writeToNBT(nbt, "tank");
+	}
+
+	@Override
+	public FluidTank[] getSendingTanks() {
+		return (mode == 1 || mode == 2) ? new FluidTank[] {tank} : new FluidTank[0];
+	}
+
+	@Override
+	public FluidTank[] getReceivingTanks() {
+		return (mode == 0 || mode == 1) ? new FluidTank[] {tank} : new FluidTank[0];
 	}
 }

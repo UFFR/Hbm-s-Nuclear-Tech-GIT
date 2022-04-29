@@ -1,13 +1,13 @@
 package com.hbm.tileentity;
 
-import java.util.List;
 
 import com.hbm.interfaces.IFluidAcceptor;
-import com.hbm.inventory.FluidTank;
+import com.hbm.interfaces.IFluidContainer;
 import com.hbm.inventory.fluid.FluidType;
 
 import api.hbm.energy.IEnergyConnector;
 import api.hbm.energy.IEnergyUser;
+import api.hbm.fluid.IFluidConnector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -15,7 +15,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityProxyCombo extends TileEntityProxyBase implements IEnergyUser, IFluidAcceptor, ISidedInventory {
+public class TileEntityProxyCombo extends TileEntityProxyBase implements IEnergyUser, IFluidAcceptor, ISidedInventory, IFluidConnector {
 	
 	TileEntity tile;
 	boolean inventory;
@@ -41,13 +41,13 @@ public class TileEntityProxyCombo extends TileEntityProxyBase implements IEnergy
 	}
 
 	@Override
-	public void setFillstate(int fill, int index) {
+	public void setFillForSync(int fill, int index) {
 		
 		if(!fluid)
 			return;
 		
-		if(getTile() instanceof IFluidAcceptor) {
-			((IFluidAcceptor)getTile()).setFillstate(fill, index);
+		if(getTile() instanceof IFluidContainer) {
+			((IFluidContainer)getTile()).setFillForSync(fill, index);
 		}
 	}
 
@@ -57,33 +57,56 @@ public class TileEntityProxyCombo extends TileEntityProxyBase implements IEnergy
 		if(!fluid)
 			return;
 		
-		if(getTile() instanceof IFluidAcceptor) {
-			((IFluidAcceptor)getTile()).setFluidFill(fill, type);
+		if(getTile() instanceof IFluidContainer) {
+			((IFluidContainer)getTile()).setFluidFill(fill, type);
 		}
 	}
 
 	@Override
-	public void setType(FluidType type, int index) {
+	public int getFluidFillForReceive(FluidType type) {
+		
+		if(!fluid)
+			return 0;
+		
+		if(getTile() instanceof IFluidAcceptor) {
+			return ((IFluidAcceptor)getTile()).getFluidFillForReceive(type);
+		}
+		return 0;
+	}
+
+	@Override
+	public int getMaxFluidFillForReceive(FluidType type) {
+		
+		if(!fluid)
+			return 0;
+		
+		if(getTile() instanceof IFluidAcceptor) {
+			return ((IFluidAcceptor)getTile()).getMaxFluidFillForReceive(type);
+		}
+		
+		return 0;
+	}
+
+	@Override
+	public void receiveFluid(int amount, FluidType type) {
 		
 		if(!fluid)
 			return;
 		
 		if(getTile() instanceof IFluidAcceptor) {
-			((IFluidAcceptor)getTile()).setType(type, index);
+			((IFluidAcceptor)getTile()).receiveFluid(amount, type);
 		}
 	}
 
 	@Override
-	public List<FluidTank> getTanks() {
+	public void setTypeForSync(FluidType type, int index) {
 		
 		if(!fluid)
-			return null;
+			return;
 		
-		if(getTile() instanceof IFluidAcceptor) {
-			return ((IFluidAcceptor)getTile()).getTanks();
+		if(getTile() instanceof IFluidContainer) {
+			((IFluidContainer)getTile()).setTypeForSync(type, index);
 		}
-		
-		return null;
 	}
 
 	@Override
@@ -92,8 +115,8 @@ public class TileEntityProxyCombo extends TileEntityProxyBase implements IEnergy
 		if(!fluid)
 			return 0;
 		
-		if(getTile() instanceof IFluidAcceptor) {
-			return ((IFluidAcceptor)getTile()).getFluidFill(type);
+		if(getTile() instanceof IFluidContainer) {
+			return ((IFluidContainer)getTile()).getFluidFill(type);
 		}
 		
 		return 0;
@@ -377,5 +400,41 @@ public class TileEntityProxyCombo extends TileEntityProxyBase implements IEnergy
 		nbt.setBoolean("inv", inventory);
 		nbt.setBoolean("power", power);
 		nbt.setBoolean("fluid", fluid);
+	}
+
+	@Override
+	public long transferFluid(FluidType type, long fluid) {
+		
+		if(!this.fluid)
+			return fluid;
+		
+		if(getTile() instanceof IFluidConnector) {
+			return ((IFluidConnector)getTile()).transferFluid(type, fluid);
+		}
+		return fluid;
+	}
+
+	@Override
+	public long getDemand(FluidType type) {
+		
+		if(!this.fluid)
+			return 0;
+		
+		if(getTile() instanceof IFluidConnector) {
+			return ((IFluidConnector)getTile()).getDemand(type);
+		}
+		return 0;
+	}
+	
+	@Override
+	public boolean canConnect(FluidType type, ForgeDirection dir) {
+		
+		if(!this.fluid)
+			return false;
+		
+		if(getTile() instanceof IFluidConnector) {
+			return ((IFluidConnector)getTile()).canConnect(type, dir);
+		}
+		return false;
 	}
 }

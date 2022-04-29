@@ -4,12 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.hbm.config.BombConfig;
 import com.hbm.config.GeneralConfig;
 import com.hbm.config.RadiationConfig;
 import com.hbm.explosion.ExplosionNukeSmall;
 import com.hbm.extprop.HbmLivingProps;
+import com.hbm.extprop.HbmPlayerProps;
 import com.hbm.extprop.HbmLivingProps.ContaminationEffect;
+import com.hbm.handler.HbmKeybinds.EnumKeybind;
 import com.hbm.handler.radiation.ChunkRadiationManager;
+import com.hbm.interfaces.IArmorModDash;
+import com.hbm.items.armor.ArmorFSB;
 import com.hbm.lib.ModDamageSource;
 import com.hbm.main.MainRegistry;
 import com.hbm.packet.AuxParticlePacketNT;
@@ -32,11 +37,13 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 public class EntityEffectHandler {
@@ -77,6 +84,8 @@ public class EntityEffectHandler {
 		handleRadiation(entity);
 		handleDigamma(entity);
 		handleLungDisease(entity);
+		
+		handleDashing(entity);
 	}
 	
 	private static void handleContamination(EntityLivingBase entity) {
@@ -115,15 +124,14 @@ public class EntityEffectHandler {
 			float rad = ChunkRadiationManager.proxy.getRadiation(world, ix, iy, iz);
 	
 			if(world.provider.isHellWorld && RadiationConfig.hellRad > 0 && rad < RadiationConfig.hellRad)
-				rad = RadiationConfig.hellRad;
+				rad = (float) RadiationConfig.hellRad;
 	
 			if(rad > 0) {
 				ContaminationUtil.contaminate(entity, HazardType.RADIATION, ContaminationType.CREATIVE, rad / 20F);
 			}
 	
-			if(entity.worldObj.isRaining() && RadiationConfig.cont > 0 && AuxSavedData.getThunder(entity.worldObj) > 0 && entity.worldObj.canBlockSeeTheSky(ix, iy, iz)) {
-				
-				ContaminationUtil.contaminate(entity, HazardType.RADIATION, ContaminationType.CREATIVE, RadiationConfig.cont * 0.0005F);
+			if(entity.worldObj.isRaining() && BombConfig.cont > 0 && AuxSavedData.getThunder(entity.worldObj) > 0 && entity.worldObj.canBlockSeeTheSky(ix, iy, iz)) {
+				ContaminationUtil.contaminate(entity, HazardType.RADIATION, ContaminationType.CREATIVE, BombConfig.cont * 0.0005F);
 			}
 			
 			if(entity instanceof EntityPlayer && ((EntityPlayer)entity).capabilities.isCreativeMode)
@@ -409,6 +417,110 @@ public class EntityEffectHandler {
 					entity.addPotionEffect(new PotionEffect(Potion.weakness.id, 140, 2));
 				}
 			}
+		}
+	}
+	
+	private static void handleDashing(Entity entity) {
+		
+		//AAAAAAAAAAAAAAAAAAAAEEEEEEEEEEEEEEEEEEEE
+		if(entity instanceof EntityPlayer) {
+			EntityPlayer player = (EntityPlayer)entity;
+			
+			HbmPlayerProps props = HbmPlayerProps.getData(player);
+			
+			props.setDashCount(0);
+					
+			ArmorFSB chestplate = null;
+					
+			int armorDashCount = 0;
+			int armorModDashCount = 0;
+					
+			if(ArmorFSB.hasFSBArmor(player)) {
+				ItemStack plate = player.inventory.armorInventory[2];		
+						
+				chestplate = (ArmorFSB)plate.getItem();
+			}
+					
+			if(chestplate != null)
+				armorDashCount = chestplate.dashCount;
+					
+			for(int armorSlot = 0; armorSlot < 4; armorSlot++) {
+				ItemStack armorStack = player.inventory.armorInventory[armorSlot];
+						
+				if(armorStack != null && armorStack.getItem() instanceof ItemArmor) {
+							
+					for(int modSlot = 0; modSlot < 8; modSlot++) {
+						ItemStack mod = ArmorModHandler.pryMods(armorStack)[modSlot];
+								
+						if(mod != null && mod.getItem() instanceof IArmorModDash) {
+							int count = ((IArmorModDash)mod.getItem()).getDashes();
+							armorModDashCount += count;
+						}
+					}
+				}
+			}
+					
+			int dashCount = armorDashCount + armorModDashCount;
+			
+			boolean dashActivated = false;
+			
+			
+			if(!GeneralConfig.enableCustomDashKeybind) {
+				dashActivated = !player.capabilities.isFlying && player.isSneaking();
+			} else {
+				dashActivated = props.getKeyPressed(EnumKeybind.DASH);
+			}
+					
+			//System.out.println(dashCount);
+			
+			if(dashCount * 30 < props.getStamina())
+				props.setStamina(dashCount * 30);
+					
+			if(dashCount > 0) {
+
+				int perDash = 30;
+					
+				props.setDashCount(dashCount);
+						
+				int stamina = props.getStamina();
+						
+				if(props.getDashCooldown() <= 0) {
+							
+					if(dashActivated && stamina >= perDash) {
+
+						Vec3 lookingIn = player.getLookVec();
+						Vec3 strafeVec = player.getLookVec();
+						strafeVec.rotateAroundY((float)Math.PI * 0.5F);
+
+						int forward = (int) Math.signum(player.moveForward);
+						int strafe = (int) Math.signum(player.moveStrafing);
+						
+						if(forward == 0 && strafe == 0)
+							forward = 1;
+
+						player.addVelocity(lookingIn.xCoord * forward + strafeVec.xCoord * strafe, 0, lookingIn.zCoord * forward + strafeVec.zCoord * strafe);
+						player.playSound("hbm:player.dash", 1.0F, 1.0F);
+						
+						props.setDashCooldown(HbmPlayerProps.dashCooldownLength);
+						stamina -= perDash;
+					}
+				} else {	
+					props.setDashCooldown(props.getDashCooldown() - 1);
+				}
+						
+				if(stamina < props.getDashCount() * perDash) {
+					stamina++;
+					
+					if(stamina % perDash == perDash-1) {
+						
+						player.playSound("hbm:player.dashRecharge", 1.0F, (1.0F + ((1F/12F)*(stamina/perDash))));
+						stamina++;
+					}
+				}
+						
+				props.setStamina(stamina);
+			}	
+					
 		}
 	}
 }
