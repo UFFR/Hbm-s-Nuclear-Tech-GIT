@@ -36,20 +36,21 @@ import com.hbm.main.DeserializationException;
 import com.hbm.main.MainRegistry;
 import com.hbm.saveddata.TimeSavedData.TimeDurationType;
 import com.hbm.tileentity.TileEntityProxyBase;
-import com.hbm.tileentity.TileEntityProxyBase;
 import com.hbm.tileentity.TileEntityProxyInventory;
-import com.hbm.tileentity.conductor.TileEntityFluidDuctSimple;
-import com.hbm.tileentity.conductor.TileEntityGasDuct;
-import com.hbm.tileentity.conductor.TileEntityGasDuctSolid;
-import com.hbm.tileentity.conductor.TileEntityOilDuct;
-import com.hbm.tileentity.conductor.TileEntityOilDuctSolid;
+import com.hbm.tileentity.conductor.*;
 import com.hbm.tileentity.machine.TileEntityDummy;
+import com.hbm.util.ContaminationUtil;
+import com.hbm.util.ContaminationUtil.ContaminationType;
+import com.hbm.util.ContaminationUtil.HazardType;
 
 import api.hbm.energy.IBatteryItem;
 import api.hbm.energy.IEnergyConnector;
 import api.hbm.energy.IEnergyConnectorBlock;
 import api.hbm.fluid.IFluidConnector;
 import api.hbm.fluid.IFluidConnectorBlock;
+import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -99,9 +100,9 @@ public class Library
 	public static final String lag_add = "259785a0-20e9-4c63-9286-ac2f93ff528f";
 	public static final String Tankish = "609268ad-5b34-49c2-abba-a9d83229af03";
 	public static final String FrizzleFrazzle = "fc4cc2ee-12e8-4097-b26a-1c6cb1b96531";
-	public static String the_NCR = "28ae585f-4431-4491-9ce8-3def6126e3c6";
-	public static String Barnaby99_x = "711aaf78-a862-4b7e-921a-216349716e9a";
-	public static String Ma118 = "1121cb7a-8773-491f-8e2b-221290c93d81";
+	public static final String the_NCR = "28ae585f-4431-4491-9ce8-3def6126e3c6";
+	public static final String Barnaby99_x = "711aaf78-a862-4b7e-921a-216349716e9a";
+	public static final String Ma118 = "1121cb7a-8773-491f-8e2b-221290c93d81";
 
 	public static final Set<String> contributors = Sets.newHashSet(new String[] {
 			"06ab7c03-55ce-43f8-9d3c-2850e3c652de", //mustang_rudolf

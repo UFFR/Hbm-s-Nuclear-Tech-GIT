@@ -20,7 +20,7 @@ import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.RecipesCommon.OreDictStack;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
-import com.hbm.inventory.recipes.ChemplantRecipes;
+import com.hbm.inventory.recipes.ChemPlantRecipesNT;
 import com.hbm.inventory.recipes.FuelPoolRecipes;
 import com.hbm.items.ModItems;
 import com.hbm.main.MainRegistry;
@@ -38,7 +38,7 @@ public abstract class SerializableRecipe {
 	 */
 	
 	public static void registerAllHandlers() {
-		recipeHandlers.add(new ChemplantRecipes());
+		recipeHandlers.add(new ChemPlantRecipesNT());
 		recipeHandlers.add(new FuelPoolRecipes());
 	}
 	
@@ -96,7 +96,7 @@ public abstract class SerializableRecipe {
 	
 	public void writeTemplateFile(File template) {
 		
-		try {
+		try (JsonWriter writer = new JsonWriter(new FileWriter(template))) {
 			/* Get the recipe list object */
 			Object recipeObject = this.getRecipeObject();
 			List recipeList = new ArrayList();
@@ -112,7 +112,7 @@ public abstract class SerializableRecipe {
 			if(recipeList.isEmpty())
 				throw new IllegalStateException("Error while writing recipes for " + this.getClass().getSimpleName() + ": Recipe list is either empty or in an unsupported format!");
 			
-			JsonWriter writer = new JsonWriter(new FileWriter(template));
+			
 			writer.setIndent("  ");					//pretty formatting
 			writer.beginObject();					//initial '{'
 			writer.name("recipes").beginArray();	//all recipes are stored in an array called "recipes"
@@ -126,7 +126,10 @@ public abstract class SerializableRecipe {
 			writer.endArray();						//end recipe array
 			writer.endObject();						//final '}'
 			writer.close();
-		} catch(Exception ex) { }
+		} catch(Exception ex)
+		{
+			MainRegistry.logger.catching(ex);
+		}
 	}
 	
 	public void readRecipeFile(File file) {

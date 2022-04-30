@@ -52,4 +52,10 @@ public class TextFile extends FileBase
 		return data.equals(test.data);
 	}
 
+	@Override
+	public TextFile clone()
+	{
+		return new TextFile(data);
+	}
+
 }

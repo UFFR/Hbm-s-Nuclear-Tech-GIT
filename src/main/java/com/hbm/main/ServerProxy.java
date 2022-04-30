@@ -2,15 +2,12 @@ package com.hbm.main;
 
 import com.hbm.handler.HbmKeybinds.EnumKeybind;
 import com.hbm.sound.AudioWrapper;
-import com.hbm.sound.nt.ISoundSourceTE;
-import com.hbm.sound.nt.SoundWrapper;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
 
-public class ServerProxy {
+public abstract class ServerProxy {
 
 	//sort by estimated time of display. longer lasting ones should be sortet at the top.
 	public static final int ID_DUCK = 0;

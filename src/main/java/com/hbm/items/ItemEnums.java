@@ -290,9 +290,9 @@ public class ItemEnums {
 		CRACK,
 		COAL
 	}
-}
-
+	
 	public static enum EnumPlantType {
 		TOBACCO,
 		ROPE
 	}
+}

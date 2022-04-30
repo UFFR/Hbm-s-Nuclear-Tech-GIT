@@ -770,7 +770,7 @@ public class ItemAmmoEnums
 		public BulletConfiguration getConfig();
 	}
 
-	private static AmmoItemTrait[] safeAssign(AmmoItemTrait[] traits)
+	static AmmoItemTrait[] safeAssign(AmmoItemTrait[] traits)
 	{
 		return traits == null ? new AmmoItemTrait[0] : traits;
 	}

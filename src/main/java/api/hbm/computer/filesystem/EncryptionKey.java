@@ -134,7 +134,7 @@ public class EncryptionKey extends FileBase
 	{
 		ByteBuf buf = Unpooled.buffer();
 		if (buf.readBoolean())
-			return (EncryptionKey) new EncryptionKey().setCorrupted();
+			throw new DeserializationException("The stored file is corrupt.");
 		
 		final byte[] specBytes = new byte[32];
 		final byte[] keyBytes = new byte[256];
@@ -157,6 +157,12 @@ public class EncryptionKey extends FileBase
 		
 		EncryptionKey test = (EncryptionKey) obj;
 		return spec.equals(test.spec) && secretKey.equals(test.secretKey) && invalid == test.invalid;
+	}
+
+	@Override
+	public EncryptionKey clone()
+	{
+		return new EncryptionKey(secretKey, spec);
 	}
 
 }

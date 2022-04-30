@@ -6,18 +6,23 @@ import static com.hbm.items.ModItems.*;
 import static com.hbm.inventory.fluid.Fluids.*;
 import static com.hbm.inventory.recipes.RefineryRecipes.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.annotation.Nullable;
 
 import com.google.common.annotations.Beta;
+import com.google.gson.JsonElement;
+import com.google.gson.stream.JsonWriter;
 import com.hbm.config.GeneralConfig;
 import com.hbm.handler.imc.IMCChemPlant;
 import com.hbm.interfaces.Untested;
 import com.hbm.inventory.FluidStack;
 import com.hbm.inventory.RecipesCommon.*;
+import com.hbm.inventory.recipes.loader.SerializableRecipe;
 import com.hbm.lib.Library;
 import com.hbm.main.MainRegistry;
+import com.hbm.util.ItemStackUtil;
 
 import api.hbm.computer.Researchable;
 import net.minecraft.init.Blocks;
@@ -26,11 +31,124 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 @Untested
 @Beta
-public class ChemPlantRecipesNT
+public class ChemPlantRecipesNT extends SerializableRecipe
 {
 //	public static final HashMap<String, ChemPlantRecipe> recipes = new HashMap<>();
 	public static final ArrayList<ChemPlantRecipe> recipes = new ArrayList<ChemPlantRecipesNT.ChemPlantRecipe>();
-	public static void registerChemPlantRecipes()
+	
+	@Untested
+	@Beta
+	public static class ChemPlantRecipe extends Researchable
+	{
+		public static final ChemPlantRecipe NULL = new ChemPlantRecipe("NONE").setItemInput(Library.filledArray(AStack.class, new ComparableStack(nothing), 4)).setItemOutput(Library.filledArray(ItemStack.class, new ItemStack(nothing), 4));
+		public int time = 100;
+		public String name = new String();
+		public ResourceLocation icon;
+		
+		public FluidStack[] fIn = new FluidStack[2];
+		public AStack[] inputs = new AStack[4];
+		
+		public FluidStack[] fOut = new FluidStack[2];
+		public ItemStack[] outputs = new ItemStack[4];
+		public ChemPlantRecipe(String name)
+		{
+			super(name);
+			this.name = name;
+			icon = new ResourceLocation("hbm", "chem_icon_".concat(name));
+		}
+		public ChemPlantRecipe(String name, int dura)
+		{
+			this(name);
+			time = dura;
+		}
+		public ChemPlantRecipe setFluidInput(FluidStack f)
+		{
+			return setFluidInput(f, null);
+		}
+		public ChemPlantRecipe setFluidInput(FluidStack f1, @Nullable FluidStack f2)
+		{
+			fIn[0] = f1;
+			fIn[1] = f2;
+			return this;
+		}
+		public ChemPlantRecipe setItemInput(AStack...stacks)
+		{
+			assert stacks.length <= 4 : "Stack array length must be equal or less than 4!";
+			
+			for (byte i = 0; i < stacks.length; i++)
+				inputs[i] = stacks[i];
+			
+			return this;
+		}
+		public ChemPlantRecipe setFluidOutput(FluidStack f)
+		{
+			return setFluidOutput(f, null);
+		}
+		public ChemPlantRecipe setFluidOutput(FluidStack f1, @Nullable FluidStack f2)
+		{
+			fOut[0] = f1;
+			fOut[1] = f2;
+			return this;
+		}
+		public ChemPlantRecipe setItemOutput(ItemStack...stacks)
+		{
+			assert stacks.length <= 4 : "Stack array length must be equal or less than 4!";
+			
+			for (int i = 0; i < stacks.length && i < 4; i++)
+				outputs[i] = ItemStackUtil.carefulCopy(stacks[i]);
+			
+			return this;
+		}
+		public ChemPlantRecipe setIcon(String icon)
+		{
+			this.icon = new ResourceLocation("hbm", "chem_icon_".concat(icon));
+			return this;
+		}
+		@Override
+		public String getKey()
+		{
+			return name;
+		}
+		@Override
+		public ChemPlantRecipe setPrevious(Researchable prev)
+		{
+			return (ChemPlantRecipe) super.setPrevious(prev);
+		}
+		@Override
+		public ChemPlantRecipe setWork(long ram, long cpu)
+		{
+			return (ChemPlantRecipe) super.setWork(ram, cpu);
+		}
+	}
+
+	@Override
+	public String getFileName()
+	{
+		return "hbmChemicalPlant.json";
+	}
+
+	@Override
+	public Object getRecipeObject()
+	{
+		return recipes;
+	}
+
+	@Override
+	public void readRecipe(JsonElement recipe)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void writeRecipe(Object recipe, JsonWriter writer) throws IOException
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void registerDefaults()
 	{
 		recipes.add(new ChemPlantRecipe("FP_HEAVYOIL", 50)
 				.setFluidInput(new FluidStack(HEAVYOIL, 1000))
@@ -77,7 +195,7 @@ public class ChemPlantRecipesNT
 				.setFluidOutput(new FluidStack(CRYOGEL, 2000)));
 		recipes.add(new ChemPlantRecipe("DESH", 300)
 				.setItemInput(new ComparableStack(powder_desh_mix))
-				.setFluidInput(new FluidStack(MERCURY, 200), GeneralConfig.enableBabyMode ? null : new FluidStack(LIGHTOIL, 200))
+				.setFluidInput(new FluidStack(MERCURY, 200), GeneralConfig.enableLBSMSimpleChemsitry ? null : new FluidStack(LIGHTOIL, 200))
 				.setItemOutput(new ItemStack(ingot_desh)));
 		recipes.add(new ChemPlantRecipe("NITAN", 50)
 				.setItemInput(new ComparableStack(powder_nitan_mix, 2))
@@ -266,89 +384,10 @@ public class ChemPlantRecipesNT
 		
 		Researchable.addAll(recipes);
 	}
-	
-	@Untested
-	@Beta
-	public static class ChemPlantRecipe extends Researchable
+
+	@Override
+	public void deleteRecipes()
 	{
-		public static final ChemPlantRecipe NULL = new ChemPlantRecipe("NONE").setItemInput(Library.filledArray(AStack.class, new ComparableStack(nothing), 4)).setItemOutput(Library.filledArray(ItemStack.class, new ItemStack(nothing), 4));
-		public int time = 100;
-		public String name = new String();
-		public ResourceLocation icon;
-		
-		public FluidStack[] fIn = new FluidStack[2];
-		public AStack[] inputs = new AStack[4];
-		
-		public FluidStack[] fOut = new FluidStack[2];
-		public ItemStack[] outputs = new ItemStack[4];
-		public ChemPlantRecipe(String name)
-		{
-			super(name);
-			this.name = name;
-			icon = new ResourceLocation("hbm", "chem_icon_".concat(name));
-		}
-		public ChemPlantRecipe(String name, int dura)
-		{
-			this(name);
-			time = dura;
-		}
-		public ChemPlantRecipe setFluidInput(FluidStack f)
-		{
-			return setFluidInput(f, null);
-		}
-		public ChemPlantRecipe setFluidInput(FluidStack f1, @Nullable FluidStack f2)
-		{
-			fIn[0] = f1;
-			fIn[1] = f2;
-			return this;
-		}
-		public ChemPlantRecipe setItemInput(AStack...stacks)
-		{
-			assert stacks.length <= 4 : "Stack array length must be equal or less than 4!";
-			
-			for (byte i = 0; i < stacks.length; i++)
-				inputs[i] = stacks[i];
-			
-			return this;
-		}
-		public ChemPlantRecipe setFluidOutput(FluidStack f)
-		{
-			return setFluidOutput(f, null);
-		}
-		public ChemPlantRecipe setFluidOutput(FluidStack f1, @Nullable FluidStack f2)
-		{
-			fOut[0] = f1;
-			fOut[1] = f2;
-			return this;
-		}
-		public ChemPlantRecipe setItemOutput(ItemStack...stacks)
-		{
-			assert stacks.length <= 4 : "Stack array length must be equal or less than 4!";
-			
-			for (int i = 0; i < stacks.length && i < 4; i++)
-				outputs[i] = Library.carefulCopy(stacks[i]);
-			
-			return this;
-		}
-		public ChemPlantRecipe setIcon(String icon)
-		{
-			this.icon = new ResourceLocation("hbm", "chem_icon_".concat(icon));
-			return this;
-		}
-		@Override
-		public String getKey()
-		{
-			return name;
-		}
-		@Override
-		public ChemPlantRecipe setPrevious(Researchable prev)
-		{
-			return (ChemPlantRecipe) super.setPrevious(prev);
-		}
-		@Override
-		public ChemPlantRecipe setWork(long ram, long cpu)
-		{
-			return (ChemPlantRecipe) super.setWork(ram, cpu);
-		}
+		recipes.clear();
 	}
 }

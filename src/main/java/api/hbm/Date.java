@@ -6,6 +6,8 @@ import java.util.Arrays;
 
 import com.hbm.lib.HbmCollection;
 
+import api.hbm.serialization.ISerializable;
+
 public class Date implements Comparable<Date>, Serializable, Cloneable, ISerializable<Date>
 {
 	static

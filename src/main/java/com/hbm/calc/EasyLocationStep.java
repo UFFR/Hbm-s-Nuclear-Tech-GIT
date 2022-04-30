@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 import com.google.common.annotations.Beta;
 
-import api.hbm.ISerializable;
+import api.hbm.serialization.ISerializable;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;

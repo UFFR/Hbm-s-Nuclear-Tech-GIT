@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import javax.annotation.CheckForNull;
 
-import api.hbm.ISerializable;
+import api.hbm.serialization.ISerializable;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;

@@ -1,6 +1,5 @@
 package com.hbm.extprop;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,12 +9,15 @@ import java.util.UUID;
 
 import com.hbm.config.RadiationConfig;
 import com.hbm.entity.mob.EntityDuck;
+import com.hbm.hazard.HazardRegistry;
+import com.hbm.hazard.type.HazardTypeBase;
 import com.hbm.lib.ModDamageSource;
 import com.hbm.main.MainRegistry;
 import com.hbm.packet.AuxParticlePacketNT;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.saveddata.TimeSavedData;
 
+import api.hbm.Date;
 import api.hbm.IHasAge;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraft.block.Block;
@@ -52,32 +54,34 @@ public class HbmLivingProps implements IExtendedEntityProperties, IHasAge
 	private float radBuf;
 	private int bombTimer;
 	private int contagion;
-	private BigInteger age = BigInteger.ZERO, maxAge, intDate;
+	private Date age = new Date(), maxAge, intDate;
 	private List<ContaminationEffect> contamination = new ArrayList<ContaminationEffect>();
 	private final HashMap<HazardTypeBase, Float> basicHazards = new HashMap<HazardTypeBase, Float>();
 	public static final HashMap<HazardTypeBase, Float> maxHazards = new HashMap<HazardTypeBase, Float>();
-	private static final HashMap<Class<? extends EntityLivingBase>, BigInteger> maxAges = new HashMap<Class<? extends EntityLivingBase>, BigInteger>();
+	private static final HashMap<Class<? extends EntityLivingBase>, Date> maxAges = new HashMap<Class<? extends EntityLivingBase>, Date>();
 	static
 	{
 		maxHazards.put(HazardRegistry.BERYLLIUM, 72000f);
-		maxAges.put(EntityPlayer.class, TimeSavedData.constructCompressed(90, 0, 0));
-		maxAges.put(EntityVillager.class, TimeSavedData.constructCompressed(60, 0, 0));
-		maxAges.put(EntityWolf.class, TimeSavedData.constructCompressed(10, 0, 0));
+		maxAges.put(EntityPlayer.class, new Date(90, 0, 0));
+		maxAges.put(EntityVillager.class, new Date(60, 0, 0));
+		maxAges.put(EntityWolf.class, new Date(10, 0, 0));
 	}
 	
 	public HbmLivingProps(EntityLivingBase entity) {
 		this.entity = entity;
-		intDate = TimeSavedData.getData(entity.worldObj).getFullTotal();
+		intDate = TimeSavedData.getData(entity.worldObj).dateData;
 		// Zero meaning it does not die of old age
-		maxAge = maxAges.getOrDefault(entity.getClass(), BigInteger.ZERO);
-		if (!maxAge.equals(BigInteger.ZERO))
-			maxAge = maxAge.add(TimeSavedData.constructCompressed(rand.nextInt(10), rand.nextInt(100), 0));
+		maxAge = maxAges.getOrDefault(entity.getClass(), new Date());
+		if (!maxAge.equals(new Date()))
+			maxAge = maxAge.add(new Date(rand.nextInt(10), rand.nextInt(100), 0));
 		
 		if (entity instanceof EntityPlayer)
 		{
 			TimeSavedData data = TimeSavedData.getData(entity.worldObj);
-			age = TimeSavedData.constructCompressed(20 + rand.nextInt(10), data.getDay(), data.getInternalTime());
+			age = new Date(20 + rand.nextInt(10), data.dateData.getDay(), data.dateData.getTime());
 		}
+		
+		register();
 	}
 	
 	/// DATA ///
@@ -356,8 +360,8 @@ public class HbmLivingProps implements IExtendedEntityProperties, IHasAge
 			props.setTag("hfr_basic", data);
 		}
 		
-		props.setByteArray("age", age.toByteArray());
-		props.setByteArray("maxAge", maxAge.toByteArray());
+		props.setByteArray("age", age.serialize());
+		props.setByteArray("maxAge", maxAge.serialize());
 		
 		nbt.setTag("HbmLivingProps", props);
 	}
@@ -382,8 +386,8 @@ public class HbmLivingProps implements IExtendedEntityProperties, IHasAge
 				this.contamination.add(ContaminationEffect.load(props, i));
 			}
 			
-			age = new BigInteger(props.getByteArray("age"));
-			maxAge = new BigInteger(props.getByteArray("maxAge"));
+			age = new Date(props.getByteArray("age"));
+			maxAge = new Date(props.getByteArray("maxAge"));
 			
 //			if (props.hasKey("hfr_basic"))
 //			{
@@ -434,18 +438,17 @@ public class HbmLivingProps implements IExtendedEntityProperties, IHasAge
 	@Override
 	public void incrementAge()
 	{
-		age = age.add(BigInteger.ONE);
+		age.increment();
 	}
 	
 	@Override
-	public void notifyTimeUpdated(BigInteger newTime)
+	public void notifyTimeUpdated(Date newTime)
 	{
-		// TODO Auto-generated method stub
 		intDate = newTime;
 	}
 
 	@Override
-	public BigInteger getInternalDate()
+	public Date getInternalDate()
 	{
 		return intDate;
 	}

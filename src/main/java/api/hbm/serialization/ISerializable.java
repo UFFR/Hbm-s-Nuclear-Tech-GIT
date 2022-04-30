@@ -1,4 +1,4 @@
-package api.hbm;
+package api.hbm.serialization;
 
 import java.util.HashMap;
 

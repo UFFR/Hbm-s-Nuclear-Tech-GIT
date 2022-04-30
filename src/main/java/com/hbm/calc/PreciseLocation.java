@@ -11,7 +11,7 @@ import javax.annotation.CheckForNull;
 
 import com.google.common.annotations.Beta;
 
-import api.hbm.ISerializable;
+import api.hbm.serialization.ISerializable;
 import ch.obermuhlner.math.big.BigDecimalMath;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

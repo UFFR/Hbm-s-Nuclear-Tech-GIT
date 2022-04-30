@@ -8,7 +8,7 @@ import java.util.List;
 
 import com.hbm.main.MainRegistry;
 
-import api.hbm.ISerializable;
+import api.hbm.serialization.ISerializable;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
@@ -23,12 +23,6 @@ import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class RecipesCommon {
-	static
-	{
-		ISerializable.register(ComparableNBTStack.class, new ComparableNBTStack(Items.stick));
-		ISerializable.register(ComparableStack.class, new ComparableStack(Items.stick));
-		ISerializable.register(OreDictStack.class, new OreDictStack(""));
-	}
 	public static ItemStack[] copyStackArray(ItemStack[] array) {
 		
 		if(array == null)
@@ -61,7 +55,7 @@ public class RecipesCommon {
 		return clone;
 	}
 	
-	public static abstract class AStack implements Comparable<AStack>, Serializable, ISerializable {
+	public static abstract class AStack implements Comparable<AStack>, Serializable, ISerializable<AStack> {
 		
 		/**
 		 * 
@@ -360,7 +354,7 @@ public class RecipesCommon {
 		}
 
 		@Override
-		public ISerializable deserialize(byte[] bytes)
+		public ComparableStack deserialize(byte[] bytes)
 		{
 			ByteBuf buf = Unpooled.copiedBuffer(bytes);
 			byte[] stringBytes = new byte[buf.readInt()];
@@ -471,7 +465,7 @@ public class RecipesCommon {
 		}
 		
 		@Override
-		public ISerializable deserialize(byte[] bytes)
+		public ComparableNBTStack deserialize(byte[] bytes)
 		{
 			ByteBuf buf = Unpooled.copiedBuffer(bytes);
 			byte[] stringBytes = new byte[buf.readInt()];
@@ -611,7 +605,7 @@ public class RecipesCommon {
 		}
 
 		@Override
-		public ISerializable deserialize(byte[] bytes)
+		public OreDictStack deserialize(byte[] bytes)
 		{
 			ByteBuf buf = Unpooled.copiedBuffer(bytes);
 			byte[] stringBytes = new byte[buf.readInt()];

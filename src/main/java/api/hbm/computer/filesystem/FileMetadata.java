@@ -7,8 +7,9 @@ import javax.annotation.concurrent.Immutable;
 
 import com.hbm.main.DeserializationException;
 
-import api.hbm.Deserializer;
-import api.hbm.ISerializable;
+import api.hbm.Date;
+import api.hbm.serialization.Deserializer;
+import api.hbm.serialization.ISerializable;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -20,7 +21,7 @@ public final class FileMetadata implements Serializable, ISerializable<FileMetad
 	{
 		try
 		{
-			ByteBuf buf = Unpooled.copiedBuffer(bytes);
+			final ByteBuf buf = Unpooled.copiedBuffer(bytes);
 			final byte[] filenameBytes = new byte[buf.readByte()];
 			buf.readBytes(filenameBytes);
 			final String filename = new String(filenameBytes);
@@ -31,10 +32,10 @@ public final class FileMetadata implements Serializable, ISerializable<FileMetad
 			final int expectedHash = buf.readInt();
 			final byte[] createdBytes = new byte[buf.readInt()];
 			buf.readBytes(createdBytes);
-			final BigInteger created = new BigInteger(createdBytes);
+			final Date created = new Date(createdBytes);
 			final byte[] modifiedBytes = new byte[buf.readInt()];
 			buf.readBytes(modifiedBytes);
-			final BigInteger modified = new BigInteger(modifiedBytes);
+			final Date modified = new Date(modifiedBytes);
 			final boolean corrupt = buf.readBoolean();
 			return new FileMetadata(filename, fileType, fileSize, expectedHash, created, modified, corrupt);
 		} catch (Exception e)
@@ -51,24 +52,19 @@ public final class FileMetadata implements Serializable, ISerializable<FileMetad
 	public final int expectedHash;
 	public final BigInteger dateCreated, dateModified;
 	public final boolean corrupted;
-	public FileMetadata(FileBase file)
-	{
-		this(file.filename, file.getClass(), file.filesize, file.expectedHash, file.dateCreated.getData(), file.dateModified.getData(), file.getIsCorrupted());
-	}
-	
-	public FileMetadata(String filename, Class<? extends FileBase> clazz, long fileSize, int expectedHash, BigInteger dateCreated, BigInteger dateModified, boolean corrupted)
+	public FileMetadata(String filename, Class<? extends FileBase> clazz, long fileSize, int expectedHash, Date dateCreated, Date dateModified, boolean corrupted)
 	{
 		this(filename, clazz.getSimpleName(), fileSize, expectedHash, dateCreated, dateModified, corrupted);
 	}
 	
-	public FileMetadata(String filename, String fileType, long fileSize, int expectedHash, BigInteger dateCreated, BigInteger dateModified, boolean corrupted)
+	public FileMetadata(String filename, String fileType, long fileSize, int expectedHash, Date dateCreated, Date dateModified, boolean corrupted)
 	{
 		this.filename = filename;
 		this.fileType = fileType;
 		this.fileSize = fileSize;
 		this.expectedHash = expectedHash;
-		this.dateCreated = dateCreated;
-		this.dateModified = dateModified;
+		this.dateCreated = dateCreated.getData();
+		this.dateModified = dateModified.getData();
 		this.corrupted = corrupted;
 	}
 	

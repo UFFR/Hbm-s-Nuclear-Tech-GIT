@@ -80,9 +80,9 @@ public class TimeSavedData extends WorldSavedData
 			if (HbmPlayerProps.getBirthday(p) == date.dateData.getDay())
 			{
 				HbmPlayerProps.setAge(p, 1, true);
-				PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(I18nUtil.resolveKey("desc.player.birthday")), (EntityPlayerMP) p);
+				PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(I18nUtil.resolveKey("desc.player.birthday"), 0), (EntityPlayerMP) p);
 				String[] msg = HbmPlayerProps.hasAscended(p) ? I18nUtil.resolveKeyArray("desc.player.birthdayAlt") : I18nUtil.resolveKeyArray("desc.player.birhdayMsg");
-				PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(Library.randomFromArray(msg)), (EntityPlayerMP) p);
+				PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(Library.randomFromArray(msg), 0), (EntityPlayerMP) p);
 			}
 		}
 		

@@ -12,7 +12,7 @@ import javax.annotation.Nonnegative;
 import com.hbm.lib.Library;
 
 import api.hbm.Date;
-import api.hbm.ISerializable;
+import api.hbm.serialization.ISerializable;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.nbt.CompressedStreamTools;

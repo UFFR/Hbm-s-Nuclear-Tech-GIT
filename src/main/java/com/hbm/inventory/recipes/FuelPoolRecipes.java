@@ -57,20 +57,20 @@ public class FuelPoolRecipes extends SerializableRecipe {
 	public void readRecipe(JsonElement recipe) {
 		JsonElement input = ((JsonObject)recipe).get("input");
 		JsonElement output = ((JsonObject)recipe).get("output");
-		ItemStack in = this.readItemStack((JsonArray) input);
-		ItemStack out = this.readItemStack((JsonArray) output);
+		ItemStack in = readItemStack((JsonArray) input);
+		ItemStack out = readItemStack((JsonArray) output);
 		recipes.put(new ComparableStack(in), out);
 	}
 
 	@Override
-	public void writeRecipe(Object recipe, JsonWriter writer) throws IOException {
+	public void writeRecipe(Object recipe, JsonWriter writer) throws IOException
+	{
 		Entry<ComparableStack, ItemStack> entry = (Entry<ComparableStack, ItemStack>) recipe;
 		ItemStack in = entry.getKey().toStack();
 		ItemStack out = entry.getValue();
-
 		writer.name("input");
-		this.writeItemStack(in, writer);
+		writeItemStack(in, writer);
 		writer.name("output");
-		this.writeItemStack(out, writer);
+		writeItemStack(out, writer);
 	}
 }

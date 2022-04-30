@@ -4,13 +4,16 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
+import com.hbm.lib.Library;
 import com.hbm.main.MainRegistry;
-import com.hbm.saveddata.TimeSavedData;
 import com.hbm.util.BobMathUtil;
 import com.hbm.util.I18nUtil;
 
-import api.hbm.computer.File;
-import api.hbm.internet.IDataStorageItem;
+import api.hbm.Date;
+import api.hbm.computer.filesystem.FileBase;
+import api.hbm.computer.filesystem.FileMetadata;
+import api.hbm.computer.filesystem.IDataStorageItem;
+import api.hbm.computer.filesystem.TextFile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
@@ -40,7 +43,7 @@ public final class ItemSpecialFloppy extends ItemCustomLore implements IDataStor
 	@Override
 	public long getMaxCapacity(ItemStack stack)
 	{
-		return (long) (2.88 * BobMathUtil.MB);
+		return (int) (2.88 * BobMathUtil.MB);
 	}
 	@Override
 	public long getReadSpeed(ItemStack stack)
@@ -53,7 +56,7 @@ public final class ItemSpecialFloppy extends ItemCustomLore implements IDataStor
 		return 0;
 	}
 	@Override
-	public boolean writeFile(File file, ItemStack stack)
+	public boolean writeFile(FileBase file, ItemStack stack)
 	{
 		return false;
 	}
@@ -63,26 +66,28 @@ public final class ItemSpecialFloppy extends ItemCustomLore implements IDataStor
 		return false;
 	}
 	@Override
-	public boolean overwriteFile(File file, ItemStack stack)
+	public boolean overwriteFile(FileBase file, ItemStack stack)
 	{
 		return false;
 	}
 	
 	private static final String name = "GULF_BLUEPRINT";
-	private static final File blueprint = new File(name, (long) (2.88 * BobMathUtil.MB), TimeSavedData.constructCompressed(1980, 92, 6411));
 	// TODO The funny
+	private static final FileBase blueprint = new TextFile("Bababoey");/*(name, (long) (2.88 * BobMathUtil.MB), TimeSavedData.constructCompressed(1980, 92, 6411));*/
 	@Override
-	public File readFile(String filename, ItemStack stack)
+	public FileBase readFile(String filename, ItemStack stack)
 	{
-		if (filename.equals(name))
-			return blueprint.clone();
-		else
-			return null;
+		return filename.equals(name) ? blueprint.clone() : null;
 	}
 	@Override
-	public String readFileHash(String filename, ItemStack stack)
+	public String getFileHash(String filename, ItemStack stack)
 	{
-		return "";
+		return filename.equals(name) ? Library.getHash(blueprint.serialize()) : "";
+	}
+	@Override
+	public FileMetadata getFileMetadata(String filename, ItemStack stack)
+	{
+		return filename.equals(filename) ? new FileMetadata(name, TextFile.class, (int) 2.88 * BobMathUtil.MB, blueprint.hashCode(), new Date(1980, 92, 6411), new Date(1980, 92, 6411), false) : null;
 	}
 	@Override
 	public Set<String> getFileList(ItemStack stack)

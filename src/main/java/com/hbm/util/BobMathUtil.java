@@ -9,11 +9,7 @@ import java.util.List;
 
 import javax.annotation.Nonnegative;
 
-import com.hbm.calc.EasyLocation;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.MathHelper;
-import javax.annotation.Nonnegative;
+import com.hbm.lib.HbmCollection;
 
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
@@ -21,12 +17,12 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 public class BobMathUtil {
 	
-	public static final int KB = 1000;
-	public static final int MB = 1000000;
-	public static final int GB = 1000000000;
-	public static final long TB = 100000000000L;
-	public static final long PB = 100000000000000L;
-	public static final long ZB = 100000000000000000L;
+	public static final int KB = 1024;
+	public static final int MB = 1024000;
+	public static final int GB = 1024000000;
+	public static final long TB = 102400000000L;
+	public static final long PB = 102400000000000L;
+	public static final long ZB = 102400000000000000L;
 	
 	public static Vec3 interpVec(Vec3 vec1, Vec3 vec2, float interp) {
 		return Vec3.createVectorHelper(
@@ -110,14 +106,11 @@ public class BobMathUtil {
 	
 	public static String[] ticksToDate(long ticks) {
 		
-		int tickDay = 48000;
-		int tickYear = tickDay * 100;
-		
 		final String[] dateOut = new String[3];
-		long year = Math.floorDiv(ticks, tickYear);
-		byte day = (byte) Math.floorDiv(ticks - tickYear * year, tickDay);
-		float time = ticks - (tickYear * year + tickDay * day);
-		time = (float) convertScale(time, 0, tickDay, 0, 10F);
+		long year = Math.floorDiv(ticks, HbmCollection.tickYear);
+		byte day = (byte) Math.floorDiv(ticks - HbmCollection.tickYear * year, HbmCollection.tickDay);
+		float time = ticks - (HbmCollection.tickYear * year + HbmCollection.tickDay * day);
+		time = (float) convertScale(time, 0, HbmCollection.tickDay, 0, 10F);
 		dateOut[0] = String.valueOf(year);
 		dateOut[1] = String.valueOf(day);
 		dateOut[2] = String.valueOf(time);
@@ -134,8 +127,8 @@ public class BobMathUtil {
 	 * @return The scaled number
 	 */
 	public static double convertScale(double toScale, double oldMin, double oldMax, double newMin, double newMax) {
-		double prevRange = oldMax - oldMin;
-		double newRange = newMax - newMin;
+		final double prevRange = oldMax - oldMin;
+		final double newRange = newMax - newMin;
 		return (((toScale - oldMin) * newRange) / prevRange) + newMin;
 	}
 	

@@ -73,7 +73,7 @@ dependencies {
 	compileOnly 'codechicken:NotEnoughItems:1.7.10-1.0.3.74:src'
 	
 	compile 'ch.obermuhlner:big-math:2.3.0'
-	implementation 'ch.obermuhlner:big-math:2.3.0'
+	//implementation 'ch.obermuhlner:big-math:2.3.0'
 	//compileOnly 'inventory-tweaks:InventoryTweaks:1.62+beta.84:api'
 }
 
