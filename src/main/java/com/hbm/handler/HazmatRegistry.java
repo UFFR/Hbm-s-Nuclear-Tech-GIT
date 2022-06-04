@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import com.hbm.items.ModItems;
 import com.hbm.items.armor.ItemModCladding;
-import com.hbm.lib.Library;
 import com.hbm.potion.HbmPotion;
 import com.hbm.util.Compat;
 
@@ -33,24 +32,24 @@ public class HazmatRegistry
 		static final double alloy = 0.07D; // 15%
 		static final double cobalt = 0.125D; // 25%
 		
-		double hazYellow = 0.6D; // 50%
-		double hazRed = 1.0D; // 90%
-		double hazGray = 2D; // 99%
-		double paa = 1.7D; // 97%
-		double liquidator = 2.4D; // 99.6%
+		static final double hazYellow = 0.6D; // 50%
+		static final double hazRed = 1.0D; // 90%
+		static final double hazGray = 2D; // 99%
+		static final double paa = 1.7D; // 97%
+		static final double liquidator = 2.4D; // 99.6%
 
-		double t45 = 1D; // 90%
-		double ajr = 1.3D; // 95%
-		double bj = 1D; // 90%
-		double hev = 1.3D; // 95%
-		double rpa = 2D; // 99%
-		double fau = 4D; // 99.99%
-		double dns = 5D; // 99.999%
-		double security = 0.825D; // 85%
-		double star = 1D; // 90%
-		double cmb = 1.3D; // 95%
-		double schrab = 3D; // 99.9%
-		double euph = 10D; // <100%
+		static final double t45 = 1D; // 90%
+		static final double ajr = 1.3D; // 95%
+		static final double bj = 1D; // 90%
+		static final double hev = 1.3D; // 95%
+		static final double rpa = 2D; // 99%
+		static final double fau = 4D; // 99.99%
+		static final double dns = 5D; // 99.999%
+		static final double security = 0.825D; // 85%
+		static final double star = 1D; // 90%
+		static final double cmb = 1.3D; // 95%
+		static final double schrab = 3D; // 99.9%
+		static final double euph = 10D; // <100%
 		
 	public static void registerHazmats()
 	{
@@ -257,9 +256,10 @@ public class HazmatRegistry
 		
 		float res = 0.0F;
 		
-		if(player.getUniqueID().toString().equals(Library.Pu_238)) {
-			res += 0.4F;
-		}
+		//Did it get removed or did another merge go wrong?
+//		if(player.getUniqueID().toString().equals(Library.Pu_238)) {
+//			res += 0.4F;
+//		}
 		
 		for(int i = 0; i < 4; i++) {
 			res += getResistance(player.inventory.armorInventory[i]);

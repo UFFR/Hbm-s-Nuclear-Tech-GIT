@@ -52,11 +52,10 @@ public class BlastFurnaceRecipes
 		addRecipe(ModItems.silicon_lump, ANY_COKE, new ItemStack(ModItems.ingot_silicon, 4));
 		addRecipe("sand", COAL, new ItemStack(ModItems.nugget_silicon, 3));
 		addRecipe(NB, BE, new ItemStack(ModItems.ingot_nbbe));
-		if (GeneralConfig.enableBabyMode)
+		if (GeneralConfig.enableLBSMSimpleChemsitry)
 			addRecipe(ModItems.canister_empty, COAL, new ItemStack(ModItems.canister_oil));
 		addRecipe(CO, ModBlocks.block_meteor, new ItemStack(ModItems.ingot_meteorite));
 		addRecipe(ModItems.meteorite_sword_hardened, CO, new ItemStack(ModItems.meteorite_sword_alloyed));
-		addRecipe(W, CO, new ItemStack(ModItems.component_ftl, 1, 4));
 		addRecipe(DNT, OSMIRIDIUM, new ItemStack(ModItems.ingot_dineutronium_forged));
 		addRecipe(ModBlocks.block_meteor, CO, new ItemStack(ModItems.ingot_meteorite));
 		addRecipe(ST, ModBlocks.glass_lead, new ItemStack(ModBlocks.glass_strontium));
@@ -75,8 +74,8 @@ public class BlastFurnaceRecipes
 	{
 		for (Triplet<Object, Object, ItemStack> recipe : blastFurnaceRecipes)
 		{
-			AStack[] recipeItem1 = getRecipeStacks(recipe.getX());
-			AStack[] recipeItem2 = getRecipeStacks(recipe.getY());
+			final AStack[] recipeItem1 = getRecipeStacks(recipe.getX());
+			final AStack[] recipeItem2 = getRecipeStacks(recipe.getY());
 
 			if ((doStacksMatch(recipeItem1, in1) && doStacksMatch(recipeItem2, in2)) ||
 					(doStacksMatch(recipeItem2, in1) && doStacksMatch(recipeItem1, in2)))
@@ -101,7 +100,7 @@ public class BlastFurnaceRecipes
 	
 	private static AStack[] getRecipeStacks(Object in)
 	{
-		AStack[] recipeItem1;
+		final AStack[] recipeItem1;
 		if (in instanceof DictFrame)
 		{
 			DictFrame recipeItem = (DictFrame) in;
@@ -128,15 +127,15 @@ public class BlastFurnaceRecipes
 	// TODO
 	public static Map<List<ItemStack>[], ItemStack> getRecipesForNEI()
 	{
-		HashMap<List<ItemStack>[], ItemStack> recipes = new HashMap<>();
+		final HashMap<List<ItemStack>[], ItemStack> recipes = new HashMap<>();
 		
 		for (Triplet<Object, Object, ItemStack> recipe : blastFurnaceRecipes)
 		{
 			if (!hiddenRecipes.contains(recipe.getZ()))
 			{
 				final ItemStack nothing = new ItemStack(ModItems.nothing).setStackDisplayName("If you're reading this, an error has occured! Check the console.");
-				List<ItemStack> in1 = new ArrayList<ItemStack>();
-				List<ItemStack> in2 = new ArrayList<ItemStack>();
+				final List<ItemStack> in1 = new ArrayList<ItemStack>();
+				final List<ItemStack> in2 = new ArrayList<ItemStack>();
 				in1.add(nothing);
 				in2.add(nothing);
 				
@@ -166,7 +165,7 @@ public class BlastFurnaceRecipes
 				}
 				if (in2.contains(nothing))
 					MainRegistry.logger.error("Blast furnace cannot compile recipes for NEI: apparent nonexistent item #2 in recipe for item: " + recipe.getZ().getDisplayName());
-				List<ItemStack>[] inputs = new List[2];
+				final List<ItemStack>[] inputs = new List[2];
 				inputs[0] = in1;
 				inputs[1] = in2;
 				recipes.put(inputs, recipe.getZ());

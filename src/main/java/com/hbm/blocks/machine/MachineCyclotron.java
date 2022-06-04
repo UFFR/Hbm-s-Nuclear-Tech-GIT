@@ -1,8 +1,7 @@
 package com.hbm.blocks.machine;
 
 import com.hbm.blocks.BlockDummyable;
-import com.hbm.blocks.ModBlocks;
-import com.hbm.items.ModItems;
+import com.hbm.handler.EnumGUI;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.TileEntityProxyCombo;
 import com.hbm.tileentity.machine.TileEntityMachineCyclotron;
@@ -10,7 +9,6 @@ import com.hbm.tileentity.machine.TileEntityMachineCyclotron;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -60,7 +58,7 @@ public class MachineCyclotron extends BlockDummyable {
 				}
 			}
 			
-			FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_machine_cyclotron, world, pos[0], pos[1], pos[2]);
+			FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.CYCLOTRON.ordinal(), world, pos[0], pos[1], pos[2]);
 			return true;
 		} else {
 			return false;
@@ -92,6 +90,7 @@ public class MachineCyclotron extends BlockDummyable {
 		return 2;
 	}
 	
+	@Override
 	protected void fillSpace(World world, int x, int y, int z, ForgeDirection dir, int o) {
 		super.fillSpace(world, x, y, z, dir, o);
 

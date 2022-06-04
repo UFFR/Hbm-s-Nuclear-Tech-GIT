@@ -1,7 +1,6 @@
 package com.hbm.util;
 
 import com.hbm.config.VersatileConfig;
-import com.hbm.interfaces.ICustomWarhead.SaltedFuel.HalfLifeType;
 import com.hbm.items.machine.ItemRTGPellet;
 
 import net.minecraft.item.ItemStack;
@@ -48,11 +47,11 @@ public class RTGUtil {
 	 * Gets the lifespan of an RTG based on half-life
 	 * @author UFFR
 	 * @param halfLife The half-life
-	 * @param type Half-life units: {@link#HalfLifeType}
+	 * @param type Half-life units: {@link#TimeDurationType}
 	 * @param realYears Whether or not to use 365 days per year instead of 100 to calculate time
 	 * @return The half-life calculated into Minecraft ticks
 	 */
-	public static long getLifespan(float halfLife, HalfLifeType type, boolean realYears) {
+	public static long getLifespan(float halfLife, TimeDurationType type, boolean realYears) {
 		float life = 0;
 		switch (type)
 		{
@@ -64,6 +63,8 @@ public class RTGUtil {
 			break;
 		case SHORT:
 			life = 48000 * halfLife;
+			break;
+		default:
 			break;
 		}
 		return (long) life;

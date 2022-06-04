@@ -3,13 +3,13 @@ package com.hbm.tileentity.machine;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
-import com.hbm.blocks.ModBlocks;
 import com.hbm.config.VersatileConfig;
 import com.hbm.handler.radiation.ChunkRadiationManager;
 import com.hbm.hazard.HazardRegistry;
@@ -17,11 +17,10 @@ import com.hbm.hazard.HazardSystem;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidSource;
 import com.hbm.inventory.FluidTank;
+import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.items.ModItems;
-import com.hbm.items.ItemEnums.EnumProtactinium;
-import com.hbm.items.machine.ItemBreedingRod.BreedingRodType;
 import com.hbm.items.special.ItemWasteLong;
 import com.hbm.items.special.ItemWasteShort;
 import com.hbm.lib.Library;
@@ -29,6 +28,7 @@ import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.ContaminationUtil;
 import com.hbm.util.ContaminationUtil.ContaminationType;
 import com.hbm.util.ContaminationUtil.HazardType;
+import com.hbm.util.ItemStackUtil;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
@@ -303,7 +303,7 @@ public class TileEntityStorageDrum extends TileEntityMachineBase implements IFlu
 		if(type == tanks[1].getTankType())
 			return list2;
 		
-		return new ArrayList();
+		return new ArrayList<>();
 	}
 
 	@Override
@@ -361,7 +361,7 @@ public class TileEntityStorageDrum extends TileEntityMachineBase implements IFlu
 		@CheckForNull
 		public ItemStack getOutput()
 		{
-			return Library.carefulCopy(output);
+			return ItemStackUtil.carefulCopy(output);
 		}
 		public short getLiquid()
 		{
@@ -377,7 +377,7 @@ public class TileEntityStorageDrum extends TileEntityMachineBase implements IFlu
 		}
 	}
 	
-	public static ImmutableMap<ComparableStack, ItemStack> getRecipesForNEI()
+	public static Map<ComparableStack, ItemStack> getRecipesForNEI()
 	{
 		HashMap<ComparableStack, ItemStack> forNEI = new HashMap<>(recipes.size());
 		

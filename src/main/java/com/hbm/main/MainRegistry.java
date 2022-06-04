@@ -65,6 +65,7 @@ import com.hbm.inventory.recipes.*;
 import com.hbm.inventory.recipes.anvil.AnvilRecipes;
 import com.hbm.inventory.recipes.loader.SerializableRecipe;
 import com.hbm.items.ModItems;
+import com.hbm.items.ItemAmmoEnums.Ammo4Gauge;
 import com.hbm.items.weapon.ItemGrenade;
 import com.hbm.lib.HbmWorld;
 import com.hbm.lib.Library;
@@ -722,7 +723,7 @@ public class MainRegistry {
 		achStratum = new Achievement("achievement.stratum", "stratum", -4, -2, new ItemStack(ModBlocks.stone_gneiss), null).initIndependentStat().setSpecial().registerStat();
 		achOmega12 = new Achievement("achievement.omega12", "omega12", -4, 2, ModItems.particle_digamma, null).initIndependentStat().setSpecial().registerStat();
 
-		achWitchtaunter = new Achievement("achievement.witchtaunter", "witchtaunter", -8, 7, ModItems.ammo_4gauge_vampire, null).initIndependentStat().setSpecial().registerStat();
+		achWitchtaunter = new Achievement("achievement.witchtaunter", "witchtaunter", -8, 7, ModItems.ammo_4gauge.stackFromEnum(Ammo4Gauge.VAMPIRE), null).initIndependentStat().setSpecial().registerStat();
 		achSlimeball = new Achievement("achievement.slimeball", "slimeball", -10, 6, Items.slime_ball, null).initIndependentStat().registerStat();
 		achSulfuric = new Achievement("achievement.sulfuric", "sulfuric", -10, 8, ModItems.bucket_sulfuric_acid, achSlimeball).initIndependentStat().setSpecial().registerStat();
 
@@ -914,7 +915,6 @@ public class MainRegistry {
 		RefineryRecipes.registerRefinery();
 		RefineryRecipes.registerFractions();
 		MachineRecipes.registerArcFurnaceRecipes();
-		ChemPlantRecipesNT.registerChemPlantRecipes();
 		SingGenRecipes.register();
 		RefineryRecipes.registerCracking();
 		RadiolysisRecipes.registerRadiolysis();
@@ -998,6 +998,7 @@ public class MainRegistry {
 		ToolConfig.loadFromConfig(config);
 		WeaponConfig.loadFromConfig(config);
 		MobConfig.loadFromConfig(config);
+		FactionConfig.loadFromConfig(config);
 
 		config.save();
 	}

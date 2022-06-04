@@ -1,12 +1,9 @@
 package com.hbm.lib;
 
-import java.util.Random;
-
 import com.hbm.blocks.ModBlocks;
 import com.hbm.inventory.fluid.Fluids;
+import com.hbm.items.ItemAmmoEnums.*;
 import com.hbm.items.ModItems;
-import com.hbm.items.machine.ItemBreedingRod.*;
-import com.hbm.items.machine.ItemBattery;
 import com.hbm.items.machine.ItemBreedingRod.*;
 
 import net.minecraft.init.Items;

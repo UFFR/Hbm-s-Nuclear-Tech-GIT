@@ -26,6 +26,7 @@ import net.minecraftforge.oredict.OreDictionary;
 @Untested
 public class HazardSystem {
 
+	public static final float defaultRadTypes = (float) 0x0.0002p-126;
 	/*
 	 * Map for OreDict entries, always evaluated first. Avoid registering HazardData with 'doesOverride', as internal order is based on the item's ore dict keys.
 	 */
@@ -172,7 +173,7 @@ public class HazardSystem {
 	}
 	@Untested
 	@CheckForNull
-	public static float[] getRadTypes(ItemStack stack)
+	public static byte[] getRadTypes(ItemStack stack)
 	{
 		if(isItemBlacklisted(stack))
 			return null;
@@ -197,7 +198,7 @@ public class HazardSystem {
 		if(stackMap.containsKey(comp))
 			chronological.add(stackMap.get(comp));
 		
-		float[] types = new float[4];
+		byte[] types = new byte[4];
 		
 		int mutex = 0;
 		
@@ -211,10 +212,10 @@ public class HazardSystem {
 		}
 		float total = 0;
 		
-		for (float f : types)
-			total += f;
+		for (byte n : types)
+			total += n;
 		
-		return total > 0 ? types : new float[] {0, 1, 0, 0};
+		return total > 0 ? types : new byte[] {0, 1, 0, 0};
 	}
 	
 	public static float getHazardLevelFromStack(ItemStack stack, HazardTypeBase hazard) {
@@ -295,5 +296,21 @@ public class HazardSystem {
 		for(HazardEntry hazard : hazards) {
 			hazard.type.addHazardInformation(player, list, hazard.baseLevel, stack, hazard.mods);
 		}
+	}
+	
+	public static float compactRadTypes(byte[] types)
+	{
+		return Float.intBitsToFloat(types[0] ^ types[1] << 8 ^ types[2] << 16 ^ types[3] << 24);
+	}
+	
+	public static byte[] decompactRadTypes(float compacted)
+	{
+		final byte[] types = new byte[4];
+		final int intermediary = Float.floatToIntBits(compacted);
+		types[3] = (byte) (intermediary >>> 24);
+		types[2] = (byte) (intermediary >>> 16);
+		types[1] = (byte) (intermediary >>> 8);
+		types[0] = (byte) intermediary;
+		return types;
 	}
 }

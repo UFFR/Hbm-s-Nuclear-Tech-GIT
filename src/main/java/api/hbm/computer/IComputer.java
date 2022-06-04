@@ -1,7 +1,7 @@
 package api.hbm.computer;
 
 /**
- * Simple interface for computers
+ * Simple interface for computers. Don't usually have GUIs, just simple TEs.
  * @author UFFR
  *
  */

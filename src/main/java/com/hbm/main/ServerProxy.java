@@ -37,7 +37,11 @@ public abstract class ServerProxy {
 	public abstract void playSound(String sound, Object data);
 	
 	public abstract boolean isVanished(Entity e);
-	public abstract void displayTooltip(String msg);
+	public void displayTooltip(String msg, int id)
+	{
+		displayTooltip(msg, 1000, id);
+	}
+	public abstract void displayTooltip(String msg, int time, int id);
 	
 	public abstract boolean getIsKeyPressed(EnumKeybind key);
 	public abstract EntityPlayer me();

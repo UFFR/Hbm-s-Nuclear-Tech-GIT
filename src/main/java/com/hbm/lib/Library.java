@@ -134,6 +134,8 @@ public class Library
 		case SHORT:
 			life = 48000 * time;
 			break;
+		default:
+			break;
 		}
 		return (long) life;
 	}
@@ -471,7 +473,6 @@ public class Library
 				world.getBlock(x, y, z) == ModBlocks.dummy_port_turbofan ||
 				world.getBlock(x, y, z) == ModBlocks.reactor_hatch ||
 				world.getBlock(x, y, z) == ModBlocks.reactor_conductor ||
-				world.getBlock(x, y, z) == ModBlocks.fusion_hatch ||
 				world.getBlock(x, y, z) == ModBlocks.watz_hatch ||
 				world.getBlock(x, y, z) == ModBlocks.fwatz_hatch ||
 				world.getBlock(x, y, z) == ModBlocks.dummy_port_ams_limiter ||
@@ -663,14 +664,9 @@ public class Library
 	{
 		try
 		{
-			MessageDigest sha256 = MessageDigest.getInstance(algorithm.name);
-			byte[] bytes = sha256.digest(input);
-			StringBuilder output = new StringBuilder(256);
+			final MessageDigest sha256 = MessageDigest.getInstance(algorithm.name);
 			
-			for (byte b : bytes)
-				output.append(Integer.toHexString(0xFF & b));
-			
-			return output.toString();
+			return toHexString(sha256.digest(input));
 		}
 		catch (NoSuchAlgorithmException e)
 		{
@@ -678,6 +674,30 @@ public class Library
 			MainRegistry.logger.catching(e);
 			return "";
 		}
+	}
+	
+	/** Same as {@code MessageDigest.isEqual()}
+	 */
+	public static boolean doHashesMatch(byte[] h1, byte[] h2)
+	{
+		return MessageDigest.isEqual(h1, h2);
+	}
+	
+	public static String toHexString(byte[] bytes)
+	{
+		final StringBuilder builder = new StringBuilder(bytes.length);
+		for (byte b : bytes)
+			builder.append((0xFF & b) > 15 ? Integer.toHexString(0xFF & b) : '0' + Integer.toHexString(0xFF & b));
+		return builder.toString();
+	}
+	
+	public static String iterableToString(Iterable<Object> iterable)
+	{
+		final StringBuilder builder = new StringBuilder();
+		builder.append('[');
+		iterable.forEach(o -> builder.append(", " + String.valueOf(o)));
+		builder.append(']');
+		return builder.toString();
 	}
 	
 	public static MovingObjectPosition rayTrace(EntityPlayer player, double length, float interpolation) {
@@ -836,23 +856,6 @@ public class Library
 		if(block == ModBlocks.reactor_hatch && worldObj.getBlock(x - 2, y, z) == ModBlocks.reactor_computer)
 		{
 			tileentity = worldObj.getTileEntity(x - 2, y, z);
-		}
-		//Large Fusion Reactor
-		if(block == ModBlocks.fusion_hatch && worldObj.getBlock(x, y, z + 8) == ModBlocks.fusion_core)
-		{
-			tileentity = worldObj.getTileEntity(x, y, z + 8);
-		}
-		if(block == ModBlocks.fusion_hatch && worldObj.getBlock(x, y, z - 8) == ModBlocks.fusion_core)
-		{
-			tileentity = worldObj.getTileEntity(x, y, z - 8);
-		}
-		if(block == ModBlocks.fusion_hatch && worldObj.getBlock(x + 8, y, z) == ModBlocks.fusion_core)
-		{
-			tileentity = worldObj.getTileEntity(x + 8, y, z);
-		}
-		if(block == ModBlocks.fusion_hatch && worldObj.getBlock(x - 8, y, z) == ModBlocks.fusion_core)
-		{
-			tileentity = worldObj.getTileEntity(x - 8, y, z);
 		}
 		//FWatz Reactor
 		if(block == ModBlocks.fwatz_hatch && worldObj.getBlock(x, y + 11, z + 9) == ModBlocks.fwatz_core)

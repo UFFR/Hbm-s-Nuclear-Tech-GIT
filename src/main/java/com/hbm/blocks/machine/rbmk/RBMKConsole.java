@@ -1,8 +1,8 @@
 package com.hbm.blocks.machine.rbmk;
 
 import com.hbm.blocks.BlockDummyable;
-import com.hbm.blocks.ModBlocks;
 import com.hbm.handler.BossSpawnHandler;
+import com.hbm.handler.EnumGUI;
 import com.hbm.handler.MultiblockHandlerXR;
 import com.hbm.items.ModItems;
 import com.hbm.items.tool.ItemGuideBook.BookType;
@@ -29,7 +29,7 @@ public class RBMKConsole extends BlockDummyable {
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta) {
 
-		if(meta >= this.offset)
+		if(meta >= BlockDummyable.offset)
 			return new TileEntityRBMKConsole();
 		
 		return null;
@@ -68,7 +68,7 @@ public class RBMKConsole extends BlockDummyable {
 				if(side == 1) {
 					Vec3 vec = Vec3.createVectorHelper(1.375D, 0, 0.75D);
 					
-					switch(entity.getBlockMetadata() - this.offset) {
+					switch(entity.getBlockMetadata() - BlockDummyable.offset) {
 					case 2: vec.rotateAroundY((float)Math.toRadians(90)); break;
 					case 3: vec.rotateAroundY((float)Math.toRadians(270)); break;
 					case 4: vec.rotateAroundY((float)Math.toRadians(180)); break;
@@ -89,7 +89,7 @@ public class RBMKConsole extends BlockDummyable {
 				}
 				
 				if(world.isRemote)
-					FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_rbmk_console, world, pos[0], pos[1], pos[2]);
+					FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.RBMK_CONSOLE.ordinal(), world, pos[0], pos[1], pos[2]);
 			}
 			return true;
 			

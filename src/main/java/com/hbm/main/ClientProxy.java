@@ -122,7 +122,7 @@ public class ClientProxy extends ServerProxy {
 		//SoundUtil.addSoundCategory("ntmMachines");
 	}
 	
-	private void registerClientEventHandler(Object handler) {
+	private static void registerClientEventHandler(Object handler) {
 		MinecraftForge.EVENT_BUS.register(handler);
 		FMLCommonHandler.instance().bus().register(handler);
 	}
@@ -1656,15 +1656,15 @@ public class ClientProxy extends ServerProxy {
 	}
 
 	@Override
-	public void playSound(String sound, Object data) { }
+	public void playSound(String sound, Object data) {/*h*/ }
 	
 	@Override
 	public void displayTooltip(String msg, int time, int id) {
 		
 		if(id != 0)
-			this.theInfoSystem.push(new InfoEntry(msg, time), id);
+			RenderInfoSystem.push(new InfoEntry(msg, time), id);
 		else
-			this.theInfoSystem.push(new InfoEntry(msg, time));
+			RenderInfoSystem.push(new InfoEntry(msg, time));
 	}
 
 	@Override

@@ -28,9 +28,9 @@ public class ReactorAmat extends BlockDummyable
 			return true;
 		else if (!player.isSneaking())
 		{
-			TileEntityReactorWarp te = (TileEntityReactorWarp) world.getTileEntity(x, y, z);
-			if (te != null)
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.WARP_CORE.ordinal(), world, x, y, z);
+//			TileEntityReactorWarp te = (TileEntityReactorWarp) world.getTileEntity(x, y, z);
+//			if (te != null)
+//				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.WARP_CORE.ordinal(), world, x, y, z);
 			return true;
 		}
 		else

@@ -3,12 +3,13 @@ package com.hbm.render.item.weapon;
 import org.lwjgl.opengl.GL11;
 
 import com.hbm.handler.BulletConfigSyncingUtil;
+import com.hbm.inventory.RecipesCommon.ComparableStack;
+import com.hbm.items.ItemAmmoEnums.AmmoFireExt;
 import com.hbm.items.ModItems;
 import com.hbm.items.weapon.ItemGunBase;
 import com.hbm.main.ResourceManager;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 
@@ -43,11 +44,11 @@ public class ItemRenderFireExt implements IItemRenderer {
 		
 		int magType = ItemGunBase.getMagType(item);
 		int config = ((ItemGunBase)ModItems.gun_fireext).mainConfig.config.get(magType);
-		Item ammo = BulletConfigSyncingUtil.pullConfig(config).ammo;
+		ComparableStack ammo = BulletConfigSyncingUtil.pullConfig(config).ammo;
 		
-		if(ammo == ModItems.ammo_fireext_foam)
+		if(ammo.equals(new ComparableStack(ModItems.ammo_fireext.stackFromEnum(AmmoFireExt.FOAM))))
 			Minecraft.getMinecraft().renderEngine.bindTexture(ResourceManager.fireext_foam_tex);
-		else if(ammo == ModItems.ammo_fireext_sand)
+		else if(ammo.equals(new ComparableStack(ModItems.ammo_fireext.stackFromEnum(AmmoFireExt.SAND))))
 			Minecraft.getMinecraft().renderEngine.bindTexture(ResourceManager.fireext_sand_tex);
 		else
 			Minecraft.getMinecraft().renderEngine.bindTexture(ResourceManager.fireext_tex);

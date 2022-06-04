@@ -1,4 +1,4 @@
-package com.hbm.entity.mob;
+package com.hbm.entity.mob.faction;
 
 import java.util.HashSet;
 

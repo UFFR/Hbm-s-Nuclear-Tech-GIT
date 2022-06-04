@@ -3,6 +3,7 @@ package com.hbm.blocks.machine;
 import java.util.Random;
 
 import com.hbm.blocks.ModBlocks;
+import com.hbm.handler.EnumGUI;
 import com.hbm.interfaces.IMultiblock;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.machine.TileEntityDummy;
@@ -26,8 +27,6 @@ import net.minecraft.world.World;
 public class MachineSatDock extends BlockContainer implements IMultiblock {
 
     private final Random field_149933_a = new Random();
-	private Random rand;
-
 	public MachineSatDock(Material p_i45386_1_) {
 		super(p_i45386_1_);
 	}
@@ -76,7 +75,7 @@ public class MachineSatDock extends BlockContainer implements IMultiblock {
 			TileEntityMachineSatDock entity = (TileEntityMachineSatDock) world.getTileEntity(x, y, z);
 			if(entity != null)
 			{
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_dock, world, x, y, z);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.SAT_DOCK.ordinal(), world, x, y, z);
 			}
 			return true;
 		} else {

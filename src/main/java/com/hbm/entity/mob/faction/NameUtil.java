@@ -1,13 +1,58 @@
-package com.hbm.entity.mob;
+package com.hbm.entity.mob.faction;
 
 import java.util.Collection;
 import java.util.HashSet;
+
+import javax.annotation.CheckForNull;
 
 import com.hbm.lib.Library;
 import com.hbm.util.I18nUtil;
 
 public class NameUtil
 {
+	public enum PhoneticAlphabet
+	{
+		ABLE('A'),
+		BAKER('B'),
+		CHARLIE('C'),
+		DELTA('D'),
+		EASY('E'),
+		FOXTROT('F'),
+		GEORGE('G'),
+		HARRY('H'),
+		ITEM('I'),
+		JULIETT('J'),
+		KING('K'),
+		LIMA('L'),
+		MIKE('M'),
+		NOVEMBER('N'),
+		OSCAR('O'),
+		PETER('P'),
+		QUEBEC('Q'),
+		ROMEO('R'),
+		SIERRA('S'),
+		TANGO('T'),
+		UNCLE('U'),
+		VICTOR('V'),
+		WHISKEY('W'),
+		XRAY('X'),
+		YANKEE('Y'),
+		ZULU('Z');
+		public final char letter;
+		private PhoneticAlphabet(char letter)
+		{
+			this.letter = letter;
+		}
+		@CheckForNull
+		public static PhoneticAlphabet fromChar(char c)
+		{
+			for (PhoneticAlphabet alph : values())
+				if (alph.letter == c)
+					return alph;
+			
+			return null;
+		}
+	}
 	public enum EnumRank
 	{
 		/**General of the Army / Supreme Commander of the Armed Forces**/

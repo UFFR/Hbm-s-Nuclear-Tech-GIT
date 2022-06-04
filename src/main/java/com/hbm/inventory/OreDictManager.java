@@ -1,9 +1,10 @@
 package com.hbm.inventory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Optional;
 
 //i love you
 import static com.hbm.items.ModItems.*;
@@ -16,8 +17,10 @@ import com.hbm.hazard.HazardData;
 import com.hbm.hazard.HazardEntry;
 import com.hbm.hazard.HazardRegistry;
 import com.hbm.hazard.HazardSystem;
-import com.hbm.items.ItemEnums.EnumCokeType;
-import com.hbm.items.ItemEnums.EnumTarType;
+import com.hbm.hazard.type.HazardTypeBase;
+import com.hbm.items.ItemEnumMulti;
+import com.hbm.items.ItemEnums.*;
+import com.hbm.items.ItemEnums.IItemEnum;
 import com.hbm.main.MainRegistry;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -32,7 +35,7 @@ import net.minecraftforge.oredict.OreDictionary.OreRegisterEvent;
 public class OreDictManager {
 	
 	/** Alternate, additional names for ore dict registration. Used mostly for DictGroups */
-	private static final HashMap<String, HashSet<String>> reRegistration = new HashMap();
+	private static final HashMap<String, HashSet<String>> reRegistration = new HashMap<String, HashSet<String>>();
 
 	/*
 	 * Standard keys
@@ -242,6 +245,8 @@ public class OreDictManager {
 	public static final DictFrame NB = new DictFrame("Niobium");
 	/** BERYLLIUM */ 
 	public static final DictFrame BE = new DictFrame("Beryllium");
+	public static final DictFrame NBBE = new DictFrame("NbBe");
+	public static final DictFrame NBSUPER = new DictFrame("NbSuper");
 	/** COBALT */ 
 	public static final DictFrame CO = new DictFrame("Cobalt");
 	/** BORON */ 
@@ -411,15 +416,15 @@ public class OreDictManager {
 		 * HEAVY ACTINIDES
 		 */
 		CM243	.rad(HazardRegistry.cm243).alpha();
-		CM244	.rad(HazardRegistry.cm244).alpha(99).gamma(.75f).neutron(.25f);
+		CM244	.rad(HazardRegistry.cm244).alpha(99).gamma(75).neutron(25);
 		CM245	.rad(HazardRegistry.cm245).alpha();
-		CM246	.rad(HazardRegistry.cm246).alpha(90).gamma(7.5f).neutron(2.5f);
+		CM246	.rad(HazardRegistry.cm246).alpha(90).gamma(7).neutron(3);
 		CM247	.rad(HazardRegistry.cm247).alpha();
-		CM248	.rad(HazardRegistry.cm248).alpha(8).gamma(1.5f).neutron(.5f);
-		CM250	.rad(HazardRegistry.cm250).alpha().gamma(6.5f).neutron(2.5f);
+		CM248	.rad(HazardRegistry.cm248).alpha(80).gamma(15).neutron(5);
+		CM250	.rad(HazardRegistry.cm250).alpha().gamma(65).neutron(25);
 		BK247	.rad(HazardRegistry.bk247).alpha().setItem(berkelium).setEnum(EnumBerkelium.INGOT_BK247, EnumBerkelium.BILLET_BK247, EnumBerkelium.NUGGET_BK247);
 		BK248	.rad(HazardRegistry.bk248).alpha().setItem(berkelium).setEnum(EnumBerkelium.BILLET_BK248, EnumBerkelium.INGOT_BK248, EnumBerkelium.NUGGET_BK248);
-		BK249	.rad(HazardRegistry.bk249).alpha().beta(0.9f).hot(15).setItem(berkelium).setEnum(EnumBerkelium.BILLET_BK249, EnumBerkelium.INGOT_BK249, EnumBerkelium.NUGGET_BK249);
+		BK249	.rad(HazardRegistry.bk249).alpha().beta(9).hot(15).setItem(berkelium).setEnum(EnumBerkelium.BILLET_BK249, EnumBerkelium.INGOT_BK249, EnumBerkelium.NUGGET_BK249);
 		CF249	.rad(HazardRegistry.cf249).alpha();
 		CF251	.rad(HazardRegistry.cf251).alpha();
 		CF252	.rad(HazardRegistry.cf252).alpha(6).gamma().neutron(3).hot(10);
@@ -569,8 +574,6 @@ public class OreDictManager {
 		OreDictionary.registerOre(KEY_CIRCUIT_BISMUTH, circuit_bismuth);
 		OreDictionary.registerOre(KEY_CIRCUIT_BISMUTH, circuit_arsenic);
 		
-		OreDictionary.registerOre("ingotTungstenCobalt", new ItemStack(component_ftl, 1, 4));
-		
 		OreDictionary.registerOre("record", record_glass);
 		OreDictionary.registerOre("record", record_lc);
 		OreDictionary.registerOre("record", record_nmj);
@@ -637,9 +640,9 @@ public class OreDictManager {
 		OreDictionary.registerOre("blockGlassLime", glass_trinitite);
 		OreDictionary.registerOre("blockGlassRed", glass_polonium);
 		OreDictionary.registerOre("blockGlassBlack", glass_ash);
-		OreDictionary.registerOre(KEY_ANYPANE, pane_acrylic);
-		OreDictionary.registerOre(KEY_CLEARPANE, pane_acrylic);
-		OreDictionary.registerOre(KEY_ANYPANE, pane_actinium);
+//		OreDictionary.registerOre(KEY_ANYPANE, pane_acrylic);
+//		OreDictionary.registerOre(KEY_CLEARPANE, pane_acrylic);
+//		OreDictionary.registerOre(KEY_ANYPANE, pane_actinium);
 	}
 	
 	public static String getReflector() {
@@ -677,9 +680,10 @@ public class OreDictManager {
 		private static final HashMap<String, Float> prefixMult = new HashMap<>();
 		String[] mats;
 		float hazMult = 1.0F;
-		float[] rTypes = new float[4];
+//		float[] rTypes = new float[4];
+		byte[] rTypes = new byte[4];
 		Optional<ItemEnumMulti> item = Optional.empty();
-		ArrayList<HazardEntry> hazards = new ArrayList<HazardEntry>();
+		final ArrayList<HazardEntry> hazards = new ArrayList<HazardEntry>();
 		static
 		{
 			prefixMult.put("ingot", HazardRegistry.ingot);
@@ -713,8 +717,8 @@ public class OreDictManager {
 			}
 			for (Enum<? extends IItemEnum> e : enums)
 			{
-				IItemEnum i = (IItemEnum) e;
-				String prefix = "";
+				final IItemEnum i = (IItemEnum) e;
+				final String prefix;
 				if (i.getOreDict().isEmpty())
 					prefix = e.toString().split("_")[0].toLowerCase();
 				else
@@ -729,14 +733,14 @@ public class OreDictManager {
 		public DictFrame cust(HazardTypeBase type) {return cust(type, 1);}
 		public DictFrame cust(HazardTypeBase type, float amount) {return haz(new HazardEntry(type, amount));}
 		
-		public DictFrame alpha(float a) { rTypes[0] = a; return this; }
-		public DictFrame alpha() { return alpha(1); }
-		public DictFrame beta(float b) { rTypes[1] = b; return this; }
-		public DictFrame beta() { return beta(1); }
-		public DictFrame gamma(float g) { rTypes[2] = g; return this; }
-		public DictFrame gamma() { return gamma(1); }
-		public DictFrame neutron(float n) { rTypes[3] = n; return this; }
-		public DictFrame neutron() { return neutron(1); }
+		public DictFrame alpha(int a) { rTypes[0] = (byte) a; return this; }
+		public DictFrame alpha() { return alpha(10); }
+		public DictFrame beta(int b) { rTypes[1] = (byte) b; return this; }
+		public DictFrame beta() { return beta(10); }
+		public DictFrame gamma(int g) { rTypes[2] = (byte) g; return this; }
+		public DictFrame gamma() { return gamma(10); }
+		public DictFrame neutron(int n) { rTypes[3] = (byte) n; return this; }
+		public DictFrame neutron() { return neutron(10); }
 		/*
 		 * Quick access methods to grab ore names for recipes.
 		 */
@@ -886,7 +890,7 @@ public class OreDictManager {
 			return this;
 		}
 		
-		public float[] getRadTypes()
+		public byte[] getRadTypes()
 		{
 			return rTypes.clone();
 		}

@@ -7,6 +7,7 @@ import java.util.List;
 import com.hbm.inventory.fluid.FluidType.ExtContainer;
 import com.hbm.inventory.fluid.FluidType.FluidTrait;
 import com.hbm.inventory.fluid.FluidTypeCombustible.FuelGrade;
+import com.hbm.items.ModItems;
 import com.hbm.render.util.EnumSymbol;
 
 import net.minecraft.item.ItemStack;
@@ -93,9 +94,9 @@ public class Fluids {
 	public static FluidType MUG;
 	public static FluidType MUG_HOT;
 
-	private static final HashMap<Integer, FluidType> idMapping = new HashMap();
-	private static final HashMap<String, FluidType> nameMapping = new HashMap();
-	protected static final List<FluidType> metaOrder = new ArrayList();
+	private static final HashMap<Integer, FluidType> idMapping = new HashMap<Integer, FluidType>();
+	private static final HashMap<String, FluidType> nameMapping = new HashMap<String, FluidType>();
+	protected static final List<FluidType> metaOrder = new ArrayList<FluidType>();
 	
 	public static FluidType SARIN;
 	public static FluidType ALCOHOL;
@@ -373,5 +374,15 @@ public class Fluids {
 		}
 		
 		return all;
+	}
+
+	public static ItemStack newFluidTank(FluidType type)
+	{
+		return newFluidTank(type, 1);
+	}
+	
+	public static ItemStack newFluidTank(FluidType type, int size)
+	{
+		return new ItemStack(ModItems.fluid_tank_full, size, type.getID());
 	}
 }

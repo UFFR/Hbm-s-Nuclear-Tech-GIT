@@ -1,6 +1,7 @@
 package com.hbm.items.food;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import com.hbm.config.VersatileConfig;
@@ -13,6 +14,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
@@ -21,10 +23,31 @@ public class ItemEnergy extends ItemCustomLore
 {
 	private boolean isCan = false;
 	private final Consumer<EntityPlayer> onConsume;
+	private Optional<Item> cap = Optional.empty(), container = Optional.empty();
 	public ItemEnergy(Consumer<EntityPlayer> onConsume)
 	{
 		this.onConsume = onConsume;
 	}
+	
+	public ItemEnergy()
+	{
+		// TODO Auto-generated constructor stub
+		onConsume = (player) -> {return;};
+	}
+	
+	public ItemEnergy makeCan()
+	{
+		isCan = true;
+		return this;
+	}
+	
+	public ItemEnergy makeBottle(Item bottle, Item cap)
+	{
+		container = Optional.of(bottle);
+		this.cap = Optional.of(cap);
+		return this;
+	}
+	
 	@Override
 	public ItemStack onEaten(ItemStack stack, World world, EntityPlayer player) {
 
@@ -45,18 +68,18 @@ public class ItemEnergy extends ItemCustomLore
 
 		if(!player.capabilities.isCreativeMode) {
 
-			if(this.cap != null) {
+			if(this.cap.isPresent()) {
 				
 				if(this == ModItems.bottle2_sunset && world.rand.nextInt(20) == 0)
 					player.inventory.addItemStackToInventory(new ItemStack(ModItems.cap_star));
 				else
-					player.inventory.addItemStackToInventory(new ItemStack(this.cap));
+					player.inventory.addItemStackToInventory(new ItemStack(this.cap.get()));
 			}
-			if(this.container != null) {
+			if(this.container.isPresent()) {
 				if(stack.stackSize <= 0) {
-					return new ItemStack(this.container);
+					return new ItemStack(this.container.get());
 				}
-				player.inventory.addItemStackToInventory(new ItemStack(this.container));
+				player.inventory.addItemStackToInventory(new ItemStack(this.container.get()));
 			}
 		}
 		player.inventory.addItemStackToInventory(getContainerItem(stack));

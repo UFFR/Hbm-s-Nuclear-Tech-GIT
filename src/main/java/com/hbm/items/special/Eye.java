@@ -28,8 +28,8 @@ public final class Eye extends ItemCustomLore
 	{
 		if (MainRegistry.isPolaroid11)
 			throw new RuntimeException(new KoishiBreachException(worldIn.isRemote));
-		PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(I18nUtil.resolveKey("eye.speakTo", I18nUtil.resolveKey("eye.speakTo.remember"))), (EntityPlayerMP) playerIn);
-		PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(I18nUtil.resolveKey("eye.respond.nothing")), (EntityPlayerMP) playerIn);
+		PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(I18nUtil.resolveKey("eye.speakTo", I18nUtil.resolveKey("eye.speakTo.remember")), -10), (EntityPlayerMP) playerIn);
+		PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(I18nUtil.resolveKey("eye.respond.nothing"), -10), (EntityPlayerMP) playerIn);
 		playerIn.addPotionEffect(new PotionEffect(HbmPotion.unconscious.id, 60*20));
 //		ContaminationUtil.applyDigammaDirect(playerIn, 0.5F);
 		HbmLivingProps.incrementDigamma(playerIn, 0.5f);

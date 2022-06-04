@@ -1,35 +1,21 @@
 package com.hbm.inventory.recipes;
 
-import static com.hbm.inventory.OreDictManager.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 import com.hbm.blocks.ModBlocks;
-import com.hbm.config.GeneralConfig;
 import com.hbm.interfaces.Spaghetti;
 import com.hbm.inventory.FluidContainer;
 import com.hbm.inventory.FluidContainerRegistry;
-import com.hbm.inventory.FluidStack;
-import com.hbm.inventory.fluid.Fluids;
-import com.hbm.inventory.OreDictManager.DictFrame;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
-import com.hbm.inventory.fluid.*;
-import com.hbm.items.ItemEnums.EnumTarType;
-import com.hbm.items.ItemEnums.EnumWaferType;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.items.ModItems;
-import com.hbm.items.machine.ItemChemistryTemplate;
-import com.hbm.items.machine.ItemFluidIcon;
 import com.hbm.items.special.ItemHot;
-import com.hbm.items.special.ItemWasteShort;
-import com.hbm.items.weapon.ItemGunBase;
-import com.hbm.util.EnchantmentUtil;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -62,159 +48,6 @@ public class MachineRecipes
 	public static MachineRecipes instance() {
 		return new MachineRecipes();
 	}
-	@Deprecated
-	public static ItemStack getFurnaceProcessingResult(ItemStack item, ItemStack item2) {
-		return getFurnaceOutput(item, item2);
-	}
-	@Deprecated
-	@Spaghetti("i am an affront to god and i desire to be cremated")
-	public static ItemStack getFurnaceOutput(ItemStack item, ItemStack item2) {
-		
-		if(item == null || item2 == null)
-			return null;
-		
-		if (GeneralConfig.enableDebugMode) {
-			if (item.getItem() == Items.iron_ingot && item2.getItem() == Items.quartz
-					|| item.getItem() == Items.quartz && item2.getItem() == Items.iron_ingot) {
-				return new ItemStack(ModBlocks.test_render, 1);
-			}
-		}
-
-		if (mODE(item, new String[] {"ingotTungsten", "dustTungsten"}) && mODE(item2, "gemCoal")
-				|| mODE(item, "gemCoal") && mODE(item2, new String[] {"ingotTungsten", "dustTungsten"})) {
-			return new ItemStack(ModItems.neutron_reflector, 2);
-		}
-
-		if (mODE(item, new String[] {"ingotIron", "dustIron"}) && mODE(item2, new String[] {"gemCoal", "dustCoal"})
-				|| mODE(item, new String[] {"gemCoal", "dustCoal"}) && mODE(item2, new String[] {"ingotIron", "dustIron"})) {
-			return new ItemStack(ModItems.ingot_steel, 2);
-		}
-
-		if (mODE(item, new String[] {"ingotCopper", "dustCopper"}) && item2.getItem() == Items.redstone
-				|| item.getItem() == Items.redstone && mODE(item2, new String[] {"ingotCopper", "dustCopper"})) {
-			return new ItemStack(ModItems.ingot_red_copper, 2);
-		}
-
-		if (item.getItem() == ModItems.canister_full && item.getItemDamage() == Fluids.DIESEL.getID() && item2.getItem() == Items.slime_ball
-				|| item.getItem() == Items.slime_ball && item2.getItem() == ModItems.canister_full && item2.getItemDamage() == Fluids.DIESEL.getID()) {
-			return new ItemStack(ModItems.canister_napalm, 1);
-		}
-
-		if (mODE(item, new String[] {"ingotMingrade", "dustMingrade"}) && mODE(item2, new String[] {"ingotSteel", "dustSteel"})
-				|| mODE(item, new String[] {"ingotSteel", "dustSteel"}) && mODE(item2, new String[] {"ingotMingrade", "dustMingrade"})) {
-			return new ItemStack(ModItems.ingot_advanced_alloy, 2);
-		}
-
-		if (mODE(item, new String[] {"ingotTungsten", "dustTungsten"}) && mODE(item2, "nuggetSchrabidium")
-				|| mODE(item, "nuggetSchrabidium") && mODE(item2, new String[] {"ingotTungsten", "dustTungsten"})) {
-			return new ItemStack(ModItems.ingot_magnetized_tungsten, 1);
-		}
-
-		if (mODE(item, new String[] {"ingotSteel", "dustSteel"}) && mODE(item2, new String[] {"nuggetTechnetium99", "tinyTc99"})
-				|| mODE(item, new String[] {"nuggetTechnetium99", "tinyTc99"}) && mODE(item2, new String[] {"ingotSteel", "dustSteel"})) {
-			return new ItemStack(ModItems.ingot_tcalloy, 1);
-		}
-
-		if (item.getItem() == ModItems.plate_mixed && mODE(item2, "plateGold")
-				|| mODE(item, "plateGold") && item2.getItem() == ModItems.plate_mixed) {
-			return new ItemStack(ModItems.plate_paa, 2);
-		}
-
-		if (mODE(item, new String[] {"ingotSteel", "dustSteel"}) && mODE(item2, new String[] {"ingotTungsten", "dustTungsten"})
-				|| mODE(item, new String[] {"ingotTungsten", "dustTungsten"}) && mODE(item2, new String[] {"ingotSteel", "dustSteel"})) {
-			return new ItemStack(ModItems.ingot_dura_steel, 2);
-		}
-
-		if (mODE(item, new String[] {"ingotSteel", "dustSteel"}) && mODE(item2, new String[] {"ingotCobalt", "dustCobalt"})
-				|| mODE(item, new String[] {"ingotCobalt", "dustCobalt"}) && mODE(item2, new String[] {"ingotSteel", "dustSteel"})) {
-			return new ItemStack(ModItems.ingot_dura_steel, 2);
-		}
-
-		if (mODE(item, new String[] {"ingotSaturnite", "dustSaturnite"}) && item2.getItem() == ModItems.powder_meteorite
-				|| item.getItem() == ModItems.powder_meteorite && mODE(item2, new String[] {"ingotSaturnite", "dustSaturnite"})) {
-			return new ItemStack(ModItems.ingot_starmetal, 2);
-		}
-
-		if (item.getItem() == ModItems.silicon_lump && item2.getItem() == ModItems.coke
-				|| item.getItem() == ModItems.coke && item2.getItem() == ModItems.silicon_lump)
-			return new ItemStack(ModItems.ingot_silicon, 4);
-		
-		if (mODE(item, new String[] {"sand"}) && mODE(item2, new String[] {COAL.gem(), COAL.dust()})
-				|| mODE(item, new String[] {COAL.gem(), COAL.dust()}) && mODE(item2, new String[] {"sand"}))
-			return new ItemStack(ModItems.nugget_silicon, 3);
-		
-		if (mODE(item, new String[] {STEEL.ingot(), STEEL.dust()}) && mODE(item2, new String[] {U238.ingot(), U238.dust()})
-				|| mODE(item, new String[] {U238.ingot(), U238.dust()}) && mODE(item2, new String[] {STEEL.ingot(), STEEL.dust()}))
-			return new ItemStack(ModItems.ingot_ferrouranium);
-		
-		if (mODE(item, new String[] {TI.ingot(), TI.dust()}) && mODE(item2, new String[] {U238.ingot(), U238.dust()})
-				|| mODE(item, new String[] {U238.ingot(), U238.dust()}) && mODE(item2, new String[] {TI.ingot(), TI.dust()}))
-			return new ItemStack(ModItems.ingot_staballoy);
-		
-		if (mODE(item, new String[] {W.ingot(), W.dust()}) && mODE(item2, new String[] {CO.ingot(), CO.dust()})
-				|| mODE(item, new String[] {CO.ingot(), CO.dust()}) && mODE(item2, new String[] {W.ingot(), W.dust()}))
-			return new ItemStack(ModItems.component_ftl, 1, 4);
-		
-		if (mODE(item, new String[] {NB.ingot(), NB.dust()}) && mODE(item2, new String[] {BE.ingot(), BE.dust()})
-				|| mODE(item, new String[] {BE.dust(), BE.ingot()}) && mODE(item2, new String[] {NB.ingot(), NB.dust()}))
-			return new ItemStack(ModItems.ingot_nbbe);
-		
-		List<ItemStack> electrum = OreDictionary.getOres("ingotElectrum");
-		if (!electrum.isEmpty())
-		{
-			if (mODE(item, new String[] {"ingotGold", "dustGold"}) && mODE(item2, new String[] {"ingotSilver", "dustSilver"})
-					|| mODE(item, new String[] {"ingotSilver", "dustSilver"}) && mODE(item2, new String[] {"ingotGold", "dustGold"}))
-				return new ItemStack(electrum.get(0).getItem(), 2);
-		}
-		
-		if (mODE(item, new String[] {DNT.ingot(), DNT.dust()}) && mODE(item2, new String[] {CMB.ingot(), CMB.dust()})
-				|| mODE(item, new String[] {CMB.ingot(), CMB.dust()}) && mODE(item2, new String[] {DNT.ingot(), DNT.dust()}))
-			return new ItemStack(ModItems.ingot_dineutronium_forged);
-		
-		if(GeneralConfig.enableBabyMode) {
-			if(mODE(item, new String[] { "gemCoal", "dustCoal" }) && item2.getItem() == ModItems.canister_empty
-					|| item.getItem() == ModItems.canister_empty && mODE(item2, new String[] { "gemCoal", "dustCoal" })) {
-				return new ItemStack(ModItems.canister_full, 1, Fluids.OIL.getID());
-			}
-
-			if(item.getItem() == Item.getItemFromBlock(ModBlocks.block_meteor_cobble) && mODE(item2, new String[] { "ingotSteel", "dustSteel" })
-					|| mODE(item, new String[] { "ingotSteel", "dustSteel" }) && item2.getItem() == Item.getItemFromBlock(ModBlocks.block_meteor_cobble)) {
-				return new ItemStack(ModItems.ingot_meteorite);
-			}
-		}
-
-		if (item.getItem() == Item.getItemFromBlock(ModBlocks.block_meteor) && mODE(item2, new String[] {"ingotCobalt", "dustCobalt"})
-				|| mODE(item, new String[] {"ingotCobalt", "dustCobalt"}) && item2.getItem() == Item.getItemFromBlock(ModBlocks.block_meteor)) {
-			return new ItemStack(ModItems.ingot_meteorite);
-		}
-
-		if (item.getItem() == ModItems.meteorite_sword_hardened && mODE(item2, new String[] {"ingotCobalt", "dustCobalt"})
-				|| mODE(item, new String[] {"ingotCobalt", "dustCobalt"}) && item2.getItem() == ModItems.meteorite_sword_hardened) {
-			return new ItemStack(ModItems.meteorite_sword_alloyed, 1);
-		}
-		
-		if(item.getItem() instanceof ItemGunBase && item2.getItem() == Items.enchanted_book) {
-			
-			ItemStack result = item.copy();
-
-            Map mapright = EnchantmentHelper.getEnchantments(item2);
-            Iterator itr = mapright.keySet().iterator();
-
-            while (itr.hasNext()) {
-            	
-            	int i = ((Integer)itr.next()).intValue();
-            	int j = ((Integer)mapright.get(Integer.valueOf(i))).intValue();
-            	Enchantment e = Enchantment.enchantmentsList[i];
-            	
-            	EnchantmentUtil.removeEnchantment(result, e);
-            	EnchantmentUtil.addEnchantment(result, e, j);
-            }
-            
-            return result;
-		}
-
-		return null;
-	}
 	
 	//return: Fluids, amount produced, amount required, heat required (°C * 100)
 	public static Object[] getBoilerOutput(FluidType type) {
@@ -239,7 +72,7 @@ public class MachineRecipes
 		return null;
 	}
 
-	public ArrayList<ItemStack> getAlloyFuels() {
+	public static ArrayList<ItemStack> getAlloyFuels() {
 		ArrayList<ItemStack> fuels = new ArrayList<ItemStack>();
 		fuels.add(new ItemStack(Items.coal));
 		fuels.add(new ItemStack(Blocks.coal_block));
@@ -255,7 +88,7 @@ public class MachineRecipes
 		return fuels;
 	}
 
-	public ArrayList<ItemStack> getCentrifugeFuels() {
+	public static ArrayList<ItemStack> getCentrifugeFuels() {
 		ArrayList<ItemStack> fuels = new ArrayList<ItemStack>();
 		fuels.add(new ItemStack(Items.coal));
 		fuels.add(new ItemStack(Item.getItemFromBlock(Blocks.coal_block)));
@@ -503,7 +336,7 @@ public class MachineRecipes
 		return recipes;
 	}*/
 
-	public Map<Object[], Object> getCMBRecipes() {
+	public static Map<Object[], Object> getCMBRecipes() {
 		Map<Object[], Object> recipes = new HashMap<Object[], Object>();
 		recipes.put(new ItemStack[] { new ItemStack(ModItems.ingot_advanced_alloy), new ItemStack(ModItems.ingot_magnetized_tungsten) },
 				new ItemStack(ModItems.ingot_combine_steel, 4));
@@ -512,7 +345,7 @@ public class MachineRecipes
 		return recipes;
 	}
 
-	public List<ItemStack> getBatteries() {
+	public static List<ItemStack> getBatteries() {
 		ArrayList<ItemStack> fuels = new ArrayList<ItemStack>();
 		fuels.add(new ItemStack(ModItems.battery_potato));
 		fuels.add(new ItemStack(ModItems.battery_potatos));
@@ -547,7 +380,7 @@ public class MachineRecipes
 		return fuels;
 	}
 
-	public List<ItemStack> getBlades() {
+	public static List<ItemStack> getBlades() {
 		ArrayList<ItemStack> fuels = new ArrayList<ItemStack>();
 		fuels.add(new ItemStack(ModItems.blades_advanced_alloy));
 		fuels.add(new ItemStack(ModItems.blades_aluminium));
@@ -598,7 +431,7 @@ public class MachineRecipes
 	}
 	
 	
-	public Map<Object, Object> getBoilerRecipes() {
+	public static Map<Object, Object> getBoilerRecipes() {
 
 		Map<Object, Object> recipes = new HashMap<Object, Object>();
 		
@@ -622,7 +455,7 @@ public class MachineRecipes
 		return recipes;
 	}
 	
-	public Map<Object, Object> getFluidContainers() {
+	public static Map<Object, Object> getFluidContainers() {
 		Map<Object, Object> map = new HashMap<Object, Object>();
 		
 		for(FluidContainer con : FluidContainerRegistry.allContainers) {
@@ -650,7 +483,7 @@ public class MachineRecipes
 
 	}
 
-	public static Map<ComparableStack, ItemStack> getArcFurnaceRecipes()
+	public static Map<Object, Object> getArcFurnaceRecipes()
 	{
 		return ImmutableMap.copyOf(arcFurnaceRecipes);
 	}

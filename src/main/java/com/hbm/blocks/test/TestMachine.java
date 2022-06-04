@@ -1,8 +1,5 @@
 package com.hbm.blocks.test;
 
-import java.util.Random;
-
-import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.machine.BlockBasicMachine;
 import com.hbm.handler.EnumGUI;
 import com.hbm.interfaces.IBomb;
@@ -14,7 +11,6 @@ import com.hbm.packet.PacketDispatcher;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -36,12 +32,6 @@ public class TestMachine extends BlockBasicMachine implements IBomb
 		return super.onBlockActivated(world, x, y, z, player, side, hitX, hitY, hitZ);
 	}
 	
-	@Override
-	public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_)
-	{
-		return Item.getItemFromBlock(ModBlocks.test_machine);
-	}
-
 	@Override
 	public BombReturnCode explode(World world, int x, int y, int z)
 	{

@@ -1,6 +1,7 @@
 package com.hbm.entity.mob;
 
 import com.hbm.entity.particle.EntityBSmokeFX;
+import com.hbm.items.ModItems;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -164,7 +165,7 @@ public class EntityQuackos extends EntityDuck implements IBossDisplayData
 	 * BOW
 	 */
 	@Override
-	public void onDeath(DamageSource sourceOrRatherLackThereof) { }
+	public void onDeath(DamageSource sourceOrRatherLackThereof) {/*be silent*/ }
 
 	@Override
 	public boolean allowLeashing() {

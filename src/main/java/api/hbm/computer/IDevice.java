@@ -5,7 +5,7 @@ import java.util.UUID;
 import api.hbm.IHasAge;
 
 /**
- * (Hopefully) simple base interface for various devices
+ * (Hopefully) simple base interface for various devices. For stuff even simpler than {@link#IComputer}.
  * @author UFFR
  *
  */

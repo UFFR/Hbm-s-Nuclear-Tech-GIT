@@ -1,15 +1,14 @@
 package com.hbm.tileentity;
 
-import java.math.BigInteger;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import com.google.common.annotations.Beta;
 import com.hbm.config.VersatileConfig;
-import com.hbm.config.MachineConfig;
 import com.hbm.interfaces.Untested;
 import com.hbm.inventory.RecipesCommon.AStack;
 
+import api.hbm.Date;
 import api.hbm.IHasAge;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -177,9 +176,9 @@ public interface IRTGUser extends IHasAge
 	}
 	
 	@Override
-	default void notifyTimeUpdated(BigInteger newTime)
+	default void notifyTimeUpdated(Date newTime)
 	{
-		final long difference = getInternalDate().subtract(newTime).longValue();
+		final long difference = getInternalDate().subtract(newTime).getData().longValue();
 		
 		for (int slot = 0; slot < getInventory().length; slot++)
 		{

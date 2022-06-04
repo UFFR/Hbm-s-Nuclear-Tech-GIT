@@ -28,7 +28,6 @@ public class MachineDeuteriumExtractor extends BlockContainer implements ILookOv
 
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta) {
-		meta = 0;
 		return new TileEntityDeuteriumExtractor();
 	}
 
@@ -62,8 +61,8 @@ public class MachineDeuteriumExtractor extends BlockContainer implements ILookOv
 		
 		TileEntityDeuteriumExtractor extractor = (TileEntityDeuteriumExtractor) te;
 		
-		List<String> text = new ArrayList();
-		text.add((extractor.power < extractor.maxPower / 10 ? EnumChatFormatting.RED : EnumChatFormatting.GREEN) + "Power: " + BobMathUtil.getShortNumber(extractor.power) + "HE");
+		List<String> text = new ArrayList<>();
+		text.add((extractor.power < TileEntityDeuteriumExtractor.maxPower / 10 ? EnumChatFormatting.RED : EnumChatFormatting.GREEN) + "Power: " + BobMathUtil.getShortNumber(extractor.power) + "HE");
 
 		for(int i = 0; i < extractor.tanks.length; i++)
 			text.add((i < 1 ? (EnumChatFormatting.GREEN + "-> ") : (EnumChatFormatting.RED + "<- ")) + EnumChatFormatting.RESET + I18nUtil.resolveKey("hbmfluid." + extractor.tanks[i].getTankType().getName().toLowerCase()) + ": " + extractor.tanks[i].getFill() + "/" + extractor.tanks[i].getMaxFill() + "mB");

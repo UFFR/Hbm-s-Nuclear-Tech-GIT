@@ -16,7 +16,7 @@ public class AnvilSmithingRecipe {
 	boolean shapeless = false;
 	
 	public AnvilSmithingRecipe(int tier, ItemStack out, AStack left, AStack right) {
-		this.tier = GeneralConfig.enableBabyMode ? 1 : tier;
+		this.tier = GeneralConfig.enableLBSM ? 1 : tier;
 		this.output = out;
 		this.left = left;
 		this.right = right;

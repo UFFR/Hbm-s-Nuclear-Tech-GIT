@@ -3,6 +3,7 @@ package com.hbm.blocks.machine;
 import java.util.Random;
 
 import com.hbm.blocks.ModBlocks;
+import com.hbm.handler.EnumGUI;
 import com.hbm.handler.MultiblockHandler;
 import com.hbm.interfaces.IMultiblock;
 import com.hbm.main.MainRegistry;
@@ -25,7 +26,6 @@ import net.minecraft.world.World;
 public class MachineRefinery extends BlockContainer implements IMultiblock {
 
     private final Random field_149933_a = new Random();
-	private Random rand;
 	private static boolean keepInventory;
 
 	public MachineRefinery(Material p_i45386_1_) {
@@ -68,7 +68,7 @@ public class MachineRefinery extends BlockContainer implements IMultiblock {
 			TileEntityMachineRefinery entity = (TileEntityMachineRefinery) world.getTileEntity(x, y, z);
 			if(entity != null)
 			{
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_machine_refinery, world, x, y, z);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.OIL_REFINERY.ordinal(), world, x, y, z);
 			}
 			return true;
 		} else {
@@ -135,7 +135,7 @@ public class MachineRefinery extends BlockContainer implements IMultiblock {
 			MultiblockHandler.fillUp(world, x, y, z, MultiblockHandler.refineryDimensions, ModBlocks.dummy_block_refinery);
 				
 			//
-			DummyBlockRefinery.safeBreak = true;
+			DummyOldBase.safeBreak = true;
 			world.setBlock(x + 1, y, z + 1, ModBlocks.dummy_port_refinery);
 			TileEntity te = world.getTileEntity(x + 1, y, z + 1);
 			if(te instanceof TileEntityDummy) {
@@ -168,7 +168,7 @@ public class MachineRefinery extends BlockContainer implements IMultiblock {
 				dummy.targetY = y;
 				dummy.targetZ = z;
 			}
-			DummyBlockRefinery.safeBreak = false;
+			DummyOldBase.safeBreak = false;
 			//
 				
 		} else

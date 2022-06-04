@@ -70,7 +70,7 @@ public class Compat {
 	}
 	
 	public static List<ItemStack> scrapeItemFromME(ItemStack meDrive) {
-		List<ItemStack> stacks = new ArrayList();
+		List<ItemStack> stacks = new ArrayList<ItemStack>();
 		
 		if(meDrive != null && meDrive.hasTagCompound()) {
 			NBTTagCompound nbt = meDrive.getTagCompound();

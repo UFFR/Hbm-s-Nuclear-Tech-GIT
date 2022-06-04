@@ -76,8 +76,8 @@ public class ColorUtil {
 		try {
 			BufferedImage tex = getImageFromStack(stack);
 			
-			HashMap<Integer, Color> brightMap = new HashMap();
-			List<Integer> brightnesses = new ArrayList();
+			HashMap<Integer, Color> brightMap = new HashMap<Integer, Color>();
+			List<Integer> brightnesses = new ArrayList<Integer>();
 			
 			for(int i = 0; i < tex.getWidth(); i++) {
 				for(int j = 0; j < tex.getHeight(); j++) {

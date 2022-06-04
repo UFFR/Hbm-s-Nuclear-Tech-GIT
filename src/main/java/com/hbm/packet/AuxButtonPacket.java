@@ -16,7 +16,6 @@ import com.hbm.tileentity.machine.TileEntityMachineMiningLaser;
 import com.hbm.tileentity.machine.TileEntityMachineMissileAssembly;
 import com.hbm.tileentity.machine.TileEntityMachineReactorLarge;
 import com.hbm.tileentity.machine.TileEntityRadioRec;
-import com.hbm.tileentity.machine.TileEntityReactorZirnox;
 import com.hbm.tileentity.machine.TileEntitySoyuzLauncher;
 import com.hbm.tileentity.machine.storage.TileEntityBarrel;
 import com.hbm.tileentity.machine.storage.TileEntityMachineBattery;
@@ -30,7 +29,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 
-@Deprecated //use the NBT control packet instead
 public class AuxButtonPacket implements IMessage {
 
 	int x;
@@ -109,7 +107,7 @@ public class AuxButtonPacket implements IMessage {
 					}
 					
 					if(m.id == 1) {
-						radio.freq = ((double)m.value) / 10D;
+						radio.freq = (m.value) / 10D;
 					}
 				}
 				

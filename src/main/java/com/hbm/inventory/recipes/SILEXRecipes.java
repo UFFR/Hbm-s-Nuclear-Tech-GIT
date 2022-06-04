@@ -315,13 +315,13 @@ public class SILEXRecipes {
 						
 			// MES //
 			recipes.put(new ComparableStack(ModItems.rbmk_pellet_mes, 1, i), new SILEXRecipe(600, 100, EnumWavelengths.UV)
-				    	.addOut(new WeightedRandomObject(new ItemStack(ModItems.nugget_schrabidium_fuel), 90 - i * 20))
+				    	.addOut(new WeightedRandomObject(new ItemStack(ModItems.nugget_mes), 90 - i * 20))
 				    	.addOut(new WeightedRandomObject(new ItemStack(ModItems.nugget_lead), 5 + 10 * i))
 				    	.addOut(new WeightedRandomObject(new ItemStack(ModItems.nuclear_waste_tiny), 5 + 10 * i)) );
 				  
 				    
 			recipes.put(new ComparableStack(ModItems.rbmk_pellet_mes, 1, i+5), new SILEXRecipe(600, 100, EnumWavelengths.UV)
-				    .addOut(new WeightedRandomObject(new ItemStack(ModItems.nugget_schrabidium_fuel), 89 - i * 20))
+				    .addOut(new WeightedRandomObject(new ItemStack(ModItems.nugget_mes), 89 - i * 20))
 				    .addOut(new WeightedRandomObject(new ItemStack(ModItems.powder_xe135_tiny), 1))
 				    .addOut(new WeightedRandomObject(new ItemStack(ModItems.nugget_lead), 5 + 10 * i))
 				    .addOut(new WeightedRandomObject(new ItemStack(ModItems.nuclear_waste_tiny), 5 + 10 * i)) );
@@ -725,7 +725,7 @@ public static class SILEXRecipe {
 		public int fluidProduced;
 		public int fluidConsumed;
 		public EnumWavelengths laserStrength;
-		public List<WeightedRandomObject> outputs = new ArrayList();
+		public List<WeightedRandomObject> outputs = new ArrayList<WeightedRandomObject>();
 		
 		public SILEXRecipe(int fluidProduced, int fluidConsumed, EnumWavelengths laserStrength) {
 			this.fluidProduced = fluidProduced;

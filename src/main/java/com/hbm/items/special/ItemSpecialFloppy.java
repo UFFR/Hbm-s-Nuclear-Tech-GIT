@@ -74,6 +74,7 @@ public final class ItemSpecialFloppy extends ItemCustomLore implements IDataStor
 	private static final String name = "GULF_BLUEPRINT";
 	// TODO The funny
 	private static final FileBase blueprint = new TextFile("Bababoey");/*(name, (long) (2.88 * BobMathUtil.MB), TimeSavedData.constructCompressed(1980, 92, 6411));*/
+	private static final FileMetadata metadata = new FileMetadata(name, TextFile.class, (int) 2.88 * BobMathUtil.MB, blueprint.hashCode(), new Date(1980, 92, 6411), new Date(1980, 92, 6411), false);
 	@Override
 	public FileBase readFile(String filename, ItemStack stack)
 	{
@@ -87,7 +88,7 @@ public final class ItemSpecialFloppy extends ItemCustomLore implements IDataStor
 	@Override
 	public FileMetadata getFileMetadata(String filename, ItemStack stack)
 	{
-		return filename.equals(filename) ? new FileMetadata(name, TextFile.class, (int) 2.88 * BobMathUtil.MB, blueprint.hashCode(), new Date(1980, 92, 6411), new Date(1980, 92, 6411), false) : null;
+		return filename.equals(filename) ? metadata : null;
 	}
 	@Override
 	public Set<String> getFileList(ItemStack stack)

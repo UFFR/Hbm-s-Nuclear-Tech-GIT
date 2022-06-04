@@ -1,5 +1,6 @@
 package com.hbm.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.hbm.inventory.RecipesCommon.AStack;

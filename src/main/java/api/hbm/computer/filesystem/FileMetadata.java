@@ -1,6 +1,5 @@
 package api.hbm.computer.filesystem;
 
-import java.io.Serializable;
 import java.math.BigInteger;
 
 import javax.annotation.concurrent.Immutable;
@@ -15,7 +14,7 @@ import io.netty.buffer.Unpooled;
 
 @Immutable
 @org.apache.http.annotation.Immutable
-public final class FileMetadata implements Serializable, ISerializable<FileMetadata>
+public final class FileMetadata implements ISerializable<FileMetadata>
 {
 	public static final Deserializer<FileMetadata> deserializer = (bytes) ->
 	{
@@ -23,18 +22,18 @@ public final class FileMetadata implements Serializable, ISerializable<FileMetad
 		{
 			final ByteBuf buf = Unpooled.copiedBuffer(bytes);
 			final byte[] filenameBytes = new byte[buf.readByte()];
-			buf.readBytes(filenameBytes);
-			final String filename = new String(filenameBytes);
 			final byte[] fileTypeBytes = new byte[buf.readByte()];
+			buf.readBytes(filenameBytes);
 			buf.readBytes(fileTypeBytes);
+			final String filename = new String(filenameBytes);
 			final String fileType = new String(fileTypeBytes);
 			final long fileSize = buf.readLong();
 			final int expectedHash = buf.readInt();
 			final byte[] createdBytes = new byte[buf.readInt()];
-			buf.readBytes(createdBytes);
-			final Date created = new Date(createdBytes);
 			final byte[] modifiedBytes = new byte[buf.readInt()];
+			buf.readBytes(createdBytes);
 			buf.readBytes(modifiedBytes);
+			final Date created = new Date(createdBytes);
 			final Date modified = new Date(modifiedBytes);
 			final boolean corrupt = buf.readBoolean();
 			return new FileMetadata(filename, fileType, fileSize, expectedHash, created, modified, corrupt);
@@ -75,16 +74,16 @@ public final class FileMetadata implements Serializable, ISerializable<FileMetad
 		final byte[] filenameBytes = filename.getBytes();
 		final byte[] fileTypeBytes = fileType.getBytes();
 		buf.writeByte(filenameBytes.length);
-		buf.writeBytes(filenameBytes);
 		buf.writeByte(fileTypeBytes.length);
+		buf.writeBytes(filenameBytes);
 		buf.writeBytes(fileTypeBytes);
 		buf.writeLong(fileSize);
 		buf.writeInt(hashCode());
 		final byte[] createdBytes = dateCreated.toByteArray();
 		final byte[] modifiedBytes = dateModified.toByteArray();
 		buf.writeInt(createdBytes.length);
-		buf.writeBytes(createdBytes);
 		buf.writeInt(modifiedBytes.length);
+		buf.writeBytes(createdBytes);
 		buf.writeBytes(modifiedBytes);
 		buf.writeBoolean(corrupted);
 		return buf.array();

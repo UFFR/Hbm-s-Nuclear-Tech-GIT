@@ -244,20 +244,17 @@ public class GunFatmanFactory {
 	public static BulletConfiguration getNukeBarrelConfig() {
 		
 		BulletConfiguration bullet = BulletConfigFactory.standardNukeConfig();
-		bullet.ammo = ModItems.ammo_nuke_barrel;
+		bullet.ammo = new ComparableStack(ModItems.ammo_nuke, 1, i++);
 		bullet.explosive = 3F;
-		bullet.style = bullet.STYLE_BARREL;
+		bullet.style = BulletConfiguration.STYLE_BARREL;
 		
-		bullet.bImpact = new IBulletImpactBehavior() {
+		bullet.bImpact = (projectile, x, y, z) -> {
 
-			@Override
-			public void behaveBlockHit(EntityBulletBase bullet, int x, int y, int z) {
-				
-				if(!bullet.worldObj.isRemote) {
+				if(!projectile.worldObj.isRemote) {
 
-					double posX = bullet.posX;
-					double posY = bullet.posY + 0.5;
-					double posZ = bullet.posZ;
+					double posX = projectile.posX;
+					double posY = projectile.posY + 0.5;
+					double posZ = projectile.posZ;
 					
 					if(y >= 0) {
 						posX = x + 0.5;
@@ -269,7 +266,7 @@ public class GunFatmanFactory {
 					y = (int)Math.floor(posY);
 					z = (int)Math.floor(posZ);
 					
-					World worldObj = bullet.worldObj;
+					World worldObj = projectile.worldObj;
 					
 					for(int ix = x - 3; ix <= x + 3; ix++) {
 						for(int iy = y - 3; iy <= y + 3; iy++) {
@@ -290,9 +287,8 @@ public class GunFatmanFactory {
 					
 					ChunkRadiationManager.proxy.incrementRad(worldObj, x, y, z, 100F);
 					
-					ExplosionLarge.spawnParticles(bullet.worldObj, posX, posY, posZ, 45);
+					ExplosionLarge.spawnParticles(projectile.worldObj, posX, posY, posZ, 45);
 				}
-			}
 		};
 		
 		return bullet;

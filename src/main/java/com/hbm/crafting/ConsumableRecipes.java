@@ -1,10 +1,14 @@
 package com.hbm.crafting;
 
 import com.hbm.blocks.ModBlocks;
+import com.hbm.config.GeneralConfig;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.items.ModItems;
 import com.hbm.items.ItemAmmoEnums.AmmoFatman;
+import com.hbm.items.ItemEnums;
 import com.hbm.main.CraftingManager;
+
+import cpw.mods.fml.common.registry.GameRegistry;
 
 import static com.hbm.inventory.OreDictManager.*;
 
@@ -132,9 +136,9 @@ public class ConsumableRecipes {
 		CraftingManager.addShapelessAuto(new ItemStack(ModItems.cigarette, 16), new Object[] { ASBESTOS.ingot(), ANY_TAR.any(), PO210.nugget(), DictFrame.fromOne(ModItems.plant_item, ItemEnums.EnumPlantType.TOBACCO) });
 		
 		if(GeneralConfig.enableLBSM && GeneralConfig.enableLBSMSimpleMedicineRecipes) {
-			CraftingManager.addShapelessAuto(new ItemStack(ModItems.siox, 8), new Object[] { COAL.dust(), ASBESTOS.dust(), GOLD.nugget() });
+			CraftingManager.addShapelessAuto(new ItemStack(ModItems.siox, 8), new Object[] { COAL.dust(), ASBESTOS.dust(), AU.nugget() });
 			CraftingManager.addShapelessAuto(new ItemStack(ModItems.xanax, 1), new Object[] { COAL.dust(), KNO.dust(), NETHERQUARTZ.dust() });
-			CraftingManager.addShapelessAuto(new ItemStack(ModItems.pirfenidone, 1), new Object[] {COAL.dust(), KNO.dust(), GOLD.nugget() });
+			CraftingManager.addShapelessAuto(new ItemStack(ModItems.pirfenidone, 1), new Object[] {COAL.dust(), KNO.dust(), AU.nugget() });
 		} else {
 			CraftingManager.addShapelessAuto(new ItemStack(ModItems.siox, 8), new Object[] { COAL.dust(), ASBESTOS.dust(), ModItems.nugget_bismuth });
 			CraftingManager.addShapelessAuto(new ItemStack(ModItems.xanax, 1), new Object[] { COAL.dust(), KNO.dust(), BR.dust() });

@@ -19,7 +19,6 @@ import codechicken.nei.api.IConfigureNEI;
 import codechicken.nei.api.IHighlightHandler;
 import codechicken.nei.api.ItemInfo.Layout;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
@@ -32,7 +31,13 @@ public class NEIConfig implements IConfigureNEI {
 	{
 		public ArcFurnaceRecipeHandler()
 		{
-			super("ntmarcfurnace", I18nUtil.resolveKey("container.arcFurnace"), ModBlocks.machine_arc_furnace_off, MachineRecipes.getArcFurnaceRecipes());
+			super(I18nUtil.resolveKey("container.arcFurnace"), ModBlocks.machine_arc_furnace_off, MachineRecipes.getArcFurnaceRecipes());
+		}
+
+		@Override
+		public String getKey()
+		{
+			return "ntmArcFurnace";
 		}
 	}
 
@@ -40,7 +45,13 @@ public class NEIConfig implements IConfigureNEI {
 	{
 		public ResearchReactorRecipeHandler()
 		{
-			super("ntmresearchreactor", I18nUtil.resolveKey("container.reactorResearch"), ModBlocks.reactor_research, TileEntityReactorResearch.fuelMap);
+			super(I18nUtil.resolveKey("container.reactorResearch"), ModBlocks.reactor_research, TileEntityReactorResearch.getFuelRecipes());
+		}
+
+		@Override
+		public String getKey()
+		{
+			return "ntmResearchReactor";
 		}
 	}
 	
@@ -48,7 +59,13 @@ public class NEIConfig implements IConfigureNEI {
 	{
 		public DecayRecipeHandler()
 		{
-			super("ntmdecay", "Decay", new ItemStack[] {new ItemStack(ModBlocks.machine_storage_drum), new ItemStack(ModBlocks.machine_radgen)}, TileEntityStorageDrum.getRecipesForNEI());
+			super("Decay", new ItemStack[] {new ItemStack(ModBlocks.machine_storage_drum), new ItemStack(ModBlocks.machine_radgen)}, TileEntityStorageDrum.getRecipesForNEI());
+		}
+
+		@Override
+		public String getKey()
+		{
+			return "ntmDecay";
 		}
 	}
 

@@ -119,9 +119,8 @@ public class ItemModInsert extends ItemArmorMod {
 		if(speed == 1)
 			return null;
 
-		Multimap multimap = super.getAttributeModifiers(armor);
+		Multimap<Object, Object> multimap = super.getAttributeModifiers(armor);
 		
-		Multimap<String, AttributeModifier> multimap = super.getItemAttributeModifiers();
 		multimap.put(SharedMonsterAttributes.movementSpeed.getAttributeUnlocalizedName(),
 				new AttributeModifier(ArmorModHandler.UUIDs[((ItemArmor)armor.getItem()).armorType], "NTM Armor Mod Speed", -1F + speed, 2));
 		

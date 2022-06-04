@@ -1,8 +1,11 @@
 package api.hbm.computer;
 
-import java.awt.Rectangle;
 import java.awt.Shape;
-import java.awt.geom.Ellipse2D;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,7 +29,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.nbt.NBTTagCompound;
 /**
- * Collection for anything related to supercomputer terminals or other computers
+ * Collection for anything related to terminal style computers, contains a lot of methods for handling related stuff.
  * @author UFFR
  *
  */
@@ -123,7 +126,7 @@ public interface ITerminal extends IComputer
 	public static void stockCommandHandler(ITerminal terminal, String cmd)
 	{
 		TerminalCommand parsed = new TerminalCommand(cmd);
-		switch (parsed.command)
+		switch (parsed.getCommand())
 		{
 		case "arith":
 			try
@@ -141,9 +144,9 @@ public interface ITerminal extends IComputer
 			break;
 		case "echo": terminal.print(parsed.getArgsUnsplit()); break;
 		case "help":
-			if (parsed.args.length == 0)
+			if (parsed.getArgs().length == 0)
 				terminal.print(" - Prints out the help command of the specified program", " - Accepts only one argument", " - Should function the same as running the program with the -h parameter");
-			else if (parsed.args.length == 1)
+			else if (parsed.getArgs().length == 1)
 			{
 				String arg = parsed.getArgs()[0].toLowerCase();
 				
@@ -167,7 +170,7 @@ public interface ITerminal extends IComputer
 			break;
 		case "cls": terminal.clearScreen(-1); break;
 		case "uuid": 
-			if (parsed.args.length == 0)
+			if (parsed.getArgs().length == 0)
 				terminal.print("Current system UUID:", terminal.getUUID().toString());
 			else
 				terminal.handleUnknown(parsed.getArgs(), true);
@@ -286,6 +289,18 @@ public interface ITerminal extends IComputer
 			print(s);
 	}
 	
+	public default void draw(Shape...shapes)
+	{
+		for (Shape s : shapes)
+			draw(s);
+	}
+	
+	public default void draw(Iterable<Shape> shapes)
+	{
+		for (Shape s : shapes)
+			draw(s);
+	}
+	
 	public default void handleKey(char c, int i)
 	{
 		if (getCurrentProgram().isPresent())
@@ -302,8 +317,8 @@ public interface ITerminal extends IComputer
 	}
 	public default void handleReturn(ReturnCode code, String message)
 	{
-		if (message == null)
-			message = "";
+//		if (message == null)
+//			message = "";
 		if (code == ReturnCode.NO_ERROR)
 			print(String.format("Program return code: (0x%x)%s; %s; No action required, program executed successfully.", code.ordinal(), code.toString(), message.isEmpty() ? "[No message recieved]" : message));
 		else
@@ -312,13 +327,13 @@ public interface ITerminal extends IComputer
 	
 	public default void saveTerminalToNBT(NBTTagCompound nbt)
 	{
-		NBTTagCompound subTag = new NBTTagCompound();
+		final NBTTagCompound subTag = new NBTTagCompound();
 		boolean programRunning = getCurrentProgram().isPresent();
 		subTag.setBoolean("isProgramRunning", programRunning);
 		subTag.setString("programName", programRunning ? getCurrentProgram().get().getClass().getSimpleName() : "");
 		
 //		subTag.setByteArray("consoleText", Library.compressStringCollection(getConsoleText()));
-		ByteBuf textBuf = Unpooled.buffer();
+		final ByteBuf textBuf = Unpooled.buffer();
 		final char[][] screenText = getConsoleText();
 		for (byte row = 0; row < getRows(); row++)
 		{
@@ -328,23 +343,18 @@ public interface ITerminal extends IComputer
 		subTag.setByteArray("consoleText", textBuf.array());
 		subTag.setByteArray("prevCommands", Library.compressStringCollection(getPreviousCommands()));
 		
-		ByteBuf shapeBuf = Unpooled.buffer();
-		List<Shape> shapes = getShapes();
-		shapeBuf.writeInt(shapes.size());
-		for (Shape shape : shapes)
+		final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		try
 		{
-			Rectangle rect = shape.getBounds();
-			shapeBuf.writeShort(rect.x);
-			shapeBuf.writeShort(rect.y);
-			shapeBuf.writeShort(rect.height);
-			shapeBuf.writeShort(rect.width);
-			String shapeType = shape.getClass().getSimpleName();
-			shapeBuf.writeByte(shapeType.length());
-			shapeBuf.writeBytes(shapeType.getBytes());
+			final ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+			objectOutputStream.writeObject(getShapes());
+		} catch (IOException e)
+		{
+			e.printStackTrace();
 		}
-		subTag.setByteArray("shapes", shapeBuf.array());
+		subTag.setByteArray("shapes", byteArrayOutputStream.toByteArray());
 		
-		List<FloatingText> floatingText = getFloatingText();
+		final List<FloatingText> floatingText = getFloatingText();
 		ByteBuf floatingTxtBuf = Unpooled.buffer();
 		floatingTxtBuf.writeInt(floatingText.size());
 		for (FloatingText text : floatingText)
@@ -359,46 +369,41 @@ public interface ITerminal extends IComputer
 	
 	public default void loadTerminalFromNBT(NBTTagCompound nbt)
 	{
-		NBTTagCompound subTag = nbt.getCompoundTag(NBT_KEY);
+		final NBTTagCompound subTag = nbt.getCompoundTag(NBT_KEY);
 		clearScreen(-1);
-		ByteBuf consoleBuf = Unpooled.copiedBuffer(subTag.getByteArray("consoleText"));
-		ArrayList<String> consoleText = new ArrayList<String>(getRows());
+		final ByteBuf consoleBuf = Unpooled.copiedBuffer(subTag.getByteArray("consoleText"));
+		final ArrayList<String> consoleText = new ArrayList<String>(getRows());
 		for (byte i = 0; i < getRows(); i++)
 		{
-			byte[] stringBytes = new byte[getColumns()];
+			final byte[] stringBytes = new byte[getColumns()];
 			consoleBuf.readBytes(stringBytes);
 			consoleText.add(new String(stringBytes));
 		}
 		print(consoleText);
 		
-		ByteBuf prevCmdBuf = Unpooled.copiedBuffer(subTag.getByteArray("prevCommands"));
+		final ByteBuf prevCmdBuf = Unpooled.copiedBuffer(subTag.getByteArray("prevCommands"));
 		final int prevCmdSize = prevCmdBuf.readInt();
-		ArrayList<String> savedCommands = new ArrayList<String>(prevCmdSize);
+		final ArrayList<String> savedCommands = new ArrayList<String>(prevCmdSize);
 		for (int i = 0; i < prevCmdSize; i++)
 		{
-			byte[] stringBytes = new byte[prevCmdBuf.readByte()];
+			final byte[] stringBytes = new byte[prevCmdBuf.readByte()];
 			prevCmdBuf.readBytes(stringBytes);
 			savedCommands.add(new String(stringBytes));
 		}
 		addAllToPrevious(savedCommands);
 		
-		ByteBuf shapeBuf = Unpooled.copiedBuffer(subTag.getByteArray("shapes"));
-		final int shapeSize = shapeBuf.readInt();
-		for (int i = 0; i < shapeSize; i++)
+		final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(subTag.getByteArray("shapes"));
+		try
 		{
-			short[] dim = {shapeBuf.readShort(), shapeBuf.readShort(), shapeBuf.readShort(), shapeBuf.readShort()};
-			byte[] stringBytes = new byte[shapeBuf.readByte()];
-			shapeBuf.writeBytes(stringBytes);
-			final String shapeType = new String(stringBytes);
-			switch (shapeType)
-			{
-			case "Rectangle": draw(new Rectangle(dim[0], dim[1], dim[2], dim[3])); break;
-			case "Circle": draw(new Ellipse2D.Float(dim[0], dim[1], dim[2], dim[3])); break;
-			default: break;
-			}
+			final ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+			final List<Shape> shapes = (List<Shape>) objectInputStream.readObject();
+			draw(shapes);
+		} catch (IOException | ClassNotFoundException e)
+		{
+			e.printStackTrace();
 		}
 		
-		ByteBuf floatingTextBuf = Unpooled.copiedBuffer(subTag.getByteArray("floatingText"));
+		final ByteBuf floatingTextBuf = Unpooled.copiedBuffer(subTag.getByteArray("floatingText"));
 		final int floatingTextLength = floatingTextBuf.readInt();
 		for (int i = 0; i < floatingTextLength; i++)
 			print(FloatingText.readBytes(floatingTextBuf));

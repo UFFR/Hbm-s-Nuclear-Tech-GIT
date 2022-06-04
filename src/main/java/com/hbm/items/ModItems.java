@@ -446,7 +446,6 @@ public class ModItems {
 	public static Item powder_sr90;
 	public static Item powder_sr90_tiny;
 	public static Item powder_au198;
-	public static Item powder_sr90_tiny;
 	public static Item powder_ra226;
 	public static Item powder_i131;
 	public static Item powder_i131_tiny;
@@ -487,8 +486,6 @@ public class ModItems {
 	public static Item powder_tennessine;
 	public static Item powder_cerium;
 	
-	public static Item powder_sr90;
-
 	public static Item powder_advanced_alloy;
 	public static Item powder_tcalloy;
 	public static Item powder_coal;
@@ -1850,6 +1847,8 @@ public class ModItems {
 
 	public static Item stick_dynamite;
 	public static Item stick_tnt;
+	public static Item stick_semtex;
+	public static Item stick_c4;
 	
 	public static Item grenade_generic;
 	public static Item grenade_smoke;
@@ -2914,11 +2913,6 @@ public class ModItems {
 		safety_fuse = new Item().setUnlocalizedName("safety_fuse").setCreativeTab(MainRegistry.partsTab).setTextureName(RefStrings.MODID + ":safety_fuse");
 		
 		undefined = new ItemCustomLore().setUnlocalizedName("undefined").setCreativeTab(MainRegistry.partsTab).setTextureName(RefStrings.MODID + ":undefined");
-		thruster_nuclear_adv = new ItemCustomLore().setUnlocalizedName("thruster_nuclear_adv").setCreativeTab(MainRegistry.partsTab).setTextureName(RefStrings.MODID + ":thruster_nuclear_adv");
-		thruster_nuclear_liq = new ItemCustomLore().setUnlocalizedName("thruster_nuclear_liq").setCreativeTab(MainRegistry.partsTab).setTextureName(RefStrings.MODID + ":thruster_nuclear_liq");
-		component_ftl = new ItemWithSubtypes(5).addCustomNames("tank_hydrogen", "tank_hydrogen_large", "coil_warp", "coil_warp_coated", "ingot_w-co").setUnlocalizedName("component_ftl").setCreativeTab(MainRegistry.partsTab);
-		thruster_ftl = new ItemCustomLore().setUnlocalizedName("thruster_ftl").setCreativeTab(MainRegistry.partsTab).setTextureName(RefStrings.MODID + ":thruster_ftl");
-		thruster_dfc = new ItemCustomLore().setUnlocalizedName("thruster_dfc").setCreativeTab(MainRegistry.partsTab).setTextureName(RefStrings.MODID + ":thruster_dfc");
 		
 		billet_zirconium = new ItemCustomLore().setRarity(EnumRarity.uncommon).setUnlocalizedName("billet_zirconium").setCreativeTab(MainRegistry.partsTab).setTextureName(RefStrings.MODID + ":billet_zirconium");
 		billet_sr90 = new ItemCustomLore().setRarity(EnumRarity.epic).setUnlocalizedName("billet_sr90").setCreativeTab(MainRegistry.partsTab).setTextureName(RefStrings.MODID + ":billet_sr90");
@@ -7133,9 +7127,6 @@ public class ModItems {
 		GameRegistry.registerItem(thruster_medium, thruster_medium.getUnlocalizedName());
 		GameRegistry.registerItem(thruster_large, thruster_large.getUnlocalizedName());
 		GameRegistry.registerItem(thruster_nuclear, thruster_nuclear.getUnlocalizedName());
-		GameRegistry.registerItem(thruster_nuclear_adv, thruster_nuclear_adv.getUnlocalizedName());
-		GameRegistry.registerItem(thruster_nuclear_liq, thruster_nuclear_liq.getUnlocalizedName());
-		GameRegistry.registerItem(component_ftl, component_ftl.getUnlocalizedName());
 		GameRegistry.registerItem(sat_base, sat_base.getUnlocalizedName());
 		GameRegistry.registerItem(sat_head_mapper, sat_head_mapper.getUnlocalizedName());
 		GameRegistry.registerItem(sat_head_scanner, sat_head_scanner.getUnlocalizedName());

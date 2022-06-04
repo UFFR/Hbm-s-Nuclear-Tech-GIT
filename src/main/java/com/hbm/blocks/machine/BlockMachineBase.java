@@ -1,5 +1,6 @@
 package com.hbm.blocks.machine;
 
+import com.hbm.handler.EnumGUI;
 import com.hbm.main.MainRegistry;
 
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
@@ -18,9 +19,14 @@ import net.minecraft.world.World;
 
 public abstract class BlockMachineBase extends BlockContainer {
 	
-	int guiID = -1;
+	final int guiID;
 	protected boolean rotatable = false;
 
+	public BlockMachineBase(Material mat, EnumGUI gui)
+	{
+		this(mat, gui.ordinal());
+	}
+	
 	public BlockMachineBase(Material mat, int guiID) {
 		super(mat);
 		this.guiID = guiID;

@@ -4,10 +4,10 @@ import com.hbm.config.VersatileConfig;
 import com.hbm.items.machine.ItemRTGPellet;
 import com.hbm.packet.AuxElectricityPacket;
 import com.hbm.packet.PacketDispatcher;
-import com.hbm.tileentity.TileEntityLoadedBase;
-import com.hbm.util.RTGUtil;
 import com.hbm.tileentity.IRTGUser;
+import com.hbm.tileentity.TileEntityLoadedBase;
 
+import api.hbm.Date;
 import api.hbm.energy.IEnergyGenerator;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,7 +17,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityMachineRTG extends TileEntity implements ISidedInventory, IEnergyGenerator, IRTGUser
+public class TileEntityMachineRTG extends TileEntityLoadedBase implements ISidedInventory, IEnergyGenerator, IRTGUser
 {
 
 	private ItemStack slots[];
@@ -30,7 +30,7 @@ public class TileEntityMachineRTG extends TileEntity implements ISidedInventory,
 	public static final int[] slot_io = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
 	
 	private String customName;
-	private BigInteger date = BigInteger.ZERO;
+	private Date date = new Date();
 	public TileEntityMachineRTG() {
 		slots = new ItemStack[15];
 	}
@@ -147,7 +147,7 @@ public class TileEntityMachineRTG extends TileEntity implements ISidedInventory,
 			}
 		}
 		
-		date = new BigInteger(nbt.getByteArray("date"));
+		date = new Date(nbt.getByteArray("date"));
 	}
 	
 	@Override
@@ -169,7 +169,7 @@ public class TileEntityMachineRTG extends TileEntity implements ISidedInventory,
 		}
 		nbt.setTag("items", list);
 		
-		nbt.setByteArray("date", date.toByteArray());
+		nbt.setByteArray("date", date.serialize());
 	}
 	
 	@Override
@@ -260,12 +260,13 @@ public class TileEntityMachineRTG extends TileEntity implements ISidedInventory,
 	@Override
 	public void incrementAge()
 	{
-		date = date.add(BigInteger.ONE);
+		date.increment();
 	}
 
 	@Override
-	public BigInteger getInternalDate()
+	public Date getInternalDate()
 	{
 		return date;
 	}
+
 }

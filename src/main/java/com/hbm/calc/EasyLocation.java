@@ -1,11 +1,16 @@
 package com.hbm.calc;
 
-import java.io.Serializable;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Optional;
 
 import javax.annotation.CheckForNull;
 
+import com.hbm.main.DeserializationException;
+
 import api.hbm.serialization.ISerializable;
+import api.hbm.serialization.SerializationRegistry;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
@@ -14,7 +19,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-public class EasyLocation implements Cloneable, Comparable<EasyLocation>, Serializable, ISerializable<EasyLocation>
+public class EasyLocation implements Cloneable, Comparable<EasyLocation>, ISerializable<EasyLocation>
 {
 	/**
 	 * 
@@ -22,10 +27,10 @@ public class EasyLocation implements Cloneable, Comparable<EasyLocation>, Serial
 	private static final long serialVersionUID = -1791762616348589379L;
 	public double posX, posY, posZ;
 	public int dimID;
-	public Optional<World> world = Optional.empty();
+	public transient Optional<World> world = Optional.empty();
 	static
 	{
-		ISerializable.register(EasyLocation.class, new EasyLocation(0, 0, 0));
+		SerializationRegistry.register(EasyLocation.class, bytes -> new EasyLocation(bytes));
 	}
 	public EasyLocation(double x, double y, double z)
 	{
@@ -75,19 +80,38 @@ public class EasyLocation implements Cloneable, Comparable<EasyLocation>, Serial
 		this(vector.xCoord, vector.yCoord, vector.zCoord);
 	}
 	
-	public EasyLocation(byte[] bytes)
+	public EasyLocation(byte[] bytes) throws DeserializationException
 	{
-		ByteBuf buf = Unpooled.copiedBuffer(bytes);
-		posX = buf.readDouble();
-		posY = buf.readDouble();
-		posZ = buf.readDouble();
-		dimID = buf.readInt();
+		try
+		{
+			final ByteBuf buf = Unpooled.copiedBuffer(bytes);
+			posX = buf.readDouble();
+			posY = buf.readDouble();
+			posZ = buf.readDouble();
+			dimID = buf.readInt();
+		} catch (Exception e)
+		{
+			throw new DeserializationException(e);
+		}
+	}
+	
+	private void writeObject(ObjectOutputStream out) throws IOException
+	{
+		out.write(serialize());
+	}
+	
+	private void readObject(ObjectInputStream in) throws IOException
+	{
+		posX = in.readDouble();
+		posY = in.readDouble();
+		posZ = in.readDouble();
+		dimID = in.readInt();
 	}
 	
 	@Override
 	public byte[] serialize()
 	{
-		ByteBuf buf = Unpooled.buffer();
+		final ByteBuf buf = Unpooled.buffer();
 		buf.writeDouble(posX);
 		buf.writeDouble(posY);
 		buf.writeDouble(posZ);
@@ -325,7 +349,7 @@ public class EasyLocation implements Cloneable, Comparable<EasyLocation>, Serial
 	}
 
 	@Override
-	public EasyLocation deserialize(byte[] bytes)
+	public EasyLocation deserialize(byte[] bytes) throws DeserializationException
 	{
 		return new EasyLocation(bytes);
 	}

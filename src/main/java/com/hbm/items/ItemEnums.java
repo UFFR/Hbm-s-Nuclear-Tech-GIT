@@ -279,6 +279,12 @@ public class ItemEnums {
 		LUMP;
 	}
 	
+	public static enum EnumLegendaryType {
+		TIER1,
+		TIER2,
+		TIER3
+	}
+	
 	public static enum EnumCokeType {
 		COAL,
 		LIGNITE,

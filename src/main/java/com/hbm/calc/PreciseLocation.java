@@ -1,17 +1,23 @@
 package com.hbm.calc;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import static java.math.MathContext.DECIMAL128;
 
-import java.io.Serializable;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Optional;
 
 import javax.annotation.CheckForNull;
 
 import com.google.common.annotations.Beta;
+import com.hbm.main.DeserializationException;
 
 import api.hbm.serialization.ISerializable;
+import api.hbm.serialization.SerializationRegistry;
 import ch.obermuhlner.math.big.BigDecimalMath;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -20,7 +26,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 @Beta
-public class PreciseLocation implements Cloneable, Comparable<PreciseLocation>, Serializable, ISerializable<PreciseLocation>
+public class PreciseLocation implements Cloneable, Comparable<PreciseLocation>, ISerializable<PreciseLocation>
 {
 	/**
 	 * 
@@ -28,10 +34,10 @@ public class PreciseLocation implements Cloneable, Comparable<PreciseLocation>, 
 	private static final long serialVersionUID = -525812461028759983L;
 	public final BigDecimal[] coord = new BigDecimal[3];
 	public int dimID;
-	public Optional<World> world = Optional.empty();
+	public transient Optional<World> world = Optional.empty();
 	static
 	{
-		ISerializable.register(PreciseLocation.class, new PreciseLocation(0, 0, 0));
+		SerializationRegistry.register(PreciseLocation.class, bytes -> new PreciseLocation(bytes));
 	}
 	public PreciseLocation(BigDecimal x, BigDecimal y, BigDecimal z)
 	{
@@ -109,36 +115,44 @@ public class PreciseLocation implements Cloneable, Comparable<PreciseLocation>, 
 		this(vector.xCoord, vector.yCoord, vector.zCoord);
 	}
 	
-	public PreciseLocation(byte[] bytes)
+	public PreciseLocation(byte[] bytes) throws DeserializationException
 	{
-		ByteBuf buf = Unpooled.copiedBuffer(bytes);
-		final byte[] xCoordBytes = new byte[buf.readInt()];
-		buf.readBytes(xCoordBytes);
-		final byte[] yCoordBytes = new byte[buf.readInt()];
-		buf.readBytes(yCoordBytes);
-		final byte[] zCoordBytes = new byte[buf.readInt()];
-		buf.readBytes(zCoordBytes);
-		dimID = buf.readInt();
-		coord[0] = new BigDecimal(new String(xCoordBytes));
-		coord[1] = new BigDecimal(new String(yCoordBytes));
-		coord[2] = new BigDecimal(new String(zCoordBytes));
+		try
+		{
+			final ByteBuf buf = allocCopy.apply(bytes);
+			final byte[] coordBytes = new byte[buf.readInt()];
+			final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(coordBytes);
+			final ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+			final BigDecimal[] readCoord = (BigDecimal[]) objectInputStream.readObject();
+			for (byte i = 0; i < 3; i++)
+				coord[i] = readCoord[i];
+			
+			dimID = buf.readInt();
+		} catch (Exception e)
+		{
+			throw new DeserializationException(e);
+		}
 	}
 	
 	@Override
 	public byte[] serialize()
 	{
-		ByteBuf buf = Unpooled.buffer();
-		final byte[] xCoordBytes = coord[0].toString().getBytes();
-		final byte[] yCoordBytes = coord[1].toString().getBytes();
-		final byte[] zCoordBytes = coord[2].toString().getBytes();
-		buf.writeInt(xCoordBytes.length);
-		buf.writeBytes(xCoordBytes);
-		buf.writeInt(yCoordBytes.length);
-		buf.writeBytes(yCoordBytes);
-		buf.writeInt(zCoordBytes.length);
-		buf.writeBytes(zCoordBytes);
-		buf.writeInt(dimID);
-		return buf.array();
+		try
+		{
+			final ByteBuf buf = Unpooled.buffer();
+			final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+			final ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+			objectOutputStream.writeObject(coord);
+			final byte[] coordBytes = byteArrayOutputStream.toByteArray();
+			buf.writeInt(coordBytes.length);
+			buf.writeBytes(coordBytes);
+			buf.writeInt(dimID);
+			return buf.array();
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+			return new byte[0];
+		}
 	}
 	
 	public static BigDecimal distance(PreciseLocation loc1, PreciseLocation loc2)
@@ -339,7 +353,7 @@ public class PreciseLocation implements Cloneable, Comparable<PreciseLocation>, 
 	}
 
 	@Override
-	public PreciseLocation deserialize(byte[] bytes)
+	public PreciseLocation deserialize(byte[] bytes) throws DeserializationException
 	{
 		return new PreciseLocation(bytes);
 	}

@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ILookOverlay;
-import com.hbm.blocks.ModBlocks;
+import com.hbm.handler.EnumGUI;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.machine.storage.TileEntityMachineBattery;
 import com.hbm.tileentity.machine.storage.TileEntityMachineFENSU;
@@ -58,7 +58,7 @@ public class MachineFENSU extends BlockDummyable implements ILookOverlay {
 			TileEntityMachineFENSU entity = (TileEntityMachineFENSU) world.getTileEntity(pos[0], pos[1], pos[2]);
 			if(entity != null)
 			{
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_machine_battery, world, pos[0], pos[1], pos[2]);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.BATTERY.ordinal(), world, pos[0], pos[1], pos[2]);
 			}
 			return true;
 		} else {
@@ -80,7 +80,7 @@ public class MachineFENSU extends BlockDummyable implements ILookOverlay {
 		
 		TileEntityMachineBattery battery = (TileEntityMachineBattery) te;
 		
-		List<String> text = new ArrayList();
+		List<String> text = new ArrayList<>();
 		text.add(BobMathUtil.getShortNumber(battery.getPower()) + " / " + BobMathUtil.getShortNumber(battery.getMaxPower()) + "HE");
 		
 		double percent = (double) battery.getPower() / (double) battery.getMaxPower();

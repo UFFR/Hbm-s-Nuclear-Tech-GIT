@@ -1,6 +1,5 @@
 package com.hbm.blocks.machine;
 
-import com.hbm.tileentity.machine.TileEntityFWatzCore;
 
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -14,8 +13,9 @@ public class FWatzCore extends BlockContainer {
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
-		return new TileEntityFWatzCore();
+	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_)
+	{
+		return null;
 	}
 
 }

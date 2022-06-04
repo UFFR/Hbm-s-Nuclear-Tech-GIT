@@ -8,6 +8,11 @@ import javax.annotation.CheckForNull;
 
 import com.google.common.annotations.Beta;
 
+/**
+ * Things that can be researched by the supercomputers. Can be recipes, programs, or simple intermediary research steps.
+ * @author UFFR
+ *
+ */
 @Beta
 public class Researchable
 {

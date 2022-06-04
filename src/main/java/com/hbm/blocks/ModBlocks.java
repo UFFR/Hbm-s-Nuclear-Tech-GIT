@@ -13,6 +13,7 @@ import com.hbm.blocks.network.*;
 import com.hbm.blocks.siege.*;
 import com.hbm.blocks.test.*;
 import com.hbm.blocks.turret.*;
+import com.hbm.handler.EnumGUI;
 import com.hbm.items.block.*;
 import com.hbm.items.bomb.*;
 import com.hbm.items.special.ItemOreBlock;
@@ -42,7 +43,6 @@ public class ModBlocks {
 	public static Block test_bomb;
 	public static Block test_bomb_advanced;
 	public static Block test_nuke;
-	public static final int guiID_test_nuke = 2;
 	public static Block event_tester;
 	public static Block rotation_tester;
 	public static Block obj_tester;
@@ -262,6 +262,12 @@ public class ModBlocks {
 	public static Block block_semtex;
 	public static Block block_c4;
 	public static Block block_smore;
+	public static Block block_staballoy;//TODO
+	public static Block block_ferrouranium;
+	public static Block block_saturnite;
+	public static Block block_tha;
+	public static Block block_silicon;
+	public static Block block_nickel;
 
 	public static Block block_australium;
 	public static Block block_weidanium;
@@ -575,52 +581,32 @@ public class ModBlocks {
 	public static Block sat_resonator;
 
 	public static Block sat_dock;
-	public static final int guiID_dock = 80;
 
 	public static Block soyuz_capsule;
-	public static final int guiID_capsule = 93;
 	
 	public static Block crate_iron;
-	public static final int guiID_crate_iron = 46;
 	
 	public static Block crate_steel;
-	public static final int guiID_crate_steel = 47;
 	
 	public static Block crate_tungsten;
-	public static final int guiID_crate_tungsten = 103;
 	
 	public static Block safe;
-	public static final int guiID_safe = 70;
 	
 	public static Block nuke_gadget;
-	public static final int guiID_nuke_gadget = 3;
 	public static Block nuke_boy;
-	public static final int guiID_nuke_boy = 4;
 	public static Block nuke_man;
-	public static final int guiID_nuke_man = 6;
 	public static Block nuke_mike;
-	public static final int guiID_nuke_mike = 11;
 	public static Block nuke_tsar;
-	public static final int guiID_nuke_tsar = 12;
 	public static Block nuke_fleija;
-	public static final int guiID_nuke_fleija = 17;
 	public static Block nuke_prototype;
-	public static final int guiID_nuke_prototype = 23;
 	public static Block nuke_custom;
-	public static final int guiID_nuke_custom = 37;
 	public static Block nuke_solinium;
-	public static final int guiID_nuke_solinium = 60;
 	public static Block nuke_n2;
-	public static final int guiID_nuke_n2 = 61;
 	public static Block nuke_n45;
-	public static final int guiID_nuke_n45 = 77;
 	public static Block nuke_fstbmb;
-	public static final int guiID_nuke_fstbmb = 96;
 	public static Block bomb_multi;
-	public static final int guiID_bomb_multi = 10;
 	
 	public static Block cel_prime;
-	public static final int guiID_cel_prime = 62;
 	public static Block cel_prime_terminal;
 	public static Block cel_prime_battery;
 	public static Block cel_prime_port;
@@ -630,48 +616,33 @@ public class ModBlocks {
 	public static Block machine_difurnace_on;
 	public static Block machine_difurnace_rtg_off;
 	public static Block machine_difurnace_rtg_on;
-	public static final int guiID_test_difurnace = 1;
-	public static final int guiID_rtg_difurnace = 2001;
 	
 	public static Block machine_centrifuge;
-	public static final int guiID_centrifuge = 5;
 	
 	public static Block machine_gascent;
-	public static final int guiID_gascent = 71;
 
 	public static Block machine_fel;
-	public static final int guiID_fel = 110;
 	public static Block machine_silex;
-	public static final int guiID_silex = 109;
 	
 	public static Block machine_crystallizer;
-	public static final int guiID_crystallizer = 94;
 	
 	public static Block machine_uf6_tank;
-	public static final int guiID_uf6_tank = 7;
 	
 	public static Block machine_puf6_tank;
-	public static final int guiID_puf6_tank = 8;
 
 	public static Block machine_reactor_breeding;
-	public static final int guiID_reactor_breeding = 9;
 	
 	public static Block machine_nuke_furnace_off;
 	public static Block machine_nuke_furnace_on;
-	public static final int guiID_nuke_furnace = 13;
 	
 	public static Block machine_rtg_furnace_off;
 	public static Block machine_rtg_furnace_on;
-	public static final int guiID_rtg_furnace = 14;
 
 	public static Block machine_generator;
-	public static final int guiID_machine_generator = 15;
 
 	public static Block machine_industrial_generator;
-	public static final int guiID_machine_industrial_generator = 39;
 
 	public static Block machine_cyclotron;
-	public static final int guiID_machine_cyclotron = 41;
 
 	public static Block hadron_plating;
 	public static Block hadron_plating_blue;
@@ -699,21 +670,16 @@ public class ModBlocks {
 	public static Block hadron_analysis_glass;
 	public static Block hadron_access;
 	public static Block hadron_core;
-	public static final int guiID_hadron = 101;
 	
 	public static Block machine_electric_furnace_off;
 	public static Block machine_electric_furnace_on;
-	public static final int guiID_electric_furnace = 16;
 
 	public static Block machine_microwave;
-	public static final int guiID_microwave = 97;
 	
 	public static Block machine_arc_furnace_off;
 	public static Block machine_arc_furnace_on;
-	public static final int guiID_machine_arc = 82;
 
 	//public static Block machine_deuterium;
-	public static final int guiID_machine_deuterium = 20;
 
 	public static Block machine_battery_potato;
 	public static Block machine_battery;
@@ -721,12 +687,9 @@ public class ModBlocks {
 	public static Block machine_schrabidium_battery;
 	public static Block machine_dineutronium_battery;
 	public static Block machine_fensu;
-	public static final int guiID_machine_battery = 21;
-	public static final int guiID_machine_fensu = 99;
 	
 	public static Block machine_coal_off;
 	public static Block machine_coal_on;
-	public static final int guiID_machine_coal = 22;
 
 	public static Block red_wire_coated;
 	public static Block red_cable;
@@ -769,7 +732,6 @@ public class ModBlocks {
 	public static Block barrel_steel;
 	public static Block barrel_tcalloy;
 	public static Block barrel_antimatter;
-	public static final int guiID_barrel = 92;
 
 	public static Block machine_transformer;
 	public static Block machine_transformer_20;
@@ -777,10 +739,8 @@ public class ModBlocks {
 	public static Block machine_transformer_dnt_20;
 
 	public static Block bomb_multi_large;
-	public static final int guiID_bomb_multi_large = 18;
 
 	public static Block machine_solar_boiler;
-	public static final int guiID_solar_boiler = 18;
 	public static Block solar_mirror;
 
 	public static Block struct_launcher;
@@ -795,13 +755,11 @@ public class ModBlocks {
 	public static Block factory_titanium_furnace;
 	public static Block factory_titanium_conductor;
 	public static Block factory_titanium_core;
-	public static final int guiID_factory_titanium = 24;
 	
 	public static Block factory_advanced_hull;
 	public static Block factory_advanced_furnace;
 	public static Block factory_advanced_conductor;
 	public static Block factory_advanced_core;
-	public static final int guiID_factory_advanced = 25;
 
 	public static Block reactor_element;
 	public static Block reactor_control;
@@ -810,24 +768,17 @@ public class ModBlocks {
 	public static Block reactor_inserter;
 	public static Block reactor_conductor;
 	public static Block reactor_computer;
-	public static final int guiID_reactor_multiblock = 26;
 
 	public static Block fusion_conductor;
 	public static Block fusion_center;
 	public static Block fusion_motor;
 	public static Block fusion_heater;
-	public static Block fusion_hatch;
-	public static Block fusion_core;
 	public static Block plasma;
-	public static final int guiID_fusion_multiblock = 27;
 
 	public static Block iter;
-	public static final int guiID_iter = 98;
 	public static Block plasma_heater;
-	public static final int guiID_plasma_heater = 99;
 	
 	public static Block watz;
-	public static final int guiID_watz = 98;
 
 	public static Block watz_element;
 	public static Block watz_control;
@@ -836,7 +787,6 @@ public class ModBlocks {
 	public static Block watz_hatch;
 	public static Block watz_conductor;
 	public static Block watz_core;
-	public static final int guiID_watz_multiblock = 32;
 
 	public static Block fwatz_conductor;
 	public static Block fwatz_cooler;
@@ -846,57 +796,39 @@ public class ModBlocks {
 	public static Block fwatz_computer;
 	public static Block fwatz_core;
 	public static Block fwatz_plasma;
-	public static final int guiID_fwatz_multiblock = 33;
 
 	public static Block balefire;
 	public static Block fire_digamma;
 	public static Block digamma_matter;
 
 	public static Block ams_base;
-	public static final int guiID_ams_base = 54;
 	public static Block ams_emitter;
-	public static final int guiID_ams_emitter = 55;
 	public static Block ams_limiter;
-	public static final int guiID_ams_limiter = 56;
 
 	public static Block dfc_emitter;
-	public static final int guiID_dfc_emitter = 87;
 	public static Block dfc_injector;
-	public static final int guiID_dfc_injector = 90;
 	public static Block dfc_receiver;
-	public static final int guiID_dfc_receiver = 88;
 	public static Block dfc_stabilizer;
-	public static final int guiID_dfc_stabilizer = 91;
 	public static Block dfc_core;
-	public static final int guiID_dfc_core = 89;
 
 	public static Block machine_converter_he_rf;
-	public static final int guiID_converter_he_rf = 28;
 	public static Block machine_converter_rf_he;
 
 	public static Block machine_schrabidium_transmutator;
-	public static final int guiID_schrabidium_transmutator = 30;
 
 	public static Block machine_diesel;
-	public static final int guiID_machine_diesel = 31;
 
 	public static Block machine_shredder;
-	public static final int guiID_machine_shredder = 34;
 
 	public static Block machine_shredder_large;
-	public static final int guiID_machine_shredder_large = 76;
 
 	public static Block machine_combine_factory;
-	public static final int guiID_combine_factory = 35;
 
 	public static Block machine_teleporter;
-	public static final int guiID_machine_teleporter = 36;
 
 	public static Block machine_reix_mainframe;
-	public static final int guiID_machine_reix_mainframe = 38;
 
 	public static Block machine_rtg_grey;
-	public static final int guiID_machine_rtg = 42;
 	//public static Block machine_rtg_red;
 	//public static Block machine_rtg_orange;
 	//public static Block machine_rtg_yellow;
@@ -912,15 +844,12 @@ public class ModBlocks {
 	
 	public static Block machine_well;
 	public static Block oil_pipe;
-	public static final int guiID_machine_well = 40;
 	public static Block machine_pumpjack;
 	public static Block machine_fracking_tower;
 
 	public static Block machine_flare;
-	public static final int guiID_machine_flare = 44;
 
 	public static Block machine_refinery;
-	public static final int guiID_machine_refinery = 43;
 
 	public static Block machine_fraction_tower;
 	public static Block fraction_spacer;
@@ -928,17 +857,13 @@ public class ModBlocks {
 
 	public static Block machine_boiler_off;
 	public static Block machine_boiler_on;
-	public static final int guiID_machine_boiler = 72;
 
 	public static Block machine_boiler_electric_off;
 	public static Block machine_boiler_electric_on;
-	public static final int guiID_machine_boiler_electric = 73;
 
 	public static Block machine_turbine;
-	public static final int guiID_machine_turbine = 74;
 
 	public static Block machine_large_turbine;
-	public static final int guiID_machine_large_turbine = 100;
 	
 	public static Block machine_deuterium_extractor;
 	public static Block machine_deuterium_tower;
@@ -954,100 +879,70 @@ public class ModBlocks {
 	public static Block machine_electrolyser;
 
 	public static Block machine_deaerator;
-	public static final int guiID_machine_deaerator = 74;
 
 	public static Block machine_drill;
 	public static Block drill_pipe;
-	public static final int guiID_machine_drill = 45;
 
 	public static Block machine_mining_laser;
 	public static Block barricade;
-	public static final int guiID_mining_laser = 95;
 
 	public static Block machine_assembler;
-	public static final int guiID_machine_assembler = 48;
 
 	public static Block machine_chemplant;
-	public static final int guiID_machine_chemplant = 49;
 	public static Block machine_chemfac;
 
 	public static Block machine_fluidtank;
-	public static final int guiID_machine_fluidtank = 50;
 
 	public static Block machine_bat9000;
 	public static Block machine_orbus;
 
 	public static Block launch_pad;
-	public static final int guiID_launch_pad = 19;
 
 	public static Block machine_missile_assembly;
-	public static final int guiID_missile_assembly = 83;
 
 	public static Block compact_launcher;
-	public static final int guiID_compact_launcher = 85;
 
 	public static Block launch_table;
-	public static final int guiID_launch_table = 84;
 
 	public static Block soyuz_launcher;
-	public static final int guiID_soyuz_launcher = 86;
 
 	public static Block machine_radar;
-	public static final int guiID_radar = 59;
 
 	public static Block machine_turbofan;
-	public static final int guiID_machine_turbofan = 52;
 
 	public static Block machine_selenium;
-	public static final int guiID_machine_selenium = 63;
 
 	public static Block press_preheater;
 	public static Block machine_press;
-	public static final int guiID_machine_press = 53;
 	public static Block machine_epress;
-	public static final int guiID_machine_epress = 81;
 
 	public static Block machine_siren;
-	public static final int guiID_siren = 57;
 
 	public static Block machine_radgen;
-	public static final int guiID_radgen = 58;
 
 	public static Block machine_satlinker;
-	public static final int guiID_satlinker = 64;
 	public static Block machine_telelinker;
-	public static final int guiID_telelinker = 68;
 	public static Block machine_keyforge;
-	public static final int guiID_keyforge = 67;
 
 	public static Block machine_armor_table;
-	public static final int guiID_armor_table = 102;
 
 	public static Block reactor_research;
-	public static final int guiID_reactor_research = 65;
 	public static Block reactor_zirnox;
-	public static final int guiID_reactor_zirnox = 124;
 	public static Block zirnox_destroyed;
 
 	public static Block machine_controller;
-	public static final int guiID_machine_controller = 78;
 
 	public static Block machine_spp_bottom;
 	public static Block machine_spp_top;
 
 	public static Block radiobox;
-	public static final int guiID_radiobox = 66;
 
 	public static Block radiorec;
-	public static final int guiID_radiorec = 69;
 
 	public static Block machine_forcefield;
-	public static final int guiID_forcefield = 75;
 
 	public static Block machine_waste_drum;
-	public static final int guiID_waste_drum = 79;
 	public static Block machine_storage_drum;
-	public static final int guiID_storage_drum = 118;
 
 	public static Block anvil_iron;
 	public static Block anvil_lead;
@@ -1060,7 +955,6 @@ public class ModBlocks {
 	public static Block anvil_dnt;
 	public static Block anvil_osmiridium;
 	public static Block anvil_murky;
-	public static final int guiID_anvil = 121;
 
 	public static Block turret_light;
 	public static Block turret_heavy;
@@ -1072,24 +966,15 @@ public class ModBlocks {
 	public static Block turret_cheapo;
 
 	public static Block turret_chekhov;
-	public static final int guiID_chekhov = 104;
 	public static Block turret_friendly;
-	public static final int guiID_friendly = 107;
 	public static Block turret_jeremy;
-	public static final int guiID_jeremy = 105;
 	public static Block turret_tauon;
-	public static final int guiID_tauon = 106;
 	public static Block turret_richard;
-	public static final int guiID_richard = 108;
 	public static Block turret_howard;
-	public static final int guiID_howard = 112;
 	public static Block turret_howard_damaged;
 	public static Block turret_maxwell;
-	public static final int guiID_maxwell = 120;
 	public static Block turret_fritz;
-	public static final int guiID_fritz = 122;
 	public static Block turret_brandon;
-	public static final int guiID_brandon = 122;
 
 	public static Block rbmk_rod;
 	public static Block rbmk_rod_mod;
@@ -1109,13 +994,6 @@ public class ModBlocks {
 	public static Block rbmk_heater;
 	public static Block rbmk_console;
 	public static Block rbmk_crane_console;
-	public static final int guiID_rbmk_rod = 113;
-	public static final int guiID_rbmk_boiler = 114;
-	public static final int guiID_rbmk_control = 115;
-	public static final int guiID_rbmk_control_auto = 116;
-	public static final int guiID_rbmk_console = 117;
-	public static final int guiID_rbmk_outgasser = 119;
-	public static final int guiID_rbmk_storage = 123;
 	public static Block rbmk_loader;
 	public static Block rbmk_steam_inlet;
 	public static Block rbmk_steam_outlet;
@@ -1733,7 +1611,7 @@ public class ModBlocks {
 		nuke_solinium = new NukeSolinium(Material.iron).setBlockName("nuke_solinium").setCreativeTab(MainRegistry.nukeTab).setHardness(5.0F).setResistance(6000.0F).setBlockTextureName(RefStrings.MODID + ":nuke_solinium");
 		nuke_n2 = new NukeN2(Material.iron).setBlockName("nuke_n2").setCreativeTab(MainRegistry.nukeTab).setHardness(5.0F).setResistance(6000.0F).setBlockTextureName(RefStrings.MODID + ":nuke_n2");
 		nuke_n45 = new NukeN45(Material.iron).setBlockName("nuke_n45").setCreativeTab(MainRegistry.nukeTab).setHardness(5.0F).setResistance(6000.0F).setBlockTextureName(RefStrings.MODID + ":code");
-		nuke_fstbmb = new NukeBalefire(Material.iron, guiID_nuke_fstbmb).setBlockName("nuke_fstbmb").setCreativeTab(MainRegistry.nukeTab).setHardness(5.0F).setResistance(6000.0F).setBlockTextureName(RefStrings.MODID + ":nuke_fstbmb");
+		nuke_fstbmb = new NukeBalefire(Material.iron, EnumGUI.NUKE_BALEFIRE.ordinal()).setBlockName("nuke_fstbmb").setCreativeTab(MainRegistry.nukeTab).setHardness(5.0F).setResistance(6000.0F).setBlockTextureName(RefStrings.MODID + ":nuke_fstbmb");
 		
 		cel_prime = new CelPrime(Material.iron).setBlockName("cel_prime").setCreativeTab(null).setHardness(5.0F).setResistance(6000.0F).setBlockTextureName(RefStrings.MODID + ":code");
 		cel_prime_terminal = new CelPrimePart(Material.iron).setBlockName("cel_prime_terminal").setCreativeTab(null).setHardness(5.0F).setResistance(6000.0F).setBlockTextureName(RefStrings.MODID + ":code");
@@ -1953,8 +1831,6 @@ public class ModBlocks {
 		fusion_center = new BlockPillar(Material.iron, RefStrings.MODID + ":fusion_center_top_alt").setBlockName("fusion_center").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab).setBlockTextureName(RefStrings.MODID + ":fusion_center_side_alt");
 		fusion_motor = new BlockPillar(Material.iron, RefStrings.MODID + ":fusion_motor_top_alt").setBlockName("fusion_motor").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab).setBlockTextureName(RefStrings.MODID + ":fusion_motor_side_alt");
 		fusion_heater = new BlockPillar(Material.iron, RefStrings.MODID + ":fusion_heater_top").setBlockName("fusion_heater").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab).setBlockTextureName(RefStrings.MODID + ":fusion_heater_side");
-		fusion_hatch = new FusionHatch(Material.iron).setBlockName("fusion_hatch").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab).setBlockTextureName(RefStrings.MODID + ":fusion_hatch");
-		fusion_core = new FusionCore(Material.iron).setBlockName("fusion_core").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab).setBlockTextureName(RefStrings.MODID + ":fusion_core_side");
 		plasma = new BlockPlasma(Material.iron).setBlockName("plasma").setHardness(5.0F).setResistance(6000.0F).setLightLevel(1.0F).setCreativeTab(MainRegistry.machineTab).setBlockTextureName(RefStrings.MODID + ":plasma");
 		iter = new MachineITER().setBlockName("iter").setHardness(5.0F).setResistance(60.0F).setCreativeTab(MainRegistry.machineTab).setBlockTextureName(RefStrings.MODID + ":iter");
 		plasma_heater = new MachinePlasmaHeater().setBlockName("plasma_heater").setHardness(5.0F).setResistance(60.0F).setCreativeTab(MainRegistry.machineTab).setBlockTextureName(RefStrings.MODID + ":plasma_heater");
@@ -2173,7 +2049,7 @@ public class ModBlocks {
 		machine_deaerator = new MachineDeaerator(Material.iron).setBlockName("machine_deaerator").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab).setBlockTextureName(RefStrings.MODID + ":block_steel_machine");
 		
 		machine_waste_drum = new WasteDrum(Material.iron).setBlockName("machine_waste_drum").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab).setBlockTextureName(RefStrings.MODID + ":waste_drum");
-		machine_storage_drum = new StorageDrum(Material.iron, guiID_storage_drum).setBlockName("machine_storage_drum").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab).setBlockTextureName(RefStrings.MODID + ":machine_storage_drum");
+		machine_storage_drum = new StorageDrum(Material.iron, EnumGUI.DRUM_STORAGE.ordinal()).setBlockName("machine_storage_drum").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab).setBlockTextureName(RefStrings.MODID + ":machine_storage_drum");
 
 		machine_schrabidium_transmutator = new MachineSchrabidiumTransmutator(Material.iron).setBlockName("machine_schrabidium_transmutator").setHardness(5.0F).setResistance(100.0F).setCreativeTab(MainRegistry.machineTab);
 
@@ -2282,13 +2158,13 @@ public class ModBlocks {
 		dummy_port_radgen = new DummyBlockRadGen(Material.iron).setBlockName("dummy_port_radgen").setHardness(5.0F).setResistance(10.0F).setCreativeTab(null).setBlockTextureName(RefStrings.MODID + ":block_steel");
 		dummy_block_vault = new DummyBlockVault(Material.iron).setBlockName("dummy_block_vault").setHardness(10.0F).setResistance(10000.0F).setCreativeTab(null).setBlockTextureName(RefStrings.MODID + ":block_steel");
 		dummy_block_blast = new DummyBlockBlast(Material.iron).setBlockName("dummy_block_blast").setHardness(10.0F).setResistance(10000.0F).setCreativeTab(null).setBlockTextureName(RefStrings.MODID + ":block_steel");
-		dummy_block_uf6 = new DummyBlockMachine(Material.iron, guiID_uf6_tank, machine_uf6_tank, false).setBlockName("dummy_block_uf6").setHardness(5.0F).setResistance(10.0F).setCreativeTab(null).setBlockTextureName(RefStrings.MODID + ":block_titanium");
-		dummy_block_puf6 = new DummyBlockMachine(Material.iron, guiID_puf6_tank, machine_puf6_tank, false).setBlockName("dummy_block_puf6").setHardness(5.0F).setResistance(10.0F).setCreativeTab(null).setBlockTextureName(RefStrings.MODID + ":block_steel");
-		dummy_plate_compact_launcher = new DummyBlockMachine(Material.iron, guiID_compact_launcher, compact_launcher, false).setBounds(0, 16, 0, 16, 16, 16).setBlockName("dummy_plate_compact_launcher").setHardness(5.0F).setResistance(10.0F).setCreativeTab(null).setBlockTextureName(RefStrings.MODID + ":block_steel");
-		dummy_port_compact_launcher = new DummyBlockMachine(Material.iron, guiID_compact_launcher, compact_launcher, true).setBlockName("dummy_port_compact_launcher").setHardness(5.0F).setResistance(10.0F).setCreativeTab(null).setBlockTextureName(RefStrings.MODID + ":block_steel");
-		dummy_plate_launch_table = new DummyBlockMachine(Material.iron, guiID_launch_table, launch_table, false).setBounds(0, 16, 0, 16, 16, 16).setBlockName("dummy_plate_launch_table").setHardness(5.0F).setResistance(10.0F).setCreativeTab(null).setBlockTextureName(RefStrings.MODID + ":block_steel");
-		dummy_port_launch_table = new DummyBlockMachine(Material.iron, guiID_launch_table, launch_table, true).setBlockName("dummy_port_launch_table").setHardness(5.0F).setResistance(10.0F).setCreativeTab(null).setBlockTextureName(RefStrings.MODID + ":block_steel");
-		dummy_plate_cargo = new DummyBlockMachine(Material.iron, guiID_dock, sat_dock, false).setBounds(0, 0, 0, 16, 8, 16).setBlockName("dummy_plate_cargo").setHardness(5.0F).setResistance(10.0F).setCreativeTab(null).setBlockTextureName(RefStrings.MODID + ":block_steel");
+		dummy_block_uf6 = new DummyBlockMachine(Material.iron, EnumGUI.UF6_TANK.ordinal(), machine_uf6_tank, false).setBlockName("dummy_block_uf6").setHardness(5.0F).setResistance(10.0F).setCreativeTab(null).setBlockTextureName(RefStrings.MODID + ":block_titanium");
+		dummy_block_puf6 = new DummyBlockMachine(Material.iron, EnumGUI.PUF6_TANK.ordinal(), machine_puf6_tank, false).setBlockName("dummy_block_puf6").setHardness(5.0F).setResistance(10.0F).setCreativeTab(null).setBlockTextureName(RefStrings.MODID + ":block_steel");
+		dummy_plate_compact_launcher = new DummyBlockMachine(Material.iron, EnumGUI.LAUNCHER_COMPACT.ordinal(), compact_launcher, false).setBounds(0, 16, 0, 16, 16, 16).setBlockName("dummy_plate_compact_launcher").setHardness(5.0F).setResistance(10.0F).setCreativeTab(null).setBlockTextureName(RefStrings.MODID + ":block_steel");
+		dummy_port_compact_launcher = new DummyBlockMachine(Material.iron, EnumGUI.LAUNCHER_COMPACT.ordinal(), compact_launcher, true).setBlockName("dummy_port_compact_launcher").setHardness(5.0F).setResistance(10.0F).setCreativeTab(null).setBlockTextureName(RefStrings.MODID + ":block_steel");
+		dummy_plate_launch_table = new DummyBlockMachine(Material.iron, EnumGUI.LAUNCHER_TABLE.ordinal(), launch_table, false).setBounds(0, 16, 0, 16, 16, 16).setBlockName("dummy_plate_launch_table").setHardness(5.0F).setResistance(10.0F).setCreativeTab(null).setBlockTextureName(RefStrings.MODID + ":block_steel");
+		dummy_port_launch_table = new DummyBlockMachine(Material.iron, EnumGUI.LAUNCHER_TABLE.ordinal(), launch_table, true).setBlockName("dummy_port_launch_table").setHardness(5.0F).setResistance(10.0F).setCreativeTab(null).setBlockTextureName(RefStrings.MODID + ":block_steel");
+		dummy_plate_cargo = new DummyBlockMachine(Material.iron, EnumGUI.SAT_DOCK.ordinal(), sat_dock, false).setBounds(0, 0, 0, 16, 8, 16).setBlockName("dummy_plate_cargo").setHardness(5.0F).setResistance(10.0F).setCreativeTab(null).setBlockTextureName(RefStrings.MODID + ":block_steel");
 		
 		ntm_dirt = new BlockNTMDirt().setBlockName("ntm_dirt").setHardness(0.5F).setStepSound(Block.soundTypeGravel).setCreativeTab(null).setBlockTextureName("dirt");
 
@@ -3172,8 +3048,6 @@ public class ModBlocks {
 		GameRegistry.registerBlock(fusion_center, fusion_center.getUnlocalizedName());
 		GameRegistry.registerBlock(fusion_motor, fusion_motor.getUnlocalizedName());
 		GameRegistry.registerBlock(fusion_heater, fusion_heater.getUnlocalizedName());
-		GameRegistry.registerBlock(fusion_hatch, fusion_hatch.getUnlocalizedName());
-		GameRegistry.registerBlock(fusion_core, fusion_core.getUnlocalizedName());
 		GameRegistry.registerBlock(plasma, ItemBlockLore.class, plasma.getUnlocalizedName());
 		GameRegistry.registerBlock(iter, iter.getUnlocalizedName());
 		GameRegistry.registerBlock(plasma_heater, plasma_heater.getUnlocalizedName());

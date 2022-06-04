@@ -1,18 +1,18 @@
 package api.hbm;
 
-import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Arrays;
 
 import com.hbm.lib.HbmCollection;
 
 import api.hbm.serialization.ISerializable;
+import api.hbm.serialization.SerializationRegistry;
 
-public class Date implements Comparable<Date>, Serializable, Cloneable, ISerializable<Date>
+public class Date implements Comparable<Date>, Cloneable, ISerializable<Date>
 {
 	static
 	{
-		ISerializable.register(Date.class, new Date());
+		SerializationRegistry.register(Date.class, bytes -> new Date(bytes));
 	}
 	/**
 	 * 
@@ -50,6 +50,12 @@ public class Date implements Comparable<Date>, Serializable, Cloneable, ISeriali
 	public Date add(Date d)
 	{
 		data = data.add(d.data);
+		return this;
+	}
+	
+	public Date subtract(Date d)
+	{
+		data = data.subtract(d.data);
 		return this;
 	}
 	

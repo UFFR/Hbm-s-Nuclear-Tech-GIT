@@ -186,7 +186,7 @@ public class HbmLivingProps implements IExtendedEntityProperties, IHasAge
 			return;
 		
 		if(entity instanceof EntityDuck)
-			digamma = 0.0F;
+			return;
 		
 		getData(entity).digamma = digamma;
 		
@@ -197,6 +197,7 @@ public class HbmLivingProps implements IExtendedEntityProperties, IHasAge
 		try {
 			attributeinstance.removeModifier(attributeinstance.getModifier(digamma_UUID));
 		} catch(Exception ex) {
+			ex.printStackTrace();
 		}
 		
 		attributeinstance.applyModifier(new AttributeModifier(digamma_UUID, "digamma", healthMod, 2));
@@ -330,7 +331,7 @@ public class HbmLivingProps implements IExtendedEntityProperties, IHasAge
 	}
 
 	@Override
-	public void init(Entity entity, World world) { }
+	public void init(Entity entity, World world) {/*h*/ }
 
 	@Override
 	public void saveNBTData(NBTTagCompound nbt) {

@@ -8,8 +8,8 @@ import java.util.List;
 import com.hbm.inventory.FluidStack;
 import com.hbm.inventory.RecipesCommon.AStack;
 import com.hbm.inventory.gui.GUIMachineChemplant;
-import com.hbm.inventory.recipes.ChemplantRecipes;
-import com.hbm.inventory.recipes.ChemplantRecipes.ChemRecipe;
+import com.hbm.inventory.recipes.ChemPlantRecipesNT;
+import com.hbm.inventory.recipes.ChemPlantRecipesNT.ChemPlantRecipe;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemFluidIcon;
 import com.hbm.lib.RefStrings;
@@ -34,7 +34,7 @@ public class ChemplantRecipeHandler extends TemplateRecipeHandler {
 		PositionedStack[] fluidOut = new PositionedStack[2];
 		PositionedStack template;
 
-		public RecipeSet(ChemRecipe recipe) {
+		public RecipeSet(ChemPlantRecipe recipe) {
 			
 			for(int i = 0; i < recipe.inputs.length; i++) {
 				AStack in = recipe.inputs[i];
@@ -42,8 +42,8 @@ public class ChemplantRecipeHandler extends TemplateRecipeHandler {
 				this.itemIn[i] = new PositionedStack(in.extractForNEI(), 30 + (i % 2) * 18, 24 + (i / 2) * 18);
 			}
 			
-			for(int i = 0; i < recipe.inputFluids.length; i++) {
-				FluidStack in = recipe.inputFluids[i];
+			for(int i = 0; i < recipe.fIn.length; i++) {
+				FluidStack in = recipe.fIn[i];
 				if(in == null) continue;
 				ItemStack drop = ItemFluidIcon.make(in.type, in.fill);
 				this.fluidIn[i] = new PositionedStack(drop, 30 + (i % 2) * 18, 6);
@@ -55,14 +55,14 @@ public class ChemplantRecipeHandler extends TemplateRecipeHandler {
 				this.itemOut[i] = new PositionedStack(out, 120 + (i % 2) * 18, 24 + (i / 2) * 18);
 			}
 			
-			for(int i = 0; i < recipe.outputFluids.length; i++) {
-				FluidStack out = recipe.outputFluids[i];
+			for(int i = 0; i < recipe.fOut.length; i++) {
+				FluidStack out = recipe.fOut[i];
 				if(out == null) continue;
 				ItemStack drop = ItemFluidIcon.make(out.type, out.fill);
 				this.fluidOut[i] = new PositionedStack(drop, 120 + (i % 2) * 18, 6);
 			}
 			
-			this.template = new PositionedStack(new ItemStack(ModItems.chemistry_template, 1, recipe.getId()), 84, 6);
+			this.template = new PositionedStack(new ItemStack(ModItems.chemistry_template, 1, ChemPlantRecipesNT.recipes.indexOf(recipe)), 84, 6);
 		}
 
 		@Override
@@ -108,7 +108,7 @@ public class ChemplantRecipeHandler extends TemplateRecipeHandler {
 		
 		if((outputId.equals("chemistry")) && getClass() == ChemplantRecipeHandler.class) {
 			
-			for(ChemRecipe recipe : ChemplantRecipes.recipes) {
+			for(ChemPlantRecipe recipe : ChemPlantRecipesNT.recipes) {
 				this.arecipes.add(new RecipeSet(recipe));
 			}
 		} else {
@@ -120,7 +120,7 @@ public class ChemplantRecipeHandler extends TemplateRecipeHandler {
 	public void loadCraftingRecipes(ItemStack result) {
 
 		outer:
-		for(ChemRecipe recipe : ChemplantRecipes.recipes) {
+		for(ChemPlantRecipe recipe : ChemPlantRecipesNT.recipes) {
 			
 			for(ItemStack out : recipe.outputs) {
 				
@@ -130,7 +130,7 @@ public class ChemplantRecipeHandler extends TemplateRecipeHandler {
 				}
 			}
 			
-			for(FluidStack out : recipe.outputFluids) {
+			for(FluidStack out : recipe.fOut) {
 				
 				if(out != null) {
 					ItemStack drop = ItemFluidIcon.make(out.type, out.fill);
@@ -157,7 +157,7 @@ public class ChemplantRecipeHandler extends TemplateRecipeHandler {
 	public void loadUsageRecipes(ItemStack ingredient) {
 
 		outer:
-		for(ChemRecipe recipe : ChemplantRecipes.recipes) {
+		for(ChemPlantRecipe recipe : ChemPlantRecipesNT.recipes) {
 			
 			for(AStack in : recipe.inputs) {
 				
@@ -173,7 +173,7 @@ public class ChemplantRecipeHandler extends TemplateRecipeHandler {
 				}
 			}
 			
-			for(FluidStack in : recipe.inputFluids) {
+			for(FluidStack in : recipe.fIn) {
 				
 				if(in != null) {
 					ItemStack drop = ItemFluidIcon.make(in.type, in.fill);
@@ -187,7 +187,7 @@ public class ChemplantRecipeHandler extends TemplateRecipeHandler {
 		}
 	}
 
-	private boolean compareFluidStacks(ItemStack sta1, ItemStack sta2) {
+	private static boolean compareFluidStacks(ItemStack sta1, ItemStack sta2) {
 		return sta1.getItem() == sta2.getItem() && sta1.getItemDamage() == sta2.getItemDamage();
 	}
 

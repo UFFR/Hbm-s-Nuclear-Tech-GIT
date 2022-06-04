@@ -1,6 +1,6 @@
 package api.hbm.computer;
 
 /**
- * Contains utility classes for the supercomputers
+ * Contains utility classes for computers, supercomputers, and the likes.
  * @author UFFR 
  */

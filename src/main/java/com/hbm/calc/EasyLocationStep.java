@@ -3,8 +3,9 @@ package com.hbm.calc;
 import java.util.Iterator;
 
 import com.google.common.annotations.Beta;
+import com.hbm.main.DeserializationException;
 
-import api.hbm.serialization.ISerializable;
+import api.hbm.serialization.SerializationRegistry;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
@@ -28,7 +29,7 @@ public final class EasyLocationStep extends EasyLocation implements Iterable<Eas
 	protected ConcludeIteration conclude = (start, current, vec) -> {return current.posY > 255 || current.posY < 0 || distanceFromOrigin() >= 1000;};
 	static
 	{
-		ISerializable.register(EasyLocationStep.class, new EasyLocationStep(0, 0, 0, Vec3.createVectorHelper(0, 0, 0)));
+		SerializationRegistry.register(EasyLocationStep.class, bytes -> fromBytes(bytes));
 	}
 	public EasyLocationStep(double x, double y, double z, Vec3 vector)
 	{
@@ -84,18 +85,24 @@ public final class EasyLocationStep extends EasyLocation implements Iterable<Eas
 		return buf.array();
 	}
 	
-	public static EasyLocationStep fromBytes(byte[] bytes)
+	public static EasyLocationStep fromBytes(byte[] bytes) throws DeserializationException
 	{
-		ByteBuf buf = Unpooled.copiedBuffer(bytes);
-		EasyLocationStep out = new EasyLocationStep(buf.readDouble(), buf.readDouble(), buf.readDouble(), Vec3.createVectorHelper(buf.readDouble(), buf.readDouble(), buf.readDouble()));
-		out.posX = buf.readDouble();
-		out.posY = buf.readDouble();
-		out.posZ = buf.readDouble();
-		return out;
+		try
+		{
+			ByteBuf buf = Unpooled.copiedBuffer(bytes);
+			EasyLocationStep out = new EasyLocationStep(buf.readDouble(), buf.readDouble(), buf.readDouble(), Vec3.createVectorHelper(buf.readDouble(), buf.readDouble(), buf.readDouble()));
+			out.posX = buf.readDouble();
+			out.posY = buf.readDouble();
+			out.posZ = buf.readDouble();
+			return out;
+		} catch (Exception e)
+		{
+			throw new DeserializationException(e);
+		}
 	}
 	
 	@Override
-	public EasyLocationStep deserialize(byte[] bytes)
+	public EasyLocationStep deserialize(byte[] bytes) throws DeserializationException
 	{
 		return fromBytes(bytes);
 	}

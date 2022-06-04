@@ -28,8 +28,8 @@ import net.minecraft.item.ItemStack;
 
 public class AnvilRecipes {
 
-	private static List<AnvilSmithingRecipe> smithingRecipes = new ArrayList<AnvilSmithingRecipe>();
-	private static List<AnvilConstructionRecipe> constructionRecipes = new ArrayList<AnvilConstructionRecipe>();
+	private static final List<AnvilSmithingRecipe> smithingRecipes = new ArrayList<AnvilSmithingRecipe>();
+	private static final List<AnvilConstructionRecipe> constructionRecipes = new ArrayList<AnvilConstructionRecipe>();
 	
 	public static void register() {
 		registerSmithing();
@@ -45,7 +45,7 @@ public class AnvilRecipes {
 	 */
 	public static void registerSmithing() {
 		
-		Block[] anvils = new Block[]{ModBlocks.anvil_iron, ModBlocks.anvil_lead};
+		final Block[] anvils = new Block[]{ModBlocks.anvil_iron, ModBlocks.anvil_lead};
 		
 		for(Block anvil : anvils) {
 			smithingRecipes.add(new AnvilSmithingRecipe(1, new ItemStack(ModBlocks.anvil_bismuth, 1), new ComparableStack(anvil), new ComparableStack(ModItems.ingot_bismuth, 10)));
@@ -81,9 +81,9 @@ public class AnvilRecipes {
 		smithingRecipes.add(new AnvilSmithingRecipe(1, new ItemStack(ModItems.bolt_tungsten, 4), new ComparableStack(ModItems.ingot_tungsten), new ComparableStack(ModItems.ingot_tungsten)));
 		smithingRecipes.add(new AnvilSmithingRecipe(3, new ItemStack(ModItems.bolt_staballoy, 4), new ComparableStack(ModItems.ingot_staballoy), new ComparableStack(ModItems.ingot_staballoy)));
 		
-		smithingRecipes.add(new AnvilSmithingRecipe(1, new ItemStack(ModBlocks.concrete), new ComparableStack(ModBlocks.concrete_slab), new ComparableStack(ModBlocks.concrete_slab)));
-		smithingRecipes.add(new AnvilSmithingRecipe(1, new ItemStack(ModBlocks.concrete_smooth), new ComparableStack(ModBlocks.concrete_smooth_slab), new ComparableStack(ModBlocks.concrete_smooth_slab)));
-		smithingRecipes.add(new AnvilSmithingRecipe(1, new ItemStack(ModBlocks.brick_concrete), new ComparableStack(ModBlocks.brick_concrete_slab), new ComparableStack(ModBlocks.brick_concrete_slab)));
+//		smithingRecipes.add(new AnvilSmithingRecipe(1, new ItemStack(ModBlocks.concrete), new ComparableStack(ModBlocks.concrete_slab), new ComparableStack(ModBlocks.concrete_slab)));
+//		smithingRecipes.add(new AnvilSmithingRecipe(1, new ItemStack(ModBlocks.concrete_smooth), new ComparableStack(ModBlocks.concrete_smooth_slab), new ComparableStack(ModBlocks.concrete_smooth_slab)));
+//		smithingRecipes.add(new AnvilSmithingRecipe(1, new ItemStack(ModBlocks.brick_concrete), new ComparableStack(ModBlocks.brick_concrete_slab), new ComparableStack(ModBlocks.brick_concrete_slab)));
 		
 		smithingRecipes.add(new AnvilSmithingCyanideRecipe());
 		smithingRecipes.add(new AnvilSmithingRenameRecipe());
@@ -184,9 +184,9 @@ public class AnvilRecipes {
 		constructionRecipes.add(new AnvilConstructionRecipe(new OreDictStack(TI.ingot(), 1), new AnvilOutput(new ItemStack(ModBlocks.deco_titanium))).setTier(1).setOverlay(OverlayType.CONSTRUCTION));
 		constructionRecipes.add(new AnvilConstructionRecipe(new OreDictStack(W.ingot(), 1), new AnvilOutput(new ItemStack(ModBlocks.deco_tungsten))).setTier(1).setOverlay(OverlayType.CONSTRUCTION));
 
-		constructionRecipes.add(new AnvilConstructionRecipe(new ComparableStack(ModBlocks.concrete), new AnvilOutput(new ItemStack(ModBlocks.concrete_slab, 2))).setTier(1));
-		constructionRecipes.add(new AnvilConstructionRecipe(new ComparableStack(ModBlocks.concrete_smooth), new AnvilOutput(new ItemStack(ModBlocks.concrete_smooth_slab, 2))).setTier(1));
-		constructionRecipes.add(new AnvilConstructionRecipe(new ComparableStack(ModBlocks.brick_concrete), new AnvilOutput(new ItemStack(ModBlocks.brick_concrete_slab, 2))).setTier(1));
+//		constructionRecipes.add(new AnvilConstructionRecipe(new ComparableStack(ModBlocks.concrete), new AnvilOutput(new ItemStack(ModBlocks.concrete_slab, 2))).setTier(1));
+//		constructionRecipes.add(new AnvilConstructionRecipe(new ComparableStack(ModBlocks.concrete_smooth), new AnvilOutput(new ItemStack(ModBlocks.concrete_smooth_slab, 2))).setTier(1));
+//		constructionRecipes.add(new AnvilConstructionRecipe(new ComparableStack(ModBlocks.brick_concrete), new AnvilOutput(new ItemStack(ModBlocks.brick_concrete_slab, 2))).setTier(1));
 
 		constructionRecipes.add(new AnvilConstructionRecipe(
 				new AStack[] {new OreDictStack(DNT.ingot(), 4), new ComparableStack(ModBlocks.depth_brick)},

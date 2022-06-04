@@ -161,7 +161,7 @@ public final class HbmCollection
 	/** FLAMETHROWER FUEL **/
 	public static final ImmutableList<Integer> flamer = ImmutableList.of(BulletConfigSyncingUtil.FLAMER_NORMAL, BulletConfigSyncingUtil.FLAMER_NAPALM, BulletConfigSyncingUtil.FLAMER_WP, BulletConfigSyncingUtil.FLAMER_VAPORIZER, BulletConfigSyncingUtil.FLAMER_GAS);
 	/** MINI-NUKES **/
-	public static final ImmutableList<Integer> fatman = ImmutableList.of(BulletConfigSyncingUtil.NUKE_NORMAL, BulletConfigSyncingUtil.NUKE_LOW, BulletConfigSyncingUtil.NUKE_HIGH, BulletConfigSyncingUtil.NUKE_TOTS, BulletConfigSyncingUtil.NUKE_SAFE, BulletConfigSyncingUtil.NUKE_PUMPKIN);
+	public static final ImmutableList<Integer> fatman = ImmutableList.of(BulletConfigSyncingUtil.NUKE_NORMAL, BulletConfigSyncingUtil.NUKE_LOW, BulletConfigSyncingUtil.NUKE_HIGH, BulletConfigSyncingUtil.NUKE_TOTS, BulletConfigSyncingUtil.NUKE_SAFE, BulletConfigSyncingUtil.NUKE_PUMPKIN, BulletConfigSyncingUtil.NUKE_BARREL);
 	/** MIRV MINI-NUKES **/
 	public static final ImmutableList<Integer> fatmanMIRV = ImmutableList.of(BulletConfigSyncingUtil.NUKE_MIRV_NORMAL, BulletConfigSyncingUtil.NUKE_MIRV_LOW, BulletConfigSyncingUtil.NUKE_MIRV_HIGH, BulletConfigSyncingUtil.NUKE_MIRV_SAFE, BulletConfigSyncingUtil.NUKE_MIRV_SPECIAL);
 	/** 40MM GRENADE **/
@@ -268,6 +268,8 @@ public final class HbmCollection
 		UAC,
 		/**Unknown manufacturer, puts "???"**/
 		UNKNOWN,
+		/**WestTek**/
+		WESTTEK,
 		/**Wilhelm-Gustloff-Werke**/
 		WGW,
 		/**Winchester Repeating Arms Company**/

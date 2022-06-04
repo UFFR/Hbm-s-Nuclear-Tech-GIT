@@ -1,7 +1,7 @@
 package com.hbm.blocks.machine;
 
-import com.hbm.blocks.ModBlocks;
 import com.hbm.handler.BossSpawnHandler;
+import com.hbm.handler.EnumGUI;
 import com.hbm.lib.RefStrings;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.machine.TileEntityHadron;
@@ -45,7 +45,8 @@ public class BlockHadronCore extends BlockContainer {
 		this.iconOut = iconRegister.registerIcon(RefStrings.MODID + ":hadron_core_out");
 	}
 	
-    @SideOnly(Side.CLIENT)
+    @Override
+	@SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta) {
     	
     	if(side == meta)
@@ -59,7 +60,8 @@ public class BlockHadronCore extends BlockContainer {
         return this.blockIcon;
     }
 	
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack) {
+    @Override
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack) {
     	
         int l = BlockPistonBase.determineOrientation(world, x, y, z, player);
         world.setBlockMetadataWithNotify(x, y, z, l, 2);
@@ -75,7 +77,7 @@ public class BlockHadronCore extends BlockContainer {
 			
 			TileEntityHadron entity = (TileEntityHadron) world.getTileEntity(x, y, z);
 			if(entity != null) {
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_hadron, world, x, y, z);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.HADRON.ordinal(), world, x, y, z);
 			}
 			
 			return true;

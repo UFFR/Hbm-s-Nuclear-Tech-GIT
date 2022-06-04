@@ -1,5 +1,8 @@
 package api.hbm.computer.filesystem;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -24,7 +27,28 @@ public class TextFile extends FileBase
 	{
 		data.addAll(strings);
 	}
+	
+	@Override
+	protected void writeObject(ObjectOutputStream stream) throws IOException
+	{
+		stream.defaultWriteObject();
+	}
+	
+	@Override
+	protected void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException
+	{
+		stream.defaultReadObject();
+	}
 
+	@Override
+	public long getSize()
+	{
+		long size = 0;
+		for (String s : data)
+			size += s.length();
+		return size;
+	}
+	
 	@Override
 	public byte[] serialize()
 	{

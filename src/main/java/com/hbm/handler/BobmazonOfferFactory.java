@@ -253,23 +253,23 @@ public class BobmazonOfferFactory {
 		
 		special.add(new Offer(ItemKitCustom.create("Maid's Cleaning Utensils", "For the heard to reach spots", 0x00ff00, 0x008000,
 				new ItemStack(ModItems.gun_calamity),
-				new ItemStack(ModItems.ammo_50bmg_chlorophyte, 64),
-				new ItemStack(ModItems.ammo_50bmg_chlorophyte, 64),
-				new ItemStack(ModItems.ammo_50bmg_chlorophyte, 64),
-				new ItemStack(ModItems.ammo_50bmg_star, 64),
-				new ItemStack(ModItems.ammo_50bmg_star, 64),
+				ModItems.ammo_50bmg.stackFromEnum(64, Ammo50BMG.CHLOROPHYTE),
+				ModItems.ammo_50bmg.stackFromEnum(64, Ammo50BMG.CHLOROPHYTE),
+				ModItems.ammo_50bmg.stackFromEnum(64, Ammo50BMG.CHLOROPHYTE),
+				ModItems.ammo_50ae.stackFromEnum(64, Ammo50AE.STAR),
+				ModItems.ammo_50ae.stackFromEnum(64, Ammo50AE.STAR),
 				new ItemStack(ModItems.gun_supershotgun),
-				new ItemStack(ModItems.ammo_12gauge_du, 64),
-				new ItemStack(ModItems.ammo_12gauge_du, 64),
-				new ItemStack(ModItems.ammo_12gauge_shrapnel, 64),
-				new ItemStack(ModItems.ammo_12gauge_shrapnel, 64),
-				new ItemStack(ModItems.ammo_12gauge_marauder, 4),
+				ModItems.ammo_12gauge.stackFromEnum(64, Ammo12Gauge.DU),
+				ModItems.ammo_12gauge.stackFromEnum(64, Ammo12Gauge.DU),
+				ModItems.ammo_12gauge.stackFromEnum(64, Ammo12Gauge.SHRAPNEL),
+				ModItems.ammo_12gauge.stackFromEnum(64, Ammo12Gauge.SHRAPNEL),
+				ModItems.ammo_12gauge.stackFromEnum(4, Ammo12Gauge.MARAUDER),
 				new ItemStack(ModItems.gun_sauer),
 				new ItemStack(ModItems.ammo_4gauge, 64),
-				new ItemStack(ModItems.ammo_4gauge_claw, 64),
-				new ItemStack(ModItems.ammo_4gauge_kampf, 64),
-				new ItemStack(ModItems.ammo_4gauge_flechette, 64),
-				new ItemStack(ModItems.ammo_4gauge_void, 64)
+				ModItems.ammo_4gauge.stackFromEnum(64, Ammo4Gauge.CLAW),
+				ModItems.ammo_4gauge.stackFromEnum(64, Ammo4Gauge.KAMPF),
+				ModItems.ammo_4gauge.stackFromEnum(64, Ammo4Gauge.FLECHETTE),
+				ModItems.ammo_4gauge.stackFromEnum(64, Ammo4Gauge.VOID)
 				), Requirement.HIDDEN, 64));
 		
 		special.add(new Offer(ItemKitNBT.create(
@@ -285,13 +285,13 @@ public class BobmazonOfferFactory {
 				new ItemStack(ModItems.rpa_legs),
 				new ItemStack(ModItems.rpa_boots),
 				new ItemStack(ModItems.gun_lacunae),
-				new ItemStack(ModItems.ammo_5mm_star, 64),
-				new ItemStack(ModItems.ammo_5mm_star, 64),
-				new ItemStack(ModItems.ammo_5mm_star, 64),
-				new ItemStack(ModItems.ammo_5mm_star, 64),
-				new ItemStack(ModItems.ammo_5mm_star, 64),
-				new ItemStack(ModItems.ammo_5mm_star, 64),
-				new ItemStack(ModItems.ammo_5mm_star, 64)
+				ModItems.ammo_5mm.stackFromEnum(64, Ammo5mm.STAR),
+				ModItems.ammo_5mm.stackFromEnum(64, Ammo5mm.STAR),
+				ModItems.ammo_5mm.stackFromEnum(64, Ammo5mm.STAR),
+				ModItems.ammo_5mm.stackFromEnum(64, Ammo5mm.STAR),
+				ModItems.ammo_5mm.stackFromEnum(64, Ammo5mm.STAR),
+				ModItems.ammo_5mm.stackFromEnum(64, Ammo5mm.STAR),
+				ModItems.ammo_5mm.stackFromEnum(64, Ammo5mm.STAR)
 				).setStackDisplayName("Frenchman's Reward"), Requirement.HIDDEN, 32));
 		
 		special.add(new Offer(new ItemStack(ModItems.gun_detonator, 1), Requirement.HIDDEN, 32));

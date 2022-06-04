@@ -20,7 +20,7 @@ public class PotionConfig {
 	public static int unconsciousID = 75;
 	public static int perforatedID = 76;
 	public static int hollowID = 77;
-	public static int deathID = 72;
+	public static int deathID = 78;
 	
 	public static int potionSickness = 0;
 	
@@ -44,7 +44,7 @@ public class PotionConfig {
 		perforatedID = CommonConfig.createConfigInt(config, CATEGORY_POTION, "8.14_perforatedPotionID", "What potion ID will the perforated effect have", 76);
 		hollowID = CommonConfig.createConfigInt(config, CATEGORY_POTION, "8.15_hollowPotionID", "What potion ID will the hollow effect have", 77);
 		
-		deathID = CommonConfig.createConfigInt(config, CATEGORY_POTION, "8.11_deathID", "What potion ID the death effect will have", 73);
+		deathID = CommonConfig.createConfigInt(config, CATEGORY_POTION, "8.11_deathID", "What potion ID the death effect will have", 78);
 
 		String s = CommonConfig.createConfigString(config, CATEGORY_POTION, "8.S0_potionSickness", "Valid configs include \"NORMAL\" and \"TERRARIA\", otherwise potion sickness is turned off", "OFF");
 

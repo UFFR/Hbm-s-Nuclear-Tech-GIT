@@ -2,6 +2,7 @@ package com.hbm.items.machine;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -15,17 +16,13 @@ import org.lwjgl.input.Keyboard;
 import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableSet;
 import com.hbm.items.ItemEnumMultiSimple;
-import com.hbm.items.ItemStorageEnums.EnumStorageMagneticNew;
-import com.hbm.items.ItemStorageEnums.EnumStorageMagneticOld;
-import com.hbm.items.ItemStorageEnums.EnumStorageOptical;
+import com.hbm.items.ItemStorageEnums.*;
 import com.hbm.lib.HbmCollection;
 import com.hbm.lib.Library;
 import com.hbm.util.BobMathUtil;
 import com.hbm.util.I18nUtil;
 
-import api.hbm.computer.File;
-import api.hbm.internet.IDataStorageItem;
-import api.hbm.internet.IStorageItemEnum;
+import api.hbm.computer.filesystem.*;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -35,14 +32,14 @@ import net.minecraft.nbt.NBTTagCompound;
 public class ItemStorageMedium extends ItemEnumMultiSimple implements IDataStorageItem
 {
 	private Optional<Item> dropItem = Optional.empty();
-	private static final HashMap<Class<? extends Enum>, EnumStorageItemType> classMap = new HashMap<>();
+	private static final EnumMap<EnumStorageItemType, Class<? extends Enum<? extends IDataStorageItemEnum>>> ENUM_MAP = new EnumMap<>(EnumStorageItemType.class);
 	static
 	{
-		classMap.put(EnumStorageMagneticOld.class, EnumStorageItemType.MAGNETIC_BASIC);
-		classMap.put(EnumStorageMagneticNew.class, EnumStorageItemType.MAGNETIC_ENHANCED);
-		classMap.put(EnumStorageOptical.class, EnumStorageItemType.OPTICAL);
+		ENUM_MAP.put(EnumStorageItemType.MAGNETIC_BASIC, EnumStorageMagneticOld.class);
+		ENUM_MAP.put(EnumStorageItemType.MAGNETIC_ENHANCED, EnumStorageMagneticNew.class);
+		ENUM_MAP.put(EnumStorageItemType.OPTICAL, EnumStorageOptical.class);
 	}
-	public ItemStorageMedium(Class<? extends Enum<? extends IStorageItemEnum>> clazz)
+	public ItemStorageMedium(Class<? extends Enum<? extends IDataStorageItemEnum>> clazz)
 	{
 		super(clazz, true, true);
 	}
@@ -101,11 +98,9 @@ public class ItemStorageMedium extends ItemEnumMultiSimple implements IDataStora
 	public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean bool)
 	{
 		super.addInformation(itemStack, player, list, bool);
-		IStorageItemEnum storageData = IStorageItemEnum.getInstance(theEnum, itemStack);
+		final IDataStorageItemEnum storageData = IDataStorageItemEnum.getInstance(theEnum, itemStack);
 		// Auto-generated
-		long written = storageData.getMaxCapacity();
-		if (itemStack.hasTagCompound())
-			written = IDataStorageItem.getUsedCapacity(itemStack);
+		final long written = getUsedCapacity(itemStack);
 		
 		String capacityPercent = BobMathUtil.getShortNumber((written * 100) / storageData.getMaxCapacity());
 		list.add("Capacity: " + capacityPercent + '%');
@@ -121,7 +116,7 @@ public class ItemStorageMedium extends ItemEnumMultiSimple implements IDataStora
 			list.clear();
 			// There's probably a better way of doing this, I'll figure it out eventually, but until then, this'll do
 			// Turns out, you could sort lists of enums the entire time
-			ArrayList<ProsConsList> sortedList = new ArrayList<>(storageData.prosCons());
+			final ArrayList<ProsConsList> sortedList = new ArrayList<>(storageData.getProsCons());
 			Collections.sort(sortedList);
 			if (sortedList.isEmpty())
 				sortedList.add(ProsConsList.NA);
@@ -146,7 +141,7 @@ public class ItemStorageMedium extends ItemEnumMultiSimple implements IDataStora
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack)
 	{
-		return 1D - (double) IDataStorageItem.getUsedCapacity(stack) / (double) getMaxCapacity(stack);
+		return BobMathUtil.durabilityBarDisplay(getUsedCapacity(stack), getMaxCapacity(stack));
 	}
 	/**
 	 * If not null, when dropped, the item will turn into the one specified to simulate "breaking"
@@ -162,6 +157,7 @@ public class ItemStorageMedium extends ItemEnumMultiSimple implements IDataStora
 	 * Sets the item to become "dirty" when in inventory after some time
 	 * @return Itself
 	 */
+	// TODO
 	public ItemStorageMedium isExposed()
 	{
 		return this;
@@ -181,26 +177,26 @@ public class ItemStorageMedium extends ItemEnumMultiSimple implements IDataStora
 	@Override
 	public long getMaxCapacity(ItemStack stack)
 	{
-		return IStorageItemEnum.getInstance(theEnum, stack).getMaxCapacity();
+		return IDataStorageItemEnum.getInstance(theEnum, stack).getMaxCapacity();
 	}
 
 	@Override
 	public long getReadSpeed(ItemStack stack)
 	{
-		return IStorageItemEnum.getInstance(theEnum, stack).getReadSpeed();
+		return IDataStorageItemEnum.getInstance(theEnum, stack).getReadSpeed();
 	}
 
 	@Override
 	public long getWriteSpeed(ItemStack stack)
 	{
-		return IStorageItemEnum.getInstance(theEnum, stack).getWriteSpeed();
+		return IDataStorageItemEnum.getInstance(theEnum, stack).getWriteSpeed();
 	}
 
 	@Override
-	public boolean writeFile(File file, ItemStack stack)
+	public boolean writeFile(FileBase file, ItemStack stack)
 	{
-		IStorageItemEnum instance = IStorageItemEnum.getInstance(theEnum, stack);
-		if (file.getSize() + IDataStorageItem.getUsedCapacity(stack) > instance.getMaxCapacity())
+		final IDataStorageItemEnum instance = IDataStorageItemEnum.getInstance(theEnum, stack);
+		if (file.getSize() + getUsedCapacity(stack) > instance.getMaxCapacity())
 			return false;
 		else
 		{
@@ -211,7 +207,7 @@ public class ItemStorageMedium extends ItemEnumMultiSimple implements IDataStora
 			HashSet<String> list = new HashSet<String>(getFileList(stack));
 			list.add(file.getName());
 			stack.stackTagCompound.setByteArray(KEY_FILE_LIST, Library.compressStringCollection(list));
-			IDataStorageItem.setUsedCapacity(stack, IDataStorageItem.getUsedCapacity(stack) + file.getSize());
+			IDataStorageItem.setUsedCapacity(stack, getUsedCapacity(stack) + file.getSize());
 			return true;
 		}
 	}
@@ -236,7 +232,7 @@ public class ItemStorageMedium extends ItemEnumMultiSimple implements IDataStora
 	@Override
 	public boolean overwriteFile(File file, ItemStack stack)
 	{
-		IStorageItemEnum instance = IStorageItemEnum.getInstance(theEnum, stack);
+		IDataStorageItemEnum instance = IDataStorageItemEnum.getInstance(theEnum, stack);
 		if (getFileList(stack).contains(file.getName()))
 		{
 			if (file.getSize() + IDataStorageItem.getUsedCapacity(stack) > instance.getMaxCapacity())

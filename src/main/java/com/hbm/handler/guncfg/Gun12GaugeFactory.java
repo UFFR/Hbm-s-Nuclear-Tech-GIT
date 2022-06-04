@@ -36,18 +36,12 @@ public class Gun12GaugeFactory {
 		config.reloadSound = GunConfiguration.RSOUND_SHOTGUN;
 		config.firingSound = "hbm:weapon.shotgunPump";
 		
-		config.name = "Franchi SPAS-12";
-		config.manufacturer = "Black Mesa Armory";
+		config.name = "spas12";
+		config.manufacturer = EnumGunManufacturer.BLACK_MESA;
 		config.comment.add("\"Here, I have a more suitable gun for you. You'll need it - Catch!\"");
 		config.comment.add("Alt-fire with Mouse 2 (Right-click) to fire 2 shells at once");
 		
-		config.config = new ArrayList<Integer>();
-		config.config.add(BulletConfigSyncingUtil.G12_NORMAL);
-		config.config.add(BulletConfigSyncingUtil.G12_INCENDIARY);
-		config.config.add(BulletConfigSyncingUtil.G12_SHRAPNEL);
-		config.config.add(BulletConfigSyncingUtil.G12_DU);
-		config.config.add(BulletConfigSyncingUtil.G12_AM);
-		config.config.add(BulletConfigSyncingUtil.G12_SLEEK);
+		config.config = HbmCollection.twelveGauge;
 		
 		config.animations.put(AnimType.CYCLE, new BusAnimation()
 				.addBus("SPAS_RECOIL_TRANSLATE", new BusAnimationSequence()
@@ -68,7 +62,7 @@ public class Gun12GaugeFactory {
 		return config;
 	}
 	
-public static GunConfiguration getSpas12AltConfig() {
+	public static GunConfiguration getSpas12AltConfig() {
 		
 		GunConfiguration config = new GunConfiguration();
 		
@@ -83,13 +77,7 @@ public static GunConfiguration getSpas12AltConfig() {
 		config.reloadType = GunConfiguration.RELOAD_SINGLE;
 		
 		
-		config.config = new ArrayList<Integer>();
-		config.config.add(BulletConfigSyncingUtil.G12_NORMAL);
-		config.config.add(BulletConfigSyncingUtil.G12_INCENDIARY);
-		config.config.add(BulletConfigSyncingUtil.G12_SHRAPNEL);
-		config.config.add(BulletConfigSyncingUtil.G12_DU);
-		config.config.add(BulletConfigSyncingUtil.G12_AM);
-		config.config.add(BulletConfigSyncingUtil.G12_SLEEK);
+		config.config = HbmCollection.twelveGauge;
 
 		return config;
 	}

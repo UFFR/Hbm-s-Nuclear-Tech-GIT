@@ -16,14 +16,9 @@ import com.hbm.util.Tuple.Pair;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.world.World;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.Pre;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntityMachineFractionTower extends TileEntity implements IFluidSource, IFluidAcceptor, INBTPacketReceiver {
@@ -238,39 +233,5 @@ public class TileEntityMachineFractionTower extends TileEntity implements IFluid
 	@SideOnly(Side.CLIENT)
 	public double getMaxRenderDistanceSquared() {
 		return 65536.0D;
-	}
-	
-	public static void printData(Pre event, World world, int x, int y, int z)
-	{
-		Minecraft mc = Minecraft.getMinecraft();
-		ScaledResolution resolution = event.resolution;
-		
-		MachineFractionTower tower = (MachineFractionTower) world.getBlock(x, y, z);
-		int[] pos = tower.findCore(world, x, y, z);
-		if (pos == null)
-			return;
-		
-		TileEntityMachineFractionTower te = (TileEntityMachineFractionTower) world.getTileEntity(pos[0], pos[1], pos[2]);
-		List<FluidTank> tanks = te.getTanks();
-		
-		GL11.glPushMatrix();
-
-		int pX = resolution.getScaledWidth() / 2 + 8;
-		int pZ = resolution.getScaledHeight() / 2;
-		
-		String title = "Dump of Ordered Data Diagnostic (DODD)";
-		mc.fontRenderer.drawString(title, pX + 1, pZ - 19, 0x006000);
-		mc.fontRenderer.drawString(title, pX, pZ - 20, 0x00FF00);
-		
-		for (FluidTank tank : tanks)
-		{
-			mc.fontRenderer.drawString(String.format("%s: %s/%smb", tank.getTankType().getLocalizedName(), tank.getFill(), tank.getMaxFill()), pX, pZ, 0xFFFFFF);
-			pZ += 10;
-		}
-		
-		GL11.glDisable(GL11.GL_BLEND);
-
-		GL11.glPopMatrix();
-		Minecraft.getMinecraft().renderEngine.bindTexture(Gui.icons);
 	}
 }

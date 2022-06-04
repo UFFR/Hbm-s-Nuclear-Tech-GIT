@@ -1,31 +1,36 @@
 package api.hbm.serialization;
 
-import java.util.HashMap;
+import java.io.Serializable;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
-import com.hbm.main.DeserializationException;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
-public interface ISerializable<T> extends Deserializer<T>
+/**
+ * Universal interface to support serliazation and deserialization.
+ * @author UFFR
+ *
+ * @param <T> The (implementing) type that supports serialization.
+ */
+public interface ISerializable<T> extends Deserializer<T>, Serializable
 {
-	static final HashMap<Class<? extends ISerializable<?>>, ISerializable<?>> instanceMap = new HashMap<>();
-	static final HashMap<String, Class<? extends ISerializable<?>>> nameMap = new HashMap<>();
+	/**
+	 * Just {@code Unpooled.buffer()}, so you don't have to import another class.
+	 * @return The {@link#ByteBuf} created by {@code Unpooled.buffer()}
+	 */
+	public static final Supplier<ByteBuf> alloc = () -> Unpooled.buffer();
+	/**
+	 * Just {@code Unpooled.copiedBuffer()}, so you don't have to import another class.
+	 * @param bytes The byte array you wish the buffer to copy and wrap.
+	 * @return The {@link#ByteBuf} created by {@code Unpooled.copiedBuffer()}
+	 */
+	public static final Function<byte[], ByteBuf> allocCopy = b -> Unpooled.copiedBuffer(b);
 	
-	public static void register(Class<? extends ISerializable<?>> clazz, ISerializable<?> instance)
-	{
-		instanceMap.put(clazz, instance);
-		nameMap.put(clazz.getSimpleName(), clazz);
-	}
 	
-	public static Object deserialize(Class<? extends ISerializable<?>> clazz, byte[] bytes) throws DeserializationException
-	{
-		return instanceMap.containsKey(clazz) ? instanceMap.get(clazz).deserialize(bytes) : null;
-	}
-	
-	public static Object deserialize(String simpleName, byte[] bytes) throws DeserializationException
-	{
-		return nameMap.containsKey(simpleName) ? deserialize(nameMap.get(simpleName), bytes) : null;
-	}
-	
+	/**
+	 * Serialize the object into a byte array.
+	 * @return The serialized byte array. Must be able to be deserialized.
+	 */
 	public byte[] serialize();
-	@Override
-	public T deserialize(byte[] bytes) throws DeserializationException;
 }

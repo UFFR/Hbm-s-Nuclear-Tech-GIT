@@ -1,5 +1,7 @@
 package com.hbm.util;
 
+import static java.math.MathContext.DECIMAL128;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
@@ -9,20 +11,23 @@ import java.util.List;
 
 import javax.annotation.Nonnegative;
 
+import com.hbm.interfaces.Untested;
 import com.hbm.lib.HbmCollection;
 
+import api.hbm.Date;
+import ch.obermuhlner.math.big.BigDecimalMath;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class BobMathUtil {
 	
-	public static final int KB = 1024;
-	public static final int MB = 1024000;
-	public static final int GB = 1024000000;
-	public static final long TB = 102400000000L;
-	public static final long PB = 102400000000000L;
-	public static final long ZB = 102400000000000000L;
+	public static final short KB = 0x400;
+	public static final int MB = 0x100000;
+	public static final int GB = 0x40000000;
+	public static final long TB = 0x10000000000L;
+	public static final long PB = 0x4000000000000L;
+	public static final long ZB = 0x100000000000000L;
 	
 	public static Vec3 interpVec(Vec3 vec1, Vec3 vec2, float interp) {
 		return Vec3.createVectorHelper(
@@ -104,6 +109,7 @@ public class BobMathUtil {
 		return NumberFormat.getPercentInstance().format(amount / total);
 	}
 	
+	@Deprecated
 	public static String[] ticksToDate(long ticks) {
 		
 		final String[] dateOut = new String[3];
@@ -184,8 +190,30 @@ public class BobMathUtil {
 		
 		return Long.toString(l);
 	}
+	
 	public static double durabilityBarDisplay(double cur, double max)
 	{
 		return 1d - cur / max;
+	}
+	
+	@Untested
+	/**
+	 * How much radioactive material remains after so much time given the half-life.
+	 * (Probably won't work with microscopic half-lives)
+	 * @param originalAmount The original amount of material present
+	 * @param halflife Half-life of the material
+	 * @param timePassed Amount of time that passed
+	 * @return Amount of material that remains, in the same unit as originalAmount
+	 */
+	public static double remainingRadioactiveMaterial(double originalAmount, Date halflife, Date timePassed)
+	{
+		final BigDecimal A = BigDecimal.valueOf(originalAmount);
+		return A.multiply(BigDecimalMath.e(DECIMAL128).pow((BigDecimal.valueOf(Math.log(0.5)).divide(new BigDecimal(halflife.getData()))).multiply(new BigDecimal(timePassed.getData())).intValue())).doubleValue();
+	}
+	
+	@Untested
+	public static double radiologicalDating(double remaining, Date halflife)
+	{
+		return BigDecimal.valueOf(Math.log(remaining)).divide((BigDecimal.valueOf(Math.log(0.5)).divide(new BigDecimal(halflife.getData())))).doubleValue();
 	}
 }

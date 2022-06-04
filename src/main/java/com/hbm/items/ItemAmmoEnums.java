@@ -256,7 +256,8 @@ public class ItemAmmoEnums
 		MIRV_HIGH(GunFatmanFactory.getMirvHighConfig(), AmmoItemTrait.PRO_RADIUS, AmmoItemTrait.PRO_FALLOUT),
 		MIRV_SAFE(GunFatmanFactory.getMirvSafeConfig(), AmmoItemTrait.CON_RADIUS, AmmoItemTrait.CON_NO_EXPLODE2),
 		MIRV_SPECIAL(GunFatmanFactory.getMirvSpecialConfig()),
-		BALEFIRE(GunFatmanFactory.getBalefireConfig());
+		BALEFIRE(GunFatmanFactory.getBalefireConfig()),
+		BARREL(GunFatmanFactory.getNukeBarrelConfig());
 		private final AmmoItemTrait[] traits;
 		private final BulletConfiguration config;
 		private AmmoFatman(BulletConfiguration config, AmmoItemTrait...traits)

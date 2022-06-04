@@ -1,18 +1,46 @@
 package com.hbm.util;
 
+import java.util.ArrayList;
+
+import com.google.common.annotations.Beta;
+
 public class FactionUtil
 {
-
-	public enum EnumNation
+	public static final ArrayList<Faction> factionRegistry = new ArrayList<>();
+//	public enum EnumNation
+//	{
+//		NONE,
+//		UCFS,
+//		UFFR,
+//		LUNAR,
+//		CMB;
+//		public String toLoc()
+//		{
+//			return I18nUtil.resolveKey("factions.nation." + toString().toLowerCase());
+//		}
+//	}
+	
+	@Beta
+	public static abstract class Faction
 	{
-		UCFS,
-		UFFR,
-		LUNAR,
-		CMB;
-		public String toLoc()
+		public final String unlocalized;
+		public Faction(String uloc)
 		{
-			return I18nUtil.resolveKey("factions.nation." + toString().toLowerCase());
+			unlocalized = uloc;
 		}
+		
+		public final String toLoc()
+		{
+			return I18nUtil.resolveKey("factions.nation." + unlocalized.toLowerCase());
+		}
+		
+		@Override
+		public String toString()
+		{
+			return unlocalized;
+		}
+		
+		public abstract String randomDivision();
 	}
 
 	public enum EnumTreaty

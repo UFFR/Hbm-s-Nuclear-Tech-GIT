@@ -3,11 +3,9 @@ package com.hbm.crafting;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.config.GeneralConfig;
 import com.hbm.inventory.OreDictManager;
-import com.hbm.inventory.fluid.Fluids;
 
 import static com.hbm.inventory.OreDictManager.*;
 import com.hbm.items.ModItems;
-import com.hbm.items.ItemEnums.EnumLegendaryType;
 import com.hbm.main.CraftingManager;
 
 import api.hbm.energy.IBatteryItem;

@@ -1,7 +1,8 @@
 package com.hbm.inventory;
 
 import java.io.IOException;
-import java.io.Serializable;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,8 +10,8 @@ import java.util.List;
 import com.hbm.main.MainRegistry;
 
 import api.hbm.serialization.ISerializable;
+import api.hbm.serialization.SerializationRegistry;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -23,6 +24,12 @@ import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class RecipesCommon {
+	static
+	{
+		SerializationRegistry.register(ComparableStack.class, new ComparableStack(Items.stick));
+		SerializationRegistry.register(ComparableNBTStack.class, new ComparableNBTStack(Items.stick));
+		SerializationRegistry.register(OreDictStack.class, new OreDictStack(""));
+	}
 	public static ItemStack[] copyStackArray(ItemStack[] array) {
 		
 		if(array == null)
@@ -55,7 +62,7 @@ public class RecipesCommon {
 		return clone;
 	}
 	
-	public static abstract class AStack implements Comparable<AStack>, Serializable, ISerializable<AStack> {
+	public static abstract class AStack implements Comparable<AStack>, ISerializable<AStack> {
 		
 		/**
 		 * 
@@ -147,7 +154,7 @@ public class RecipesCommon {
 		 * 
 		 */
 		private static final long serialVersionUID = 6396702514319374418L;
-		public Item item;
+		public transient Item item;
 		public int meta;
 		
 		public ComparableStack(ItemStack stack) {
@@ -341,11 +348,25 @@ public class RecipesCommon {
 		{
 			writeToNBT("AStack", nbt);
 		}
+		
+		private void writeObject(ObjectOutputStream stream) throws IOException
+		{
+			stream.write(serialize());
+		}
+		
+		private void readObject(ObjectInputStream stream) throws IOException
+		{
+			final byte[] nameBytes = new byte[stream.readInt()];
+			stream.read(nameBytes);
+			item = (Item) Item.itemRegistry.getObject(new String(nameBytes));
+			stacksize = stream.readInt();
+			meta = stream.readShort();
+		}
 
 		@Override
 		public byte[] serialize()
 		{
-			ByteBuf buf = Unpooled.buffer();
+			final ByteBuf buf = ISerializable.allocateByteBuffer();
 			buf.writeInt(Item.itemRegistry.getNameForObject(item).length());
 			buf.writeBytes(Item.itemRegistry.getNameForObject(item).getBytes());
 			buf.writeInt(stacksize);
@@ -356,10 +377,10 @@ public class RecipesCommon {
 		@Override
 		public ComparableStack deserialize(byte[] bytes)
 		{
-			ByteBuf buf = Unpooled.copiedBuffer(bytes);
-			byte[] stringBytes = new byte[buf.readInt()];
+			final ByteBuf buf = ISerializable.allocateCopy(bytes);
+			final byte[] stringBytes = new byte[buf.readInt()];
 			buf.readBytes(stringBytes);
-			Item item = (Item) Item.itemRegistry.getObject(new String(stringBytes));
+			final Item item = (Item) Item.itemRegistry.getObject(new String(stringBytes));
 			return new ComparableStack(item, buf.readInt(), buf.readShort());
 		}
 	}
@@ -375,7 +396,7 @@ public class RecipesCommon {
 		 * 
 		 */
 		private static final long serialVersionUID = -8166670902183709354L;
-		NBTTagCompound nbt;
+		transient NBTTagCompound nbt;
 		
 		public ComparableNBTStack(ItemStack stack) {
 			super(stack);
@@ -440,7 +461,7 @@ public class RecipesCommon {
 		@Override
 		public byte[] serialize()
 		{
-			ByteBuf buf = Unpooled.buffer();
+			final ByteBuf buf = ISerializable.allocateByteBuffer();
 			buf.writeInt(Item.itemRegistry.getNameForObject(item).length());
 			buf.writeBytes(Item.itemRegistry.getNameForObject(item).getBytes());
 			buf.writeInt(stacksize);
@@ -452,7 +473,7 @@ public class RecipesCommon {
 			}
 			try
 			{
-				byte[] nbtBytes = CompressedStreamTools.compress(nbt);
+				final byte[] nbtBytes = CompressedStreamTools.compress(nbt);
 				buf.writeShort(nbtBytes.length);
 				buf.writeBytes(nbtBytes);
 				return buf.array();
@@ -467,8 +488,8 @@ public class RecipesCommon {
 		@Override
 		public ComparableNBTStack deserialize(byte[] bytes)
 		{
-			ByteBuf buf = Unpooled.copiedBuffer(bytes);
-			byte[] stringBytes = new byte[buf.readInt()];
+			final ByteBuf buf = ISerializable.allocateCopy(bytes);
+			final byte[] stringBytes = new byte[buf.readInt()];
 			buf.readBytes(stringBytes);
 			Item item = (Item) Item.itemRegistry.getObject(new String(stringBytes));
 			final int stackSize = buf.readInt();
@@ -487,6 +508,28 @@ public class RecipesCommon {
 					MainRegistry.logger.catching(e);
 					return new ComparableNBTStack(item, stackSize, stackMeta);
 				}
+			}
+		}
+		
+		private void writeObject(ObjectOutputStream stream) throws IOException
+		{
+			stream.write(serialize());
+		}
+		
+		private void readObject(ObjectInputStream stream) throws IOException
+		{
+			final byte[] nameBytes = new byte[stream.readInt()];
+			stream.read(nameBytes);
+			item = (Item) Item.itemRegistry.getObject(new String(nameBytes));
+			stacksize = stream.readInt();
+			meta = stream.readShort();
+			final short nbtLength = stream.readShort();
+			if (nbtLength <= 0)
+				nbt = null;
+			else
+			{
+				final byte[] nbtBytes = new byte[nbtLength];
+				nbt = CompressedStreamTools.func_152457_a(nbtBytes, new NBTSizeTracker(2097152L));
 			}
 		}
 	}
@@ -597,7 +640,7 @@ public class RecipesCommon {
 		@Override
 		public byte[] serialize()
 		{
-			ByteBuf buf = Unpooled.buffer();
+			final ByteBuf buf = ISerializable.allocateByteBuffer();
 			buf.writeInt(name.length());
 			buf.writeBytes(name.getBytes());
 			buf.writeInt(stacksize);
@@ -607,8 +650,8 @@ public class RecipesCommon {
 		@Override
 		public OreDictStack deserialize(byte[] bytes)
 		{
-			ByteBuf buf = Unpooled.copiedBuffer(bytes);
-			byte[] stringBytes = new byte[buf.readInt()];
+			final ByteBuf buf = ISerializable.allocateCopy(bytes);
+			final byte[] stringBytes = new byte[buf.readInt()];
 			buf.readBytes(stringBytes);
 			return new OreDictStack(new String(stringBytes), buf.readInt());
 		}

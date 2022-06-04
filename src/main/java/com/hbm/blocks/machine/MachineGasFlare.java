@@ -3,6 +3,7 @@ package com.hbm.blocks.machine;
 import java.util.Random;
 
 import com.hbm.blocks.ModBlocks;
+import com.hbm.handler.EnumGUI;
 import com.hbm.handler.MultiblockHandler;
 import com.hbm.interfaces.IMultiblock;
 import com.hbm.main.MainRegistry;
@@ -25,12 +26,10 @@ import net.minecraft.world.World;
 public class MachineGasFlare extends BlockContainer implements IMultiblock {
 
     private final Random field_149933_a = new Random();
-	private Random rand;
 	private static boolean keepInventory;
 
 	public MachineGasFlare(Material p_i45386_1_) {
 		super(p_i45386_1_);
-		rand = new Random();
 	}
 	
 	@Override
@@ -64,7 +63,7 @@ public class MachineGasFlare extends BlockContainer implements IMultiblock {
 			TileEntityMachineGasFlare entity = (TileEntityMachineGasFlare) world.getTileEntity(x, y, z);
 			if(entity != null)
 			{
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_machine_flare, world, x, y, z);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.GAS_FLARE.ordinal(), world, x, y, z);
 			}
 			return true;
 		} else {
@@ -135,7 +134,7 @@ public class MachineGasFlare extends BlockContainer implements IMultiblock {
 		if(MultiblockHandler.checkSpace(world, x, y, z, MultiblockHandler.flareDimension)) {
 			MultiblockHandler.fillUp(world, x, y, z, MultiblockHandler.flareDimension, ModBlocks.dummy_block_flare);
 
-			DummyBlockFlare.safeBreak = true;
+			DummyOldBase.safeBreak = true;
 			world.setBlock(x, y, z + 1, ModBlocks.dummy_port_flare);
 			TileEntity te = world.getTileEntity(x, y, z + 1);
 			if(te instanceof TileEntityDummy) {
@@ -168,7 +167,7 @@ public class MachineGasFlare extends BlockContainer implements IMultiblock {
 				dummy.targetY = y;
 				dummy.targetZ = z;
 			}
-			DummyBlockFlare.safeBreak = false;
+			DummyOldBase.safeBreak = false;
 			
 		} else
 			world.func_147480_a(x, y, z, true);
