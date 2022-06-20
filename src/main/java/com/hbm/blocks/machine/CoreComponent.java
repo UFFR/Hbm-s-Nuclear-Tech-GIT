@@ -1,6 +1,7 @@
 package com.hbm.blocks.machine;
 
 import com.hbm.blocks.ModBlocks;
+import com.hbm.handler.EnumGUI;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.machine.TileEntityCoreEmitter;
 import com.hbm.tileentity.machine.TileEntityCoreInjector;
@@ -53,7 +54,8 @@ public class CoreComponent extends BlockContainer {
 		return false;
 	}
 	
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack) {
+    @Override
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack) {
     	
         int l = BlockPistonBase.determineOrientation(world, x, y, z, player);
         world.setBlockMetadataWithNotify(x, y, z, l, 2);
@@ -67,16 +69,16 @@ public class CoreComponent extends BlockContainer {
 		} else if(!player.isSneaking()) {
 			
 			if(this == ModBlocks.dfc_emitter)
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_dfc_emitter, world, x, y, z);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.DFC_EMITTER.ordinal(), world, x, y, z);
 			
 			if(this == ModBlocks.dfc_receiver)
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_dfc_receiver, world, x, y, z);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.DFC_RECEIVER.ordinal(), world, x, y, z);
 			
 			if(this == ModBlocks.dfc_injector)
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_dfc_injector, world, x, y, z);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.DFC_INJECTOR.ordinal(), world, x, y, z);
 			
 			if(this == ModBlocks.dfc_stabilizer)
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_dfc_stabilizer, world, x, y, z);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.DFC_STABILIZER.ordinal(), world, x, y, z);
 			
 			return true;
 			

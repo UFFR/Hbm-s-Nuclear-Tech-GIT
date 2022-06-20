@@ -1,16 +1,14 @@
 package com.hbm.items.food;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 import com.hbm.config.VersatileConfig;
-import com.hbm.explosion.ExplosionLarge;
-import com.hbm.extprop.HbmLivingProps;
 import com.hbm.interfaces.Spaghetti;
 import com.hbm.items.ModItems;
+import com.hbm.items.special.ItemCustomLore;
 import com.hbm.main.MainRegistry;
-import com.hbm.util.ContaminationUtil;
-import com.hbm.util.ContaminationUtil.ContaminationType;
-import com.hbm.util.ContaminationUtil.HazardType;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -18,16 +16,24 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
-
-public class ItemEnergy extends Item {
+@Spaghetti("yet another if statement chain")
+public class ItemEnergy extends ItemCustomLore
+{
+	private boolean isCan = false;
+	private final Consumer<EntityPlayer> onConsume;
+	private Optional<Item> cap = Optional.empty(), container = Optional.empty();
+	public ItemEnergy(Consumer<EntityPlayer> onConsume)
+	{
+		this.onConsume = onConsume;
+	}
 	
-	private Item container = null;
-	private Item cap = null;
-	private boolean requiresOpener = false;
+	public ItemEnergy()
+	{
+		// TODO Auto-generated constructor stub
+		onConsume = (player) -> {return;};
+	}
 	
 	public ItemEnergy() {
 		this.setCreativeTab(MainRegistry.consumableTab);
@@ -41,15 +47,13 @@ public class ItemEnergy extends Item {
 		return this;
 	}
 	
-	public ItemEnergy makeBottle(Item bottle, Item cap) {
-		this.container = bottle;
-		this.cap = cap;
-		this.requiresOpener = true;
-		this.setContainerItem(this.container);
-		this.setCreativeTab(MainRegistry.consumableTab);
+	public ItemEnergy makeBottle(Item bottle, Item cap)
+	{
+		container = Optional.of(bottle);
+		this.cap = Optional.of(cap);
 		return this;
 	}
-
+	
 	@Override
 	public ItemStack onEaten(ItemStack stack, World world, EntityPlayer player) {
 
@@ -65,148 +69,28 @@ public class ItemEnergy extends Item {
 			}
 			
 			VersatileConfig.applyPotionSickness(player, 5);
-
-			if(this == ModItems.can_smart) {
-				player.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 30 * 20, 1));
-				player.addPotionEffect(new PotionEffect(Potion.resistance.id, 30 * 20, 2));
-				player.addPotionEffect(new PotionEffect(Potion.damageBoost.id, 30 * 20, 0));
-			}
-			if(this == ModItems.can_creature) {
-				player.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 30 * 20, 0));
-				player.addPotionEffect(new PotionEffect(Potion.resistance.id, 30 * 20, 2));
-				player.addPotionEffect(new PotionEffect(Potion.regeneration.id, 30 * 20, 1));
-			}
-			if(this == ModItems.can_redbomb) {
-				player.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 30 * 20, 0));
-				player.addPotionEffect(new PotionEffect(Potion.field_76444_x.id, 30 * 20, 2));
-				player.addPotionEffect(new PotionEffect(Potion.jump.id, 30 * 20, 1));
-			}
-			if(this == ModItems.can_mrsugar) {
-				player.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 30 * 20, 0));
-				player.addPotionEffect(new PotionEffect(Potion.digSpeed.id, 30 * 20, 1));
-				player.addPotionEffect(new PotionEffect(Potion.jump.id, 30 * 20, 2));
-			}
-			if(this == ModItems.can_overcharge) {
-				player.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 30 * 20, 1));
-				player.addPotionEffect(new PotionEffect(Potion.resistance.id, 30 * 20, 2));
-				player.addPotionEffect(new PotionEffect(Potion.damageBoost.id, 30 * 20, 0));
-			}
-			if(this == ModItems.can_luna) {
-				player.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 30 * 20, 1));
-				player.addPotionEffect(new PotionEffect(Potion.resistance.id, 30 * 20, 2));
-				player.addPotionEffect(new PotionEffect(Potion.damageBoost.id, 30 * 20, 1));
-				player.addPotionEffect(new PotionEffect(Potion.regeneration.id, 30 * 20, 2));
-			}
-			if(this == ModItems.can_bepis) {
-				player.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 30 * 20, 3));
-				player.addPotionEffect(new PotionEffect(Potion.resistance.id, 30 * 20, 3));
-			}
-			if(this == ModItems.can_breen) {
-				player.addPotionEffect(new PotionEffect(Potion.confusion.id, 30 * 20, 0));
-			}
-			if(this == ModItems.can_mug) {
-				player.addPotionEffect(new PotionEffect(Potion.resistance.id, 3 * 60 * 20, 2));
-				player.addPotionEffect(new PotionEffect(Potion.regeneration.id, 60 * 20, 2));
-			}
-			if(this == ModItems.chocolate_milk) {
-				ExplosionLarge.explode(world, player.posX, player.posY, player.posZ, 50, true, false, false);
-			}
-			if(this == ModItems.bottle_nuka) {
-				player.heal(4F);
-				player.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 30 * 20, 1));
-				player.addPotionEffect(new PotionEffect(Potion.digSpeed.id, 30 * 20, 1));
-				ContaminationUtil.contaminate(player, HazardType.RADIATION, ContaminationType.RAD_BYPASS, 5.0F);
-			}
-			if(this == ModItems.bottle_cherry) {
-				player.heal(6F);
-				player.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 30 * 20, 0));
-				player.addPotionEffect(new PotionEffect(Potion.jump.id, 30 * 20, 2));
-				ContaminationUtil.contaminate(player, HazardType.RADIATION, ContaminationType.RAD_BYPASS, 5.0F);
-			}
-			if(this == ModItems.bottle_quantum) {
-				player.heal(10F);
-				player.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 30 * 20, 1));
-				player.addPotionEffect(new PotionEffect(Potion.resistance.id, 30 * 20, 2));
-				player.addPotionEffect(new PotionEffect(Potion.damageBoost.id, 30 * 20, 1));
-				ContaminationUtil.contaminate(player, HazardType.RADIATION, ContaminationType.RAD_BYPASS, 15.0F);
-			}
-			if(this == ModItems.bottle2_korl) {
-				player.heal(6);
-				player.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 30 * 20, 1));
-				player.addPotionEffect(new PotionEffect(Potion.digSpeed.id, 30 * 20, 2));
-				player.addPotionEffect(new PotionEffect(Potion.damageBoost.id, 30 * 20, 2));
-			}
-			if(this == ModItems.bottle2_fritz) {
-				player.heal(6);
-				player.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 30 * 20, 1));
-				player.addPotionEffect(new PotionEffect(Potion.resistance.id, 30 * 20, 2));
-				player.addPotionEffect(new PotionEffect(Potion.jump.id, 30 * 20, 2));
-			}
-			if(this == ModItems.bottle2_korl_special) {
-				player.heal(16);
-				player.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 120 * 20, 1));
-				player.addPotionEffect(new PotionEffect(Potion.digSpeed.id, 120 * 20, 2));
-				player.addPotionEffect(new PotionEffect(Potion.damageBoost.id, 120 * 20, 2));
-			}
-			if(this == ModItems.bottle2_fritz_special) {
-				player.heal(16);
-				player.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 120 * 20, 1));
-				player.addPotionEffect(new PotionEffect(Potion.resistance.id, 120 * 20, 2));
-				player.addPotionEffect(new PotionEffect(Potion.jump.id, 120 * 20, 2));
-			}
-			if(this == ModItems.bottle_sparkle) {
-				player.heal(10F);
-				player.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 120 * 20, 1));
-				player.addPotionEffect(new PotionEffect(Potion.resistance.id, 120 * 20, 2));
-				player.addPotionEffect(new PotionEffect(Potion.damageBoost.id, 120 * 20, 2));
-				player.addPotionEffect(new PotionEffect(Potion.digSpeed.id, 120 * 20, 1));
-				ContaminationUtil.contaminate(player, HazardType.RADIATION, ContaminationType.RAD_BYPASS, 5.0F);
-			}
-			if(this == ModItems.bottle_rad) {
-				player.heal(10F);
-				player.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 120 * 20, 1));
-				player.addPotionEffect(new PotionEffect(Potion.resistance.id, 120 * 20, 2));
-				player.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 120 * 20, 0));
-				player.addPotionEffect(new PotionEffect(Potion.damageBoost.id, 120 * 20, 4));
-				player.addPotionEffect(new PotionEffect(Potion.digSpeed.id, 120 * 20, 1));
-				ContaminationUtil.contaminate(player, HazardType.RADIATION, ContaminationType.RAD_BYPASS, 15.0F);
-			}
-			if(this == ModItems.bottle2_sunset) {
-				player.heal(6);
-				player.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 60 * 20, 1));
-				player.addPotionEffect(new PotionEffect(Potion.resistance.id, 60 * 20, 2));
-				player.addPotionEffect(new PotionEffect(Potion.damageBoost.id, 60 * 20, 2));
-				player.addPotionEffect(new PotionEffect(Potion.digSpeed.id, 60 * 20, 2));
-			}
-			if(this == ModItems.coffee) {
-				player.heal(10);
-				player.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 60 * 20, 2));
-			}
-			if(this == ModItems.coffee_radium) {
-				player.heal(10);
-				player.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 60 * 20, 2));
-				HbmLivingProps.incrementRadiation(player, 500F);
-				player.triggerAchievement(MainRegistry.achRadium);
-			}
+			onConsume.accept(player);
 		}
 
 		if(!player.capabilities.isCreativeMode) {
 
-			if(this.cap != null) {
+			if(this.cap.isPresent()) {
 				
 				if(this == ModItems.bottle2_sunset && world.rand.nextInt(20) == 0)
 					player.inventory.addItemStackToInventory(new ItemStack(ModItems.cap_star));
 				else
-					player.inventory.addItemStackToInventory(new ItemStack(this.cap));
+					player.inventory.addItemStackToInventory(new ItemStack(this.cap.get()));
 			}
-			if(this.container != null) {
+			if(this.container.isPresent()) {
 				if(stack.stackSize <= 0) {
-					return new ItemStack(this.container);
+					return new ItemStack(this.container.get());
 				}
-				player.inventory.addItemStackToInventory(new ItemStack(this.container));
+				player.inventory.addItemStackToInventory(new ItemStack(this.container.get()));
 			}
 		}
-
+		player.inventory.addItemStackToInventory(getContainerItem(stack));
+		if (isCan)
+			player.inventory.addItemStackToInventory(new ItemStack(ModItems.ring_pull));
 		return stack;
 	}
 
@@ -234,7 +118,7 @@ public class ItemEnergy extends Item {
 
 		return p_77659_1_;
 	}
-
+	@Spaghetti("IF THIS IF THIS IF THIS IF THIS IF THIS IF THIS IF THIS IF THIS IF THIS IF THIS IF THIS IF THIS...")
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack p_77624_1_, EntityPlayer p_77624_2_, List list, boolean p_77624_4_) {

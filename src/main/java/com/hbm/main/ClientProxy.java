@@ -125,7 +125,7 @@ public class ClientProxy extends ServerProxy {
 		//SoundUtil.addSoundCategory("ntmMachines");
 	}
 	
-	private void registerClientEventHandler(Object handler) {
+	private static void registerClientEventHandler(Object handler) {
 		MinecraftForge.EVENT_BUS.register(handler);
 		FMLCommonHandler.instance().bus().register(handler);
 	}
@@ -249,9 +249,11 @@ public class ClientProxy extends ServerProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTowerSmall.class, new RenderSmallTower());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDeuteriumTower.class, new RenderDeuteriumTower());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMachineCatalyticCracker.class, new RenderCatalyticCracker());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySingGen.class, new RenderSingGen());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMachineLiquefactor.class, new RenderLiquefactor());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMachineSolidifier.class, new RenderSolidifier());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMachineRadiolysis.class, new RenderRadiolysis());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAtomicClock.class, new RenderAtomicClock());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityElectrolyser.class, new RenderElectrolyser());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFurnaceIron.class, new RenderFurnaceIron());
 		//AMS
@@ -376,6 +378,7 @@ public class ClientProxy extends ServerProxy {
 		MinecraftForgeClient.registerItemRenderer(ModItems.meteorite_sword_irradiated, new ItemRendererMeteorSword(0.75F, 1.0F, 0.0F));
 		MinecraftForgeClient.registerItemRenderer(ModItems.meteorite_sword_fused, new ItemRendererMeteorSword(1.0F, 0.0F, 0.5F));
 		MinecraftForgeClient.registerItemRenderer(ModItems.meteorite_sword_baleful, new ItemRendererMeteorSword(0.0F, 1.0F, 0.0F));
+		MinecraftForgeClient.registerItemRenderer(ModItems.ingot_dineutronium_forged, new ItemRendererHot());
 		//swords and hammers
 		MinecraftForgeClient.registerItemRenderer(ModItems.redstone_sword, new ItemRenderRedstoneSword());
 		MinecraftForgeClient.registerItemRenderer(ModItems.big_sword, new ItemRenderBigSword());
@@ -465,6 +468,22 @@ public class ClientProxy extends ServerProxy {
 		MinecraftForgeClient.registerItemRenderer(ModItems.gun_bolter_digamma, new ItemRenderWeaponBolter());
 		MinecraftForgeClient.registerItemRenderer(ModItems.gun_fireext, new ItemRenderFireExt());
 		MinecraftForgeClient.registerItemRenderer(ModItems.gun_ar15, new ItemRenderWeaponAR15());
+		MinecraftForgeClient.registerItemRenderer(ModItems.gun_twr, new ItemRenderTWR());
+		MinecraftForgeClient.registerItemRenderer(ModItems.gun_hlr, new ItemRenderHLR());
+		MinecraftForgeClient.registerItemRenderer(ModItems.gun_benelli, new ItemRenderBenelli());
+		MinecraftForgeClient.registerItemRenderer(ModItems.gun_lunatic_marksman, new ItemRenderLunaticSniper());
+		MinecraftForgeClient.registerItemRenderer(ModItems.gun_mlr, new ItemRenderMLR());
+		MinecraftForgeClient.registerItemRenderer(ModItems.gun_llr, new ItemRenderLLR());
+		MinecraftForgeClient.registerItemRenderer(ModItems.gun_thompson_redux, new ItemRenderThompsonRedux());
+		MinecraftForgeClient.registerItemRenderer(ModItems.gun_benelli_mod, new ItemRenderBenelli());// TODO
+		MinecraftForgeClient.registerItemRenderer(ModItems.gun_uac_pistol, new ItemRenderUACPistol());
+		MinecraftForgeClient.registerItemRenderer(ModItems.gun_g36, new ItemRenderG36());
+		MinecraftForgeClient.registerItemRenderer(ModItems.gun_m2, new ItemRenderM2());
+		MinecraftForgeClient.registerItemRenderer(ModItems.test_gun, new ItemRenderUboinik());
+		
+		//Satori
+		MinecraftForgeClient.registerItemRenderer(ModItems.eye, new ItemRenderSatoriEye());
+		
 		MinecraftForgeClient.registerItemRenderer(ModItems.gun_detonator, new ItemRenderDetonatorLaser());
 		MinecraftForgeClient.registerItemRenderer(ModItems.detonator_laser, new ItemRenderDetonatorLaser());
 		MinecraftForgeClient.registerItemRenderer(ModItems.gun_spas12, new ItemRenderWeaponSpas12());
@@ -574,6 +593,8 @@ public class ClientProxy extends ServerProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntityGrenadeIFHopwire.class, new RenderSnowball(ModItems.grenade_if_hopwire));
 		RenderingRegistry.registerEntityRenderingHandler(EntityGrenadeIFNull.class, new RenderSnowball(ModItems.grenade_if_null));
 		RenderingRegistry.registerEntityRenderingHandler(EntityWastePearl.class, new RenderSnowball(ModItems.nuclear_waste_pearl));
+		RenderingRegistry.registerEntityRenderingHandler(EntityGrenadeLunatic.class, new RenderSnowball(ModItems.grenade_lunatic));
+		RenderingRegistry.registerEntityRenderingHandler(EntityGrenadeStunning.class, new RenderSnowball(ModItems.grenade_stunning));
 		RenderingRegistry.registerEntityRenderingHandler(EntityGrenadeDynamite.class, new RenderSnowball(ModItems.stick_dynamite));
 		RenderingRegistry.registerEntityRenderingHandler(EntityGrenadeBouncyGeneric.class, new RenderGenericGrenade());
 		RenderingRegistry.registerEntityRenderingHandler(EntityGrenadeImpactGeneric.class, new RenderGenericGrenade());
@@ -628,6 +649,7 @@ public class ClientProxy extends ServerProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntityNukeExplosionAdvanced.class, new RenderSnowball(ModItems.energy_ball));
 	    RenderingRegistry.registerEntityRenderingHandler(EntitySpear.class, new RenderSpear());
 	    RenderingRegistry.registerEntityRenderingHandler(EntityNukeTorex.class, new RenderTorex());
+	    RenderingRegistry.registerEntityRenderingHandler(EntityTesseract.class, new RenderTesseract());
 		//minecarts
 		RenderingRegistry.registerEntityRenderingHandler(EntityMinecartTest.class, new RenderMinecartTest());
 		RenderingRegistry.registerEntityRenderingHandler(EntityMinecartCrate.class, new RenderMinecart());
@@ -673,6 +695,7 @@ public class ClientProxy extends ServerProxy {
 	    RenderingRegistry.registerEntityRenderingHandler(EntityCombineBall.class, new RenderSnowball(ModItems.energy_ball));
 	    RenderingRegistry.registerEntityRenderingHandler(EntityDischarge.class, new ElectricityRenderer(ModItems.discharge));
 	    RenderingRegistry.registerEntityRenderingHandler(EntityEMPBlast.class, new RenderEMPBlast());
+	    RenderingRegistry.registerEntityRenderingHandler(EntityStun.class, new RenderStun());
 	    RenderingRegistry.registerEntityRenderingHandler(EntityTSmokeFX.class, new TSmokeRenderer(ModItems.nuclear_waste));
 	}
 	
@@ -809,6 +832,7 @@ public class ClientProxy extends ServerProxy {
 	}
 	
 	//mk3, only use this one
+	@Override
 	public void effectNT(NBTTagCompound data) {
 		
 		World world = Minecraft.getMinecraft().theWorld;
@@ -865,7 +889,7 @@ public class ClientProxy extends ServerProxy {
 					fx.motionZ = vec.zCoord;
 					Minecraft.getMinecraft().effectRenderer.addEffect(fx);
 					
-					vec.rotateAroundY((float)Math.PI * 2F / (float)count);
+					vec.rotateAroundY((float)Math.PI * 2F / count);
 				}
 			}
 			
@@ -883,7 +907,7 @@ public class ClientProxy extends ServerProxy {
 					fx.motionZ = vec.zCoord;
 					Minecraft.getMinecraft().effectRenderer.addEffect(fx);
 
-					vec.rotateAroundY((float)Math.PI * 2F / (float)count);
+					vec.rotateAroundY((float)Math.PI * 2F / count);
 				}
 			}
 			
@@ -1731,15 +1755,15 @@ public class ClientProxy extends ServerProxy {
 	}
 
 	@Override
-	public void playSound(String sound, Object data) { }
+	public void playSound(String sound, Object data) {/*h*/ }
 	
 	@Override
 	public void displayTooltip(String msg, int time, int id) {
 		
 		if(id != 0)
-			this.theInfoSystem.push(new InfoEntry(msg, time), id);
+			RenderInfoSystem.push(new InfoEntry(msg, time), id);
 		else
-			this.theInfoSystem.push(new InfoEntry(msg, time));
+			RenderInfoSystem.push(new InfoEntry(msg, time));
 	}
 
 	@Override
@@ -1767,10 +1791,13 @@ public class ClientProxy extends ServerProxy {
 	}
 	
 	@Override
-	public void openLink(String url) {
+	public void openLink(String url)
+	{
 		try {
 			Desktop.getDesktop().browse(new URI(url));
-		} catch (Exception e) { }
+		} catch (Exception e) {
+			MainRegistry.logger.catching(e);
+		}
 	}
 }
 

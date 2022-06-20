@@ -305,6 +305,11 @@ public class TileEntityMachineGasCent extends TileEntityMachineBase implements I
 					outputTank.setTankType(pseudo.getOutputType());
 					tank.setTankType(newType);
 				}
+				if(newType == Fluids.WATZ) {
+					inputTank.setTankType(PseudoFluidType.MUD);
+					outputTank.setTankType(PseudoFluidType.MUD.getOutputFluid());
+					return;
+				}
 			}
 			
 		}

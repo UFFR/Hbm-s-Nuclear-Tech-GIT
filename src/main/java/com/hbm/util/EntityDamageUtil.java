@@ -2,8 +2,11 @@ package com.hbm.util;
 
 import java.lang.reflect.Field;
 
+import org.apache.logging.log4j.Level;
+
 import com.hbm.handler.ArmorModHandler;
 import com.hbm.items.ModItems;
+import com.hbm.main.MainRegistry;
 
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.entity.Entity;
@@ -21,15 +24,14 @@ public class EntityDamageUtil {
 			try {
 				Field lastDamage = ReflectionHelper.findField(EntityLivingBase.class, "lastDamage", "field_110153_bc");
 				
-				float dmg = (float) damage + lastDamage.getFloat(victim);
+				float dmg = damage + lastDamage.getFloat(victim);
 				
 				return victim.attackEntityFrom(src, dmg);
 			} catch (Exception x) {
-				return false;
+				MainRegistry.logger.catching(Level.WARN, x);
 			}
-		} else {
-			return true;
 		}
+		return true;
 	}
 	
 	public static float getLastDamage(Entity victim) {

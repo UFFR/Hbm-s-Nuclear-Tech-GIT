@@ -5,6 +5,7 @@ import java.util.Random;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import com.hbm.blocks.ILookOverlay;
 import com.hbm.blocks.ModBlocks;
@@ -20,6 +21,7 @@ import com.hbm.handler.HazmatRegistry;
 import com.hbm.hazard.HazardSystem;
 import com.hbm.interfaces.IHoldableWeapon;
 import com.hbm.interfaces.IItemHUD;
+import com.hbm.interfaces.IMonocular;
 import com.hbm.interfaces.Spaghetti;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.gui.GUIArmorTable;
@@ -28,6 +30,7 @@ import com.hbm.items.armor.ArmorFSB;
 import com.hbm.items.armor.ArmorFSBPowered;
 import com.hbm.items.armor.ItemArmorMod;
 import com.hbm.items.armor.JetpackBase;
+import com.hbm.items.tool.ItemWatch;
 import com.hbm.items.weapon.ItemGunBase;
 import com.hbm.lib.Library;
 import com.hbm.lib.RefStrings;
@@ -47,6 +50,7 @@ import com.hbm.sound.MovingSoundChopper;
 import com.hbm.sound.MovingSoundChopperMine;
 import com.hbm.sound.MovingSoundCrashing;
 import com.hbm.sound.MovingSoundPlayerLoop;
+import com.hbm.sound.MovingSoundPlayerLoop.EnumHbmSound;
 import com.hbm.sound.MovingSoundXVL1456;
 import com.hbm.tileentity.bomb.TileEntityNukeCustom;
 import com.hbm.tileentity.bomb.TileEntityNukeCustom.CustomNukeEntry;
@@ -58,13 +62,13 @@ import com.hbm.util.LoggingUtil;
 import com.hbm.util.ArmorRegistry;
 import com.hbm.util.ArmorUtil;
 import com.hbm.util.ArmorRegistry.HazardClass;
+import com.hbm.util.ArmorUtil;
+import com.hbm.util.I18nUtil;
+import com.hbm.util.LoggingUtil;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
 import api.hbm.item.IButtonReceiver;
 import api.hbm.item.IClickReceiver;
-
-import com.hbm.sound.MovingSoundPlayerLoop.EnumHbmSound;
-
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -76,6 +80,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -93,6 +98,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
@@ -111,6 +117,7 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent17;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 
+@SuppressWarnings("static-method")
 public class ModEventHandlerClient {
 	
 	@SubscribeEvent
@@ -121,6 +128,23 @@ public class ModEventHandlerClient {
 		/// HANDLE GUN OVERLAYS ///
 		if(player.getHeldItem() != null && player.getHeldItem().getItem() instanceof IItemHUD) {
 			((IItemHUD)player.getHeldItem().getItem()).renderHUD(event, event.type, player, player.getHeldItem());
+		}
+		
+		if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof IMonocular)
+		{
+			IMonocular monocular = (IMonocular) player.getHeldItem().getItem();
+			if (monocular.isEnabled())
+			{
+				if (event.type == ElementType.CROSSHAIRS)
+				{
+					RenderScreenOverlay.renderCustomCrosshairs(event.resolution, Minecraft.getMinecraft().currentScreen, monocular.getCrosshairType());
+					Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation(RefStrings.MODID, "textures/misc/overlay_scope.png"));
+					GL11.glDisable(GL11.GL_BLEND);
+			        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+					Minecraft.getMinecraft().currentScreen.drawTexturedModalRect(0, 0, 0, 0, 256, 256);
+					Minecraft.getMinecraft().getTextureManager().bindTexture(Gui.icons);
+				}
+			}
 		}
 		
 		/// HANDLE GEIGER COUNTER HUD ///
@@ -135,6 +159,9 @@ public class ModEventHandlerClient {
 					RenderScreenOverlay.renderRadCounter(event.resolution, rads, Minecraft.getMinecraft().ingameGUI);
 				}
 			}
+			
+			if (player.inventory.hasItem(ModItems.watch_digital))
+				RenderScreenOverlay.renderWatchTime(event.resolution, ItemWatch.getTime(player.worldObj));
 		}
 
 		/// DODD DIAG HOOK FOR RBMK
@@ -143,7 +170,7 @@ public class ModEventHandlerClient {
 			World world = mc.theWorld;
 			MovingObjectPosition mop = mc.objectMouseOver;
 			
-			if(mop != null && mop.typeOfHit == mop.typeOfHit.BLOCK && world.getBlock(mop.blockX, mop.blockY, mop.blockZ) instanceof ILookOverlay) {
+			if(mop != null && mop.typeOfHit == MovingObjectType.BLOCK && world.getBlock(mop.blockX, mop.blockY, mop.blockZ) instanceof ILookOverlay) {
 				((ILookOverlay) world.getBlock(mop.blockX, mop.blockY, mop.blockZ)).printHook(event, world, mop.blockX, mop.blockY, mop.blockZ);
 			}
 		}
@@ -178,7 +205,7 @@ public class ModEventHandlerClient {
 		
 		/// HANDLE ELECTRIC FSB HUD ///
 		
-		if(!event.isCanceled() && event.type == event.type.ARMOR) {
+		if(!event.isCanceled() && event.type == ElementType.ARMOR) {
 			
 	        int width = event.resolution.getScaledWidth();
 	        int height = event.resolution.getScaledHeight();
@@ -226,7 +253,7 @@ public class ModEventHandlerClient {
 				
 				ItemStack stack = player.inventory.armorInventory[2];
 				
-				float tot = (float) ((JetpackBase)stack.getItem()).getFuel(stack) / (float) ((JetpackBase)stack.getItem()).getMaxFill(stack);
+				float tot = (float) JetpackBase.getFuel(stack) / (float) ((JetpackBase)stack.getItem()).getMaxFill(stack);
 				top -= 3;
 				
 				GL11.glDisable(GL11.GL_TEXTURE_2D);
@@ -276,13 +303,13 @@ public class ModEventHandlerClient {
 			
 			event.setCanceled(true);
 			
-			float pX = (float) (player.prevPosX + (player.posX - player.prevPosX) * (double)event.partialRenderTick);
-			float pY = (float) (player.prevPosY + (player.posY - player.prevPosY) * (double)event.partialRenderTick);
-			float pZ = (float) (player.prevPosZ + (player.posZ - player.prevPosZ) * (double)event.partialRenderTick);
+			float pX = (float) (player.prevPosX + (player.posX - player.prevPosX) * event.partialRenderTick);
+			float pY = (float) (player.prevPosY + (player.posY - player.prevPosY) * event.partialRenderTick);
+			float pZ = (float) (player.prevPosZ + (player.posZ - player.prevPosZ) * event.partialRenderTick);
 			EntityPlayer me = Minecraft.getMinecraft().thePlayer;
-			float mX = (float) (me.prevPosX + (me.posX - me.prevPosX) * (double)event.partialRenderTick);
-			float mY = (float) (me.prevPosY + (me.posY - me.prevPosY) * (double)event.partialRenderTick);
-			float mZ = (float) (me.prevPosZ + (me.posZ - me.prevPosZ) * (double)event.partialRenderTick);
+			float mX = (float) (me.prevPosX + (me.posX - me.prevPosX) * event.partialRenderTick);
+			float mY = (float) (me.prevPosY + (me.posY - me.prevPosY) * event.partialRenderTick);
+			float mZ = (float) (me.prevPosZ + (me.posZ - me.prevPosZ) * event.partialRenderTick);
 
 			Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation(RefStrings.MODID + ":textures/particle/fart.png"));
 			GL11.glPushMatrix();
@@ -575,28 +602,38 @@ public class ModEventHandlerClient {
 				list.add("");
 			
 			if(entry.entry == EnumEntryType.ADD)
-				list.add(EnumChatFormatting.GOLD + "Adds " + entry.value + " to the custom nuke stage " + entry.type);
+//				list.add(EnumChatFormatting.GOLD + "Adds " + entry.value + " to the custom nuke stage " + entry.type);
+				list.add(I18nUtil.resolveKey("desc.nuke.custom.add", entry.value, entry.type));
 
 			if(entry.entry == EnumEntryType.MULT)
-				list.add(EnumChatFormatting.GOLD + "Adds multiplier " + entry.value + " to the custom nuke stage " + entry.type);
+//				list.add(EnumChatFormatting.GOLD + "Adds multiplier " + entry.value + " to the custom nuke stage " + entry.type);
+				list.add(I18nUtil.resolveKey("desc.nuke.custom.multi", entry.value, entry.type));
 		}
 	}
 	
-	private ResourceLocation ashes = new ResourceLocation(RefStrings.MODID + ":textures/misc/overlay_ash.png");
-	
+	private static final ResourceLocation ashes = new ResourceLocation(RefStrings.MODID + ":textures/misc/overlay_ash.png");
+	private static final ResourceLocation scope = new ResourceLocation(RefStrings.MODID, "textures/misc/overlay_scope.png");
 	@SideOnly(Side.CLIENT)
 	//@SubscribeEvent
 	public void onRenderStorm(RenderHandEvent event) {
+		Minecraft mc = Minecraft.getMinecraft();
+		EntityPlayer player = mc.thePlayer;
+		if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof IMonocular)
+		{
+			mc.getTextureManager().bindTexture(scope);
+			IMonocular monocular = (IMonocular) player.getHeldItem().getItem();
+			int zoom = monocular.getZoomLevel(player.getHeldItem());
+			
+		}
 		
+
 		if(BlockAshes.ashes == 0)
 			return;
 		
 		GL11.glPushMatrix();
-		
-		Minecraft mc = Minecraft.getMinecraft();
 
-		GL11.glRotatef((float)-mc.thePlayer.rotationYaw, 0, 1, 0);
-		GL11.glRotatef((float)(mc.thePlayer.rotationPitch), 1, 0, 0);
+		GL11.glRotatef(-mc.thePlayer.rotationYaw, 0, 1, 0);
+		GL11.glRotatef((mc.thePlayer.rotationPitch), 1, 0, 0);
 		
 		ScaledResolution resolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
 
@@ -623,9 +660,9 @@ public class ModEventHandlerClient {
 		if(mc.theWorld.getTotalWorldTime() == 1)
 			lastBrightness = currentBrightness;
 		
-		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)(lX + (cX - lX) * interp) / 1.0F, (float)(lY + (cY - lY) * interp) / 1.0F);
+		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (lX + (cX - lX) * interp) / 1.0F, (lY + (cY - lY) * interp) / 1.0F);
 
-		mc.entityRenderer.enableLightmap((double)event.partialTicks);
+		mc.entityRenderer.enableLightmap(event.partialTicks);
 		
 		mc.getTextureManager().bindTexture(ashes);
 		
@@ -642,7 +679,7 @@ public class ModEventHandlerClient {
 			tessellator.draw();
 		}
 
-		mc.entityRenderer.disableLightmap((double)event.partialTicks);
+		mc.entityRenderer.disableLightmap(event.partialTicks);
 		
 		GL11.glDepthMask(true);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
@@ -805,6 +842,13 @@ public class ModEventHandlerClient {
 			ArmorFSB chestplate = (ArmorFSB) plate.getItem();
 
 			if(chestplate.thermal && HbmPlayerProps.getData(player).enableHUD)
+				RenderOverhead.renderThermalSight(event.partialTicks);
+		}
+		
+		if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof IMonocular)
+		{
+			IMonocular monocular = (IMonocular) player.getHeldItem().getItem();
+			if (monocular.hasHUD())
 				RenderOverhead.renderThermalSight(event.partialTicks);
 		}
 	}

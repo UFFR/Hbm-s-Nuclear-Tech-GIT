@@ -1,8 +1,5 @@
 package com.hbm.entity.projectile;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +12,8 @@ import com.hbm.items.ModItems;
 import com.hbm.lib.Library;
 import com.hbm.main.ModEventHandler;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;

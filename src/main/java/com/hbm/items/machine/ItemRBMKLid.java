@@ -1,5 +1,6 @@
 package com.hbm.items.machine;
 
+import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.machine.rbmk.RBMKBase;
 import com.hbm.items.ModItems;
@@ -47,7 +48,7 @@ public class ItemRBMKLid extends Item {
 				world.playSoundEffect(x + 0.5, y + 0.5, z + 0.5, ModBlocks.concrete_smooth.stepSound.func_150496_b(), (ModBlocks.concrete_smooth.stepSound.getVolume() + 1.0F) / 2.0F, ModBlocks.concrete_smooth.stepSound.getPitch() * 0.8F);
 			}
 			
-			world.setBlockMetadataWithNotify(pos[0], pos[1], pos[2], meta + RBMKBase.offset, 3);
+			world.setBlockMetadataWithNotify(pos[0], pos[1], pos[2], meta + BlockDummyable.offset, 3);
 			stack.stackSize--;
 			
 			return true;

@@ -13,6 +13,7 @@ import com.hbm.entity.projectile.EntityBulletBase;
 import com.hbm.handler.BulletConfigSyncingUtil;
 import com.hbm.handler.BulletConfiguration;
 import com.hbm.interfaces.IControlReceiver;
+import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemTurretBiometry;
 import com.hbm.lib.Library;
@@ -315,7 +316,7 @@ public abstract class TileEntityTurretBaseNT extends TileEntityMachineBase imple
 					
 					BulletConfiguration conf = BulletConfigSyncingUtil.pullConfig(c);
 					
-					if(conf.ammo == slots[i].getItem())
+					if(conf.ammo.matchesRecipe(slots[i], true))
 						return conf;
 				}
 			}
@@ -338,11 +339,11 @@ public abstract class TileEntityTurretBaseNT extends TileEntityMachineBase imple
 		worldObj.spawnEntityInWorld(proj);
 	}
 	
-	public void conusmeAmmo(Item ammo) {
+	public void conusmeAmmo(ComparableStack ammo) {
 		
 		for(int i = 1; i < 10; i++) {
 			
-			if(slots[i] != null && slots[i].getItem() == ammo) {
+			if(slots[i] != null && ammo.matchesRecipe(slots[i], true)) {
 				
 				this.decrStackSize(i, 1);
 				return;

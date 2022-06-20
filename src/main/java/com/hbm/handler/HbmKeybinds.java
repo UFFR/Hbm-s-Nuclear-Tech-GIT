@@ -23,6 +23,7 @@ public class HbmKeybinds {
 	public static KeyBinding hudKey = new KeyBinding(category + ".toggleHUD", Keyboard.KEY_V, category);
 	public static KeyBinding reloadKey = new KeyBinding(category + ".reload", Keyboard.KEY_R, category);
 	public static KeyBinding dashKey = new KeyBinding(category + ".dash", Keyboard.KEY_F, category);
+	public static final KeyBinding unloadKey = new KeyBinding(category + ".unload", Keyboard.KEY_U, category);
 
 	public static KeyBinding craneUpKey = new KeyBinding(category + ".craneMoveUp", Keyboard.KEY_UP, category);
 	public static KeyBinding craneDownKey = new KeyBinding(category + ".craneMoveDown", Keyboard.KEY_DOWN, category);
@@ -37,6 +38,7 @@ public class HbmKeybinds {
 		ClientRegistry.registerKeyBinding(reloadKey);
 		ClientRegistry.registerKeyBinding(dashKey);
 
+		ClientRegistry.registerKeyBinding(unloadKey);
 		ClientRegistry.registerKeyBinding(craneUpKey);
 		ClientRegistry.registerKeyBinding(craneDownKey);
 		ClientRegistry.registerKeyBinding(craneLeftKey);

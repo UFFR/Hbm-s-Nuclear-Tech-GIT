@@ -173,7 +173,7 @@ public class TileEntityITER extends TileEntityMachineBase implements IEnergyUser
 			
 			this.lastRotor = this.rotor;
 			
-			if(this.isOn && this.power >= this.powerReq) {
+			if(this.isOn && this.power >= powerReq) {
 				
 				this.rotor += 15F;
 				
@@ -250,7 +250,7 @@ public class TileEntityITER extends TileEntityMachineBase implements IEnergyUser
 		
 		progress++;
 		
-		if(progress > this.duration) {
+		if(progress > duration) {
 			
 			if(slots[2] != null) {
 				slots[2].stackSize++;
@@ -352,11 +352,11 @@ public class TileEntityITER extends TileEntityMachineBase implements IEnergyUser
 
 	@Override
 	public void setFluidFill(int i, FluidType type) {
-		if (type.name().equals(tanks[0].getTankType().name()))
+		if (type.getName().equals(tanks[0].getTankType().getName()))
 			tanks[0].setFill(i);
-		else if (type.name().equals(tanks[1].getTankType().name()))
+		else if (type.getName().equals(tanks[1].getTankType().getName()))
 			tanks[1].setFill(i);
-		else if (type.name().equals(plasma.getTankType().name()))
+		else if (type.getName().equals(plasma.getTankType().getName()))
 			plasma.setFill(i);
 	}
 
@@ -371,11 +371,11 @@ public class TileEntityITER extends TileEntityMachineBase implements IEnergyUser
 
 	@Override
 	public int getFluidFill(FluidType type) {
-		if (type.name().equals(tanks[0].getTankType().name()))
+		if (type.getName().equals(tanks[0].getTankType().getName()))
 			return tanks[0].getFill();
-		else if (type.name().equals(tanks[1].getTankType().name()))
+		else if (type.getName().equals(tanks[1].getTankType().getName()))
 			return tanks[1].getFill();
-		else if (type.name().equals(plasma.getTankType().name()))
+		else if (type.getName().equals(plasma.getTankType().getName()))
 			return plasma.getFill();
 		else
 			return 0;
@@ -413,11 +413,11 @@ public class TileEntityITER extends TileEntityMachineBase implements IEnergyUser
 
 	@Override
 	public int getMaxFluidFill(FluidType type) {
-		if (type.name().equals(tanks[0].getTankType().name()))
+		if (type.getName().equals(tanks[0].getTankType().getName()))
 			return tanks[0].getMaxFill();
-		else if (type.name().equals(tanks[1].getTankType().name()))
+		else if (type.getName().equals(tanks[1].getTankType().getName()))
 			return tanks[1].getMaxFill();
-		else if (type.name().equals(plasma.getTankType().name()))
+		else if (type.getName().equals(plasma.getTankType().getName()))
 			return plasma.getMaxFill();
 		else
 			return 0;

@@ -16,7 +16,8 @@ import net.minecraft.world.World;
 /**
  * BOW
  */
-public class EntityQuackos extends EntityDuck implements IBossDisplayData {
+public class EntityQuackos extends EntityDuck implements IBossDisplayData
+{
 
 	/**
 	 * BOW
@@ -29,6 +30,7 @@ public class EntityQuackos extends EntityDuck implements IBossDisplayData {
 	/**
 	 * BOW
 	 */
+	@Override
 	protected String getLivingSound() {
 		return "hbm:entity.megaquacc";
 	}
@@ -36,6 +38,7 @@ public class EntityQuackos extends EntityDuck implements IBossDisplayData {
 	/**
 	 * BOW
 	 */
+	@Override
 	protected String getHurtSound() {
 		return "hbm:entity.megaquacc";
 	}
@@ -43,6 +46,7 @@ public class EntityQuackos extends EntityDuck implements IBossDisplayData {
 	/**
 	 * BOW
 	 */
+	@Override
 	protected String getDeathSound() {
 		return "hbm:entity.megaquacc";
 	}
@@ -50,6 +54,7 @@ public class EntityQuackos extends EntityDuck implements IBossDisplayData {
 	/**
 	 * BOW
 	 */
+	@Override
 	public EntityQuackos createChild(EntityAgeable entity) {
 		return new EntityQuackos(this.worldObj);
 	}
@@ -57,6 +62,7 @@ public class EntityQuackos extends EntityDuck implements IBossDisplayData {
 	/**
 	 * BOW
 	 */
+	@Override
 	public boolean isEntityInvulnerable() {
 		return true;
 	}
@@ -64,6 +70,7 @@ public class EntityQuackos extends EntityDuck implements IBossDisplayData {
 	/**
 	 * BOW
 	 */
+	@Override
 	public void setDead() {
 		if(worldObj.isRemote)
 			super.setDead();
@@ -72,6 +79,7 @@ public class EntityQuackos extends EntityDuck implements IBossDisplayData {
 	/**
 	 * BOW
 	 */
+	@Override
 	public void setHealth(float f) {
 		super.setHealth(this.getMaxHealth());
 	} //prank'd
@@ -79,6 +87,7 @@ public class EntityQuackos extends EntityDuck implements IBossDisplayData {
 	/**
 	 * BOW
 	 */
+	@Override
 	public boolean interact(EntityPlayer player) {
 
 		if(super.interact(player)) {
@@ -116,6 +125,7 @@ public class EntityQuackos extends EntityDuck implements IBossDisplayData {
 	/**
 	 * BOW
 	 */
+	@Override
 	public void updateRiderPosition() {
 
 		super.updateRiderPosition();
@@ -123,7 +133,7 @@ public class EntityQuackos extends EntityDuck implements IBossDisplayData {
 		float f1 = MathHelper.cos(this.renderYawOffset * (float) Math.PI / 180.0F);
 		float f2 = 0.1F;
 		float f3 = 0.0F;
-		this.riddenByEntity.setPosition(this.posX + (double) (f2 * f), this.posY + (double) (this.height - 0.125F) + this.riddenByEntity.getYOffset() + (double) f3, this.posZ - (double) (f2 * f1));
+		this.riddenByEntity.setPosition(this.posX + f2 * f, this.posY + (this.height - 0.125F) + this.riddenByEntity.getYOffset() + f3, this.posZ - f2 * f1);
 
 		if(this.riddenByEntity instanceof EntityLivingBase) {
 			((EntityLivingBase) this.riddenByEntity).renderYawOffset = this.renderYawOffset;
@@ -133,6 +143,7 @@ public class EntityQuackos extends EntityDuck implements IBossDisplayData {
 	/**
 	 * BOW
 	 */
+	@Override
 	@SideOnly(Side.CLIENT)
 	public float getShadowSize() {
 		return 7.5F;
@@ -154,7 +165,7 @@ public class EntityQuackos extends EntityDuck implements IBossDisplayData {
 	 * BOW
 	 */
 	@Override
-	public void onDeath(DamageSource sourceOrRatherLackThereof) { }
+	public void onDeath(DamageSource sourceOrRatherLackThereof) {/*be silent*/ }
 
 	@Override
 	public boolean allowLeashing() {

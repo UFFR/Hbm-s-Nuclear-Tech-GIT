@@ -365,7 +365,7 @@ public class GUIAnvil extends GuiContainer {
 		
 		if(!this.search.textboxKeyTyped(c, key)) {
 			
-			if(key == 28) {
+			if(key == 28 || key == 156) {
 				this.search.setFocused(false);
 				search(this.search.getText());
 			}

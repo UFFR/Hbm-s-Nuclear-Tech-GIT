@@ -15,7 +15,8 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumChatFormatting;
 
-public class ItemModMilk extends ItemArmorMod {
+public class ItemModMilk extends ItemArmorMod
+{
 	
 	public ItemModMilk() {
 		super(ArmorModHandler.extra, true, true, true, true);
@@ -37,13 +38,13 @@ public class ItemModMilk extends ItemArmorMod {
 	@Override
 	public void modUpdate(EntityLivingBase entity, ItemStack armor) {
 		
-		List<Integer> ints = new ArrayList();
+		List<Integer> ints = new ArrayList<Integer>();
 
-		Iterator iterator = ((Collection) entity.getActivePotionEffects()).iterator();
+		Iterator<PotionEffect> iterator = ((Collection<PotionEffect>) entity.getActivePotionEffects()).iterator();
 
 		while(iterator.hasNext()) {
 
-			PotionEffect eff = (PotionEffect) iterator.next();
+			PotionEffect eff = iterator.next();
 
 			if(HbmPotion.getIsBadEffect(Potion.potionTypes[eff.getPotionID()])) {
 				ints.add(eff.getPotionID());

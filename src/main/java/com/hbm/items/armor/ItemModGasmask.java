@@ -8,9 +8,9 @@ import com.hbm.handler.ArmorModHandler;
 import com.hbm.items.ModItems;
 import com.hbm.main.MainRegistry;
 import com.hbm.render.model.ModelM65;
+import com.hbm.util.ArmorRegistry.HazardClass;
 import com.hbm.util.ArmorUtil;
 import com.hbm.util.I18nUtil;
-import com.hbm.util.ArmorRegistry.HazardClass;
 
 import api.hbm.item.IGasMask;
 import cpw.mods.fml.relauncher.Side;
@@ -27,7 +27,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 
-public class ItemModGasmask extends ItemArmorMod implements IGasMask {
+public class ItemModGasmask extends ItemArmorMod implements IGasMask
+{
 	
 	private ModelM65 modelM65;
 	private ResourceLocation tex = new ResourceLocation("hbm:textures/models/ModelM65.png");

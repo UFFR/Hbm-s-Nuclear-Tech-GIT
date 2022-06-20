@@ -2,17 +2,25 @@ package com.hbm.inventory.gui;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 import javax.annotation.Nonnegative;
 
+import org.apache.logging.log4j.Level;
 import org.lwjgl.opengl.GL11;
 
 import com.google.common.annotations.Beta;
+import com.hbm.items.machine.ItemRTGPellet;
 import com.hbm.lib.RefStrings;
+import com.hbm.main.MainRegistry;
 import com.hbm.util.BobMathUtil;
+import com.hbm.util.I18nUtil;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.inventory.Container;
@@ -24,18 +32,45 @@ import net.minecraft.util.ResourceLocation;
 public abstract class GuiInfoContainer extends GuiContainer {
 	
 	static final ResourceLocation guiUtil =  new ResourceLocation(RefStrings.MODID + ":textures/gui/gui_utility.png");
-
+	protected static final ResourceLocation numDisplays = new ResourceLocation(RefStrings.MODID, "textures/gui/gauges/seven_segment.png");
+	/** Default text color **/
+	public static final int color0 = 4210752;
+	/** Green computer color **/
+	public static final int color1 = 0x00ff00;
+	public static final char slimCursor = '\u2502';
+	public static final char blockCursor = '\u2588';
+	public static final ResourceLocation keyboard = new ResourceLocation(RefStrings.MODID, "misc.keyPress"); 
+	protected final ArrayList<GUIComponent> componentList = new ArrayList<GUIComponent>();
 	public GuiInfoContainer(Container p_i1072_1_) {
 		super(p_i1072_1_);
+	}
+	
+	public static String[] assembleRTGPellets()
+	{
+		final ArrayList<String> pellets = new ArrayList<String>();
+		pellets.add(I18nUtil.resolveKey("desc.gui.rtg.pellets"));
+		for (ItemRTGPellet pellet : ItemRTGPellet.getPellets())
+			pellets.add(" - " + pellet.getData());
+		return pellets.toArray(new String[pellets.size()]);
 	}
 	
 	public void drawFluidInfo(String[] text, int x, int y) {
 		this.func_146283_a(Arrays.asList(text), x, y);
 	}
 	
-	public void drawElectricityInfo(GuiInfoContainer gui, int mouseX, int mouseY, int x, int y, int width, int height, long power, long maxPower) {
+	public void drawFluidInfo(int x, int y, String...text)
+	{
+		drawFluidInfo(text, x, y);
+	}
+	
+	public static void drawElectricityInfo(GuiInfoContainer gui, int mouseX, int mouseY, int x, int y, int width, int height, long power, long maxPower) {
 		if(x <= mouseX && x + width > mouseX && y < mouseY && y + height >= mouseY)
 			gui.drawFluidInfo(new String[] { BobMathUtil.getShortNumber(power) + "/" + BobMathUtil.getShortNumber(maxPower) + "HE" }, mouseX, mouseY);
+	}
+	
+	public void drawElectricityInfo(int mouseX, int mouseY, int x, int y, int width, int height, long power, long maxPower)
+	{
+		drawElectricityInfo(this, mouseX, mouseY, guiLeft + x, guiTop + y, width, height, power, maxPower);
 	}
 	
 	public void drawCustomInfo(GuiInfoContainer gui, int mouseX, int mouseY, int x, int y, int width, int height, String[] text) {
@@ -43,12 +78,71 @@ public abstract class GuiInfoContainer extends GuiContainer {
 			this.func_146283_a(Arrays.asList(text), mouseX, mouseY);
 	}
 	
-	public void drawCustomInfoStat(int mouseX, int mouseY, int x, int y, int width, int height, int tPosX, int tPosY, String[] text) {
+	public void drawCustomInfoStat(int mouseX, int mouseY, int x, int y, int width, int height, int tPosX, int tPosY, String... text) {
 		
 		if(x <= mouseX && x + width > mouseX && y < mouseY && y + height >= mouseY)
 			this.func_146283_a(Arrays.asList(text), tPosX, tPosY);
 	}
+	/**
+	 * Get a scaled number for a display bar
+	 * @param toScale - The number to scale
+	 * @param scaleBy - The size of the display bar
+	 * @param total - Max size of toScale
+	 * @return The scaled number to be used
+	 */
+	public static int getScaledBar(int toScale, int scaleBy, int total)
+	{
+		return (toScale * scaleBy) / total;
+	}
+	/**
+	 * Get a scaled number for a display bar
+	 * @param toScale - The number to scale
+	 * @param scaleBy - The size of the display bar
+	 * @param total - Max size of toScale
+	 * @return The scaled number to be used
+	 */
+	public static long getScaledBar(long toScale, int scaleBy, long total)
+	{
+		return (toScale * scaleBy) / total;
+	}
 	
+	public static char getCursor(char in)
+	{
+		return BobMathUtil.getBlink() ? ' ' : in;
+	}
+	
+	public static char getCursor()
+	{
+		return getCursor(slimCursor);
+	}
+	/**
+	 * Check if a button was pressed
+	 * @param mouseX - The mouse's X coord
+	 * @param mouseY - The mouse's Y coord
+	 * @param buttonX - X coord of the button
+	 * @param buttonY - Y coord of the button
+	 * @param xSize - X size of the button
+	 * @param ySize - Y size of the button
+	 * @param guiLeft - Left bound of the GUI
+	 * @param guiTop - Top bound of the GUI
+	 * @return If it was clicked
+	 */
+	public static boolean getButtonBool(int mouseX, int mouseY, int buttonX, int buttonY, int xSize, int ySize, int guiLeft, int guiTop)
+	{
+		return guiLeft + buttonX <= mouseX && guiLeft + buttonX + xSize > mouseX && guiTop + buttonY < mouseY && guiTop + buttonY + ySize >= mouseY;
+	}
+	public boolean getButtonBool(int mouseX, int mouseY, int buttonX, int buttonY, int xSize, int ySize)
+	{
+		return guiLeft + buttonX <= mouseX && guiLeft + buttonX + xSize > mouseX && guiTop + buttonY < mouseY && guiTop + buttonY + ySize >= mouseY;
+	}
+	public static boolean getTextBool(int mouseX, int mouseY, int fX, int fY, int fW, int fH)
+	{
+		return mouseX >= fX && mouseX < fX + fW && mouseY >= fY && mouseY < fY + fH;
+	}
+	public static boolean getTextBool(int mouseX, int mouseY, GuiTextField field)
+	{
+		return mouseX >= field.xPosition && mouseX < field.xPosition + field.width && mouseY >= field.yPosition && mouseY < field.yPosition + field.height;
+	}
 	public void drawInfoPanel(int x, int y, int width, int height, int type) {
 
 		Minecraft.getMinecraft().getTextureManager().bindTexture(guiUtil);
@@ -92,11 +186,99 @@ public abstract class GuiInfoContainer extends GuiContainer {
 			drawTexturedModalRect(x, y, 24, 32, 16, 16); break;
 		}
 	}
+	/**
+	 * Turn a string into an integer and remove all non-digit characters
+	 * @param in - The text input
+	 * @return The formatted integer or -1 if invalid
+	 */
+	public static Integer validateTextInput(String in)
+	{
+		return validateTextInput(in, Integer.MIN_VALUE, Integer.MAX_VALUE);
+	}
+	
+	public static Integer validateTextInput(String in, int min, int max)
+	{
+		String formatted = in.replaceAll("\\D", "");
+		return formatted.isEmpty() || formatted.length() == 0 ? -1 : MathHelper.clamp_int(Integer.parseInt(formatted), min, max);
+	}
 	
 	protected boolean isMouseOverSlot(Slot slot, int x, int y) {
 		return this.func_146978_c(slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, x, y);
 	}
 	
+	/**
+	 * Turn a string into a integer and allow non-digit characters (most likely the negative sign)
+	 * @param in - The text input
+	 * @return The formatted integer or -1 if invalid
+	 */
+	public static Integer validateTextInputAllowChars(String in)
+	{
+		return validateTextInputAllowChars(in, Integer.MIN_VALUE, Integer.MAX_VALUE);
+	}
+	
+	public static Integer validateTextInputAllowChars(String in, int min, int max)
+	{
+		try
+		{
+			return MathHelper.clamp_int(Byte.parseByte(in), min, max);
+		}
+		catch (NumberFormatException e)
+		{
+			MainRegistry.logger.printf(Level.WARN, "Invalid text input detected, exception: %s; Attempted string input: %s", e, in);
+			e.printStackTrace();
+			return -1;
+		}
+	}
+	public void defaultClickHandling(int mX, int mY)
+	{
+		for (GUIComponent comp : componentList)
+			if (comp.contains(mX, mY))
+				comp.getClickAction();
+	}
+	public void defaultHoverHandling(int mX, int mY)
+	{
+		for (GUIComponent comp : componentList)
+			if (comp.contains(mX, mY))
+				comp.getHoverAction();
+	}
+	@Beta
+	public class GUIComponent
+	{
+		private final int x, y, compWidth, compHeight;
+		private Optional<Consumer<GuiInfoContainer>> click = Optional.empty();
+		private Optional<Consumer<GuiInfoContainer>> hover = Optional.empty();
+		public GUIComponent(int x, int y, int width, int height)
+		{
+			this.x = x;
+			this.y = y;
+			this.compWidth = width;
+			this.compHeight = height;
+		}
+		public void getClickAction()
+		{
+			if (click.isPresent())
+				click.get().accept(GuiInfoContainer.this);
+		}
+		public void getHoverAction()
+		{
+			if (hover.isPresent())
+				hover.get().accept(GuiInfoContainer.this);
+		}
+		public GUIComponent setClickAction(Consumer<GuiInfoContainer> action)
+		{
+			click = Optional.of(action);
+			return this;
+		}
+		public GUIComponent setHoverAction(Consumer<GuiInfoContainer> action)
+		{
+			hover = Optional.of(action);
+			return this;
+		}
+		public boolean contains(int mouseX, int mouseY)
+		{
+			return guiLeft + x <= mouseX && guiLeft + x + compWidth > mouseX && guiTop + y < mouseY && guiTop + y + compHeight >= mouseY;
+		}
+	}
 	/**
 	 * Seven segment style displays for GUIs, tried to be as adaptable as possible. Still has some bugs that need to be ironed out but it works for the most part.
 	 * @author UFFR
@@ -176,46 +358,28 @@ public abstract class GuiInfoContainer extends GuiContainer {
 		 * @param c Color to use
 		 * @return
 		 */
-		private int enumToColor(EnumChatFormatting c) {
-			if(c.isColor()) {
-				switch(c) {
-				case AQUA:
-					return 0x55FFFF;
-				case BLACK:
-					return 0x000000;
-				case BLUE:
-					return 0x5555FF;
-				case DARK_AQUA:
-					return 0x00AAAA;
-				case DARK_BLUE:
-					return 0x0000AA;
-				case DARK_GRAY:
-					return 0x555555;
-				case DARK_GREEN:
-					return 0x00AA00;
-				case DARK_PURPLE:
-					return 0xAA00AA;
-				case DARK_RED:
-					return 0xAA0000;
-				case GOLD:
-					return 0xFFAA00;
-				case GRAY:
-					return 0xAAAAAA;
-				case GREEN:
-					return 0x55FF55;
-				case LIGHT_PURPLE:
-					return 0xFF55FF;
-				case RED:
-					return 0xFF5555;
-				case WHITE:
-					return 0xFFFFFF;
-				case YELLOW:
-					return 0xFFFF55;
-				default:
-				}
+		private int enumToColor(EnumChatFormatting c)
+		{
+			switch(c)
+			{
+				case AQUA: return 0x55FFFF;
+				case BLACK: return 0x000000;
+				case BLUE: return 0x5555FF;
+				case DARK_AQUA: return 0x00AAAA;
+				case DARK_BLUE: return 0x0000AA;
+				case DARK_GRAY: return 0x555555;
+				case DARK_GREEN: return 0x00AA00;
+				case DARK_PURPLE: return 0xAA00AA;
+				case DARK_RED: return 0xAA0000;
+				case GOLD: return 0xFFAA00;
+				case GRAY: return 0xAAAAAA;
+				case GREEN: return 0x55FF55;
+				case LIGHT_PURPLE: return 0xFF55FF;
+				case RED: return 0xFF5555;
+				case WHITE: return 0xFFFFFF;
+				case YELLOW: 
+				default: return 0xFFFF55;
 			}
-			
-			return 0xFFFF55;
 		}
 		/**
 		 * Sets color 
@@ -348,6 +512,7 @@ public abstract class GuiInfoContainer extends GuiContainer {
 				drawPeriod();
 				break;
 			case 'E':
+			case 'e':
 			default:
 				drawHorizontal(0);
 				drawHorizontal(1);

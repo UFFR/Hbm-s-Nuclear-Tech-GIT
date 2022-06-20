@@ -32,8 +32,8 @@ public class DetMiner extends BlockPillar implements IBomb {
 
 			world.func_147480_a(x, y, z, false);
 			ExplosionNT explosion = new ExplosionNT(world, null, x + 0.5, y + 0.5, z + 0.5, 4);
-			explosion.atttributes.add(ExAttrib.ALLDROP);
-			explosion.atttributes.add(ExAttrib.NOHURT);
+			explosion.addAttrib(ExAttrib.ALLDROP);
+			explosion.addAttrib(ExAttrib.NOHURT);
 			explosion.doExplosionA();
 			explosion.doExplosionB(false);
 

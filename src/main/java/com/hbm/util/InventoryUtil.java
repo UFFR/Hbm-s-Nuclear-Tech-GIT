@@ -1,5 +1,6 @@
 package com.hbm.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.hbm.inventory.RecipesCommon.AStack;
@@ -193,6 +194,7 @@ public class InventoryUtil {
 	 * @param stack2
 	 * @return
 	 */
+	@SuppressWarnings("null")
 	public static boolean doesStackDataMatch(ItemStack stack1, ItemStack stack2) {
 		
 		if(stack1 == null && stack2 == null) return true;
@@ -207,6 +209,18 @@ public class InventoryUtil {
 		return stack1.getTagCompound().equals(stack2.getTagCompound());
 	}
 	
+	public static boolean doesPlayerHaveAStack(EntityPlayer player, AStack stack)
+	{
+		return doesPlayerHaveAStack(player, stack, false);
+	}
+	
+	public static boolean doesPlayerHaveAStack(EntityPlayer player, AStack stack, boolean shouldRemove)
+	{
+		ArrayList<AStack> single = new ArrayList<>(1);
+		single.add(stack);
+		return doesPlayerHaveAStacks(player, single, shouldRemove);
+	}
+	
 	/**
 	 * Checks if a player has matching item stacks in his inventory and removes them if so desired
 	 * @param player
@@ -217,7 +231,12 @@ public class InventoryUtil {
 	public static boolean doesPlayerHaveAStacks(EntityPlayer player, List<AStack> stacks, boolean shouldRemove) {
 		
 		ItemStack[] original = player.inventory.mainInventory;
-		ItemStack[] inventory = new ItemStack[original.length];
+		return doesInventoryHaveAStacks(original, stacks, shouldRemove);
+	}
+	
+	public static boolean doesInventoryHaveAStacks(ItemStack[] inventory, List<AStack> stacks, boolean shouldRemove)
+	{
+		ItemStack[] copy = new ItemStack[inventory.length];
 		AStack[] input = new AStack[stacks.size()];
 		
 		//first we copy the inputs into an array because 1. it's easier to deal with and 2. we can dick around with the stack sized with no repercussions
@@ -226,9 +245,9 @@ public class InventoryUtil {
 		}
 		
 		//then we copy the inventory so we can dick around with it as well without making actual modifications to the player's inventory
-		for(int i = 0; i < original.length; i++) {
-			if(original[i] != null) {
-				inventory[i] = original[i].copy();
+		for(int i = 0; i < inventory.length; i++) {
+			if(inventory[i] != null) {
+				copy[i] = inventory[i].copy();
 			}
 		}
 		
@@ -238,9 +257,9 @@ public class InventoryUtil {
 			AStack stack = input[i];
 			
 			//...and compare each ingredient to every stack in the inventory
-			for(int j = 0; j < inventory.length; j++) {
+			for(int j = 0; j < copy.length; j++) {
 				
-				ItemStack inv = inventory[j];
+				ItemStack inv = copy[j];
 				
 				//we check if it matches but ignore stack size for now
 				if(stack.matchesRecipe(inv, true)) {
@@ -269,12 +288,12 @@ public class InventoryUtil {
 		}
 		
 		if(shouldRemove) {
-			for(int i = 0; i < original.length; i++) {
+			for(int i = 0; i < inventory.length; i++) {
 				
-				if(inventory[i] != null && inventory[i].stackSize <= 0)
-					original[i] = null;
+				if(copy[i] != null && copy[i].stackSize <= 0)
+					inventory[i] = null;
 				else
-					original[i] = inventory[i];
+					inventory[i] = copy[i];
 			}
 		}
 		

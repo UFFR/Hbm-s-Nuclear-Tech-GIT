@@ -22,13 +22,14 @@ public class WorldConfig {
 	public static int ligniteSpawn = 2;
 	public static int asbestosSpawn = 4;
 	public static int rareSpawn = 6;
+	public static int nickelSpawn = 7;
+	public static int cobaltSpawn = 6;
 	public static int lithiumSpawn = 6;
-	public static int cinnebarSpawn = 1;
 	public static int oilcoalSpawn = 128;
 	public static int gassshaleSpawn = 5;
-	public static int gasbubbleSpawn = 4;
+	public static int gasbubbleSpawn = 64;
 	public static int explosivebubbleSpawn = 8;
-	public static int cobaltSpawn = 2;
+	public static int cinnebarSpawn = 1;
 
 	public static int ironClusterSpawn = 4;
 	public static int titaniumClusterSpawn = 2;
@@ -40,9 +41,9 @@ public class WorldConfig {
 	public static int netherTungstenSpawn = 10;
 	public static int netherSulfurSpawn = 26;
 	public static int netherPhosphorusSpawn = 24;
-	public static int netherCoalSpawn = 8;
+	public static int netherCoalSpawn = 24;
 	public static int netherPlutoniumSpawn = 8;
-	public static int netherCobaltSpawn = 2;
+	public static int netherCobaltSpawn = 8;
 
 	public static int endTikiteSpawn = 8;
 
@@ -111,8 +112,10 @@ public class WorldConfig {
 		gassshaleSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.16_gasShaleSpawnRate", "Amount of oil shale veins per chunk", 5);
 		gasbubbleSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.17_gasBubbleSpawnRate", "Spawns a gas bubble every nTH chunk", 4);
 		cinnebarSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.18_cinnebarSpawnRate", "Amount of cinnebar ore veins per chunk", 1);
-		cobaltSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.18_cobaltSpawnRate", "Amount of cobalt ore veins per chunk", 2);
 		explosivebubbleSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.19_explosiveBubbleSpawnRate", "Spawns an explosive gas bubble every nTH chunk", 8);
+		cobaltSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.18_cobaltSpawnrate", "Amount of cobalt ore veins per chunk", 10);
+		nickelSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.21_nickelSpawn", "Amount of nickel ore veins per chunk", 10);
+		netherCobaltSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.N06_cobaltSpawnRate", "Amount of nether cobalt per chunk", 8);
 		alexandriteSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.20_alexandriteSpawnRate", "Spawns an alexandrite vein every nTH chunk", 100);
 
 		ironClusterSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.C00_ironClusterSpawn", "Amount of iron cluster veins per chunk", 4);

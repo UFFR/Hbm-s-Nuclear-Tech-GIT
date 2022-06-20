@@ -40,7 +40,7 @@ public class ItemBlockBase extends ItemBlock {
 		
 		if(field_150939_a instanceof BlockEnumMulti && ((BlockEnumMulti)field_150939_a).multiName) {
 			
-			Enum num = EnumUtil.grabEnumSafely(((BlockEnumMulti)field_150939_a).theEnum, stack.getItemDamage());
+			Enum<?> num = EnumUtil.grabEnumSafely(((BlockEnumMulti)field_150939_a).theEnum, stack.getItemDamage());
 			return super.getUnlocalizedName() + "." + num.name().toLowerCase();
 		} else {
 			return super.getUnlocalizedName(stack);
@@ -55,6 +55,7 @@ public class ItemBlockBase extends ItemBlock {
 		}
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getIconFromDamage(int meta) {
 		return this.field_150939_a.getIcon(1, meta); //fuck you mojang

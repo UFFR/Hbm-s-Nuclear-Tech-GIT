@@ -28,7 +28,6 @@ public class MachineDeuteriumExtractor extends BlockContainer implements ILookOv
 
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta) {
-		meta = 0;
 		return new TileEntityDeuteriumExtractor();
 	}
 

@@ -1,11 +1,8 @@
 package com.hbm.entity.effect;
 
 import java.util.List;
-import java.util.Random;
 
-import com.hbm.blocks.ModBlocks;
 import com.hbm.entity.projectile.EntityRubble;
-import com.hbm.explosion.ExplosionNukeGeneric;
 import com.hbm.items.ModItems;
 import com.hbm.lib.ModDamageSource;
 
@@ -24,9 +21,8 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-public class EntityBlackHole extends Entity {
-	
-	Random rand = new Random();
+public class EntityBlackHole extends Entity
+{
 
 	public EntityBlackHole(World p_i1582_1_) {
 		super(p_i1582_1_);

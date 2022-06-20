@@ -57,7 +57,7 @@ public class ItemModInsert extends ItemArmorMod {
 	@Override
 	public void addDesc(List list, ItemStack stack, ItemStack armor) {
 		
-		List<String> desc = new ArrayList();
+		List<String> desc = new ArrayList<String>();
 
 		if(damageMod != 1F)
 			desc.add((damageMod < 1 ? "-" : "+") + Math.abs(Math.round((1F - damageMod) * 100)) + "% dmg");
@@ -119,7 +119,7 @@ public class ItemModInsert extends ItemArmorMod {
 		if(speed == 1)
 			return null;
 
-		Multimap multimap = super.getAttributeModifiers(armor);
+		Multimap<Object, Object> multimap = super.getAttributeModifiers(armor);
 		
 		multimap.put(SharedMonsterAttributes.movementSpeed.getAttributeUnlocalizedName(),
 				new AttributeModifier(ArmorModHandler.UUIDs[((ItemArmor)armor.getItem()).armorType], "NTM Armor Mod Speed", -1F + speed, 2));

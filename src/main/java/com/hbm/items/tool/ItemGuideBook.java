@@ -17,7 +17,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-public class ItemGuideBook extends Item {
+public class ItemGuideBook extends Item
+{
 	
 	public ItemGuideBook() {
 		this.setMaxStackSize(1);
@@ -33,6 +34,7 @@ public class ItemGuideBook extends Item {
 		return stack;
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(Item item, CreativeTabs tab, List list) {
 		

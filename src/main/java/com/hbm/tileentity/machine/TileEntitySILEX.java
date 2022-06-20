@@ -88,7 +88,7 @@ public class TileEntitySILEX extends TileEntityMachineBase implements IFluidAcce
 			this.mode = EnumWavelengths.NULL;
 		}
 	}
-
+	@Override
 	public void networkUnpack(NBTTagCompound nbt) {
 
 		this.currentFill = nbt.getInteger("fill");
@@ -102,7 +102,7 @@ public class TileEntitySILEX extends TileEntityMachineBase implements IFluidAcce
 			this.current = null;
 		}
 	}
-
+	@Override
 	public void handleButtonPacket(int value, int meta) {
 
 		this.currentFill = 0;
@@ -142,7 +142,7 @@ public class TileEntitySILEX extends TileEntityMachineBase implements IFluidAcce
 		if(conv != null) {
 
 			if(currentFill == 0) {
-				current = (ComparableStack) conv.copy();
+				current = conv.copy();
 			}
 
 			if(current != null && current.equals(conv)) {

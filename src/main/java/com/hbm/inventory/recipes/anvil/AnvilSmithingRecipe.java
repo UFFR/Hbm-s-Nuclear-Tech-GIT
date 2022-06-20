@@ -3,7 +3,6 @@ package com.hbm.inventory.recipes.anvil;
 import java.util.List;
 
 import com.hbm.config.GeneralConfig;
-import com.hbm.inventory.RecipesCommon;
 import com.hbm.inventory.RecipesCommon.AStack;
 
 import net.minecraft.item.ItemStack;
@@ -17,7 +16,7 @@ public class AnvilSmithingRecipe {
 	boolean shapeless = false;
 	
 	public AnvilSmithingRecipe(int tier, ItemStack out, AStack left, AStack right) {
-		this.tier = tier;
+		this.tier = GeneralConfig.enableLBSM ? 1 : tier;
 		this.output = out;
 		this.left = left;
 		this.right = right;

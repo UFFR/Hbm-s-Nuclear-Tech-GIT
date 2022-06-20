@@ -5,11 +5,13 @@ import java.util.List;
 import com.hbm.items.ModItems;
 import com.hbm.potion.HbmPotion;
 import com.hbm.tileentity.machine.rbmk.RBMKDials;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
@@ -37,6 +39,7 @@ public class EntityZirnoxDebris extends EntityDebrisBase {
 			case GRAPHITE: if(player.inventory.addItemStackToInventory(new ItemStack(ModItems.debris_graphite))) this.setDead(); break;
 			case CONCRETE: if(player.inventory.addItemStackToInventory(new ItemStack(ModItems.debris_concrete))) this.setDead(); break;
 			case EXCHANGER: if(player.inventory.addItemStackToInventory(new ItemStack(ModItems.debris_exchanger))) this.setDead(); break;
+			default: break;
 			}
 
 			player.inventoryContainer.detectAndSendChanges();
@@ -57,6 +60,7 @@ public class EntityZirnoxDebris extends EntityDebrisBase {
 			case GRAPHITE: this.setSize(0.25F, 0.25F); break;
 			case CONCRETE: this.setSize(0.75F, 0.5F); break;
 			case EXCHANGER: this.setSize(1F, 0.5F); break;
+			default: break;
 			}
 
 			hasSizeSet = true;
@@ -93,7 +97,7 @@ public class EntityZirnoxDebris extends EntityDebrisBase {
 				Vec3 next = Vec3.createVectorHelper(posX + motionX * 2, posY + motionY * 2, posZ + motionZ * 2);
 				MovingObjectPosition mop = worldObj.func_147447_a(pos, next, false, false, false);
 
-				if(mop != null && mop.typeOfHit == mop.typeOfHit.BLOCK) {
+				if(mop != null && mop.typeOfHit == MovingObjectType.BLOCK) {
 
 					int x = mop.blockX;
 					int y = mop.blockY;
@@ -129,6 +133,7 @@ public class EntityZirnoxDebris extends EntityDebrisBase {
 		}
 	}
 
+	@Override
 	protected int getLifetime() {
 
 		switch(this.getType()) {
@@ -142,20 +147,22 @@ public class EntityZirnoxDebris extends EntityDebrisBase {
 		}
 	}
 
+	@Override
 	public void setType(DebrisType type) {
 		this.dataWatcher.updateObject(20, type.ordinal());
 	}
 
+	@Override
 	public DebrisType getType() {
 		return DebrisType.values()[Math.abs(this.dataWatcher.getWatchableObjectInt(20)) % DebrisType.values().length];
 	}
 
-	public static enum DebrisType {
-		BLANK,			//just a metal beam
-		ELEMENT,		//fuel element
-		SHRAPNEL,		//steel shrapnel from the pipes and walkways
-		GRAPHITE,		//spicy rock
-		CONCRETE,		//the all destroying harbinger of annihilation
-		EXCHANGER;		//the all destroying harbinger of annihilation: sideways edition
-	}
+//	public static enum DebrisType {
+//		BLANK,			//just a metal beam
+//		ELEMENT,		//fuel element
+//		SHRAPNEL,		//steel shrapnel from the pipes and walkways
+//		GRAPHITE,		//spicy rock
+//		CONCRETE,		//the all destroying harbinger of annihilation
+//		EXCHANGER;		//the all destroying harbinger of annihilation: sideways edition
+//	}
 }

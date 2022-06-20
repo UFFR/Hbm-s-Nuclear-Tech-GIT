@@ -1,8 +1,7 @@
 package com.hbm.blocks.machine;
 
 import com.hbm.blocks.BlockDummyable;
-import com.hbm.blocks.ModBlocks;
-import com.hbm.handler.MultiblockHandlerXR;
+import com.hbm.handler.EnumGUI;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.TileEntityProxyCombo;
 import com.hbm.tileentity.machine.TileEntityMachineIGenerator;
@@ -10,7 +9,6 @@ import com.hbm.tileentity.machine.TileEntityMachineIGenerator;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -63,7 +61,7 @@ public class MachineIGenerator extends BlockDummyable {
 			TileEntityMachineIGenerator gen = (TileEntityMachineIGenerator)world.getTileEntity(pos[0], pos[1], pos[2]);
 			
 			if(gen != null)
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_machine_industrial_generator, world, pos[0], pos[1], pos[2]);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.IGEN.ordinal(), world, pos[0], pos[1], pos[2]);
 			
 			return true;
 		} else {

@@ -1,22 +1,29 @@
 package com.hbm.inventory.gui;
 
-import com.hbm.lib.RefStrings;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.util.ResourceLocation;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.util.Locale;
+import java.util.Stack;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.util.Locale;
-import java.util.Stack;
+import com.hbm.lib.RefStrings;
+
+import ch.obermuhlner.math.big.BigDecimalMath;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.util.ResourceLocation;
 
 public class GUICalculator extends GuiScreen {
 	private static final ResourceLocation texture = new ResourceLocation(RefStrings.MODID, "textures/gui/calculator.png");
 	private int xSize = 220;
 	private int ySize = 50;
 	private GuiTextField inputField;
+	private static final MathContext CONTEXT = new MathContext(256);
+	private static final BigDecimal phi = BigDecimalMath.sqrt(BigDecimal.valueOf(5), CONTEXT).add(BigDecimal.ONE).divide(BigDecimal.valueOf(2));
 
 	private String latestResult = "?";
 
@@ -47,8 +54,8 @@ public class GUICalculator extends GuiScreen {
 
 		if (p_73869_1_ == 13 || p_73869_1_ == 10) { // when pressing enter (CR or LF)
 			try {
-				double result = evaluateExpression(input);
-				String plainStringRepresentation = (new BigDecimal(result, MathContext.DECIMAL64)).toPlainString();
+				BigDecimal result = evaluateExpression(input);
+				String plainStringRepresentation = result.round(CONTEXT).toPlainString();
 				GuiScreen.setClipboardString(plainStringRepresentation);
 				inputField.setText(plainStringRepresentation);
 				inputField.setCursorPositionEnd();
@@ -63,7 +70,7 @@ public class GUICalculator extends GuiScreen {
 		}
 
 		try {
-			latestResult = Double.toString(evaluateExpression(input));
+			latestResult = evaluateExpression(input).toString();
 		} catch (Exception e) { latestResult = e.toString(); }
 	}
 
@@ -86,11 +93,11 @@ public class GUICalculator extends GuiScreen {
 	 * Mathematically evaluates user-inputted strings<br>
 	 * It is recommended to catch all exceptions when using this
 	 */
-	public static double evaluateExpression(String input) {
+	public static BigDecimal evaluateExpression(String input) {
 		if (input.contains("^")) input = preEvaluatePower(input);
 
 		char[] tokens = input.toCharArray();
-		Stack<Double> values = new Stack<>();
+		Stack<BigDecimal> values = new Stack<>();
 		Stack<String> operators = new Stack<>();
 
 		for (int i = 0; i < tokens.length; i++) {
@@ -103,7 +110,7 @@ public class GUICalculator extends GuiScreen {
 					i++;
 				}
 				while (i < tokens.length && (tokens[i] >= '0' && tokens[i] <= '9' || tokens[i] == '.')) buffer.append(tokens[i++]);
-				values.push(Double.parseDouble(buffer.toString()));
+				values.push(new BigDecimal(buffer.toString()));
 				i--;
 			} else if (tokens[i] == '(') operators.push(Character.toString(tokens[i]));
 			else if (tokens[i] == ')') {
@@ -117,14 +124,15 @@ public class GUICalculator extends GuiScreen {
 					values.push(evaluateOperator(operators.pop().charAt(0), values.pop(), values.pop()));
 				operators.push(Character.toString(tokens[i]));
 			} else if (tokens[i] == '!') {
-				values.push((double) factorial((int) Math.round(values.pop())));
+				values.push(BigDecimalMath.factorial(BigDecimalMath.round(values.pop(), CONTEXT), CONTEXT));
 			}else if (tokens[i] >= 'A' && tokens[i] <= 'Z' || tokens[i] >= 'a' && tokens[i] <= 'z') {
 				StringBuilder charBuffer = new StringBuilder();
 				while (i < tokens.length && (tokens[i] >= 'A' && tokens[i] <= 'Z' || tokens[i] >= 'a' && tokens[i] <= 'z'))
 					charBuffer.append(tokens[i++]);
 				String string = charBuffer.toString();
-				if (string.equalsIgnoreCase("pi")) values.push(Math.PI);
-				else if (string.equalsIgnoreCase("e")) values.push(Math.E);
+				if (string.equalsIgnoreCase("pi")) values.push(BigDecimalMath.pi(CONTEXT));
+				else if (string.equalsIgnoreCase("e")) values.push(BigDecimalMath.e(CONTEXT));
+				else if (string.equalsIgnoreCase("phi")) values.push(phi);
 				else operators.push(string.toLowerCase(Locale.ROOT));
 				i--;
 			}
@@ -136,37 +144,43 @@ public class GUICalculator extends GuiScreen {
 		return values.pop();
 	}
 
-	private static double evaluateOperator(char operator, double x, double y) {
+	private static BigDecimal evaluateOperator(char operator, BigDecimal x, BigDecimal y) {
 		switch (operator) {
-			case '+': return y + x;
-			case '-': return y - x;
-			case '*': return y * x;
-			case '/': return y / x;
+			case '+': return y.add(x);
+			case '-': return y.subtract(x);
+			case '*': return y.multiply(x);
+			case '/': return y.divide(x);
 
-			case '^': return Math.pow(y, x); // should not happen here, but oh well
+			case '^': return BigDecimalMath.pow(y, x, CONTEXT); // should not happen here, but oh well
+			default: return BigDecimal.ZERO;
 		}
-		return 0;
 	}
 
-	private static double evaluateFunction(String function, double x) {
+	private static BigDecimal evaluateFunction(String function, BigDecimal x) {
 		switch (function) {
-			case "sqrt": return Math.sqrt(x);
+			case "sqrt": return BigDecimalMath.sqrt(x, CONTEXT);
 
-			case "sin": return Math.sin(x);
-			case "cos": return Math.cos(x);
-			case "tan": return Math.tan(x);
-			case "asin": return Math.asin(x);
-			case "acos": return Math.acos(x);
-			case "atan": return Math.atan(x);
+			case "sin": return BigDecimalMath.sin(x, CONTEXT);
+			case "sinh": return BigDecimalMath.sinh(x, CONTEXT);
+			case "cos": return BigDecimalMath.cos(x, CONTEXT);
+			case "cosh": return BigDecimalMath.cosh(x, CONTEXT);
+			case "tan": return BigDecimalMath.tan(x, CONTEXT);
+			case "tanh": return BigDecimalMath.tanh(x, CONTEXT);
+			case "atanh": return BigDecimalMath.atanh(x, CONTEXT);
+			case "asin": return BigDecimalMath.asin(x, CONTEXT);
+			case "acos": return BigDecimalMath.acos(x, CONTEXT);
+			case "atan": return BigDecimalMath.atan(x, CONTEXT);
 
-			case "log": return Math.log10(x);
-			case "ln": return Math.log(x);
-
-			case "ceil": return Math.ceil(x);
-			case "floor": return Math.floor(x);
-			case "round": return Math.round(x);
+			case "log": return BigDecimalMath.log10(x, CONTEXT);
+			case "ln": return BigDecimalMath.log(x, CONTEXT);
+			
+			case "abs": return x.abs();
+			case "ceil": return x.setScale(0, BigDecimal.ROUND_CEILING);
+			case "floor": return x.setScale(0, BigDecimal.ROUND_FLOOR);
+			case "round": return x.setScale(0, RoundingMode.HALF_UP);
+			case "sigfig": return BigDecimal.valueOf(BigDecimalMath.significantDigits(x));
+			default: return BigDecimal.ZERO;
 		}
-		return 0;
 	}
 
 	/** Returns whether {@code second} has precedence over {@code first} */
@@ -202,6 +216,8 @@ public class GUICalculator extends GuiScreen {
 						break;
 					case '+': case '-': case '*': case '/': case '^':
 						if (parenthesesDepth == 0) break baseLoop;
+				default:
+					break;
 				}
 			}
 			baseExpressionStart++; // go one token forward again
@@ -224,15 +240,17 @@ public class GUICalculator extends GuiScreen {
 						break;
 					case '+': case '-': case '*': case '/': case '^':
 						if (parenthesesDepth == 0) break exponentLoop;
+				default:
+					break;
 				}
 			}
 			if (parenthesesDepth > 0) throw new IllegalArgumentException("Incomplete parentheses");
 
-			double base = evaluateExpression(input.substring(baseExpressionStart, powerOperatorIndex));
-			double exponent = evaluateExpression(input.substring(powerOperatorIndex + 1, exponentExpressionEnd));
-			double result = Math.pow(base, exponent);
+			BigDecimal base = evaluateExpression(input.substring(baseExpressionStart, powerOperatorIndex));
+			BigDecimal exponent = evaluateExpression(input.substring(powerOperatorIndex + 1, exponentExpressionEnd));
+			BigDecimal result = BigDecimalMath.pow(base, exponent, CONTEXT);
 			// use big decimal to avoid scientific notation messing with the calculation
-			input = input.substring(0, baseExpressionStart) + (new BigDecimal(result, MathContext.DECIMAL64)).toPlainString() + input.substring(exponentExpressionEnd);
+			input = input.substring(0, baseExpressionStart) + result.toString() + input.substring(exponentExpressionEnd);
 		} while (input.contains("^"));
 
 		return input;
@@ -240,28 +258,28 @@ public class GUICalculator extends GuiScreen {
 
 	// TODO Maybe switch the whole calculator to using BigInteger/BigDecimal?
 	// SplitRecursive algorithm
-	private static int factorial(int in) {
-		if (in < 0) throw new IllegalArgumentException("Factorial needs n >= 0");
-		if (in < 2) return 1;
-		int p = 1, r = 1;
-		factorialCurrentN = 1;
-		int h = 0, shift = 0, high = 1;
-		int log2n = log2(in);
-		while (h != in) {
-			shift += h;
-			h = in >> log2n--;
-			int len = high;
-			high = (h - 1) | 1;
-			len = (high - len) / 2;
-
-			if (len > 0) {
-				p *= factorialProduct(len);
-				r *= p;
-			}
-		}
-
-		return r << shift;
-	}
+//	private static BigDecimal factorial(BigInteger in) {
+//		if (in.compareTo(BigInteger.ZERO) == -1) throw new IllegalArgumentException("Factorial needs n >= 0");
+//		if (in.compareTo(BigInteger.valueOf(2)) == -1) return BigDecimal.ONE;
+//		int p = 1, r = 1;
+//		factorialCurrentN = 1;
+//		int h = 0, shift = 0, high = 1;
+//		long log2n = log2(in.longValueExact()).longValueExact();
+//		while (in.compareTo(BigInteger.valueOf(h)) != 0) {
+//			shift += h;
+//			h = in >> log2n--;
+//			int len = high;
+//			high = (h - 1) | 1;
+//			len = (high - len) / 2;
+//
+//			if (len > 0) {
+//				p *= factorialProduct(len);
+//				r *= p;
+//			}
+//		}
+//
+//		return r << shift;
+//	}
 
 	private static int factorialCurrentN;
 
@@ -272,12 +290,12 @@ public class GUICalculator extends GuiScreen {
 		return factorialProduct(in - m) * factorialProduct(m);
 	}
 
-	private static int log2(int in) {
-		int log = 0;
+	private static BigInteger log2(long in) {
+		long log = 0;
 		if((in & 0xffff0000) != 0) { in >>>= 16; log = 16; }
 		if(in >= 256) { in >>>= 8; log += 8; }
 		if(in >= 16) { in >>>= 4; log += 4; }
 		if(in >= 4) { in >>>= 2; log += 2; }
-		return log + (in >>> 1);
+		return BigInteger.valueOf(log + (in >>> 1));
 	}
 }

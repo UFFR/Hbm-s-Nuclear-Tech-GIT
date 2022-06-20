@@ -1,5 +1,7 @@
 package com.hbm.packet;
 
+import com.hbm.calc.EasyLocation;
+
 import api.hbm.energy.IEnergyUser;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -29,6 +31,16 @@ public class AuxElectricityPacket implements IMessage {
 		this.y = y;
 		this.z = z;
 		this.charge = charge;
+	}
+	
+	public AuxElectricityPacket(TileEntity te, long charge)
+	{
+		this(te.xCoord, te.yCoord, te.zCoord, charge);
+	}
+	
+	public AuxElectricityPacket(EasyLocation loc, long charge)
+	{
+		this((int) loc.posX, (int) loc.posY, (int) loc.posZ, charge);
 	}
 
 	@Override

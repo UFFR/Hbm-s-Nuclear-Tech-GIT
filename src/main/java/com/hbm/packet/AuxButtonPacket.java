@@ -1,5 +1,6 @@
 package com.hbm.packet;
 
+import com.hbm.calc.EasyLocation;
 import com.hbm.config.MobConfig;
 import com.hbm.entity.mob.EntityDuck;
 import com.hbm.inventory.fluid.FluidType;
@@ -15,7 +16,6 @@ import com.hbm.tileentity.machine.TileEntityMachineMiningLaser;
 import com.hbm.tileentity.machine.TileEntityMachineMissileAssembly;
 import com.hbm.tileentity.machine.TileEntityMachineReactorLarge;
 import com.hbm.tileentity.machine.TileEntityRadioRec;
-import com.hbm.tileentity.machine.TileEntityReactorZirnox;
 import com.hbm.tileentity.machine.TileEntitySoyuzLauncher;
 import com.hbm.tileentity.machine.storage.TileEntityBarrel;
 import com.hbm.tileentity.machine.storage.TileEntityMachineBattery;
@@ -29,7 +29,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 
-@Deprecated //use the NBT control packet instead
 public class AuxButtonPacket implements IMessage {
 
 	int x;
@@ -51,7 +50,27 @@ public class AuxButtonPacket implements IMessage {
 		this.value = value;
 		this.id = id;
 	}
+	
+	public AuxButtonPacket(TileEntity te, int value, int id)
+	{
+		this(te.xCoord, te.yCoord, te.zCoord, value, id);
+	}
+	
+	public AuxButtonPacket(TileEntity te)
+	{
+		this(te, 0, 0);
+	}
 
+	public AuxButtonPacket(EasyLocation loc, int value, int id)
+	{
+		this((int) loc.posX, (int) loc.posY, (int) loc.posZ, value, id);
+	}
+	
+	public AuxButtonPacket(EasyLocation loc)
+	{
+		this(loc, 0, 0);
+	}
+	
 	@Override
 	public void fromBytes(ByteBuf buf) {
 		x = buf.readInt();
@@ -88,7 +107,7 @@ public class AuxButtonPacket implements IMessage {
 					}
 					
 					if(m.id == 1) {
-						radio.freq = ((double)m.value) / 10D;
+						radio.freq = (m.value) / 10D;
 					}
 				}
 				
@@ -156,7 +175,7 @@ public class AuxButtonPacket implements IMessage {
 				if (te instanceof TileEntityBarrel) {
 					TileEntityBarrel barrel = (TileEntityBarrel)te;
 
-					barrel.mode = (short) ((barrel.mode + 1) % barrel.modes);
+					barrel.mode = (short) ((barrel.mode + 1) % TileEntityBarrel.modes);
 					barrel.markDirty();
 				}
 				

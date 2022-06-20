@@ -1,5 +1,6 @@
 package com.hbm.items.machine;
 
+import java.text.NumberFormat;
 import java.util.List;
 
 import com.hbm.inventory.FluidStack;
@@ -39,7 +40,12 @@ public class ItemFluidIcon extends Item {
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean bool) {
 		if(stack.hasTagCompound())
 			if(stack.getTagCompound().getInteger("fill") > 0)
-				list.add(stack.getTagCompound().getInteger("fill") + "mB");
+				list.add(NumberFormat.getInstance().format(stack.getTagCompound().getInteger("fill")) + "mB");
+		
+		Fluids.fromID(stack.getItemDamage()).addInfo(list);
+		
+//		FluidType fluid = FluidType.getEnum(stack.getItemDamage());
+//		Library.addFluidInfo(fluid, list);
 	}
 
 	public static ItemStack addQuantity(ItemStack stack, int i) {
@@ -57,7 +63,7 @@ public class ItemFluidIcon extends Item {
 	}
 
 	public static ItemStack make(FluidType fluid, int i) {
-		return addQuantity(new ItemStack(ModItems.fluid_icon, 1, fluid.ordinal()), i);
+		return addQuantity(new ItemStack(ModItems.fluid_icon, 1, fluid.getID()), i);
 	}
 
 	public static int getQuantity(ItemStack stack) {

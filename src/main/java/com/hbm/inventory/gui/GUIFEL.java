@@ -19,7 +19,8 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 
-public class GUIFEL extends GuiInfoContainer {
+public class GUIFEL extends GuiInfoContainer
+{
 
 	public static ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/machine/gui_fel.png");
 	private TileEntityFEL fel;
@@ -39,7 +40,9 @@ public class GUIFEL extends GuiInfoContainer {
 		this.drawElectricityInfo(this, mouseX, mouseY, guiLeft + 182, guiTop + 27, 16, 113, fel.power, fel.maxPower);
 	}
 
-	protected void mouseClicked(int x, int y, int i) {
+	@Override
+	protected void mouseClicked(int x, int y, int i)
+	{
 		super.mouseClicked(x, y, i);
 
 		if(guiLeft + 142 <= x && guiLeft + 142 + 29 > x && guiTop + 41 < y && guiTop + 41 + 17 >= y) {

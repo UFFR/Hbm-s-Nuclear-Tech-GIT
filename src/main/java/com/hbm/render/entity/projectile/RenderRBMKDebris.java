@@ -2,8 +2,8 @@ package com.hbm.render.entity.projectile;
 
 import org.lwjgl.opengl.GL11;
 
+import com.hbm.entity.projectile.EntityDebrisBase.DebrisType;
 import com.hbm.entity.projectile.EntityRBMKDebris;
-import com.hbm.entity.projectile.EntityRBMKDebris.DebrisType;
 import com.hbm.lib.RefStrings;
 import com.hbm.main.ResourceManager;
 

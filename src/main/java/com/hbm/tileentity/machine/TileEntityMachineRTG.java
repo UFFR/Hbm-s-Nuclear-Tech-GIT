@@ -4,9 +4,10 @@ import com.hbm.config.VersatileConfig;
 import com.hbm.items.machine.ItemRTGPellet;
 import com.hbm.packet.AuxElectricityPacket;
 import com.hbm.packet.PacketDispatcher;
+import com.hbm.tileentity.IRTGUser;
 import com.hbm.tileentity.TileEntityLoadedBase;
-import com.hbm.util.RTGUtil;
 
+import api.hbm.Date;
 import api.hbm.energy.IEnergyGenerator;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,19 +17,20 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityMachineRTG extends TileEntityLoadedBase implements ISidedInventory, IEnergyGenerator {
+public class TileEntityMachineRTG extends TileEntityLoadedBase implements ISidedInventory, IEnergyGenerator, IRTGUser
+{
 
 	private ItemStack slots[];
 	
 	public int heat;
 	public final int heatMax = VersatileConfig.rtgDecay() ? 600 : 200;
 	public long power;
-	public final long powerMax = 100000;
+	public final static long powerMax = 100000;
 	
 	public static final int[] slot_io = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
 	
 	private String customName;
-	
+	private Date date = new Date();
 	public TileEntityMachineRTG() {
 		slots = new ItemStack[15];
 	}
@@ -132,7 +134,7 @@ public class TileEntityMachineRTG extends TileEntityLoadedBase implements ISided
 		NBTTagList list = nbt.getTagList("items", 10);
 
 		power = nbt.getInteger("power");
-		heat = nbt.getInteger("heat");
+		heat = nbt.getShort("heat");
 		slots = new ItemStack[getSizeInventory()];
 		
 		for(int i = 0; i < list.tagCount(); i++)
@@ -144,13 +146,15 @@ public class TileEntityMachineRTG extends TileEntityLoadedBase implements ISided
 				slots[b0] = ItemStack.loadItemStackFromNBT(nbt1);
 			}
 		}
+		
+		date = new Date(nbt.getByteArray("date"));
 	}
 	
 	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
 		super.writeToNBT(nbt);
 		nbt.setInteger("power", (short) (power));
-		nbt.setInteger("heat", (short) (heat));
+		nbt.setInteger("heat", heat);
 		NBTTagList list = new NBTTagList();
 		
 		for(int i = 0; i < slots.length; i++)
@@ -164,6 +168,8 @@ public class TileEntityMachineRTG extends TileEntityLoadedBase implements ISided
 			}
 		}
 		nbt.setTag("items", list);
+		
+		nbt.setByteArray("date", date.serialize());
 	}
 	
 	@Override
@@ -194,7 +200,7 @@ public class TileEntityMachineRTG extends TileEntityLoadedBase implements ISided
 	}
 	
 	public boolean hasHeat() {
-		return RTGUtil.hasHeat(slots, slot_io);
+		return getHeat() > 0;
 	}
 
 	@Override
@@ -205,7 +211,7 @@ public class TileEntityMachineRTG extends TileEntityLoadedBase implements ISided
 			for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
 				this.sendPower(worldObj, xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ, dir.getOpposite());
 			
-			heat = RTGUtil.updateRTGs(slots, slot_io);
+			heat = updateRTGs();
 			
 			if(heat > heatMax)
 				heat = heatMax;
@@ -232,4 +238,35 @@ public class TileEntityMachineRTG extends TileEntityLoadedBase implements ISided
 	public void setPower(long i) {
 		this.power = i;
 	}
+
+	@Override
+	public int getHeat()
+	{
+		return heat;
+	}
+	
+	@Override
+	public ItemStack[] getInventory()
+	{
+		return slots;
+	}
+
+	@Override
+	public Class<ItemRTGPellet> getDesiredClass()
+	{
+		return ItemRTGPellet.class;
+	}
+
+	@Override
+	public void incrementAge()
+	{
+		date.increment();
+	}
+
+	@Override
+	public Date getInternalDate()
+	{
+		return date;
+	}
+
 }

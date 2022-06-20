@@ -22,12 +22,11 @@ public class ItemBreedingRod extends ItemEnumMulti {
 		PU239,
 		RGP,
 		WASTE,
-		
 		//Required for prototype
 		LEAD,
 		URANIUM,
-		
 		RA226,
-		AC227
+		AC227,
+		THA;
 	}
 }

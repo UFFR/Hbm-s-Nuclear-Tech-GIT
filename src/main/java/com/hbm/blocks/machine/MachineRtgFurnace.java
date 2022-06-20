@@ -2,6 +2,15 @@ package com.hbm.blocks.machine;
 
 import java.util.Random;
 
+import com.hbm.blocks.ModBlocks;
+import com.hbm.handler.EnumGUI;
+import com.hbm.lib.RefStrings;
+import com.hbm.main.MainRegistry;
+import com.hbm.tileentity.machine.TileEntityRtgFurnace;
+
+import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -18,19 +27,9 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-import com.hbm.blocks.ModBlocks;
-import com.hbm.lib.RefStrings;
-import com.hbm.main.MainRegistry;
-import com.hbm.tileentity.machine.TileEntityRtgFurnace;
-
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 public class MachineRtgFurnace extends BlockContainer {
 
     private final Random field_149933_a = new Random();
-	private Random rand;
 	private final boolean isActive;
 	private static boolean keepInventory;
 	
@@ -41,7 +40,6 @@ public class MachineRtgFurnace extends BlockContainer {
 
 	public MachineRtgFurnace(boolean blockState) {
 		super(Material.iron);
-		rand = new Random();
 		isActive = blockState;
 	}
 	
@@ -139,7 +137,7 @@ public class MachineRtgFurnace extends BlockContainer {
 			TileEntityRtgFurnace entity = (TileEntityRtgFurnace) world.getTileEntity(x, y, z);
 			if(entity != null)
 			{
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_rtg_furnace, world, x, y, z);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.FURNACE_RTG.ordinal(), world, x, y, z);
 			}
 			return true;
 		} else {

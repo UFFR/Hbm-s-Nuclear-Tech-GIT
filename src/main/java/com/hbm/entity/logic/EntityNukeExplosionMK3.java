@@ -8,6 +8,7 @@ import com.hbm.config.GeneralConfig;
 import com.hbm.entity.effect.EntityFalloutRain;
 import com.hbm.explosion.ExplosionFleija;
 import com.hbm.explosion.ExplosionHurtUtil;
+import com.hbm.explosion.ExplosionLunatic;
 import com.hbm.explosion.ExplosionNukeAdvanced;
 import com.hbm.explosion.ExplosionNukeGeneric;
 import com.hbm.explosion.ExplosionSolinium;
@@ -29,6 +30,7 @@ public class EntityNukeExplosionMK3 extends Entity {
 	public ExplosionNukeAdvanced vap;
 	public ExplosionFleija expl;
 	public ExplosionSolinium sol;
+	public ExplosionLunatic luna;
 	public int speed = 1;
 	public float coefficient = 1;
 	public float coefficient2 = 1;
@@ -64,14 +66,19 @@ public class EntityNukeExplosionMK3 extends Entity {
     		vap = new ExplosionNukeAdvanced((int)this.posX, (int)this.posY, (int)this.posZ, this.worldObj, (int)(this.destructionRange * 2.5), this.coefficient, 1);
 			vap.readFromNbt(nbt, "vap_");
     	} else {
-
-    		if(extType == 0) {
+    		switch (extType)
+    		{
+    		case 0:
     			expl = new ExplosionFleija((int)this.posX, (int)this.posY, (int)this.posZ, this.worldObj, this.destructionRange, this.coefficient, this.coefficient2);
 				expl.readFromNbt(nbt, "expl_");
-    		}
-    		if(extType == 1) {
+				break;
+    		case 1:
     			sol = new ExplosionSolinium((int)this.posX, (int)this.posY, (int)this.posZ, this.worldObj, this.destructionRange, this.coefficient, this.coefficient2);
     			sol.readFromNbt(nbt, "sol_");
+    			break;
+    		case 2:
+    			luna = new ExplosionLunatic((int)this.posX, (int)this.posY, (int)this.posZ, this.worldObj, this.destructionRange, this.coefficient, this.coefficient2);
+    			luna.readFromNbt(nbt, "luna_");
     		}
     	}
     	
@@ -103,6 +110,8 @@ public class EntityNukeExplosionMK3 extends Entity {
 			expl.saveToNbt(nbt, "expl_");
 		if(sol != null)
 			sol.saveToNbt(nbt, "sol_");
+		if (luna != null)
+			luna.saveToNbt(nbt, "luna_");
 		
 	}
 
@@ -113,7 +122,6 @@ public class EntityNukeExplosionMK3 extends Entity {
     @Override
 	public void onUpdate() {
         super.onUpdate();
-        	
         if(!this.did)
         {
         	for(Object player : this.worldObj.playerEntities)
@@ -128,11 +136,19 @@ public class EntityNukeExplosionMK3 extends Entity {
         		wst = new ExplosionNukeAdvanced((int)this.posX, (int)this.posY, (int)this.posZ, this.worldObj, (int)(this.destructionRange * 1.8), this.coefficient, 2);
         		vap = new ExplosionNukeAdvanced((int)this.posX, (int)this.posY, (int)this.posZ, this.worldObj, (int)(this.destructionRange * 2.5), this.coefficient, 1);
         	} else {
-        		if(extType == 0)
+        		switch (extType)
+        		{
+        		case 0:
         			expl = new ExplosionFleija((int)this.posX, (int)this.posY, (int)this.posZ, this.worldObj, this.destructionRange, this.coefficient, this.coefficient2);
-        		if(extType == 1)
+        			break;
+        		case 1:
         			sol = new ExplosionSolinium((int)this.posX, (int)this.posY, (int)this.posZ, this.worldObj, this.destructionRange, this.coefficient, this.coefficient2);
-        	}
+        			break;
+        		case 2:
+        			luna = new ExplosionLunatic((int)this.posX, (int)this.posY, (int)this.posZ, this.worldObj, this.destructionRange, this.coefficient, this.coefficient2);
+        			break;
+        		}
+    		}
         	
         	this.did = true;
         }
@@ -153,23 +169,43 @@ public class EntityNukeExplosionMK3 extends Entity {
         			this.setDead();
         		}
         	} else {
-        		if(extType == 0)
+        		switch (extType)
+        		{
+        		case 0:
         			if(expl.update())
         				this.setDead();
-        		if(extType == 1)
+        			break;
+        		case 1:
         			if(sol.update())
         				this.setDead();
+        			break;
+        		case 2:
+        			if (luna.update())
+        				this.setDead();
+        		}
         	}
         }
         	
-        if(!flag)
+        if(!flag)// TODO Fix this spaghetti code on the lunatic-type (digamma) explosion
         {
         	this.worldObj.playSoundEffect(this.posX, this.posY, this.posZ, "ambient.weather.thunder", 10000.0F, 0.8F + this.rand.nextFloat() * 0.2F);
         	
-        	if(waste || extType != 1) {
-        		ExplosionNukeGeneric.dealDamage(this.worldObj, this.posX, this.posY, this.posZ, this.destructionRange * 2);
+        	if(waste || extType != 1 ) {
+        		if (extType != 2)
+        		{
+        			ExplosionNukeGeneric.dealDamage(this.worldObj, this.posX, this.posY, this.posZ, this.destructionRange * 2);
+        		}
+        		else if (extType == 2)
+        		{
+        			ExplosionHurtUtil.doDigamma(worldObj, posX, posY, posZ, coefficient / 20F, coefficient2 / 20F, this.destructionRange);
+        		}
         	} else {
-        		ExplosionHurtUtil.doRadiation(worldObj, posX, posY, posZ, 15000, 250000, this.destructionRange);
+        		switch (extType)
+        		{
+        		case 1:
+        			ExplosionHurtUtil.doRadiation(worldObj, posX, posY, posZ, 15000, 250000, this.destructionRange);
+        			break;
+        		}
         	}
         	
         } else {

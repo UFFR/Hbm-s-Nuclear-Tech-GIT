@@ -37,10 +37,12 @@ public class ItemFluidIdentifier extends Item implements IItemFluidIdentifier {
 		return stack.copy();
 	}
 
+	@Override
 	public boolean hasContainerItem() {
 		return true;
 	}
 
+	@Override
 	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack) {
 		return false;
 	}

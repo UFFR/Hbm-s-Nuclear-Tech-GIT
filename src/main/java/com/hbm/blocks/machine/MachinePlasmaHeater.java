@@ -4,6 +4,7 @@ import java.util.Random;
 
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ModBlocks;
+import com.hbm.handler.EnumGUI;
 import com.hbm.handler.MultiblockHandlerXR;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.TileEntityProxyCombo;
@@ -60,7 +61,7 @@ public class MachinePlasmaHeater extends BlockDummyable {
 			TileEntityMachinePlasmaHeater entity = (TileEntityMachinePlasmaHeater) world.getTileEntity(pos[0], pos[1], pos[2]);
 			if(entity != null)
 			{
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_plasma_heater, world, pos[0], pos[1], pos[2]);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.PLASMA_HEATER.ordinal(), world, pos[0], pos[1], pos[2]);
 			}
 			return true;
 		} else {
@@ -85,7 +86,8 @@ public class MachinePlasmaHeater extends BlockDummyable {
 		}
 	}
 	
-    public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
+    @Override
+	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
     	
         float f = 0.0625F;
         
@@ -98,7 +100,8 @@ public class MachinePlasmaHeater extends BlockDummyable {
     	}
     }
 	
-    public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z) {
+    @Override
+	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z) {
 
         float f = 0.0625F;
         
@@ -111,6 +114,7 @@ public class MachinePlasmaHeater extends BlockDummyable {
     	}
     }
 	
+	@Override
 	protected boolean checkRequirement(World world, int x, int y, int z, ForgeDirection dir, int o) {
 
 		if(!MultiblockHandlerXR.checkSpace(world, x + dir.offsetX * o , y + dir.offsetY * o, z + dir.offsetZ * o, getDimensions(), x, y, z, dir))

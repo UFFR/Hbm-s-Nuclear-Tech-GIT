@@ -1,0 +1,133 @@
+package com.hbm.items.weapon;
+
+import java.util.HashSet;
+import java.util.List;
+
+import com.hbm.calc.EasyLocation;
+import com.hbm.extprop.HbmLivingProps;
+import com.hbm.lib.Library;
+import com.hbm.main.MainRegistry;
+import com.hbm.util.BobMathUtil;
+
+import api.hbm.item.IClickReceiver;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.World;
+
+public class ItemPagoda extends Item implements IClickReceiver
+{
+	private static final String KEY_CHARGE = "PAGODA_CHARGE", KEY_CHARGING = "PAGODA_CHARGING";
+	private static final short MAX_CHARGE = 1000;
+	private static final byte MAX_RADIUS = 20;
+	public ItemPagoda()
+	{
+		setMaxStackSize(1);
+		setFull3D();
+		setUnlocalizedName("pagoda");
+		setCreativeTab(MainRegistry.weaponTab);
+	}
+
+	@Override
+	public boolean handleMouseInput(ItemStack stack, EntityPlayer player, int button, boolean state)
+	{
+		switch (button)
+		{
+		case 1:
+			final short strength = stack.stackTagCompound.getShort(KEY_CHARGE);
+			final float radius = strength / 100;
+			EasyLocation playerLoc = new EasyLocation(Library.getPosition(1, player)).modifyCoord(0, player.getEyeHeight(), 0);
+			EasyLocation checkCoord = playerLoc.clone().setWorld(player.worldObj);
+			HashSet<Entity> entities = new HashSet<>();
+			BobMathUtil.offsetForHand(player, checkCoord);
+			EasyLocation step = new EasyLocation
+					(
+						-(Math.sin(player.rotationYaw / 180 * Math.PI) * Math.cos(player.rotationPitch / 180 * Math.PI)),
+						-Math.sin(player.rotationPitch / 180 * Math.PI),
+						Math.cos(player.rotationYaw / 180 * Math.PI) * Math.cos(player.rotationPitch / 180 * Math.PI)
+					);
+			do
+			{
+				checkCoord.addCoord(step);
+				entities.addAll(player.worldObj.getEntitiesWithinAABBExcludingEntity(player, AxisAlignedBB.getBoundingBox(checkCoord.posX - radius, checkCoord.posY - radius, checkCoord.posZ - radius, checkCoord.posX + radius, checkCoord.posY + radius, checkCoord.posZ + radius)));
+			} while (!checkCoord.getBlockAtCoord().isBlockNormalCube() && EasyLocation.distance(checkCoord, playerLoc) < 50);
+			for (Entity entity : entities)
+				if (entity instanceof EntityLivingBase && !Library.isObstructed(player.getEntityWorld(), player.posX, player.posY, player.posZ, entity.posX, entity.posY, entity.posZ))
+					HbmLivingProps.incrementRadiation((EntityLivingBase) entity, strength);
+			break;
+		case 2:
+			stack.stackTagCompound.setBoolean(KEY_CHARGING, !isCharging(stack));
+			break;
+		case 4:
+			List<Entity> entityList = player.worldObj.getEntitiesWithinAABBExcludingEntity(player, AxisAlignedBB.getBoundingBox(player.posX - MAX_RADIUS, player.posY - MAX_RADIUS, player.posZ - MAX_RADIUS, player.posX + MAX_RADIUS, player.posY + MAX_RADIUS, player.posZ + MAX_RADIUS));
+			for (Entity entity : entityList)
+				if (!Library.isObstructed(player.getEntityWorld(), player.posX, player.posY, player.posZ, entity.posX, entity.posY, entity.posZ) && entity instanceof EntityLivingBase)
+					HbmLivingProps.incrementRadiation((EntityLivingBase) entity, getCharge(stack) / 100);
+			break;
+		default:
+			break;
+		}
+		return false;
+	}
+
+	@Override
+	public void onUpdate(ItemStack stack, World world, Entity entity, int i, boolean b)
+	{
+		if (!stack.hasTagCompound())
+		{
+			stack.stackTagCompound = new NBTTagCompound();
+			stack.stackTagCompound.setShort(KEY_CHARGE, (short) 0);
+			stack.stackTagCompound.setBoolean(KEY_CHARGING, false);
+		}
+		
+		if (isCharging(stack) && getCharge(stack) < MAX_CHARGE)
+			incrementCharge(stack);
+		else if (!isCharging(stack))
+			decrementCharge(stack);
+	}
+	
+	private static boolean isCharging(ItemStack stack)
+	{
+		return stack.stackTagCompound.getBoolean(KEY_CHARGING);
+	}
+	
+	private static short getCharge(ItemStack stack)
+	{
+		return stack.stackTagCompound.getShort(KEY_CHARGE);
+	}
+	
+	private static void incrementCharge(ItemStack stack)
+	{
+		setCharge(stack, getCharge(stack) + 1);
+		if (getCharge(stack) > MAX_CHARGE)
+			setCharge(stack, MAX_CHARGE);
+	}
+	
+	private static void decrementCharge(ItemStack stack)
+	{
+		setCharge(stack, getCharge(stack) - 1);
+		if (getCharge(stack) < 0)
+			setCharge(stack, 0);
+	}
+	
+	private static void setCharge(ItemStack stack, int charge)
+	{
+		stack.stackTagCompound.setShort(KEY_CHARGE, (short) charge);
+	}
+	
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack)
+	{
+		return 1d - (double) getCharge(stack) / (double) MAX_CHARGE;
+	}
+	
+	@Override
+	public boolean showDurabilityBar(ItemStack stack)
+	{
+		return true;
+	}
+}

@@ -29,7 +29,7 @@ public class FusionRecipes {
 	public static HashMap<FluidType, Integer> levels = new HashMap();
 	static {
 		levels.put(Fluids.PLASMA_DT, 1000);
-		levels.put(Fluids.PLASMA_DH3, 2000);
+		levels.put(Fluids.PLASMA_DH3, 0);
 		levels.put(Fluids.PLASMA_HD, 1000);
 		levels.put(Fluids.PLASMA_HT, 1000);
 		levels.put(Fluids.PLASMA_XM, 3000);

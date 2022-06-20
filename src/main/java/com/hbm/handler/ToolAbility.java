@@ -28,7 +28,8 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-public abstract class ToolAbility {
+public abstract class ToolAbility
+{
 	
 	public abstract void onDig(World world, int x, int y, int z, EntityPlayer player, Block block, int meta, IItemAbility tool);
 	public abstract String getName();
@@ -44,7 +45,7 @@ public abstract class ToolAbility {
 			this.radius = radius;
 		}
 		
-		private Set<ThreeInts> pos = new HashSet();
+		private Set<ThreeInts> pos = new HashSet<ThreeInts>();
 
 		@Override
 		public void onDig(World world, int x, int y, int z, EntityPlayer player, Block block, int meta, IItemAbility tool) {

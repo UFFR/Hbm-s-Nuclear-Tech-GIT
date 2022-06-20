@@ -1,7 +1,7 @@
 package com.hbm.interfaces;
 
 import net.minecraft.world.World;
-
+@FunctionalInterface
 public interface IBomb {
 	/////////////people
 	

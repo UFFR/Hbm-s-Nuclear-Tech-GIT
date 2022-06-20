@@ -1,7 +1,7 @@
 package com.hbm.blocks.machine;
 
 import com.hbm.blocks.BlockDummyable;
-import com.hbm.blocks.ModBlocks;
+import com.hbm.handler.EnumGUI;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.TileEntityProxyCombo;
 import com.hbm.tileentity.machine.TileEntityMachineRadGen;
@@ -52,13 +52,14 @@ public class MachineRadGen extends BlockDummyable {
 			if(pos == null)
 				return false;
 			
-			FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_radgen, world, pos[0], pos[1], pos[2]);
+			FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.GENERATOR_RADIATION.ordinal(), world, pos[0], pos[1], pos[2]);
 			return true;
 		} else {
 			return false;
 		}
 	}
 	
+	@Override
 	protected void fillSpace(World world, int x, int y, int z, ForgeDirection dir, int o) {
 		super.fillSpace(world, x, y, z, dir, o);
 		

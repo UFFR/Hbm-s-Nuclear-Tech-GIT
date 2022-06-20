@@ -12,8 +12,6 @@ import com.hbm.util.ArmorRegistry.HazardClass;
 import api.hbm.entity.IRadiationImmune;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityMooshroom;
 import net.minecraft.entity.passive.EntityOcelot;
 import net.minecraft.entity.player.EntityPlayer;
@@ -62,8 +60,6 @@ public class ContaminationUtil {
 		
 		return e instanceof EntityNuclearCreeper ||
 				e instanceof EntityMooshroom ||
-				e instanceof EntityZombie ||
-				e instanceof EntitySkeleton ||
 				e instanceof EntityQuackos ||
 				e instanceof EntityOcelot ||
 				e instanceof IRadiationImmune;
@@ -87,6 +83,21 @@ public class ContaminationUtil {
 			ArmorUtil.damageGasMaskFilter(entity, i);
 		else
 			HbmLivingProps.incrementAsbestos(entity, i);
+	}
+	/**
+	 * Digamma that has infiltrated various things, add more as needed.<br>
+	 * <li>{@link #LIGHT}<br>
+	 * <li>{@link #MISC}<br>
+	 * <li>{@link #DIRECT}
+	 */
+	public enum EnumDigammaType
+	{
+		/** DRX that has infiltrated the visible light spectrum **/
+		LIGHT,
+		/** Misc. DRX **/
+		MISC,
+		/** Direct exposure **/
+		DIRECT;
 	}
 	
 	/// DIGAMMA ///
@@ -230,16 +241,30 @@ public class ContaminationUtil {
 		RADIATION,
 		DIGAMMA
 	}
-	
-	public static enum ContaminationType {
-		FARADAY,			//preventable by metal armor
-		HAZMAT,				//preventable by hazmat
-		HAZMAT2,			//preventable by heavy hazmat
-		DIGAMMA,			//preventable by fau armor or stability
-		DIGAMMA2,			//preventable by robes
-		CREATIVE,			//preventable by creative mode, for rad calculation armor piece bonuses still apply
-		RAD_BYPASS,			//same as craative but will not apply radiation resistance calculation
-		NONE				//not preventable
+	/**
+	 * Determines what the hazard type can be prevented by<br>
+	 * {@link #FARADAY} {@link #HAZMAT} {@link #HAZMAT2} {@link #DIGAMMA} {@link #DIGAMMA2} {@link #CREATIVE} {@link #RAD_BYPASS} {@link #NONE}
+	 * @author HBM
+	 *
+	 */
+	public static enum ContaminationType
+	{
+		/** preventable by metal armor **/
+		FARADAY,
+		/** preventable by hazmat **/
+		HAZMAT,
+		/** preventable by heavy hazmat **/
+		HAZMAT2,
+		/** preventable by fau armor or stability **/
+		DIGAMMA,
+		/** preventable by robes **/
+		DIGAMMA2,
+		/** preventable by creative mode, for rad calculation armor piece bonuses still apply **/
+		CREATIVE,
+		/** same as creative but will not apply radiation resistance calculation **/
+		RAD_BYPASS,
+		/** not preventable **/
+		NONE
 	}
 	
 	/*

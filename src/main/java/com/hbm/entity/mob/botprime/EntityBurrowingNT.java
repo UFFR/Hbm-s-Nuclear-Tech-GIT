@@ -13,9 +13,11 @@ public abstract class EntityBurrowingNT extends EntityCreature {
 		super(world);
 	}
 
+	@Override
 	protected void fall(float dist) {
 	}
 
+	@Override
 	public float getEyeHeight() {
 		return this.height * 0.5F;
 	}
@@ -24,9 +26,11 @@ public abstract class EntityBurrowingNT extends EntityCreature {
 		return false;
 	}
 
+	@Override
 	protected void updateFallState(double distFallen, boolean onGround) {
 	}
 
+	@Override
 	public void moveEntityWithHeading(float strafe, float forward) {
 
 		float drag = this.dragInGround;
@@ -48,6 +52,7 @@ public abstract class EntityBurrowingNT extends EntityCreature {
 		this.motionZ *= drag;
 	}
 
+	@Override
 	public boolean isOnLadder() {
 		return false;
 	}

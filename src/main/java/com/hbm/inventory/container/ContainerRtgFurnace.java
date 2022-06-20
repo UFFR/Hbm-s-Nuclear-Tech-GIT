@@ -1,6 +1,6 @@
 package com.hbm.inventory.container;
 
-import com.hbm.inventory.SlotMachineOutput;
+import com.hbm.inventory.SlotSmelting;
 import com.hbm.tileentity.machine.TileEntityRtgFurnace;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,11 +14,11 @@ public class ContainerRtgFurnace extends Container {
 	
 	private TileEntityRtgFurnace diFurnace;
 	private int dualCookTime;
-	private int lastItemBurnTime;
+//	private int lastItemBurnTime;
 	
 	public ContainerRtgFurnace(InventoryPlayer invPlayer, TileEntityRtgFurnace tedf) {
 		dualCookTime = 0;
-		lastItemBurnTime = 0;
+//		lastItemBurnTime = 0;
 		
 		diFurnace = tedf;
 		
@@ -26,7 +26,7 @@ public class ContainerRtgFurnace extends Container {
 		this.addSlotToContainer(new Slot(tedf, 1, 38, 53));
 		this.addSlotToContainer(new Slot(tedf, 2, 56, 53));
 		this.addSlotToContainer(new Slot(tedf, 3, 74, 53));
-		this.addSlotToContainer(new SlotMachineOutput(tedf, 4, 116, 35));
+		this.addSlotToContainer(new SlotSmelting(invPlayer.player, tedf, 4, 116, 35));
 		
 		for(int i = 0; i < 3; i++)
 		{
@@ -109,7 +109,7 @@ public class ContainerRtgFurnace extends Container {
 	public void updateProgressBar(int i, int j) {
 		if(i == 0)
 		{
-			diFurnace.dualCookTime = j;
+			diFurnace.dualCookTime = (short) j;
 		}
 	}
 }

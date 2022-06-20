@@ -8,11 +8,12 @@ import java.util.Set;
 
 import org.lwjgl.opengl.GL11;
 
+import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.machine.rbmk.RBMKBase;
 import com.hbm.entity.effect.EntitySpear;
+import com.hbm.entity.projectile.EntityDebrisBase.DebrisType;
 import com.hbm.entity.projectile.EntityRBMKDebris;
-import com.hbm.entity.projectile.EntityRBMKDebris.DebrisType;
 import com.hbm.main.MainRegistry;
 import com.hbm.main.ModEventHandler;
 import com.hbm.packet.AuxParticlePacketNT;
@@ -348,7 +349,7 @@ public abstract class TileEntityRBMKBase extends TileEntity implements INBTPacke
 		
 		standardMelt(reduce);
 		
-		if(this.getBlockMetadata() == RBMKBase.DIR_NORMAL_LID.ordinal() + RBMKBase.offset)
+		if(this.getBlockMetadata() == RBMKBase.DIR_NORMAL_LID.ordinal() + BlockDummyable.offset)
 			spawnDebris(DebrisType.LID);
 	}
 	

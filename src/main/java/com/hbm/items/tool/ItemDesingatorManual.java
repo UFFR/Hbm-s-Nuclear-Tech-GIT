@@ -3,7 +3,9 @@ package com.hbm.items.tool;
 import java.util.List;
 
 import com.hbm.items.ModItems;
+import com.hbm.lib.HbmCollection;
 import com.hbm.main.MainRegistry;
+import com.hbm.util.I18nUtil;
 
 import api.hbm.item.IDesignatorItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,7 +14,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-public class ItemDesingatorManual extends Item implements IDesignatorItem {
+public class ItemDesingatorManual extends Item implements IDesignatorItem
+{
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
@@ -24,14 +27,16 @@ public class ItemDesingatorManual extends Item implements IDesignatorItem {
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean bool) {
-		if(stack.stackTagCompound != null) {
-			list.add("Target Coordinates:");
-			list.add("X: " + stack.stackTagCompound.getInteger("xCoord"));
-			list.add("Z: " + stack.stackTagCompound.getInteger("zCoord"));
-		} else {
-			list.add("Please select a target.");
+	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean bool)
+	{
+		if(stack.stackTagCompound != null)
+		{
+			list.add(I18nUtil.resolveKey(HbmCollection.tarSet));
+			list.add("X: " + String.valueOf(stack.stackTagCompound.getInteger("xCoord")));
+			list.add("Z: " + String.valueOf(stack.stackTagCompound.getInteger("zCoord")));
 		}
+		else 
+			list.add(I18nUtil.resolveKey(HbmCollection.noPos));
 	}
 
 	@Override

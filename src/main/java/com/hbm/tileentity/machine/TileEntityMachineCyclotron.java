@@ -52,7 +52,7 @@ public class TileEntityMachineCyclotron extends TileEntityMachineBase implements
 	public FluidTank coolant;
 	public FluidTank amat;
 	
-	public List<IFluidAcceptor> list = new ArrayList();
+	public List<IFluidAcceptor> list = new ArrayList<IFluidAcceptor>();
 
 	public TileEntityMachineCyclotron() {
 		super(16);
@@ -190,6 +190,7 @@ public class TileEntityMachineCyclotron extends TileEntityMachineBase implements
 		this.plugs = data.getByte("plugs");
 	}
 	
+	@Override
 	public void handleButtonPacket(int value, int meta) {
 		
 		this.isOn = !this.isOn;
@@ -524,7 +525,7 @@ public class TileEntityMachineCyclotron extends TileEntityMachineBase implements
 
 	@Override
 	public long getMaxPower() {
-		return this.maxPower;
+		return maxPower;
 	}
 
 	@Override

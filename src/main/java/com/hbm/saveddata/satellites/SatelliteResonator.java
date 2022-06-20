@@ -11,6 +11,7 @@ public class SatelliteResonator extends Satellite {
 		this.satIface = Interfaces.SAT_COORD;
 	}
 	
+	@Override
 	public void onCoordAction(World world, EntityPlayer player, int x, int y, int z) {
 
 		if(!(player instanceof EntityPlayerMP))

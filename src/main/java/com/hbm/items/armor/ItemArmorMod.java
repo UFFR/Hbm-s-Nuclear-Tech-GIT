@@ -16,7 +16,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
-public class ItemArmorMod extends Item {
+public abstract class ItemArmorMod extends Item {
 
 	public final int type;
 	public final boolean helmet;

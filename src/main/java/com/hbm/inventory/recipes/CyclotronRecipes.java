@@ -1,5 +1,7 @@
 package com.hbm.inventory.recipes;
 
+import static com.hbm.inventory.OreDictManager.*;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,16 +17,18 @@ import net.minecraftforge.oredict.OreDictionary;
 public class CyclotronRecipes {
 
 	//i could have used classes for this, oh bother
-	private static HashMap<Object, ItemStack> lithium = new HashMap();
-	private static HashMap<Object, ItemStack> beryllium = new HashMap();
-	private static HashMap<Object, ItemStack> carbon = new HashMap();
-	private static HashMap<Object, ItemStack> copper = new HashMap();
-	private static HashMap<Object, ItemStack> plutonium = new HashMap();
-	private static HashMap<Object, Integer> liAmat = new HashMap();
-	private static HashMap<Object, Integer> beAmat = new HashMap();
-	private static HashMap<Object, Integer> caAmat = new HashMap();
-	private static HashMap<Object, Integer> coAmat = new HashMap();
-	private static HashMap<Object, Integer> plAmat = new HashMap();
+	private static HashMap<Object, ItemStack> lithium = new HashMap<Object, ItemStack>();
+	private static HashMap<Object, ItemStack> beryllium = new HashMap<Object, ItemStack>();
+	private static HashMap<Object, ItemStack> carbon = new HashMap<Object, ItemStack>();
+	private static HashMap<Object, ItemStack> copper = new HashMap<Object, ItemStack>();
+	private static HashMap<Object, ItemStack> plutonium = new HashMap<Object, ItemStack>();
+	private static HashMap<Object, ItemStack> einsteinium = new HashMap<Object, ItemStack>();
+	private static HashMap<Object, Integer> liAmat = new HashMap<Object, Integer>();
+	private static HashMap<Object, Integer> beAmat = new HashMap<Object, Integer>();
+	private static HashMap<Object, Integer> caAmat = new HashMap<Object, Integer>();
+	private static HashMap<Object, Integer> coAmat = new HashMap<Object, Integer>();
+	private static HashMap<Object, Integer> plAmat = new HashMap<Object, Integer>();
+	private static HashMap<Object, Integer> esAmat = new HashMap<Object, Integer>();
 	
 	public static void register() {
 
@@ -50,13 +54,14 @@ public class CyclotronRecipes {
 		/// BERYLLIUM START ///
 		int beA = 25;
 
-		makeRecipe(beryllium, beAmat, "dustLithium", new ItemStack(ModItems.powder_boron), beA);
-		makeRecipe(beryllium, beAmat, "dustNetherQuartz", new ItemStack(ModItems.sulfur), beA);
-		makeRecipe(beryllium, beAmat, "dustTitanium", new ItemStack(ModItems.powder_iron), beA);
-		makeRecipe(beryllium, beAmat, "dustCobalt", new ItemStack(ModItems.powder_copper), beA);
-		makeRecipe(beryllium, beAmat, new ComparableStack(ModItems.powder_strontium), new ItemStack(ModItems.powder_niobium), beA);
-		makeRecipe(beryllium, beAmat, new ComparableStack(ModItems.powder_cerium), new ItemStack(ModItems.powder_neodymium), beA);
-		makeRecipe(beryllium, beAmat, "dustThorium", new ItemStack(ModItems.powder_uranium), beA);
+		makeRecipe(beryllium, beAmat, LI.dust(), new ItemStack(ModItems.powder_boron), beA);
+		makeRecipe(beryllium, beAmat, SI.dust(), new ItemStack(ModItems.sulfur), beA);
+		makeRecipe(beryllium, beAmat, TI.dust(), new ItemStack(ModItems.powder_iron), beA);
+		makeRecipe(beryllium, beAmat, FE.dust(), new ItemStack(ModItems.powder_nickel), beA);
+		makeRecipe(beryllium, beAmat, CO.dust(), new ItemStack(ModItems.powder_copper), beA);
+		makeRecipe(beryllium, beAmat, ST.dust(), new ItemStack(ModItems.powder_niobium), beA);
+		makeRecipe(beryllium, beAmat, CE.dust(), new ItemStack(ModItems.powder_neodymium), beA);
+		makeRecipe(beryllium, beAmat, TH232.dust(), new ItemStack(ModItems.powder_uranium), beA);
 		makeRecipe(beryllium, beAmat, new ComparableStack(ModItems.powder_weidanium), new ItemStack(ModItems.powder_australium), beA);
 		/// BERYLLIUM END ///
 		
@@ -77,29 +82,34 @@ public class CyclotronRecipes {
 		/// COPPER START ///
 		int coA = 15;
 		
-		makeRecipe(copper, coAmat, "dustBeryllium", new ItemStack(ModItems.powder_quartz), coA);
-		makeRecipe(copper, coAmat, "dustCoal", new ItemStack(ModItems.powder_bromine), coA);
-		makeRecipe(copper, coAmat, "dustTitanium", new ItemStack(ModItems.powder_strontium), coA);
-		makeRecipe(copper, coAmat, "dustIron", new ItemStack(ModItems.powder_niobium), coA);
-		makeRecipe(copper, coAmat, new ComparableStack(ModItems.powder_bromine), new ItemStack(ModItems.powder_iodine), coA);
-		makeRecipe(copper, coAmat, new ComparableStack(ModItems.powder_strontium), new ItemStack(ModItems.powder_neodymium), coA);
-		makeRecipe(copper, coAmat, new ComparableStack(ModItems.powder_niobium), new ItemStack(ModItems.powder_caesium), coA);
-		makeRecipe(copper, coAmat, new ComparableStack(ModItems.powder_iodine), new ItemStack(ModItems.powder_polonium), coA);
-		makeRecipe(copper, coAmat, new ComparableStack(ModItems.powder_caesium), new ItemStack(ModItems.powder_actinium), coA);
-		makeRecipe(copper, coAmat, "dustGold", new ItemStack(ModItems.powder_uranium), coA);
+		makeRecipe(copper, coAmat, BE.dust(), new ItemStack(ModItems.powder_quartz), coA);
+		makeRecipe(copper, coAmat, COAL.dust(), new ItemStack(ModItems.powder_bromine), coA);
+		makeRecipe(copper, coAmat, TI.dust(), new ItemStack(ModItems.powder_strontium), coA);
+		makeRecipe(copper, coAmat, FE.dust(), new ItemStack(ModItems.powder_niobium), coA);
+		makeRecipe(copper, coAmat, BR.dust(), new ItemStack(ModItems.powder_iodine), coA);
+		makeRecipe(copper, coAmat, ST.dust(), new ItemStack(ModItems.powder_neodymium), coA);
+		makeRecipe(copper, coAmat, NB.dust(), new ItemStack(ModItems.powder_caesium), coA);
+		makeRecipe(copper, coAmat, I.dust(), new ItemStack(ModItems.powder_polonium), coA);
+		makeRecipe(copper, coAmat, CS.dust(), new ItemStack(ModItems.powder_actinium), coA);
+		makeRecipe(copper, coAmat, AU.dust(), new ItemStack(ModItems.powder_uranium), coA);
 		makeRecipe(copper, coAmat, new ComparableStack(ModItems.powder_verticium), new ItemStack(ModItems.powder_unobtainium), coA);
 		/// COPPER END ///
 
 		/// PLUTONIUM START ///
 		int plA = 100;
 		
-		makeRecipe(plutonium, plAmat, "dustPhosphorus", new ItemStack(ModItems.powder_tennessine), plA);
-		makeRecipe(plutonium, plAmat, "dustPlutonium", new ItemStack(ModItems.powder_tennessine), plA);
-		makeRecipe(plutonium, plAmat, new ComparableStack(ModItems.powder_tennessine), new ItemStack(ModItems.powder_reiium), plA);
+		makeRecipe(plutonium, plAmat, P_RED.dust(), new ItemStack(ModItems.powder_tennessine), plA);
+		makeRecipe(plutonium, plAmat, PU.dust(), new ItemStack(ModItems.powder_tennessine), plA);
+		makeRecipe(plutonium, plAmat, TS.dust(), new ItemStack(ModItems.powder_reiium), plA);
 		makeRecipe(plutonium, plAmat, new ComparableStack(ModItems.pellet_charged), new ItemStack(ModItems.nugget_schrabidium), 1000);
 		makeRecipe(plutonium, plAmat, new ComparableStack(ModItems.powder_unobtainium), new ItemStack(ModItems.powder_daffergon), plA);
 		makeRecipe(plutonium, plAmat, new ComparableStack(ModItems.cell_antimatter), new ItemStack(ModItems.cell_anti_schrabidium), 0);
 		/// PLUTONIUM END ///
+		
+		/// EINSTEINIUM-254 START ///
+		makeRecipe(einsteinium, esAmat, U.dust(), new ItemStack(ModItems.powder_schrabidium), 2500);
+		makeRecipe(einsteinium, esAmat, TS.dust(), new ItemStack(ModItems.powder_australium), 500);
+		/// EINSTEINIUM-254 END ///
 		
 		///TODO: fictional elements
 	}
@@ -109,6 +119,7 @@ public class CyclotronRecipes {
 		aMap.put(in, amat);
 	}
 	
+	@SuppressWarnings("null")
 	public static Object[] getOutput(ItemStack stack, ItemStack box) {
 		
 		if(stack == null || stack.getItem() == null || box == null)
@@ -132,6 +143,11 @@ public class CyclotronRecipes {
 		} else if(box.getItem() == ModItems.part_plutonium) {
 			pool = plutonium;
 			aPool = plAmat;
+		}
+		else if (box.getItem() == ModItems.part_einsteinium)
+		{
+			pool = einsteinium;
+			aPool = esAmat;
 		}
 		
 		if(pool == null)
@@ -162,6 +178,7 @@ public class CyclotronRecipes {
 		addRecipes(recipes, carbon, ModItems.part_carbon);
 		addRecipes(recipes, copper, ModItems.part_copper);
 		addRecipes(recipes, plutonium, ModItems.part_plutonium);
+		addRecipes(recipes, einsteinium, ModItems.part_einsteinium);
 		
 		return recipes;
 	}

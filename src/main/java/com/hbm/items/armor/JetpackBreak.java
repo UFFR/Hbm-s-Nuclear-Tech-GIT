@@ -16,9 +16,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-public class JetpackBreak extends JetpackBase {
-
-	public static int maxFuel = 1200;
+public class JetpackBreak extends JetpackBase
+{
 
 	public JetpackBreak(FluidType fuel, int maxFuel) {
 		super(fuel, maxFuel);
@@ -29,6 +28,7 @@ public class JetpackBreak extends JetpackBase {
 		return "hbm:textures/models/JetPackBlue.png";
 	}
 
+	@Override
 	public void onArmorTick(World world, EntityPlayer player, ItemStack stack) {
 		
 		HbmPlayerProps props = HbmPlayerProps.getData(player);
@@ -74,7 +74,8 @@ public class JetpackBreak extends JetpackBase {
 		}
     }
     
-    @SideOnly(Side.CLIENT)
+    @Override
+	@SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean ext) {
 
     	list.add("Regular jetpack that will automatically hover mid-air.");

@@ -1,8 +1,19 @@
 package com.hbm.config;
 
+import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.config.Configuration;
 
 public class MachineConfig {
+	public enum EnumSingGenFail
+	{
+		NONE,// Do not meltdown
+		CAP_CUSTOM,// Custom cap, default 100
+		NO_CAP;// No cap at all
+	}
+	public static int singGenFailRadius = 100;
+	public static int twrTurretCooldown = 5000;
+	public static int twrTurretChance = 200;
+	public static EnumSingGenFail singGenFailType = EnumSingGenFail.CAP_CUSTOM;
 	
 	protected static boolean scaleRTGPower = false;
 	protected static boolean doRTGsDecay = true;
@@ -12,6 +23,26 @@ public class MachineConfig {
 		final String CATEGORY_MACHINE = CommonConfig.CATEGORY_MACHINES;
 		
 		scaleRTGPower = CommonConfig.createConfigBool(config, CATEGORY_MACHINE, "9.00_scaleRTGPower", "Should RTG/Betavoltaic fuel power scale down as it decays?", false);
+		doRTGsDecay = CommonConfig.createConfigBool(config, CATEGORY_MACHINE, "9.01_doRTGsDecay", "Should RTG/Betavoltaic fuel decay at all?", true);
+		int singGen = CommonConfig.createConfigInt(config, CATEGORY_MACHINE, "9.02_singGenFail", "When a Watz Super-Compressor fails, what is the radius cap of the potential fölkvangr field? 0 means no fail and -1 means no cap at all", 100);
+		twrTurretCooldown = CommonConfig.createConfigInt(config, CATEGORY_MACHINE, "9.03_twrTurretCooldown", "Duration of the Tsukuyomi platform cooldown (Max 9999)", 5000);
+		twrTurretChance = CommonConfig.createConfigInt(config, CATEGORY_MACHINE, "9.04_twrTurretChance", "Chance to decrement the cooldown of the Tsukuyomi platform each tick", 200);
+	switch(singGen)
+		{
+		case 0:
+			singGenFailRadius = 0;
+			singGenFailType = EnumSingGenFail.NONE;
+			break;
+		case -1:
+			singGenFailType = EnumSingGenFail.NO_CAP;
+			break;
+		default:
+			singGenFailRadius = singGen;
+			singGenFailType = EnumSingGenFail.CAP_CUSTOM;
+			break;
+		}
+		twrTurretCooldown = MathHelper.clamp_int(twrTurretCooldown, 0, 9999);
+		
 		doRTGsDecay = CommonConfig.createConfigBool(config, CATEGORY_MACHINE, "9.01_doRTGsDecay", "Should RTG/Betavoltaic fuel decay at all?", true);
 	}
 

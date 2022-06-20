@@ -22,6 +22,7 @@ public class TestDungeonRoom8 extends CellularDungeonRoom {
 		super(parent);
 	}
 
+	@Override
 	public void generateMain(World world, int x, int y, int z) {
 		
 		super.generateMain(world, x, y, z);
@@ -53,11 +54,17 @@ public class TestDungeonRoom8 extends CellularDungeonRoom {
 				int r = world.rand.nextInt(10);
 				
 				if(r == 0)
+				{
 					((TileEntitySafe)world.getTileEntity(x + parent.width / 2, y + 2, z + parent.width / 2)).setInventorySlotContents(7, new ItemStack(ModItems.book_of_));
-				else if(r < 4)
+//					((TileEntitySafe)world.getTileEntity(x + parent.width / 2, y + 2, z + parent.width / 2)).setInventorySlotContents(6, IDataStorageItem.getFullMedium(new ItemStack(ModItems.storage_magnetic_special)));
+				}
+				else if (r < 4)
 					((TileEntitySafe)world.getTileEntity(x + parent.width / 2, y + 2, z + parent.width / 2)).setInventorySlotContents(7, genetateMKU(world));
 				else
+				{
 					((TileEntitySafe)world.getTileEntity(x + parent.width / 2, y + 2, z + parent.width / 2)).setInventorySlotContents(7, new ItemStack(Items.book));
+//					((TileEntitySafe)world.getTileEntity(x + parent.width / 2, y + 2, z + parent.width / 2)).setInventorySlotContents(6, IDataStorageItem.getFullMedium(new ItemStack(ModItems.storage_magnetic_special)));
+				}
 			}
 			break;
 		}

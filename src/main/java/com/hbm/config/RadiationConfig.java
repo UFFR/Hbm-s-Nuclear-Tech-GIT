@@ -22,6 +22,7 @@ public class RadiationConfig {
 	public static boolean disableHydro = false;
 	public static boolean disableBlinding = false;
 	public static boolean disableFibrosis = false;
+	public static boolean realisticRads = false;
 	
 	public static void loadFromConfig(Configuration config) {
 
@@ -38,6 +39,7 @@ public class RadiationConfig {
 		enableContamination = CommonConfig.createConfigBool(config, CATEGORY_NUKE, "RADIATION_00_enableContamination", "Toggles player contamination (and negative effects from radiation poisoning)", true);
 		enableChunkRads = CommonConfig.createConfigBool(config, CATEGORY_NUKE, "RADIATION_01_enableChunkRads", "Toggles the world radiation system (chunk radiation only, some blocks use an AoE!)", true);
 		
+		realisticRads = CommonConfig.createConfigBool(config, CATEGORY_NUKE, "6.13_realisticRads", "Should use realistic RAD/s (like NuclearCraft)?", false);
 		fogCh = CommonConfig.setDef(fogCh, 20);
 
 		final String CATEGORY_HAZ = CommonConfig.CATEGORY_HAZARD;

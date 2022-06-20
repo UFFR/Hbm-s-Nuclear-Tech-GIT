@@ -7,12 +7,15 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.Level;
+
 import com.hbm.lib.RefStrings;
 import com.hbm.main.MainRegistry;
 
-public class HTTPHandler {
+public class HTTPHandler
+{
 
-	public static List<String> capsule = new ArrayList();
+	public static List<String> capsule = new ArrayList<String>();
 	public static boolean newVersion = false;
 	public static String versionNumber = "";
 
@@ -23,7 +26,9 @@ public class HTTPHandler {
 			loadVersion();
 			loadSoyuz();
 
-		} catch(IOException e) {
+		} catch(IOException e)
+		{
+			MainRegistry.logger.catching(Level.WARN, e);
 			MainRegistry.logger.warn("Version checker failed!");
 		}
 	}

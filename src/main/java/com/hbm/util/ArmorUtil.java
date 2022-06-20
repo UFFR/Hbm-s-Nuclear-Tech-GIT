@@ -364,7 +364,7 @@ public class ArmorUtil {
 			installGasMaskFilter(mask, filter);
 	}
 	
-	public static void addGasMaskTooltip(ItemStack mask, EntityPlayer player, List list, boolean ext) {
+	public static void addGasMaskTooltip(ItemStack mask, EntityPlayer player, List<String> list, boolean ext) {
 		
 		if(mask == null || !(mask.getItem() instanceof IGasMask))
 			return;
@@ -387,7 +387,7 @@ public class ArmorUtil {
 			append = " (" + ((max - meta) * 100 / max) + "%)";
 		}
 		
-		List<String> lore = new ArrayList();
+		List<String> lore = new ArrayList<>();
 		list.add("  " + filter.getDisplayName() + append);
 		filter.getItem().addInformation(filter, player, lore, ext);
 		ForgeEventFactory.onItemTooltip(filter, player, lore, ext);

@@ -3,7 +3,9 @@ package com.hbm.items.tool;
 import java.util.List;
 
 import com.hbm.blocks.bomb.LaunchPad;
+import com.hbm.lib.HbmCollection;
 import com.hbm.lib.Library;
+import com.hbm.util.I18nUtil;
 
 import api.hbm.item.IDesignatorItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,14 +20,15 @@ import net.minecraft.world.World;
 public class ItemDesingatorRange extends Item implements IDesignatorItem {
 
 	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer player, List list, boolean bool) {
-		if(itemstack.stackTagCompound != null) {
-			list.add("Target Coordinates:");
-			list.add("X: " + itemstack.stackTagCompound.getInteger("xCoord"));
-			list.add("Z: " + itemstack.stackTagCompound.getInteger("zCoord"));
-		} else {
-			list.add("Please select a target.");
-		}
+	public void addInformation(ItemStack itemstack, EntityPlayer player, List list, boolean bool)
+	{
+		if(itemstack.stackTagCompound != null)
+		{
+			list.add(I18nUtil.resolveKey(HbmCollection.tarCoord));
+			list.add("X: " + String.valueOf(itemstack.stackTagCompound.getInteger("xCoord")));
+			list.add("Z: " + String.valueOf(itemstack.stackTagCompound.getInteger("zCoord")));
+		} else
+			list.add(I18nUtil.resolveKey(HbmCollection.noPos));
 	}
 
 	@Override
@@ -42,11 +45,9 @@ public class ItemDesingatorRange extends Item implements IDesignatorItem {
 
 			stack.stackTagCompound.setInteger("xCoord", x);
 			stack.stackTagCompound.setInteger("zCoord", z);
-
-			if(world.isRemote) {
-				player.addChatMessage(new ChatComponentText("Position set to X:" + x + ", Z:" + z));
-			}
-
+			stack.stackTagCompound.setIntArray("coord", new int[] {x, y, z});
+	        if(world.isRemote)
+	        	player.addChatMessage(new ChatComponentText(I18nUtil.resolveKey(HbmCollection.tarSet, x, z)));
 			world.playSoundAtEntity(player, "hbm:item.techBleep", 1.0F, 1.0F);
 
 			return stack;

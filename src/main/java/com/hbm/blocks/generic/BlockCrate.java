@@ -6,6 +6,7 @@ import java.util.Random;
 
 import com.hbm.blocks.ModBlocks;
 import com.hbm.items.ModItems;
+import com.hbm.items.ItemAmmoEnums.Ammo44Magnum;
 
 import net.minecraft.block.BlockFalling;
 import net.minecraft.block.material.Material;
@@ -18,11 +19,11 @@ import net.minecraft.world.World;
 
 public class BlockCrate extends BlockFalling {
 
-	List<Item> crateList;
-	List<Item> weaponList;
-	List<Item> leadList;
-	List<Item> metalList;
-	List<Item> redList;
+	List<ItemStack> crateList;
+	List<ItemStack> weaponList;
+	List<ItemStack> leadList;
+	List<ItemStack> metalList;
+	List<ItemStack> redList;
 
 	public BlockCrate(Material p_i45394_1_) {
 		super(p_i45394_1_);
@@ -42,23 +43,21 @@ public class BlockCrate extends BlockFalling {
     		world.setBlockToAir(x, y, z);
     		world.playSoundEffect(x, y, z, "hbm:block.crateBreak", 0.5F, 1.0F);
     		return true;
-    	} else {
-			if(world.isRemote)
-			{
-				player.addChatMessage(new ChatComponentText("I'll need a crate opening device to get the loot, smashing the whole thing won't work..."));
-			}
-    	}
+    	} else if (world.isRemote)
+		{
+			player.addChatMessage(new ChatComponentText("I'll need a crate opening device to get the loot, smashing the whole thing won't work..."));
+		}
     	
     	return true;
     }
     
     public void setDrops() {
 
-    	crateList = new ArrayList<Item>();
-    	weaponList = new ArrayList<Item>();
-    	leadList = new ArrayList<Item>();
-    	metalList = new ArrayList<Item>();
-    	redList = new ArrayList<Item>();
+    	crateList = new ArrayList<ItemStack>();
+    	weaponList = new ArrayList<ItemStack>();
+    	leadList = new ArrayList<ItemStack>();
+    	metalList = new ArrayList<ItemStack>();
+    	redList = new ArrayList<ItemStack>();
 
 		//Supply Crate
     	BlockCrate.addToListWithWeight(crateList, ModItems.syringe_metal_stimpak, 10);
@@ -163,9 +162,9 @@ public class BlockCrate extends BlockFalling {
     	BlockCrate.addToListWithWeight(redList, ModItems.gun_revolver_pip, 1);
     	BlockCrate.addToListWithWeight(redList, ModItems.gun_revolver_blackjack, 1);
     	BlockCrate.addToListWithWeight(redList, ModItems.gun_revolver_silver, 1);
-    	BlockCrate.addToListWithWeight(redList, ModItems.ammo_44_pip, 1);
-    	BlockCrate.addToListWithWeight(redList, ModItems.ammo_44_bj, 1);
-    	BlockCrate.addToListWithWeight(redList, ModItems.ammo_44_silver, 1);
+    	BlockCrate.addToListWithWeight(redList, ModItems.ammo_44.stackFromEnum(Ammo44Magnum.PIP), 1);
+    	BlockCrate.addToListWithWeight(redList, ModItems.ammo_44.stackFromEnum(Ammo44Magnum.BJ), 1);
+    	BlockCrate.addToListWithWeight(redList, ModItems.ammo_44.stackFromEnum(Ammo44Magnum.SILVER), 1);
     	BlockCrate.addToListWithWeight(redList, ModItems.battery_spark, 1);
     	BlockCrate.addToListWithWeight(redList, ModItems.bottle_sparkle, 1);
     	BlockCrate.addToListWithWeight(redList, ModItems.bottle_rad, 1);
@@ -180,7 +179,7 @@ public class BlockCrate extends BlockFalling {
     	
     	setDrops();
 
-    	List<Item> list = new ArrayList<Item>();
+    	List<ItemStack> list = new ArrayList<ItemStack>();
     	
     	int i = rand.nextInt(3) + 3;
     	
@@ -213,12 +212,12 @@ public class BlockCrate extends BlockFalling {
     		}
     	}
     	
-    	for(Item stack : list) {
+    	for(ItemStack stack : list) {
             float f = rand.nextFloat() * 0.8F + 0.1F;
             float f1 = rand.nextFloat() * 0.8F + 0.1F;
             float f2 = rand.nextFloat() * 0.8F + 0.1F;
         	
-            EntityItem entityitem = new EntityItem(world, x + f, y + f1, z + f2, new ItemStack(stack));
+            EntityItem entityitem = new EntityItem(world, x + f, y + f1, z + f2, stack);
 
             float f3 = 0.05F;
             entityitem.motionX = (float)rand.nextGaussian() * f3;
@@ -229,8 +228,14 @@ public class BlockCrate extends BlockFalling {
     	}
     }
     
-    public static void addToListWithWeight(List<Item> list, Item item, int weight) {
+    public static void addToListWithWeight(List<ItemStack> list, Item item, int weight) {
     	for(int i = 0; i < weight; i++)
+    		list.add(new ItemStack(item));
+    }
+    
+    public static void addToListWithWeight(List<ItemStack> list, ItemStack item, int weight)
+    {
+    	for (int i = 0; i < weight; i++)
     		list.add(item);
     }
 }

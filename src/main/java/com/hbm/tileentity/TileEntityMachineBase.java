@@ -1,6 +1,9 @@
 package com.hbm.tileentity;
 
+import java.util.Random;
+
 import com.hbm.blocks.ModBlocks;
+import com.hbm.calc.EasyLocation;
 import com.hbm.packet.AuxGaugePacket;
 import com.hbm.packet.NBTPacket;
 import com.hbm.packet.PacketDispatcher;
@@ -19,7 +22,14 @@ public abstract class TileEntityMachineBase extends TileEntityLoadedBase impleme
 
 	public ItemStack slots[];
 	
-	private String customName;
+	protected String customName;
+	
+	public static final Random rand = new Random();
+	public static final String buttonPress = "gui.button.press";
+	public static final String buttonYes = "hbm:gui.buttonYes";
+	public static final String buttonNo = "hbm:gui.buttonNo";
+	
+	public static final int renderRange = 65536;
 	
 	public TileEntityMachineBase(int scount) {
 		slots = new ItemStack[scount];
@@ -161,6 +171,7 @@ public abstract class TileEntityMachineBase extends TileEntityLoadedBase impleme
 			PacketDispatcher.wrapper.sendToAllAround(new NBTPacket(nbt, xCoord, yCoord, zCoord), new TargetPoint(this.worldObj.provider.dimensionId, xCoord, yCoord, zCoord, range));
 	}
 	
+	@Override
 	public void networkUnpack(NBTTagCompound nbt) { }
 	
 	@Deprecated
@@ -180,6 +191,7 @@ public abstract class TileEntityMachineBase extends TileEntityLoadedBase impleme
 				slots[b0] = ItemStack.loadItemStackFromNBT(nbt1);
 			}
 		}
+		
 	}
 	
 	@Override

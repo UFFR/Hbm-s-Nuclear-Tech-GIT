@@ -1,9 +1,7 @@
 package com.hbm.blocks.machine;
 
-import java.util.Random;
-
 import com.hbm.blocks.ModBlocks;
-import com.hbm.interfaces.IDummy;
+import com.hbm.handler.EnumGUI;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.machine.TileEntityDummy;
 import com.hbm.tileentity.machine.TileEntityMachineMiningDrill;
@@ -11,8 +9,6 @@ import com.hbm.tileentity.machine.TileEntityMachineMiningDrill;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -53,7 +49,7 @@ public class DummyBlockDrill extends DummyOldBase {
     			TileEntityMachineMiningDrill entity = (TileEntityMachineMiningDrill) world.getTileEntity(a, b, c);
     			if(entity != null)
     			{
-    				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_machine_drill, world, a, b, c);
+    				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.MINING_DRILL.ordinal(), world, a, b, c);
     			}
     		}
 			return true;

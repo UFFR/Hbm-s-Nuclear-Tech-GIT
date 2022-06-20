@@ -22,7 +22,8 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-public class RenderBullet extends Render {
+public class RenderBullet extends Render
+{
 
 	private ModelBullet bullet;
 	private ModelBaleflare bf;

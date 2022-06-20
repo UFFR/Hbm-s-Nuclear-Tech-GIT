@@ -3,6 +3,7 @@ package com.hbm.blocks.machine;
 import java.util.Random;
 
 import com.hbm.blocks.ModBlocks;
+import com.hbm.handler.EnumGUI;
 import com.hbm.lib.RefStrings;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.machine.TileEntityMachineCMBFactory;
@@ -26,7 +27,6 @@ import net.minecraft.world.World;
 public class MachineCMBFactory extends BlockContainer {
 
     private final Random field_149933_a = new Random();
-	private Random rand;
 	private static boolean keepInventory;
 	
 	@SideOnly(Side.CLIENT)
@@ -70,7 +70,7 @@ public class MachineCMBFactory extends BlockContainer {
 			TileEntityMachineCMBFactory entity = (TileEntityMachineCMBFactory) world.getTileEntity(x, y, z);
 			if(entity != null)
 			{
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_combine_factory, world, x, y, z);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.FURNACE_CMB.ordinal(), world, x, y, z);
 			}
 			return true;
 		} else {

@@ -119,11 +119,35 @@ public class ItemFolderPacket implements IMessage {
 						tryConvert(p, ModItems.stamp_obsidian_flat, stack.getItem());
 						return null;
 					}
+					if (stack.getItem() == ModItems.stamp_ferrouranium_plate ||
+							stack.getItem() == ModItems.stamp_ferrouranium_wire ||
+							stack.getItem() == ModItems.stamp_ferrouranium_circuit ||
+							stack.getItem() == ModItems.stamp_ferrouranium_disc)
+					{
+						if (p.inventory.hasItem(ModItems.stamp_ferrouranium_flat))
+						{
+							p.inventory.consumeInventoryItem(ModItems.stamp_ferrouranium_flat);
+							if (!p.inventory.addItemStackToInventory(stack.copy()))
+								p.dropPlayerItemWithRandomChoice(stack, true);
+						}
+					}
 					if(stack.getItem() == ModItems.stamp_schrabidium_plate || 
 							stack.getItem() == ModItems.stamp_schrabidium_wire || 
 							stack.getItem() == ModItems.stamp_schrabidium_circuit) {
 						tryConvert(p, ModItems.stamp_schrabidium_flat, stack.getItem());
 						return null;
+					}
+					if (stack.getItem() == ModItems.stamp_desh_plate ||
+							stack.getItem() == ModItems.stamp_desh_wire ||
+							stack.getItem() == ModItems.stamp_desh_circuit||
+							stack.getItem() == ModItems.stamp_desh_disc)
+					{
+						if (p.inventory.hasItem(ModItems.stamp_desh_flat))
+						{
+							p.inventory.consumeInventoryItem(ModItems.stamp_desh_flat);
+							if (!p.inventory.addItemStackToInventory(stack.copy()))
+								p.dropPlayerItemWithRandomChoice(stack, true);
+						}
 					}
 			//}
 			

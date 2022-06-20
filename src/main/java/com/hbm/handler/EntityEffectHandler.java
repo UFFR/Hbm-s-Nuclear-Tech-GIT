@@ -19,6 +19,7 @@ import com.hbm.lib.ModDamageSource;
 import com.hbm.main.MainRegistry;
 import com.hbm.packet.AuxParticlePacketNT;
 import com.hbm.packet.PacketDispatcher;
+import com.hbm.potion.HbmPotion;
 import com.hbm.packet.ExtPropPacket;
 import com.hbm.saveddata.AuxSavedData;
 import com.hbm.util.ArmorRegistry;
@@ -73,7 +74,7 @@ public class EntityEffectHandler {
 				}
 			}
 			
-			if(GeneralConfig.enable528 && entity instanceof EntityLivingBase && !entity.isImmuneToFire() && entity.worldObj.provider.isHellWorld) {
+			if(GeneralConfig.enable528 && !entity.isImmuneToFire() && entity.worldObj.provider.isHellWorld) {
 				entity.setFire(5);
 			}
 		}
@@ -94,7 +95,7 @@ public class EntityEffectHandler {
 			return;
 		
 		List<ContaminationEffect> contamination = HbmLivingProps.getCont(entity);
-		List<ContaminationEffect> rem = new ArrayList();
+		List<ContaminationEffect> rem = new ArrayList<ContaminationEffect>();
 		
 		for(ContaminationEffect con : contamination) {
 			ContaminationUtil.contaminate(entity, HazardType.RADIATION, con.ignoreArmor ? ContaminationType.RAD_BYPASS : ContaminationType.CREATIVE, con.getRad());
@@ -117,9 +118,9 @@ public class EntityEffectHandler {
 		
 		if(!world.isRemote) {
 			
-			int ix = (int)MathHelper.floor_double(entity.posX);
-			int iy = (int)MathHelper.floor_double(entity.posY);
-			int iz = (int)MathHelper.floor_double(entity.posZ);
+			int ix = MathHelper.floor_double(entity.posX);
+			int iy = MathHelper.floor_double(entity.posY);
+			int iz = MathHelper.floor_double(entity.posZ);
 	
 			float rad = ChunkRadiationManager.proxy.getRadiation(world, ix, iy, iz);
 	
@@ -155,6 +156,7 @@ public class EntityEffectHandler {
 					if((world.getTotalWorldTime() + r600) % 600 == 1) {
 						world.playSoundEffect(ix, iy, iz, "hbm:player.vomit", 1.0F, 1.0F);
 						entity.addPotionEffect(new PotionEffect(Potion.hunger.id, 60, 19));
+						entity.addPotionEffect(new PotionEffect(HbmPotion.getPotionNoCure(HbmPotion.fragile.id, 60, 3)));
 					}
 				}
 				
@@ -170,6 +172,7 @@ public class EntityEffectHandler {
 				if((world.getTotalWorldTime() + r1200) % 1200 == 1) {
 					world.playSoundEffect(ix, iy, iz, "hbm:player.vomit", 1.0F, 1.0F);
 					entity.addPotionEffect(new PotionEffect(Potion.hunger.id, 60, 19));
+					entity.addPotionEffect(new PotionEffect(HbmPotion.getPotionNoCure(HbmPotion.fragile.id, 60, 2)));
 				}
 			
 			}
@@ -182,7 +185,8 @@ public class EntityEffectHandler {
 				nbt.setInteger("block", Block.getIdFromBlock(Blocks.redstone_block));
 				nbt.setInteger("entity", entity.getEntityId());
 				PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(nbt, 0, 0, 0),  new TargetPoint(entity.dimension, entity.posX, entity.posY, entity.posZ, 25));
-			
+				entity.addPotionEffect(new PotionEffect(HbmPotion.getPotionNoCure(HbmPotion.fragile.id, 60, 1)));
+				entity.addPotionEffect(new PotionEffect(HbmPotion.getPotionNoCure(HbmPotion.perforated.id, 60, 2)));
 			}
 		} else {
 			float radiation = HbmLivingProps.getRadiation(entity);
@@ -192,6 +196,8 @@ public class EntityEffectHandler {
 				NBTTagCompound nbt = new NBTTagCompound();
 				nbt.setString("type", "radiation");
 				nbt.setInteger("count", radiation > 900 ? 4 : radiation > 800 ? 2 : 1);
+				entity.addPotionEffect(new PotionEffect(HbmPotion.getPotionNoCure(HbmPotion.fragile.id, 60, 2)));
+				entity.addPotionEffect(new PotionEffect(HbmPotion.getPotionNoCure(HbmPotion.perforated.id, 60, 3)));
 				MainRegistry.proxy.effectNT(nbt);
 			}
 		}
@@ -367,9 +373,9 @@ public class EntityEffectHandler {
 		boolean coughsALotOfCoal = blacklung / HbmLivingProps.maxBlacklung > 0.8D;
 		boolean coughsBlood = asbestos / HbmLivingProps.maxAsbestos > 0.75D || blacklung / HbmLivingProps.maxBlacklung > 0.75D;
 
-		double blacklungDelta = 1D - (blacklung / (double)HbmLivingProps.maxBlacklung);
-		double asbestosDelta = 1D - (asbestos / (double)HbmLivingProps.maxAsbestos);
-		double fibrosisDelta = 1D - (fibrosis / (double)HbmLivingProps.maxFibrosis);
+		double blacklungDelta = 1D - (blacklung / HbmLivingProps.maxBlacklung);
+		double asbestosDelta = 1D - (asbestos / HbmLivingProps.maxAsbestos);
+		double fibrosisDelta = 1D - (fibrosis / HbmLivingProps.maxFibrosis);
 		
 		double total = 1 - (blacklungDelta * asbestosDelta * fibrosisDelta);
 		

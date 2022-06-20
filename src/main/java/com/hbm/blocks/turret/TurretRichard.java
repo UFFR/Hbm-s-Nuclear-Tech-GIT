@@ -1,7 +1,7 @@
 package com.hbm.blocks.turret;
 
 import com.hbm.blocks.BlockDummyable;
-import com.hbm.blocks.ModBlocks;
+import com.hbm.handler.EnumGUI;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.TileEntityProxyCombo;
 import com.hbm.tileentity.turret.TileEntityTurretRichard;
@@ -59,7 +59,7 @@ public class TurretRichard extends BlockDummyable {
 			if(pos == null)
 				return false;
 			
-			FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_richard, world, pos[0], pos[1], pos[2]);
+			FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.TURRET_RICHARD.ordinal(), world, pos[0], pos[1], pos[2]);
 			return true;
 		} else {
 			return false;

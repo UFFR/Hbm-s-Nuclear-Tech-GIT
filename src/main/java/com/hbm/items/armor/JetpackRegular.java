@@ -27,6 +27,7 @@ public class JetpackRegular extends JetpackBase {
 		return "hbm:textures/models/JetPackRed.png";
 	}
 
+	@Override
 	public void onArmorTick(World world, EntityPlayer player, ItemStack stack) {
 
 		HbmPlayerProps props = HbmPlayerProps.getData(player);
@@ -53,6 +54,7 @@ public class JetpackRegular extends JetpackBase {
 		}
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean ext) {
 

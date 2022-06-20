@@ -8,7 +8,6 @@ import java.util.Random;
 
 import com.google.common.collect.HashBiMap;
 import com.hbm.blocks.IBlockMultiPass;
-import com.hbm.blocks.ModBlocks;
 import com.hbm.config.WorldConfig;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.items.ModItems;
@@ -152,6 +151,7 @@ public class BlockMotherOfAllOres extends BlockContainer implements IBlockMultiP
 		return Blocks.stone.getIcon(0, 0);
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta) {
 
@@ -182,7 +182,7 @@ public class BlockMotherOfAllOres extends BlockContainer implements IBlockMultiP
 			int g = col.getGreen();
 			int b = col.getBlue();
 			
-			float[] hsb = new Color(color).RGBtoHSB(r, g, b, new float[3]);
+			float[] hsb = Color.RGBtoHSB(r, g, b, new float[3]);
 			
 			if(hsb[1] > 0F && hsb[1] < 0.75F)
 				hsb[1] = 0.75F;
@@ -225,7 +225,7 @@ public class BlockMotherOfAllOres extends BlockContainer implements IBlockMultiP
 			
 			if(stack == null) {
 				int rand = worldObj.rand.nextInt(uniqueItems.size());
-				stack = (ComparableStack) itemMap.get(rand).copy();
+				stack = itemMap.get(rand).copy();
 				this.worldObj.markTileEntityChunkModified(this.xCoord, this.yCoord, this.zCoord, this);
 			}
 			

@@ -1,5 +1,7 @@
 package com.hbm.tileentity.machine;
 
+import java.math.BigInteger;
+
 import com.hbm.blocks.machine.MachineDiFurnaceRTG;
 import com.hbm.inventory.recipes.MachineRecipes;
 import com.hbm.util.RTGUtil;
@@ -16,7 +18,7 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase
 	private static final short timeRequired = 1200;
 	private static final int[] rtgIn = new int[] {3, 4, 5, 6, 7, 8};
 	private String name;
-	
+	private BigInteger date = BigInteger.ZERO;
 	public TileEntityDiFurnaceRTG() {
 		super(9);
 	}
@@ -25,7 +27,7 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase
 		if ((slots[0] == null || slots[1] == null) && !hasPower())
 			return false;
 		
-		ItemStack recipeResult = MachineRecipes.getFurnaceProcessingResult(slots[0], slots[1]);
+		ItemStack recipeResult = BlastFurnaceRecipes.getOutput(slots[0], slots[1]);
 		if (recipeResult == null)
 			return false;
 		else if (slots[2] == null)
@@ -45,7 +47,6 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase
 		
 		if(worldObj.isRemote)
 			return;
-		
 		if(canProcess() && hasPower()) {
 			progress += processSpeed;
 			if(progress >= timeRequired) {
@@ -61,6 +62,7 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase
 		NBTTagCompound data = new NBTTagCompound();
 		data.setShort("progress", progress);
 		data.setShort("speed", processSpeed);
+		data.setByteArray("date", date.toByteArray());
 		networkPack(data, 10);
 	}
 	
@@ -68,12 +70,13 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase
 	public void networkUnpack(NBTTagCompound nbt) {
 		progress = nbt.getShort("progress");
 		processSpeed = nbt.getShort("speed");
+		date = new BigInteger(nbt.getByteArray("date"));
 	}
 	
 	private void processItem() {
 		
 		if(canProcess()) {
-			ItemStack recipeOut = MachineRecipes.getFurnaceProcessingResult(slots[0], slots[1]);
+			ItemStack recipeOut = BlastFurnaceRecipes.getOutput(slots[0], slots[1]);
 			if(slots[2] == null)
 				slots[2] = recipeOut.copy();
 			else if(slots[2].isItemEqual(recipeOut))
@@ -96,6 +99,7 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase
 		super.readFromNBT(nbt);
 		progress = nbt.getShort("progress");
 		processSpeed = nbt.getShort("speed");
+		date = new BigInteger(nbt.getByteArray("date"));
 	}
 
 	@Override
@@ -103,6 +107,7 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase
 		super.writeToNBT(nbt);
 		nbt.setShort("progress", progress);
 		nbt.setShort("speed", processSpeed);
+		nbt.setByteArray("date", date.toByteArray());
 	}
 
 	public int getDiFurnaceProgressScaled(int i) {
@@ -123,12 +128,8 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase
 	}
 
 	public boolean hasPower() {
-		processSpeed = (short) RTGUtil.updateRTGs(slots, rtgIn);
+		processSpeed = (short) getHeat();
 		return processSpeed >= 15;
-	}
-
-	public int getPower() {
-		return processSpeed;
 	}
 
 	public boolean isProcessing() {
@@ -171,6 +172,36 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase
 	@Override
 	public String getName() {
 		return "container.diFurnaceRTG";
+	public int getHeat()
+	{
+		return (updateRTGs() / 10);
+	}
+	
+	@Override
+	public ItemStack[] getInventory()
+	{
+		ItemStack[] rtgSlots = new ItemStack[rtgIn.length];
+		for (byte i = 0; i < rtgIn.length; i++)
+			rtgSlots[i] = slots[rtgIn[i]];
+		return rtgSlots;
+	}
+
+	@Override
+	public Class<? extends IRadioisotopeFuel> getDesiredClass()
+	{
+		return ItemRTGPellet.class;
+	}
+
+	@Override
+	public void incrementAge()
+	{
+		date = date.add(BigInteger.ONE);
+	}
+
+	@Override
+	public BigInteger getInternalDate()
+	{
+		return date;
 	}
 
 }

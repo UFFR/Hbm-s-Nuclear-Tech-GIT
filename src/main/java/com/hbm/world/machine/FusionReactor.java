@@ -116,8 +116,8 @@ public class FusionReactor extends WorldGenerator
 	Block Block3 = ModBlocks.fusion_motor;
 	Block Block4 = ModBlocks.fusion_center;
 	Block Block5 = ModBlocks.block_tungsten;
-	Block Block6 = ModBlocks.fusion_hatch;
-	Block Block7 = ModBlocks.fusion_core;
+	Block Block6 = ModBlocks.fusion_heater;
+	Block Block7 = ModBlocks.fusion_center;
 	
 	@Override
 	public boolean generate(World world, Random rand, int x, int y, int z)

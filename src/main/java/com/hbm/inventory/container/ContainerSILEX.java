@@ -10,7 +10,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerSILEX extends Container {
+public class ContainerSILEX extends Container
+{
 
 	private TileEntitySILEX silex;
 

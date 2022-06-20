@@ -5,6 +5,7 @@ import java.util.Random;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.handler.BossSpawnHandler;
+import com.hbm.handler.EnumGUI;
 import com.hbm.handler.MultiblockHandlerXR;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.machine.TileEntitySoyuzLauncher;
@@ -60,7 +61,7 @@ public class SoyuzLauncher extends BlockDummyable {
 			TileEntitySoyuzLauncher entity = (TileEntitySoyuzLauncher) world.getTileEntity(pos[0], pos[1], pos[2]);
 			if(entity != null)
 			{
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_soyuz_launcher, world, pos[0], pos[1], pos[2]);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.LAUNCHER_SOYUZ.ordinal(), world, pos[0], pos[1], pos[2]);
 			}
 			return true;
 		} else {
@@ -113,6 +114,7 @@ public class SoyuzLauncher extends BlockDummyable {
 		super.onBlockPlacedBy(world, x, y, z, player, itemStack);
 	}
 	
+	@Override
 	public boolean checkRequirement(World world, int x, int y, int z, ForgeDirection dir, int o) {
 		
 		x = x + dir.offsetX * o;
@@ -130,6 +132,7 @@ public class SoyuzLauncher extends BlockDummyable {
 		return true;
 	}
 	
+	@Override
 	public void fillSpace(World world, int x, int y, int z, ForgeDirection dir, int o) {
 		
 		x = x + dir.offsetX * o;

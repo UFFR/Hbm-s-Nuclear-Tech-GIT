@@ -12,6 +12,7 @@ import com.hbm.inventory.recipes.loader.SerializableRecipe;
 import com.hbm.items.ModItems;
 import com.hbm.tileentity.machine.TileEntityHadron.EnumHadronState;
 
+import api.hbm.computer.Researchable;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
@@ -21,7 +22,7 @@ public class HadronRecipes extends SerializableRecipe {
 	 * Since we're dealing with like 10 or so recipes, using a HashMap (or to combine two keys, a HashMap *in* a HashMap)
 	 * would be less performant than those few steps through a good old Array list, and it's much easier to implement too.
 	 */
-	private static final List<HadronRecipe> recipes = new ArrayList();
+	private static final List<HadronRecipe> recipes = new ArrayList<HadronRecipe>();
 	
 	/*
 	 * We CAN actually implement recipes with the same input items but different momentum requirements.
@@ -76,6 +77,13 @@ public class HadronRecipes extends SerializableRecipe {
 				new ItemStack(ModItems.particle_empty),
 				false
 				));
+		recipes.add(new HadronRecipe(
+				new ItemStack(ModItems.particle_aschrab),
+				new ItemStack(ModItems.particle_higgs),
+				6000,
+				new ItemStack(ModItems.particle_graviton),
+				new ItemStack(ModItems.particle_empty),
+				false));
 		recipes.add(new HadronRecipe(
 				new ItemStack(ModItems.particle_muon),
 				new ItemStack(ModItems.particle_higgs),
@@ -151,7 +159,7 @@ public class HadronRecipes extends SerializableRecipe {
 		return recipes;
 	}
 	
-	public static class HadronRecipe {
+	public static class HadronRecipe extends Researchable {
 		
 		public ComparableStack in1;
 		public ComparableStack in2;
@@ -161,6 +169,7 @@ public class HadronRecipes extends SerializableRecipe {
 		public boolean analysisOnly;
 		
 		public HadronRecipe(ItemStack in1, ItemStack in2, int momentum, ItemStack out1, ItemStack out2, boolean analysisOnly) {
+			super(out1.getDisplayName() + '+' + out2.getDisplayName());
 			this.in1 = new ComparableStack(in1).makeSingular();
 			this.in2 = new ComparableStack(in2).makeSingular();
 			this.momentum = momentum;
@@ -169,6 +178,21 @@ public class HadronRecipes extends SerializableRecipe {
 			this.out1.stackSize = 1;
 			this.out2.stackSize = 1;
 			this.analysisOnly = analysisOnly;
+		}
+		@Override
+		public String getKey()
+		{
+			return I18nUtil.resolveKey(out1.getUnlocalizedName()) + '+' + I18nUtil.resolveKey(out2.getUnlocalizedName());
+		}
+		@Override
+		public HadronRecipe setPrevious(Researchable prev)
+		{
+			return (HadronRecipe) super.setPrevious(prev);
+		}
+		@Override
+		public HadronRecipe setWork(long ram, long cpu)
+		{
+			return (HadronRecipe) super.setWork(ram, cpu);
 		}
 	}
 

@@ -12,7 +12,8 @@ import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerWatzCore extends Container {
+public class ContainerWatzCore extends Container
+{
 	
 	private TileEntityWatzCore diFurnace;
 	

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.logging.log4j.Level;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
@@ -17,8 +18,10 @@ import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemAssemblyTemplate;
 import com.hbm.items.machine.ItemCassette;
 import com.hbm.items.machine.ItemStamp;
+import com.hbm.items.machine.ItemChemistryTemplate.EnumChemistryTemplate;
 import com.hbm.items.machine.ItemStamp.StampType;
 import com.hbm.lib.RefStrings;
+import com.hbm.main.MainRegistry;
 import com.hbm.packet.ItemFolderPacket;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.util.I18nUtil;
@@ -137,6 +140,7 @@ public class GUIScreenTemplateFolder extends GuiScreen {
 		return (int) Math.ceil((stacks.size() - 1) / (5 * 7));
 	}
 
+	@Override
 	public void updateScreen() {
 		if(currentPage < 0)
 			currentPage = 0;
@@ -144,6 +148,7 @@ public class GUIScreenTemplateFolder extends GuiScreen {
 			currentPage = getPageCount();
 	}
 
+	@Override
 	public void drawScreen(int mouseX, int mouseY, float f) {
 		this.drawDefaultBackground();
 		this.drawGuiContainerBackgroundLayer(f, mouseX, mouseY);
@@ -152,6 +157,7 @@ public class GUIScreenTemplateFolder extends GuiScreen {
 		GL11.glEnable(GL11.GL_LIGHTING);
 	}
 
+	@Override
 	public void initGui() {
 		super.initGui();
 		this.guiLeft = (this.width - this.xSize) / 2;
@@ -187,6 +193,7 @@ public class GUIScreenTemplateFolder extends GuiScreen {
 			buttons.add(new FolderButton(guiLeft + 25 + (27 * 4) + 18, guiTop + 26 + (27 * 3), 2, "Next"));
 	}
 
+	@Override
 	protected void mouseClicked(int i, int j, int k) {
 		
 		if(i >= guiLeft + 45 && i < guiLeft + 117 && j >= guiTop + 211 && j < guiTop + 223) {
@@ -199,7 +206,9 @@ public class GUIScreenTemplateFolder extends GuiScreen {
 			for(FolderButton b : buttons)
 				if(b.isMouseOnButton(i, j))
 					b.executeAction();
-		} catch(Exception ex) {
+		} catch(Exception ex)
+		{
+			MainRegistry.logger.catching(Level.WARN, ex);
 			updateButtons();
 		}
 	}
@@ -234,6 +243,7 @@ public class GUIScreenTemplateFolder extends GuiScreen {
 		search.drawTextBox();
 	}
 
+	@Override
 	protected void keyTyped(char p_73869_1_, int p_73869_2_) {
 		
 		if (this.search.textboxKeyTyped(p_73869_1_, p_73869_2_)) {
@@ -292,7 +302,7 @@ public class GUIScreenTemplateFolder extends GuiScreen {
 			try {
                 RenderHelper.enableGUIStandardItemLighting();
                 GL11.glDisable(GL11.GL_LIGHTING);
-                OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)240 / 1.0F, (float)240 / 1.0F);
+                OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240 / 1.0F, 240 / 1.0F);
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 				if(stack != null) {
 					if(stack.getItem() == ModItems.assembly_template)
@@ -303,7 +313,9 @@ public class GUIScreenTemplateFolder extends GuiScreen {
 						itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), stack, xPos + 1, yPos + 1);
 				}
                 GL11.glEnable(GL11.GL_LIGHTING);
-			} catch(Exception x) {
+			} catch(Exception x)
+			{
+				MainRegistry.logger.catching(Level.WARN, x);
 			}
 		}
 

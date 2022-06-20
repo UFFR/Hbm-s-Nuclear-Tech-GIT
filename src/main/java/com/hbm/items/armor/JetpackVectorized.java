@@ -17,7 +17,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-public class JetpackVectorized extends JetpackBase {
+public class JetpackVectorized extends JetpackBase
+{
 
 	public JetpackVectorized(FluidType fuel, int maxFuel) {
 		super(fuel, maxFuel);
@@ -28,6 +29,7 @@ public class JetpackVectorized extends JetpackBase {
 		return "hbm:textures/models/JetPackGreen.png";
 	}
 
+	@Override
 	public void onArmorTick(World world, EntityPlayer player, ItemStack stack) {
 
 		HbmPlayerProps props = HbmPlayerProps.getData(player);
@@ -65,6 +67,7 @@ public class JetpackVectorized extends JetpackBase {
 		}
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean ext) {
 

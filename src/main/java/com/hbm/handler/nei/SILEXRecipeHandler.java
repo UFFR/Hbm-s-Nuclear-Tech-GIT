@@ -14,6 +14,7 @@ import com.hbm.items.machine.ItemFELCrystal.EnumWavelengths;
 import com.hbm.lib.RefStrings;
 import com.hbm.util.I18nUtil;
 import com.hbm.util.WeightedRandomObject;
+import com.hbm.inventory.RecipesCommon.ComparableStack;
 
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
@@ -21,6 +22,7 @@ import codechicken.nei.recipe.TemplateRecipeHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 
@@ -146,7 +148,7 @@ public class SILEXRecipeHandler extends TemplateRecipeHandler {
 			
 			if(recipe.getKey() instanceof ItemStack) {
 
-				if (NEIServerUtils.areStacksSameTypeCrafting(ingredient, (ItemStack)recipe.getKey()))
+				if (NEIServerUtils.areStacksSameType(ingredient, (ItemStack)recipe.getKey()))
 					this.arecipes.add(new RecipeSet(recipe.getKey(), recipe.getValue()));
 				
 			} else if (recipe.getKey() instanceof ArrayList) {
@@ -154,7 +156,7 @@ public class SILEXRecipeHandler extends TemplateRecipeHandler {
 				for(Object o : (ArrayList)recipe.getKey()) {
 					ItemStack stack = (ItemStack)o;
 
-					if (NEIServerUtils.areStacksSameTypeCrafting(ingredient, stack))
+					if (NEIServerUtils.areStacksSameType(ingredient, stack))
 						this.arecipes.add(new RecipeSet(stack, recipe.getValue()));
 				}
 			}

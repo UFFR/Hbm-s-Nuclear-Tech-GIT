@@ -163,16 +163,13 @@ public class ItemCassette extends Item {
         {
             return 16777215;
         }
-        else
-        {
-            int j = TrackType.getEnum(stack.getItemDamage()).getColor();
+		int j = TrackType.getEnum(stack.getItemDamage()).getColor();
 
-            if (j < 0)
-            {
-                j = 16777215;
-            }
+		if (j < 0)
+		{
+		    j = 16777215;
+		}
 
-            return j;
-        }
+		return j;
     }
 }

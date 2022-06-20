@@ -17,7 +17,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-public class JetpackBooster extends JetpackBase {
+public class JetpackBooster extends JetpackBase
+{
 
 	public JetpackBooster(FluidType fuel, int maxFuel) {
 		super(fuel, maxFuel);
@@ -28,6 +29,7 @@ public class JetpackBooster extends JetpackBase {
 		return "hbm:textures/models/JetPack.png";
 	}
 
+	@Override
 	public void onArmorTick(World world, EntityPlayer player, ItemStack stack) {
 
 		HbmPlayerProps props = HbmPlayerProps.getData(player);
@@ -65,6 +67,7 @@ public class JetpackBooster extends JetpackBase {
 		}
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean ext) {
 

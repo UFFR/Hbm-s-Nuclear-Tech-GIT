@@ -3,9 +3,9 @@ package com.hbm.blocks.machine;
 import java.util.Random;
 
 import com.hbm.blocks.ModBlocks;
+import com.hbm.handler.EnumGUI;
 import com.hbm.lib.RefStrings;
 import com.hbm.main.MainRegistry;
-import com.hbm.tileentity.machine.TileEntityDiFurnace;
 import com.hbm.tileentity.machine.TileEntityDiFurnaceRTG;
 
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
@@ -64,10 +64,10 @@ public class MachineDiFurnaceRTG extends BlockContainer {
 	@Override
 	public void onBlockAdded(World world, int x, int y, int z) {
 		super.onBlockAdded(world, x, y, z);
-		this.setDefaultDirection(world, x, y, z);
+		MachineDiFurnaceRTG.setDefaultDirection(world, x, y, z);
 	}
 
-	private void setDefaultDirection(World world, int x, int y, int z) {
+	private static void setDefaultDirection(World world, int x, int y, int z) {
 		if(!world.isRemote) {
 			Block block1 = world.getBlock(x, y, z - 1);
 			Block block2 = world.getBlock(x, y, z + 1);
@@ -123,7 +123,7 @@ public class MachineDiFurnaceRTG extends BlockContainer {
 		} else if(!player.isSneaking()) {
 			TileEntityDiFurnaceRTG entity = (TileEntityDiFurnaceRTG) world.getTileEntity(x, y, z);
 			if(entity != null) {
-				FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_rtg_difurnace, world, x, y, z);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, EnumGUI.RTG_BFURNACE.ordinal(), world, x, y, z);
 			}
 			return true;
 		} else {

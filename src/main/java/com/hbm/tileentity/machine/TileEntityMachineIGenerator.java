@@ -1,5 +1,6 @@
 package com.hbm.tileentity.machine;
 
+import java.math.BigInteger;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.inventory.FluidTank;
@@ -8,6 +9,8 @@ import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.types.FluidTypeFlammable;
 import com.hbm.items.ModItems;
 import com.hbm.lib.Library;
+import com.hbm.tileentity.IRTGUser;
+import com.hbm.tileentity.IRadioisotopeFuel;
 import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.RTGUtil;
 
@@ -22,7 +25,7 @@ import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityMachineIGenerator extends TileEntityMachineBase implements IFluidAcceptor, IEnergyGenerator {
+public class TileEntityMachineIGenerator extends TileEntityMachineBase implements IFluidAcceptor, IEnergyGenerator, IRTGUser {
 	
 	public long power;
 	public static final long maxPower = 1000000;
@@ -39,7 +42,6 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 	public FluidTank[] tanks;
 	
 	public int age = 0;
-
 	public TileEntityMachineIGenerator() {
 		super(21);
 		tanks = new FluidTank[3];
@@ -145,8 +147,8 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 				
 				this.power += Math.pow(powerGen, 1.1D);
 				
-				if(this.power > this.maxPower)
-					this.power = this.maxPower;
+				if(this.power > TileEntityMachineIGenerator.maxPower)
+					this.power = TileEntityMachineIGenerator.maxPower;
 			}
 			
 			NBTTagCompound data = new NBTTagCompound();
@@ -154,6 +156,7 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 			data.setInteger("spin", spin);
 			data.setIntArray("burn", burn);
 			data.setBoolean("hasRTG", hasRTG);
+			data.setByteArray("date", date.toByteArray());
 			this.networkPack(data, 150);
 			
 			for(int i = 0; i < 3; i++)
@@ -180,6 +183,7 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 		this.spin = nbt.getInteger("spin");
 		this.burn = nbt.getIntArray("burn");
 		this.hasRTG = nbt.getBoolean("hasRTG");
+		date = new BigInteger(nbt.getByteArray("date"));
 	}
 	
 	public static final int coalGenRate = 75;
@@ -239,6 +243,7 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 		
 		this.power = nbt.getLong("power");
 		this.burn = nbt.getIntArray("burn");
+		date = new BigInteger(nbt.getByteArray("date"));
 	}
 	
 	@Override
@@ -250,6 +255,7 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 		
 		nbt.setLong("power", power);
 		nbt.setIntArray("burn", burn);
+		nbt.setByteArray("date", date.toByteArray());
 	}
 	
 	@Override
@@ -276,6 +282,39 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 
 	@Override
 	public long getMaxPower() {
-		return this.maxPower;
+		return maxPower;
+	}
+	
+	@Override
+	public int getHeat()
+	{
+		return updateRTGs();
+	}
+
+	@Override
+	public ItemStack[] getInventory()
+	{
+		ItemStack[] rtgSlots = new ItemStack[RTGSlots.length];
+		for (byte i = 0; i < RTGSlots.length; i++)
+			rtgSlots[i] = slots[RTGSlots[i]];
+		return rtgSlots;
+	}
+	
+	@Override
+	public Class<? extends IRadioisotopeFuel> getDesiredClass()
+	{
+		return ItemRTGPellet.class;
+	}
+
+	@Override
+	public void incrementAge()
+	{
+		date = date.add(BigInteger.ONE);
+	}
+
+	@Override
+	public BigInteger getInternalDate()
+	{
+		return date;
 	}
 }

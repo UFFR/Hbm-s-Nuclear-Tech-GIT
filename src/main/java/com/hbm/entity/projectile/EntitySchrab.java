@@ -2,6 +2,12 @@ package com.hbm.entity.projectile;
 
 import java.util.List;
 
+import com.hbm.explosion.ExplosionChaos;
+import com.hbm.explosion.ExplosionNukeGeneric;
+import com.hbm.items.ModItems;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -21,13 +27,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-
-import com.hbm.explosion.ExplosionChaos;
-import com.hbm.explosion.ExplosionNukeGeneric;
-import com.hbm.items.ModItems;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class EntitySchrab extends Entity implements IProjectile
 {

@@ -13,7 +13,8 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 
-public class ItemModHealth extends ItemArmorMod {
+public class ItemModHealth extends ItemArmorMod
+{
 	
 	float health;
 
@@ -48,7 +49,7 @@ public class ItemModHealth extends ItemArmorMod {
 	
 	@Override
 	public Multimap getModifiers(ItemStack armor) {
-		Multimap multimap = super.getAttributeModifiers(armor);
+		Multimap<String, AttributeModifier> multimap = super.getItemAttributeModifiers();
 		
 		multimap.put(SharedMonsterAttributes.maxHealth.getAttributeUnlocalizedName(),
 				new AttributeModifier(ArmorModHandler.UUIDs[((ItemArmor)armor.getItem()).armorType], "NTM Armor Mod Health", health, 0));

@@ -1,16 +1,24 @@
 package com.hbm.extprop;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Random;
 import java.util.UUID;
 
 import com.hbm.config.RadiationConfig;
 import com.hbm.entity.mob.EntityDuck;
+import com.hbm.hazard.HazardRegistry;
+import com.hbm.hazard.type.HazardTypeBase;
 import com.hbm.lib.ModDamageSource;
 import com.hbm.main.MainRegistry;
 import com.hbm.packet.AuxParticlePacketNT;
 import com.hbm.packet.PacketDispatcher;
+import com.hbm.saveddata.TimeSavedData;
 
+import api.hbm.Date;
+import api.hbm.IHasAge;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -18,19 +26,22 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
+import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 
-public class HbmLivingProps implements IExtendedEntityProperties {
+public class HbmLivingProps implements IExtendedEntityProperties, IHasAge
+{
 	
 	public static final String key = "NTM_EXT_LIVING";
 	public static final UUID digamma_UUID = UUID.fromString("2a3d8aec-5ab9-4218-9b8b-ca812bdf378b");
 	public EntityLivingBase entity;
 	
 	/// VALS ///
+	private static final Random rand = new Random();
 	private float radiation;
 	private float digamma;
 	private int asbestos;
@@ -43,10 +54,34 @@ public class HbmLivingProps implements IExtendedEntityProperties {
 	private float radBuf;
 	private int bombTimer;
 	private int contagion;
-	private List<ContaminationEffect> contamination = new ArrayList();
+	private Date age = new Date(), maxAge, intDate;
+	private List<ContaminationEffect> contamination = new ArrayList<ContaminationEffect>();
+	private final HashMap<HazardTypeBase, Float> basicHazards = new HashMap<HazardTypeBase, Float>();
+	public static final HashMap<HazardTypeBase, Float> maxHazards = new HashMap<HazardTypeBase, Float>();
+	private static final HashMap<Class<? extends EntityLivingBase>, Date> maxAges = new HashMap<Class<? extends EntityLivingBase>, Date>();
+	static
+	{
+		maxHazards.put(HazardRegistry.BERYLLIUM, 72000f);
+		maxAges.put(EntityPlayer.class, new Date(90, 0, 0));
+		maxAges.put(EntityVillager.class, new Date(60, 0, 0));
+		maxAges.put(EntityWolf.class, new Date(10, 0, 0));
+	}
 	
 	public HbmLivingProps(EntityLivingBase entity) {
 		this.entity = entity;
+		intDate = TimeSavedData.getData(entity.worldObj).dateData;
+		// Zero meaning it does not die of old age
+		maxAge = maxAges.getOrDefault(entity.getClass(), new Date());
+		if (!maxAge.equals(new Date()))
+			maxAge = maxAge.add(new Date(rand.nextInt(10), rand.nextInt(100), 0));
+		
+		if (entity instanceof EntityPlayer)
+		{
+			TimeSavedData data = TimeSavedData.getData(entity.worldObj);
+			age = new Date(20 + rand.nextInt(10), data.dateData.getDay(), data.dateData.getTime());
+		}
+		
+		register();
 	}
 	
 	/// DATA ///
@@ -80,14 +115,37 @@ public class HbmLivingProps implements IExtendedEntityProperties {
 			return;
 		
 		HbmLivingProps data = getData(entity);
-		float radiation = getData(entity).radiation + rad;
+		float radiation = data.radiation + rad;
 		
 		if(radiation > 2500)
 			radiation = 2500;
 		if(radiation < 0)
 			radiation = 0;
 		
-		data.setRadiation(entity, radiation);
+		setRadiation(entity, radiation);
+	}
+	
+	/// Basics
+	public static float getStat(EntityLivingBase entity, HazardTypeBase haz)
+	{
+		return getData(entity).basicHazards.get(haz);
+	}
+	
+	public static void setStat(EntityLivingBase entity, HazardTypeBase haz, float amount)
+	{
+		getData(entity).basicHazards.put(haz, amount);
+	}
+	
+	public static void incStat(EntityLivingBase entity, HazardTypeBase haz, float amount)
+	{
+		HbmLivingProps data = getData(entity);
+		data.basicHazards.put(haz, data.basicHazards.get(haz) + amount);
+		
+		if (data.basicHazards.get(haz) > maxHazards.get(haz))
+		{
+			setStat(entity, haz, 0);
+			entity.attackEntityFrom(ModDamageSource.causeDamage(entity, haz.toString()), 1000);
+		}
 	}
 	
 	/// RAD ENV ///
@@ -128,7 +186,7 @@ public class HbmLivingProps implements IExtendedEntityProperties {
 			return;
 		
 		if(entity instanceof EntityDuck)
-			digamma = 0.0F;
+			return;
 		
 		getData(entity).digamma = digamma;
 		
@@ -138,7 +196,9 @@ public class HbmLivingProps implements IExtendedEntityProperties {
 		
 		try {
 			attributeinstance.removeModifier(attributeinstance.getModifier(digamma_UUID));
-		} catch(Exception ex) { }
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
 		
 		attributeinstance.applyModifier(new AttributeModifier(digamma_UUID, "digamma", healthMod, 2));
 		
@@ -175,14 +235,14 @@ public class HbmLivingProps implements IExtendedEntityProperties {
 	
 	public static void incrementDigamma(EntityLivingBase entity, float digamma) {
 		HbmLivingProps data = getData(entity);
-		float dRad = getDigamma(entity) + digamma;
+		float dRad = data.digamma + digamma;
 		
 		if(dRad > 10)
 			dRad = 10;
 		if(dRad < 0)
 			dRad = 0;
 		
-		data.setDigamma(entity, dRad);
+		setDigamma(entity, dRad);
 	}
 	
 	
@@ -271,7 +331,7 @@ public class HbmLivingProps implements IExtendedEntityProperties {
 	}
 
 	@Override
-	public void init(Entity entity, World world) { }
+	public void init(Entity entity, World world) {/*h*/ }
 
 	@Override
 	public void saveNBTData(NBTTagCompound nbt) {
@@ -291,6 +351,18 @@ public class HbmLivingProps implements IExtendedEntityProperties {
 		for(int i = 0; i < this.contamination.size(); i++) {
 			this.contamination.get(i).save(props, i);
 		}
+		
+		if (!basicHazards.isEmpty())
+		{
+			NBTTagCompound data = new NBTTagCompound();
+			for (Entry<HazardTypeBase, Float> e : basicHazards.entrySet())
+				data.setFloat(e.getKey().toString(), e.getValue());
+			
+			props.setTag("hfr_basic", data);
+		}
+		
+		props.setByteArray("age", age.serialize());
+		props.setByteArray("maxAge", maxAge.serialize());
 		
 		nbt.setTag("HbmLivingProps", props);
 	}
@@ -314,6 +386,14 @@ public class HbmLivingProps implements IExtendedEntityProperties {
 			for(int i = 0; i < cont; i++) {
 				this.contamination.add(ContaminationEffect.load(props, i));
 			}
+			
+			age = new Date(props.getByteArray("age"));
+			maxAge = new Date(props.getByteArray("maxAge"));
+			
+//			if (props.hasKey("hfr_basic"))
+//			{
+//				NBTTagCompound data = props.getCompoundTag("hfr_basic");
+//			}
 		}
 	}
 	
@@ -354,5 +434,23 @@ public class HbmLivingProps implements IExtendedEntityProperties {
 			effect.time = time;
 			return effect;
 		}
+	}
+
+	@Override
+	public void incrementAge()
+	{
+		age.increment();
+	}
+	
+	@Override
+	public void notifyTimeUpdated(Date newTime)
+	{
+		intDate = newTime;
+	}
+
+	@Override
+	public Date getInternalDate()
+	{
+		return intDate;
 	}
 }

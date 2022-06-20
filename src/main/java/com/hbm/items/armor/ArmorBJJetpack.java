@@ -21,7 +21,8 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-public class ArmorBJJetpack extends ArmorBJ {
+public class ArmorBJJetpack extends ArmorBJ
+{
 
 	public ArmorBJJetpack(ArmorMaterial material, int layer, int slot, String texture, long maxPower, long chargeRate, long consumption, long drain) {
 		super(material, layer, slot, texture, maxPower, chargeRate, consumption, drain);
@@ -41,6 +42,7 @@ public class ArmorBJJetpack extends ArmorBJ {
 		return model;
 	}
 
+	@Override
 	public void onArmorTick(World world, EntityPlayer player, ItemStack stack) {
 		
 		super.onArmorTick(world, player, stack);
@@ -49,7 +51,7 @@ public class ArmorBJJetpack extends ArmorBJ {
 		
 		if(!world.isRemote) {
 			
-			if(this.hasFSBArmor(player) && props.isJetpackActive()) {
+			if(hasFSBArmor(player) && props.isJetpackActive()) {
 
 				NBTTagCompound data = new NBTTagCompound();
 				data.setString("type", "jetpack_bj");
@@ -58,7 +60,7 @@ public class ArmorBJJetpack extends ArmorBJ {
 			}
 		}
 
-		if(this.hasFSBArmor(player)) {
+		if(hasFSBArmor(player)) {
 			
 			ArmorUtil.resetFlightTime(player);
 			
@@ -91,7 +93,8 @@ public class ArmorBJJetpack extends ArmorBJ {
 		}
     }
     
-    @SideOnly(Side.CLIENT)
+    @Override
+	@SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean ext) {
     	super.addInformation(stack, player, list, ext);
 

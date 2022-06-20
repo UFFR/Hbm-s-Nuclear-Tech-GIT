@@ -229,8 +229,8 @@ public class TileEntityHadron extends TileEntityMachineBase implements IEnergyUs
 	}
 	
 	static final int maxParticles = 1;
-	List<Particle> particles = new ArrayList();
-	List<Particle> particlesToRemove = new ArrayList();
+	List<Particle> particles = new ArrayList<Particle>();
+	List<Particle> particlesToRemove = new ArrayList<Particle>();
 	
 	private void updateParticles() {
 		
@@ -677,7 +677,7 @@ public class TileEntityHadron extends TileEntityMachineBase implements IEnergyUs
 		
 		List<Integer> rands = Arrays.asList(new Integer[] {0, 1, 2, 3, 4, 5} );
 		Collections.shuffle(rands);
-		List<ForgeDirection> dirs = new ArrayList();
+		List<ForgeDirection> dirs = new ArrayList<ForgeDirection>();
 		for(Integer i : rands) {
 			dirs.add(ForgeDirection.getOrientation(i));
 		}

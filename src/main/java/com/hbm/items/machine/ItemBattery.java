@@ -3,6 +3,9 @@ package com.hbm.items.machine;
 import java.util.List;
 
 import com.hbm.items.ModItems;
+import com.hbm.lib.HbmCollection;
+import com.hbm.lib.Library;
+import com.hbm.util.I18nUtil;
 import com.hbm.util.BobMathUtil;
 
 import api.hbm.energy.IBatteryItem;
@@ -16,7 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class ItemBattery extends Item implements IBatteryItem {
-
+	private EnumRarity rarity = EnumRarity.common;
 	private long maxCharge;
 	private long chargeRate;
 	private long dischargeRate;
@@ -25,6 +28,7 @@ public class ItemBattery extends Item implements IBatteryItem {
 		this.maxCharge = dura;
 		this.chargeRate = chargeRate;
 		this.dischargeRate = dischargeRate;
+		setMaxStackSize(1);
 	}
 
 	@Override
@@ -37,27 +41,28 @@ public class ItemBattery extends Item implements IBatteryItem {
 			list.add("Energy stored: " + BobMathUtil.getShortNumber(charge) + "/" + BobMathUtil.getShortNumber(maxCharge) + "HE");
 		} else {
 			String charge1 = BobMathUtil.getShortNumber((charge * 100) / this.maxCharge);
-			list.add("Charge: " + charge1 + "%");
+			list.add(I18nUtil.resolveKey(HbmCollection.chargePerc, charge1));
 			list.add("(" + BobMathUtil.getShortNumber(charge) + "/" + BobMathUtil.getShortNumber(maxCharge) + "HE)");
 		}
-		list.add("Charge rate: " + BobMathUtil.getShortNumber(chargeRate) + "HE/t");
-		list.add("Discharge rate: " + BobMathUtil.getShortNumber(dischargeRate) + "HE/t");
+//		list.add("Charge rate: " + Library.getShortNumber(chargeRate) + "HE/t");
+//		list.add("Discharge rate: " + Library.getShortNumber(dischargeRate) + "HE/t");
+		list.add(I18nUtil.resolveKey(HbmCollection.chargeRate, BobMathUtil.getShortNumber(chargeRate)));
+		list.add(I18nUtil.resolveKey(HbmCollection.dischargeRate, BobMathUtil.getShortNumber(dischargeRate)));
+	}
+	
+	public ItemBattery setRarity(EnumRarity customRarity)
+	{
+		rarity = customRarity;
+		return this;
+	}
+	
+	@Override
+	public EnumRarity getRarity(ItemStack p_77613_1_)
+	{
+		return rarity;
 	}
 
 	@Override
-	public EnumRarity getRarity(ItemStack p_77613_1_) {
-
-		if(this == ModItems.battery_schrabidium) {
-			return EnumRarity.rare;
-		}
-
-		if(this == ModItems.fusion_core || this == ModItems.factory_core_titanium || this == ModItems.factory_core_advanced || this == ModItems.energy_core || this == ModItems.dynosphere_desh || this == ModItems.dynosphere_schrabidium || this == ModItems.dynosphere_euphemium || this == ModItems.dynosphere_dineutronium) {
-			return EnumRarity.uncommon;
-		}
-
-		return EnumRarity.common;
-	}
-
 	public void chargeBattery(ItemStack stack, long i) {
 		if(stack.getItem() instanceof ItemBattery) {
 			if(stack.hasTagCompound()) {
@@ -69,6 +74,7 @@ public class ItemBattery extends Item implements IBatteryItem {
 		}
 	}
 
+	@Override
 	public void setCharge(ItemStack stack, long i) {
 		if(stack.getItem() instanceof ItemBattery) {
 			if(stack.hasTagCompound()) {
@@ -80,6 +86,7 @@ public class ItemBattery extends Item implements IBatteryItem {
 		}
 	}
 
+	@Override
 	public void dischargeBattery(ItemStack stack, long i) {
 		if(stack.getItem() instanceof ItemBattery) {
 			if(stack.hasTagCompound()) {
@@ -91,6 +98,7 @@ public class ItemBattery extends Item implements IBatteryItem {
 		}
 	}
 
+	@Override
 	public long getCharge(ItemStack stack) {
 		if(stack.getItem() instanceof ItemBattery) {
 			if(stack.hasTagCompound()) {
@@ -105,14 +113,17 @@ public class ItemBattery extends Item implements IBatteryItem {
 		return 0;
 	}
 
+	@Override
 	public long getMaxCharge() {
 		return maxCharge;
 	}
 
+	@Override
 	public long getChargeRate() {
 		return chargeRate;
 	}
 
+	@Override
 	public long getDischargeRate() {
 		return dischargeRate;
 	}
@@ -141,10 +152,12 @@ public class ItemBattery extends Item implements IBatteryItem {
 		return new ItemStack(item);
 	}
 
+	@Override
 	public boolean showDurabilityBar(ItemStack stack) {
 		return true;
 	}
 
+	@Override
 	public double getDurabilityForDisplay(ItemStack stack) {
 		return 1D - (double) getCharge(stack) / (double) getMaxCharge();
 	}

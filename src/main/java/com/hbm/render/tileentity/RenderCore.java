@@ -9,10 +9,8 @@ import com.hbm.main.ResourceManager;
 import com.hbm.render.util.RenderSparks;
 import com.hbm.tileentity.machine.TileEntityCore;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -239,7 +237,6 @@ public class RenderCore extends TileEntitySpecialRenderer {
 			GL11.glTexGen(GL11.GL_T, GL11.GL_EYE_PLANE, this.func_147525_a(1, 0, 0, 0));
 			GL11.glTexGen(GL11.GL_R, GL11.GL_EYE_PLANE, this.func_147525_a(0, 0, 0, 1));
 			GL11.glTexGen(GL11.GL_Q, GL11.GL_EYE_PLANE, this.func_147525_a(0, 0, 1, 0));
-
 			tessellator.startDrawingQuads();
 			tessellator.setColorOpaque_F(f11, f12, f13);
 			tessellator.setBrightness(0xF000F0);
@@ -247,18 +244,15 @@ public class RenderCore extends TileEntitySpecialRenderer {
 			tessellator.addVertex(x + 0.0, y + 1.0, z + 0.0);
 			tessellator.addVertex(x + 1.0, y + 1.0, z + 0.0);
 			tessellator.addVertex(x + 1.0, y + 0.0, z + 0.0);
-
 			tessellator.addVertex(x + 1.0, y + 0.0, z + 1.0);
 			tessellator.addVertex(x + 1.0, y + 1.0, z + 1.0);
 			tessellator.addVertex(x + 0.0, y + 1.0, z + 1.0);
 			tessellator.addVertex(x + 0.0, y + 0.0, z + 1.0);
 			tessellator.draw();
-
 			GL11.glTexGen(GL11.GL_S, GL11.GL_EYE_PLANE, this.func_147525_a(0, 1, 0, 0));
 			GL11.glTexGen(GL11.GL_T, GL11.GL_EYE_PLANE, this.func_147525_a(0, 0, 1, 0));
 			GL11.glTexGen(GL11.GL_R, GL11.GL_EYE_PLANE, this.func_147525_a(0, 0, 0, 1));
 			GL11.glTexGen(GL11.GL_Q, GL11.GL_EYE_PLANE, this.func_147525_a(1, 0, 0, 0));
-
 			tessellator.startDrawingQuads();
 			tessellator.setColorOpaque_F(f11, f12, f13);
 			tessellator.setBrightness(0xF000F0);
@@ -267,7 +261,6 @@ public class RenderCore extends TileEntitySpecialRenderer {
 			tessellator.addVertex(x + 0.0, y + 1.0, z + 0.0);
 			tessellator.addVertex(x + 0.0, y + 0.0, z + 0.0);
 			tessellator.draw();
-
 			tessellator.startDrawingQuads();
 			tessellator.setColorOpaque_F(f11, f12, f13);
 			tessellator.setBrightness(0xF000F0);

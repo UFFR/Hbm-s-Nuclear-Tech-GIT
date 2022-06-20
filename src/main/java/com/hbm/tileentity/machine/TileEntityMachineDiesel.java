@@ -128,6 +128,7 @@ public class TileEntityMachineDiesel extends TileEntityMachineBase implements IE
 		}
 	}
 	
+	@Override
 	public void networkUnpack(NBTTagCompound data) {
 
 		power = data.getInteger("power");

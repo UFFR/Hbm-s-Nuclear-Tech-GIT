@@ -15,6 +15,7 @@ public class JungleDungeonRoomWeb extends JungleDungeonRoom {
 		super(parent);
 	}
 
+	@Override
 	public void generateMain(final World world, final int x, final int y, final int z) {
 		super.generateMain(world, x, y, z);
 		

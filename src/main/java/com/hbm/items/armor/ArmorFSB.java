@@ -8,10 +8,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.apache.logging.log4j.Level;
 import org.lwjgl.opengl.GL11;
 
 import com.hbm.extprop.HbmLivingProps;
 import com.hbm.handler.radiation.ChunkRadiationManager;
+import com.hbm.main.MainRegistry;
 import com.hbm.util.I18nUtil;
 
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -48,8 +50,8 @@ public class ArmorFSB extends ItemArmor implements IArmorDisableModel {
 
 	private String texture = "";
 	private ResourceLocation overlay = null;
-	public List<PotionEffect> effects = new ArrayList();
-	public HashMap<String, Float> resistance = new HashMap();
+	public List<PotionEffect> effects = new ArrayList<PotionEffect>();
+	public HashMap<String, Float> resistance = new HashMap<String, Float>();
 	public float blastProtection = -1;
 	public float projectileProtection = -1;
 	public float damageCap = -1;
@@ -211,6 +213,7 @@ public class ArmorFSB extends ItemArmor implements IArmorDisableModel {
 		return texture;
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean bool) {
 
@@ -451,7 +454,7 @@ public class ArmorFSB extends ItemArmor implements IArmorDisableModel {
 					}
 
 					int px = MathHelper.floor_double(player.posX);
-					int py = MathHelper.floor_double(player.posY - 0.2D - (double) player.yOffset);
+					int py = MathHelper.floor_double(player.posY - 0.2D - player.yOffset);
 					int pz = MathHelper.floor_double(player.posZ);
 					Block block = player.worldObj.getBlock(px, py, pz);
 
@@ -461,6 +464,7 @@ public class ArmorFSB extends ItemArmor implements IArmorDisableModel {
 					player.getEntityData().setFloat("hfr_nextStepDistance", nextStepDistance.getFloat(player));
 
 				} catch(Exception x) {
+					MainRegistry.logger.catching(Level.INFO, x);
 				}
 			}
 			/*
@@ -604,10 +608,14 @@ public class ArmorFSB extends ItemArmor implements IArmorDisableModel {
 	public void handleOverlay(RenderGameOverlayEvent.Pre event, EntityPlayer player) {
 	}
 
+	/**
+	 * @param stack Unneeded
+	 */
 	public boolean isArmorEnabled(ItemStack stack) {
 		return true;
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void renderHelmetOverlay(ItemStack stack, EntityPlayer player, ScaledResolution resolution, float partialTicks, boolean hasScreen, int mouseX, int mouseY) {
 
@@ -623,9 +631,9 @@ public class ArmorFSB extends ItemArmor implements IArmorDisableModel {
 		Minecraft.getMinecraft().getTextureManager().bindTexture(overlay);
 		Tessellator tessellator = Tessellator.instance;
 		tessellator.startDrawingQuads();
-		tessellator.addVertexWithUV(0.0D, (double) resolution.getScaledHeight(), -90.0D, 0.0D, 1.0D);
-		tessellator.addVertexWithUV((double) resolution.getScaledWidth(), (double) resolution.getScaledHeight(), -90.0D, 1.0D, 1.0D);
-		tessellator.addVertexWithUV((double) resolution.getScaledWidth(), 0.0D, -90.0D, 1.0D, 0.0D);
+		tessellator.addVertexWithUV(0.0D, resolution.getScaledHeight(), -90.0D, 0.0D, 1.0D);
+		tessellator.addVertexWithUV(resolution.getScaledWidth(), resolution.getScaledHeight(), -90.0D, 1.0D, 1.0D);
+		tessellator.addVertexWithUV(resolution.getScaledWidth(), 0.0D, -90.0D, 1.0D, 0.0D);
 		tessellator.addVertexWithUV(0.0D, 0.0D, -90.0D, 0.0D, 0.0D);
 		tessellator.draw();
 		GL11.glDepthMask(true);

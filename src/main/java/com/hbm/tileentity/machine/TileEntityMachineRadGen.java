@@ -1,12 +1,16 @@
 package com.hbm.tileentity.machine;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import com.hbm.blocks.BlockDummyable;
+import com.hbm.inventory.RecipesCommon.AStack;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
+import com.hbm.inventory.recipes.BetavoltaicFuels;
 import com.hbm.items.ModItems;
 import com.hbm.items.special.ItemWasteLong;
 import com.hbm.items.special.ItemWasteShort;
+import com.hbm.tileentity.IRadioisotopeFuel;
 import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.Tuple.Triplet;
 
@@ -200,8 +204,7 @@ public class TileEntityMachineRadGen extends TileEntityMachineBase implements IE
 		return i >= 12;
 	}
 	
-	public static final HashMap<ComparableStack, Triplet<Integer, Integer, ItemStack>> fuels = new HashMap();
-	
+	public static final HashMap<ComparableStack, Triplet<Integer, Integer, ItemStack>> fuels = new HashMap<ComparableStack, Triplet<Integer, Integer, ItemStack>>();
 	static {
 
 		for(int i = 0; i < ItemWasteShort.WasteClass.values().length; i++) {
@@ -212,8 +215,17 @@ public class TileEntityMachineRadGen extends TileEntityMachineBase implements IE
 			fuels.put(	new ComparableStack(ModItems.nuclear_waste_long, 1, i),			new Triplet<Integer, Integer, ItemStack>(50,	2 * 60 * 60 * 20,	new ItemStack(ModItems.nuclear_waste_long_depleted, 1, i)));
 			fuels.put(	new ComparableStack(ModItems.nuclear_waste_long_tiny, 1, i),	new Triplet<Integer, Integer, ItemStack>(5,		12 * 60 * 20,		new ItemStack(ModItems.nuclear_waste_long_depleted_tiny, 1, i)));
 		}
-		
+		fuels.put(		new ComparableStack(ModItems.ingot_au198), 						new Triplet<Integer, Integer, ItemStack>(5000, 1200, new ItemStack(ModItems.nugget_mercury)));
+		fuels.put(		new ComparableStack(ModItems.powder_au198), 					new Triplet<Integer, Integer, ItemStack>(5000, 1200, new ItemStack(ModItems.nugget_mercury)));
 		fuels.put(		new ComparableStack(ModItems.scrap_nuclear),					new Triplet<Integer, Integer, ItemStack>(5,		5 * 60 * 20,		null));
+		fuels.put(		new ComparableStack(ModItems.nugget_ra226), 					new Triplet<Integer, Integer, ItemStack>(5,		12 * 60 * 20, 		new ItemStack(ModItems.nugget_polonium)));
+		fuels.put(		new ComparableStack(ModItems.billet_ra226), 					new Triplet<Integer, Integer, ItemStack>(50, 	12 * 60 * 20, 		new ItemStack(ModItems.billet_polonium)));
+		fuels.put(		new ComparableStack(ModItems.ingot_ra226), 						new Triplet<Integer, Integer, ItemStack>(50, 	12 * 60 * 20, 		new ItemStack(ModItems.ingot_polonium)));
+		fuels.put(		new ComparableStack(ModItems.powder_ra226), 					new Triplet<Integer, Integer, ItemStack>(50, 	12 * 60 * 20, 		new ItemStack(ModItems.powder_polonium)));
+		
+		
+		for (Entry<AStack, IRadioisotopeFuel> e : BetavoltaicFuels.fuelMap.entrySet())
+			fuels.put(new ComparableStack(e.getKey().toStack()), new Triplet<Integer, Integer, ItemStack>(e.getValue().getHeat() / 10, (int) (e.getValue().getMaxLifespan() / 10), e.getValue().getDecayItem()));
 	}
 	
 	private Triplet<Integer, Integer, ItemStack> grabResult(ItemStack stack) {

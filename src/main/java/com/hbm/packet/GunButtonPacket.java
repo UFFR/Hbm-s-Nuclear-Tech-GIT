@@ -72,6 +72,12 @@ public class GunButtonPacket implements IMessage {
 						item.startReloadAction(p.getHeldItem(), p.worldObj, p);
 					}
 						break;
+				case 3:
+					if (item.canUnload(p.getHeldItem()))
+						ItemGunBase.startUnloadAction(p.getHeldItem(), p);
+					break;
+				default:
+					break;
 				}
 			}
 			

@@ -1,34 +1,34 @@
 package com.hbm.tileentity.turret;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.hbm.entity.projectile.EntityBulletBase;
 import com.hbm.handler.BulletConfigSyncingUtil;
 import com.hbm.handler.BulletConfiguration;
-import com.hbm.items.ModItems;
+import com.hbm.items.ItemAmmoEnums.AmmoRocket;
+import com.hbm.lib.HbmCollection;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
 
 public class TileEntityTurretRichard extends TileEntityTurretBaseNT {
 
-	static List<Integer> configs = new ArrayList();
+	static List<Integer> configs = HbmCollection.rocket;
 	
-	static {
-		configs.add(BulletConfigSyncingUtil.ROCKET_NORMAL);
-		configs.add(BulletConfigSyncingUtil.ROCKET_HE);
-		configs.add(BulletConfigSyncingUtil.ROCKET_INCENDIARY);
-		configs.add(BulletConfigSyncingUtil.ROCKET_SHRAPNEL);
-		configs.add(BulletConfigSyncingUtil.ROCKET_EMP);
-		configs.add(BulletConfigSyncingUtil.ROCKET_GLARE);
-		configs.add(BulletConfigSyncingUtil.ROCKET_SLEEK);
-		configs.add(BulletConfigSyncingUtil.ROCKET_NUKE);
-		configs.add(BulletConfigSyncingUtil.ROCKET_CHAINSAW);
-		configs.add(BulletConfigSyncingUtil.ROCKET_TOXIC);
-		configs.add(BulletConfigSyncingUtil.ROCKET_PHOSPHORUS);
-		configs.add(BulletConfigSyncingUtil.ROCKET_CANISTER);
-	}
+//	static {
+//		configs.add(BulletConfigSyncingUtil.ROCKET_NORMAL);
+//		configs.add(BulletConfigSyncingUtil.ROCKET_HE);
+//		configs.add(BulletConfigSyncingUtil.ROCKET_INCENDIARY);
+//		configs.add(BulletConfigSyncingUtil.ROCKET_SHRAPNEL);
+//		configs.add(BulletConfigSyncingUtil.ROCKET_EMP);
+//		configs.add(BulletConfigSyncingUtil.ROCKET_GLARE);
+//		configs.add(BulletConfigSyncingUtil.ROCKET_SLEEK);
+//		configs.add(BulletConfigSyncingUtil.ROCKET_NUKE);
+//		configs.add(BulletConfigSyncingUtil.ROCKET_CHAINSAW);
+//		configs.add(BulletConfigSyncingUtil.ROCKET_TOXIC);
+//		configs.add(BulletConfigSyncingUtil.ROCKET_PHOSPHORUS);
+//		configs.add(BulletConfigSyncingUtil.ROCKET_CANISTER);
+//	}
 	
 	@Override
 	protected List<Integer> getAmmoList() {
@@ -128,7 +128,7 @@ public class TileEntityTurretRichard extends TileEntityTurretBaseNT {
 				this.worldObj.playSoundEffect(xCoord, yCoord, zCoord, "hbm:turret.richard_fire", 2.0F, 1.0F);
 				this.loaded--;
 				
-				if(conf.ammo == ModItems.ammo_rocket_nuclear)
+				if(conf.ammo.meta == AmmoRocket.NUCLEAR.ordinal())
 					timer = -50;
 				
 			} else {

@@ -23,8 +23,8 @@ import net.minecraft.util.AxisAlignedBB;
 
 public class TileEntityMachineRadar extends TileEntityTickingBase implements IEnergyUser {
 
-	public List<Entity> entList = new ArrayList();
-	public List<int[]> nearbyMissiles = new ArrayList();
+	public List<Entity> entList = new ArrayList<Entity>();
+	public List<int[]> nearbyMissiles = new ArrayList<int[]>();
 	int pingTimer = 0;
 	int lastPower;
 	final static int maxTimer = 80;
@@ -99,6 +99,7 @@ public class TileEntityMachineRadar extends TileEntityTickingBase implements IEn
 		}
 	}
 	
+	@Override
 	public void handleButtonPacket(int value, int meta) {
 		
 		switch(meta) {
@@ -206,6 +207,7 @@ public class TileEntityMachineRadar extends TileEntityTickingBase implements IEn
 		this.networkPack(data, 15);
 	}
 	
+	@Override
 	public void networkUnpack(NBTTagCompound data) {
 		
 		this.nearbyMissiles.clear();

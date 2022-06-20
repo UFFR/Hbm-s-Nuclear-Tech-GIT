@@ -13,22 +13,18 @@ import com.hbm.items.weapon.ItemGunBase;
 import com.hbm.lib.ModDamageSource;
 import com.hbm.potion.HbmPotion;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumRarity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
-public class ItemSyringe extends Item {
-
+public class ItemSyringe extends ItemCustomLore
+{
+	// TODO Make this class more modular and better
 	Random rand = new Random();
 
 	@Override
@@ -347,28 +343,6 @@ public class ItemSyringe extends Item {
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean hasEffect(ItemStack p_77636_1_) {
-		if(this == ModItems.syringe_awesome) {
-			return true;
-		}
-
-		return false;
-	}
-
-	@Override
-	public EnumRarity getRarity(ItemStack p_77613_1_) {
-		if(this == ModItems.syringe_awesome) {
-			return EnumRarity.uncommon;
-		}
-		if(this == ModItems.euphemium_stopper) {
-			return EnumRarity.epic;
-		}
-
-		return EnumRarity.common;
-	}
-
-	@Override
 	public boolean hitEntity(ItemStack stack, EntityLivingBase entity, EntityLivingBase entityPlayer) {
 		World world = entity.worldObj;
 
@@ -530,9 +504,11 @@ public class ItemSyringe extends Item {
 
 		if(this == ModItems.euphemium_stopper) {
 			if(!world.isRemote) {
-				entity.addPotionEffect(new PotionEffect(Potion.weakness.id, 30 * 20, 9));
-				entity.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 30 * 20, 9));
-				entity.addPotionEffect(new PotionEffect(Potion.digSlowdown.id, 30 * 20, 9));
+				entity.addPotionEffect(new PotionEffect(Potion.weakness.id, 60 * 20, 9));
+				entity.addPotionEffect(new PotionEffect(HbmPotion.paralysis.id, 60 * 20, 9));
+				entity.addPotionEffect(new PotionEffect(HbmPotion.fragile.id, 60 * 20, 9));
+				//entity.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 30 * 20, 9));
+				//entity.addPotionEffect(new PotionEffect(Potion.digSlowdown.id, 30 * 20, 9));
 			}
 		}
 
@@ -546,68 +522,9 @@ public class ItemSyringe extends Item {
 
 		return false;
 	}
-
 	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer player, List list, boolean bool) {
-		if(this == ModItems.syringe_antidote) {
-			list.add("Removes all potion effects");
-		}
-		if(this == ModItems.syringe_awesome) {
-			list.add("Every good effect for 50 seconds");
-		}
-		if(this == ModItems.syringe_metal_medx) {
-			list.add("Resistance III for 4 minutes");
-		}
-		if(this == ModItems.syringe_metal_psycho) {
-			list.add("Resistance I for 2 minutes");
-			list.add("Strength I for 2 minutes");
-		}
-		if(this == ModItems.syringe_metal_stimpak) {
-			list.add("Heals 2.5 hearts");
-		}
-		if(this == ModItems.syringe_metal_super) {
-			list.add("Heals 25 hearts");
-			list.add("Slowness I for 10 seconds");
-		}
-		if(this == ModItems.syringe_poison) {
-			list.add("Deadly");
-		}
-		if(this == ModItems.med_bag) {
-			list.add("Full heal, regardless of max health");
-			list.add("Removes negative effects");
-		}
-		if(this == ModItems.radaway) {
-			list.add("Removes 140 RAD");
-		}
-		if(this == ModItems.radaway_strong) {
-			list.add("Removes 350 RAD");
-		}
-		if(this == ModItems.radaway_flush) {
-			list.add("Removes 1000 RAD");
-		}
-		if(this == ModItems.syringe_taint) {
-			list.add("Tainted I for 60 seconds");
-			list.add("Nausea I for 5 seconds");
-			list.add("Cloud damage + taint = tainted heart effect");
-		}
-		if(this == ModItems.gas_mask_filter) {
-			list.add("Repairs worn gas mask");
-		}
-		if(this == ModItems.gas_mask_filter_mono) {
-			list.add("Repairs worn monoxide mask");
-		}
-		if(this == ModItems.jetpack_tank) {
-			list.add("Fills worn jetpack with up to 1000mB of kerosene");
-		}
-		if(this == ModItems.gun_kit_1) {
-			list.add("Repairs all weapons in hotbar by 10%");
-		}
-		if(this == ModItems.gun_kit_2) {
-			list.add("Repairs all weapons in hotbar by 50%");
-		}
-		
-		if(this == ModItems.syringe_mkunicorn) {
-			list.add(EnumChatFormatting.RED + "?");
-		}
+	public void addInformation(ItemStack itemstack, EntityPlayer player, List list, boolean bool)
+	{
+		super.addInformation(itemstack, player, list, bool);
 	}
 }

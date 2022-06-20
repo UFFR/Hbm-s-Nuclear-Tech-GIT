@@ -63,7 +63,8 @@ public class EntityBOTPrimeHead extends EntityBOTPrimeBase implements IBossDispl
 		return false;
 	}
 
-    public IEntityLivingData onSpawnWithEgg(IEntityLivingData data) {
+    @Override
+	public IEntityLivingData onSpawnWithEgg(IEntityLivingData data) {
     	
     	//TODO: check if this is even needed
     	setHeadID(this.getEntityId());
@@ -150,6 +151,7 @@ public class EntityBOTPrimeHead extends EntityBOTPrimeBase implements IBossDispl
 		return 1000;
 	}
 	
+	@Override
 	public void writeEntityToNBT(NBTTagCompound nbt) {
 		super.writeEntityToNBT(nbt);
 		nbt.setInteger("spawnX", this.spawnPoint.posX);
@@ -157,6 +159,7 @@ public class EntityBOTPrimeHead extends EntityBOTPrimeBase implements IBossDispl
 		nbt.setInteger("spawnZ", this.spawnPoint.posZ);
 	}
 
+	@Override
 	public void readEntityFromNBT(NBTTagCompound nbt) {
 		super.readEntityFromNBT(nbt);
 		this.spawnPoint.set(nbt.getInteger("spawnX"), nbt.getInteger("spawnY"), nbt.getInteger("spawnZ"));

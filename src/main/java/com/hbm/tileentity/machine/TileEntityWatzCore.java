@@ -1,6 +1,7 @@
 package com.hbm.tileentity.machine;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -28,6 +29,7 @@ import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -53,11 +55,13 @@ public class TileEntityWatzCore extends TileEntityLoadedBase implements ISidedIn
 	
 	private ItemStack slots[];
 	public int age = 0;
-	public List<IFluidAcceptor> list1 = new ArrayList();
+	public List<IFluidAcceptor> list1 = new ArrayList<IFluidAcceptor>();
 	public FluidTank tank;
 	
 	private String customName;
 
+	private Item[] validFilters = new Item[] {ModItems.titanium_filter, ModItems.saturnite_filter, ModItems.paa_filter};
+	
 	public TileEntityWatzCore() {
 		slots = new ItemStack[40];
 		tank = new FluidTank(Fluids.WATZ, 64000, 0);
@@ -494,7 +498,7 @@ public class TileEntityWatzCore extends TileEntityLoadedBase implements ISidedIn
 
 	@Override
 	public boolean hasFuse() {
-		return slots[38] != null && slots[38].getItem() == ModItems.titanium_filter && ItemCapacitor.getDura(slots[38]) > 0;
+		return slots[38] != null && Arrays.asList(validFilters).contains(slots[38].getItem()) && ItemCapacitor.getDura(slots[38]) > 0;
 	}
 	
 	@Override
@@ -618,10 +622,11 @@ public class TileEntityWatzCore extends TileEntityLoadedBase implements ISidedIn
 			WatzFuel.updateDamage(slots[i]);
 			if(WatzFuel.getLifeTime(slots[i]) >= fuel.lifeTime)
 			{
-				if(slots[i].getItem() == ModItems.pellet_lead)
-					slots[i] = new ItemStack(ModItems.powder_lead);
-				else
-					slots[i] = new ItemStack(ModItems.pellet_lead);
+//				if(slots[i].getItem() == ModItems.pellet_lead)
+//					slots[i] = new ItemStack(ModItems.powder_lead);
+//				else
+//					slots[i] = new ItemStack(ModItems.pellet_lead);
+				slots[i] = fuel.getDecayItem();
 			}
 		}
 	}
@@ -697,7 +702,7 @@ public class TileEntityWatzCore extends TileEntityLoadedBase implements ISidedIn
 
 	@Override
 	public long getMaxPower() {
-		return this.maxPower;
+		return maxPower;
 	}
 
 	@Override

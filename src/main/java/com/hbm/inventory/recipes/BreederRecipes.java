@@ -6,13 +6,14 @@ import java.util.Map;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemBreedingRod.*;
+import com.hbm.items.special.Orichalcum;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class BreederRecipes {
 
-	private static HashMap<ComparableStack, BreederRecipe> recipes = new HashMap();
+	private static HashMap<ComparableStack, BreederRecipe> recipes = new HashMap<>();
 	
 	public static void registerRecipes() {
 		
@@ -28,6 +29,8 @@ public class BreederRecipes {
 		setRecipe(BreedingRodType.RGP, BreedingRodType.WASTE, 200);
 		
 		recipes.put(new ComparableStack(ModItems.meteorite_sword_etched), new BreederRecipe(new ItemStack(ModItems.meteorite_sword_bred), 1000));
+		recipes.put(new ComparableStack(ModItems.orichalcum, 1, Orichalcum.INGOT_SMALL), new BreederRecipe(new ItemStack(ModItems.orichalcum, 1, Orichalcum.INGOT_SMALL_IRR), 1500));
+		recipes.put(new ComparableStack(ModItems.shrimp_fry), new BreederRecipe(new ItemStack(ModItems.shrimp_atomic), 50));
 	}
 	
 	/** Sets recipes for single, dual, and quad rods **/
@@ -39,7 +42,7 @@ public class BreederRecipes {
 	
 	public static HashMap<ItemStack, BreederRecipe> getAllRecipes() {
 		
-		HashMap<ItemStack, BreederRecipe> map = new HashMap();
+		HashMap<ItemStack, BreederRecipe> map = new HashMap<ItemStack, BreederRecipe>();
 		
 		for(Map.Entry<ComparableStack, BreederRecipe> recipe : recipes.entrySet()) {
 			map.put(recipe.getKey().toStack(), recipe.getValue());

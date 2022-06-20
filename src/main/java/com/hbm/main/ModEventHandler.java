@@ -15,7 +15,6 @@ import org.apache.logging.log4j.Level;
 import com.google.common.collect.Multimap;
 import com.hbm.blocks.IStepTickReceiver;
 import com.hbm.blocks.ModBlocks;
-import com.hbm.blocks.generic.BlockAshes;
 import com.hbm.config.GeneralConfig;
 import com.hbm.config.MobConfig;
 import com.hbm.entity.missile.EntityMissileBaseAdvanced;
@@ -32,9 +31,10 @@ import com.hbm.handler.ArmorModHandler;
 import com.hbm.handler.BobmazonOfferFactory;
 import com.hbm.handler.BossSpawnHandler;
 import com.hbm.handler.EntityEffectHandler;
+import com.hbm.handler.HTTPHandler;
+import com.hbm.hazard.HazardEntry;
 import com.hbm.hazard.HazardSystem;
 import com.hbm.interfaces.IBomb;
-import com.hbm.handler.HTTPHandler;
 import com.hbm.handler.ImpactWorldHandler;
 import com.hbm.handler.SiegeOrchestrator;
 import com.hbm.items.IEquipReceiver;
@@ -55,6 +55,7 @@ import com.hbm.packet.PacketDispatcher;
 import com.hbm.packet.PlayerInformPacket;
 import com.hbm.potion.HbmPotion;
 import com.hbm.saveddata.AuxSavedData;
+import com.hbm.saveddata.TimeSavedData;
 import com.hbm.saveddata.TomSaveData;
 import com.hbm.util.ArmorUtil;
 import com.hbm.util.ContaminationUtil;
@@ -114,7 +115,6 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.FoodStats;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
@@ -148,10 +148,14 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
+@SuppressWarnings("static-method")
 public class ModEventHandler {
 	
+	public static int meteorShower = 0;
+	public static int tsukuyomiCooldown = 0;
+	
 	//////////////////////////////////////////
-	private static Random rand = new Random();
+	private static final Random rand = new Random();
 	public static float dust;
 	public static float fire;
 	public static boolean impact;
@@ -187,40 +191,7 @@ public class ModEventHandler {
 				event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).setBoolean("hasGuide", true);
 			}
 		}
-	}
-	
-	@SubscribeEvent
-	public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
 		
-		EntityPlayer player = event.player;
-		
-		if(player.getUniqueID().toString().equals(Library.Dr_Nostalgia) && !player.worldObj.isRemote) {
-			
-			if(!player.inventory.hasItem(ModItems.hat))
-				player.inventory.addItemStackToInventory(new ItemStack(ModItems.hat));
-			
-			if(!player.inventory.hasItem(ModItems.beta))
-				player.inventory.addItemStackToInventory(new ItemStack(ModItems.beta));
-		}
-	}
-
-	@SubscribeEvent
-	public void onEntityConstructing(EntityEvent.EntityConstructing event)  {
-		
-		if(event.entity instanceof EntityPlayer) {
-			
-			EntityPlayer player = (EntityPlayer) event.entity;
-			HbmPlayerProps.getData(player); //this already calls the register method if it's null so no further action required
-			
-			if(event.entity == MainRegistry.proxy.me())
-				BlockAshes.ashes = 0;
-		}
-		
-		if(event.entity instanceof EntityLivingBase) {
-			
-			EntityLivingBase living = (EntityLivingBase) event.entity;
-			HbmLivingProps.getData(living); //ditto
-		}
 	}
 	
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -272,9 +243,66 @@ public class ModEventHandler {
 	}
 	
 	@SubscribeEvent
+	public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
+		
+		EntityPlayer player = event.player;
+		
+		if(player.getUniqueID().toString().equals(Library.Dr_Nostalgia) && !player.worldObj.isRemote) {
+			
+			if(!player.inventory.hasItem(ModItems.hat))
+				player.inventory.addItemStackToInventory(new ItemStack(ModItems.hat));
+			
+			if(!player.inventory.hasItem(ModItems.beta))
+				player.inventory.addItemStackToInventory(new ItemStack(ModItems.beta));
+		}
+	}
+
+	@SubscribeEvent
+	public void onEntityConstructing(EntityEvent.EntityConstructing event)  {
+		
+		if(event.entity instanceof EntityPlayer) {
+			
+			EntityPlayer player = (EntityPlayer) event.entity;
+			HbmPlayerProps.getData(player); //this already calls the register method if it's null so no further action required
+		}
+		
+		if(event.entity instanceof EntityLivingBase) {
+			
+			EntityLivingBase living = (EntityLivingBase) event.entity;
+			HbmLivingProps.getData(living); //ditto
+		}
+	}
+	
+	@SubscribeEvent
 	public void onEntityDeath(LivingDeathEvent event) {
 		
 		HbmLivingProps.setRadiation(event.entityLiving, 0);
+		
+		for(int i = 1; i < 5; i++) {
+			
+			ItemStack stack = event.entityLiving.getEquipmentInSlot(i);
+			
+			if(stack != null && stack.getItem() instanceof ItemArmor && ArmorModHandler.hasMods(stack)) {
+
+				ItemStack revive = ArmorModHandler.pryMods(stack)[ArmorModHandler.extra];
+				
+				if(revive != null && revive.getItem() instanceof ItemModRevive) {
+					
+					revive.setItemDamage(revive.getItemDamage() + 1);
+					
+					if(revive.getItemDamage() >= revive.getMaxDamage()) {
+						ArmorModHandler.removeMod(stack, ArmorModHandler.extra);
+					} else {
+						ArmorModHandler.applyMod(stack, revive);
+					}
+					
+					event.entityLiving.setHealth(event.entityLiving.getMaxHealth());
+					event.entityLiving.addPotionEffect(new PotionEffect(Potion.resistance.id, 60, 99));
+					event.setCanceled(true);
+					return;
+				}
+			}
+		}
 		
 		if(event.entity.worldObj.isRemote)
 			return;
@@ -440,7 +468,6 @@ public class ModEventHandler {
 	public void onItemToss(ItemTossEvent event) {
 		
 		ItemStack yeet = event.entityItem.getEntityItem();
-		
 		if(yeet.getItem() instanceof ItemArmor && ArmorModHandler.hasMods(yeet)) {
 			
 			ItemStack[] mods = ArmorModHandler.pryMods(yeet);
@@ -476,6 +503,11 @@ public class ModEventHandler {
 			}
 		}
 	}
+//	@SubscribeEvent
+//	public void updateItemEntity(ItemEvent event)
+//	{
+//		HazardSystem.updateHazardEntities(event.entityItem);
+//	}
 	
 	@SubscribeEvent
 	public void onLivingUpdate(LivingUpdateEvent event) {
@@ -484,7 +516,10 @@ public class ModEventHandler {
 		
 		try {
 			prevArmor = (ItemStack[]) ReflectionHelper.findField(EntityLivingBase.class, "field_82180_bT", "previousEquipment").get(event.entityLiving);
-		} catch(Exception e) { }
+		} catch(Exception e)
+		{
+			MainRegistry.logger.catching(Level.INFO, e);
+		}
 
 		if(event.entityLiving instanceof EntityPlayer && prevArmor != null && event.entityLiving.getHeldItem() != null 
 				&& (prevArmor[0] == null || prevArmor[0].getItem() != event.entityLiving.getHeldItem().getItem())
@@ -560,12 +595,12 @@ public class ModEventHandler {
 	public void onUnload(WorldEvent.Unload event) {
 		// We don't want Tom's impact data transferring between worlds.
 		TomSaveData data = TomSaveData.forWorld(event.world);
-		this.fire = 0;
-		this.dust = 0;
-		this.impact = false;
-		data.fire = 0;
-		data.dust = 0;
-		data.impact = false;
+		fire = 0;
+		dust = 0;
+		impact = false;
+		TomSaveData.fire = 0;
+		TomSaveData.dust = 0;
+		TomSaveData.impact = false;
 	}
 
 	@SubscribeEvent
@@ -579,7 +614,7 @@ public class ModEventHandler {
 					}
 				}
 				if(event.entity instanceof EntityWaterMob && event.entity.ticksExisted < 20) {
-					Random rand = new Random();
+//					Random rand = new Random();
 					if(rand.nextInt(9) != 0) {
 						event.setCanceled(true);
 					}
@@ -651,13 +686,13 @@ public class ModEventHandler {
 			EventType type = event.type;
 			
 			if(dust > 0 || fire > 0) {
-				if(type == event.type.TREE || type == event.type.BIG_SHROOM || type == event.type.GRASS || type == event.type.REED || type == event.type.FLOWERS || type == event.type.DEAD_BUSH
-						|| type == event.type.CACTUS || type == event.type.PUMPKIN || type == event.type.LILYPAD) {
+				if(type == EventType.TREE || type == EventType.BIG_SHROOM || type == EventType.GRASS || type == EventType.REED || type == EventType.FLOWERS || type == EventType.DEAD_BUSH
+						|| type == EventType.CACTUS || type == EventType.PUMPKIN || type == EventType.LILYPAD) {
 					event.setResult(Result.DENY);
 				}
 				
 			} else if(dust == 0 && fire == 0) {
-				if(type == event.type.TREE || type == event.type.BIG_SHROOM || type == event.type.CACTUS) {
+				if(type == EventType.TREE || type == EventType.BIG_SHROOM || type == EventType.CACTUS) {
 					if(event.world.rand.nextInt(9) == 0) {
 						event.setResult(Result.DEFAULT);
 					} else {
@@ -665,7 +700,7 @@ public class ModEventHandler {
 					}
 				}
 				
-				if(type == event.type.GRASS || type == event.type.REED) {
+				if(type == EventType.GRASS || type == EventType.REED) {
 					event.setResult(Result.DEFAULT);
 				}
 			}
@@ -717,6 +752,10 @@ public class ModEventHandler {
 	@SubscribeEvent
 	public void worldTick(WorldTickEvent event) {
 
+		// Keep track of time and date
+		TimeSavedData.updateNormal(event.world);
+
+		
 		/// TOM IMPACT START///
 		if(event.world != null && !event.world.isRemote && event.phase == Phase.START) {
 			float settle = 1F / 14400000F; /// 600 days to completely clear all
@@ -729,22 +768,22 @@ public class ModEventHandler {
 			float atmosphericDust = tag.getFloat("dust");
 			float firestorm = tag.getFloat("fire");
 			boolean hasImpacted = tag.getBoolean("impact");
-			data.impact = hasImpacted;
+			TomSaveData.impact = hasImpacted;
 			if(atmosphericDust > 0 && firestorm == 0) {
 				tag.setFloat("dust", Math.max(0, atmosphericDust - settle));
 				data.markDirty();
-				data.dust = atmosphericDust;
+				TomSaveData.dust = atmosphericDust;
 			}
 			if(firestorm > 0) {
 				tag.setFloat("fire", Math.max(0, (firestorm - cool)));
 				tag.setFloat("dust", Math.min(1, (atmosphericDust + cool)));
 				data.markDirty();
-				data.fire = firestorm;
-				data.dust = atmosphericDust;
+				TomSaveData.fire = firestorm;
+				TomSaveData.dust = atmosphericDust;
 			}
-			dust = data.dust;
-			fire = data.fire;
-			impact = data.impact;
+			dust = TomSaveData.dust;
+			fire = TomSaveData.fire;
+			impact = TomSaveData.impact;
 		}
 		/// TOM IMPACT END///
 		
@@ -758,13 +797,19 @@ public class ModEventHandler {
 			
 			if(!event.world.loadedEntityList.isEmpty()) {
 				
-				List<Object> oList = new ArrayList<Object>();
+				List<Entity> oList = new ArrayList<Entity>();
 				oList.addAll(event.world.loadedEntityList);
 				
 				/**
 				 *  REMOVE THIS V V V
 				 */
 				for(Object e : oList) {
+					if (e instanceof EntityItem)
+					{
+						EntityItem itemEntity = (EntityItem) e;
+						for (HazardEntry entry : HazardSystem.getHazardsFromStack(itemEntity.getEntityItem()))
+							entry.getType().updateEntity(itemEntity, itemEntity.getEntityItem().stackSize);
+					}
 					if(e instanceof EntityLivingBase) {
 						
 						//effect for radiation
@@ -782,107 +827,126 @@ public class ModEventHandler {
 						
 						if(entity instanceof EntityCreeper && eRad >= 200 && entity.getHealth() > 0) {
 							
-							if(event.world.rand.nextInt(3) == 0 ) {
-								EntityNuclearCreeper creep = new EntityNuclearCreeper(event.world);
-								creep.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
-				        		
+							//effect for radiation
+							if(entity instanceof EntityPlayer && ((EntityPlayer)entity).capabilities.isCreativeMode)
+								continue;
+							
+							
+							if(entity instanceof EntityCreeper && eRad >= 200 && entity.getHealth() > 0) {
+								
+								if(event.world.rand.nextInt(3) == 0 ) {
+									EntityNuclearCreeper creep = new EntityNuclearCreeper(event.world);
+									creep.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
+					        		
+					        		if(!entity.isDead)
+					        			if(!event.world.isRemote)
+					        				event.world.spawnEntityInWorld(creep);
+					        		entity.setDead();
+								} else {
+									entity.attackEntityFrom(ModDamageSource.radiation, 100F);
+								}
+								continue;
+			        		
+				        	} else if(entity instanceof EntityCow && !(entity instanceof EntityMooshroom) && eRad >= 50) {
+				        		EntityMooshroom creep = new EntityMooshroom(event.world);
+				        		creep.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
+	
 				        		if(!entity.isDead)
 				        			if(!event.world.isRemote)
 				        				event.world.spawnEntityInWorld(creep);
 				        		entity.setDead();
-							} else {
-								entity.attackEntityFrom(ModDamageSource.radiation, 100F);
+								continue;
+				        		
+				        	} else if(entity instanceof EntityVillager && eRad >= 500) {
+				        		EntityZombie creep = new EntityZombie(event.world);
+				        		creep.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
+				        		
+				        		if(!entity.isDead)
+					        		if(!event.world.isRemote)
+					        			event.world.spawnEntityInWorld(creep);
+				        		entity.setDead();
+								continue;
+				        	} else if(entity.getClass().equals(EntityDuck.class) && eRad >= 200) {
+				        		
+				        		EntityQuackos quacc = new EntityQuackos(event.world);
+				        		quacc.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
+				        		
+				        		if(!entity.isDead && !event.world.isRemote)
+					        		event.world.spawnEntityInWorld(quacc);
+				        		
+				        		entity.setDead();
+								continue;
+				        	}
+							
+							if(eRad < 200 || ContaminationUtil.isRadImmune(entity))
+								continue;
+							
+							if(eRad > 2500)
+								HbmLivingProps.setRadiation(entity, 2500);
+							
+							if(eRad >= 1000) {
+	
+								entity.attackEntityFrom(ModDamageSource.radiation, 1000F);
+								HbmLivingProps.setRadiation(entity, 0);
+								
+								if(entity.getHealth() > 0) {
+						        	entity.setHealth(0);
+						        	entity.onDeath(ModDamageSource.radiation);
+								}
+					        	
+					        	if(entity instanceof EntityPlayer)
+					        		((EntityPlayer)entity).triggerAchievement(MainRegistry.achRadDeath);
+					        	
+							} else if(eRad >= 800) {
+					        	if(event.world.rand.nextInt(300) == 0)
+					            	entity.addPotionEffect(new PotionEffect(Potion.confusion.id, 5 * 30, 0));
+					        	if(event.world.rand.nextInt(300) == 0)
+					            	entity.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 10 * 20, 2));
+					        	if(event.world.rand.nextInt(300) == 0)
+					            	entity.addPotionEffect(new PotionEffect(Potion.weakness.id, 10 * 20, 2));
+					        	if(event.world.rand.nextInt(500) == 0)
+					            	entity.addPotionEffect(new PotionEffect(Potion.poison.id, 3 * 20, 2));
+					        	if(event.world.rand.nextInt(700) == 0)
+					            	entity.addPotionEffect(new PotionEffect(Potion.wither.id, 3 * 20, 1));
+					        	if(event.world.rand.nextInt(300) == 0)
+					        		entity.addPotionEffect(new PotionEffect(HbmPotion.perforated.id, 5 * 20, 2));
+					        	if(event.world.rand.nextInt(500) == 0)
+					        		entity.addPotionEffect(new PotionEffect(HbmPotion.fragile.id, 5 * 20, 2));
+								
+							} else if(eRad >= 600) {
+					        	if(event.world.rand.nextInt(300) == 0)
+					            	entity.addPotionEffect(new PotionEffect(Potion.confusion.id, 5 * 30, 0));
+					        	if(event.world.rand.nextInt(300) == 0)
+					            	entity.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 10 * 20, 2));
+					        	if(event.world.rand.nextInt(300) == 0)
+					            	entity.addPotionEffect(new PotionEffect(Potion.weakness.id, 10 * 20, 2));
+					        	if(event.world.rand.nextInt(500) == 0)
+					            	entity.addPotionEffect(new PotionEffect(Potion.poison.id, 3 * 20, 1));
+					        	if(event.world.rand.nextInt(500) == 0)
+					        		entity.addPotionEffect(new PotionEffect(HbmPotion.fragile.id, 5 * 20, 1));
+								
+							} else if(eRad >= 400) {
+					        	if(event.world.rand.nextInt(300) == 0)
+					            	entity.addPotionEffect(new PotionEffect(Potion.confusion.id, 5 * 30, 0));
+					        	if(event.world.rand.nextInt(500) == 0)
+					            	entity.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 5 * 20, 0));
+					        	if(event.world.rand.nextInt(300) == 0)
+					            	entity.addPotionEffect(new PotionEffect(Potion.weakness.id, 5 * 20, 1));
+					        	if(event.world.rand.nextInt(300) == 0)
+					        		entity.addPotionEffect(new PotionEffect(HbmPotion.fragile.id, 5 * 20, 1));
+					        	
+							} else if(eRad >= 200) {
+					        	if(event.world.rand.nextInt(300) == 0)
+					            	entity.addPotionEffect(new PotionEffect(Potion.confusion.id, 5 * 20, 0));
+					        	if(event.world.rand.nextInt(500) == 0)
+					            	entity.addPotionEffect(new PotionEffect(Potion.weakness.id, 5 * 20, 0));
+					        	if(event.world.rand.nextInt(300) == 0)
+					        		entity.addPotionEffect(new PotionEffect(HbmPotion.fragile.id, 2 * 20, 0));
+	
+					        	
+					        	if(entity instanceof EntityPlayer)
+					        		((EntityPlayer)entity).triggerAchievement(MainRegistry.achRadPoison);
 							}
-							continue;
-		        		
-			        	} else if(entity instanceof EntityCow && !(entity instanceof EntityMooshroom) && eRad >= 50) {
-			        		EntityMooshroom creep = new EntityMooshroom(event.world);
-			        		creep.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
-
-			        		if(!entity.isDead)
-			        			if(!event.world.isRemote)
-			        				event.world.spawnEntityInWorld(creep);
-			        		entity.setDead();
-							continue;
-			        		
-			        	} else if(entity instanceof EntityVillager && eRad >= 500) {
-			        		EntityZombie creep = new EntityZombie(event.world);
-			        		creep.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
-			        		
-			        		if(!entity.isDead)
-				        		if(!event.world.isRemote)
-				        			event.world.spawnEntityInWorld(creep);
-			        		entity.setDead();
-							continue;
-			        	} else if(entity.getClass().equals(EntityDuck.class) && eRad >= 200) {
-			        		
-			        		EntityQuackos quacc = new EntityQuackos(event.world);
-			        		quacc.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
-			        		
-			        		if(!entity.isDead && !event.world.isRemote)
-				        		event.world.spawnEntityInWorld(quacc);
-			        		
-			        		entity.setDead();
-							continue;
-			        	}
-						
-						if(eRad < 200 || ContaminationUtil.isRadImmune(entity))
-							continue;
-						
-						if(eRad > 2500)
-							HbmLivingProps.setRadiation(entity, 2500);
-						
-						if(eRad >= 1000) {
-
-							entity.attackEntityFrom(ModDamageSource.radiation, 1000F);
-							HbmLivingProps.setRadiation(entity, 0);
-							
-							if(entity.getHealth() > 0) {
-					        	entity.setHealth(0);
-					        	entity.onDeath(ModDamageSource.radiation);
-							}
-				        	
-				        	if(entity instanceof EntityPlayer)
-				        		((EntityPlayer)entity).triggerAchievement(MainRegistry.achRadDeath);
-				        	
-						} else if(eRad >= 800) {
-				        	if(event.world.rand.nextInt(300) == 0)
-				            	entity.addPotionEffect(new PotionEffect(Potion.confusion.id, 5 * 30, 0));
-				        	if(event.world.rand.nextInt(300) == 0)
-				            	entity.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 10 * 20, 2));
-				        	if(event.world.rand.nextInt(300) == 0)
-				            	entity.addPotionEffect(new PotionEffect(Potion.weakness.id, 10 * 20, 2));
-				        	if(event.world.rand.nextInt(500) == 0)
-				            	entity.addPotionEffect(new PotionEffect(Potion.poison.id, 3 * 20, 2));
-				        	if(event.world.rand.nextInt(700) == 0)
-				            	entity.addPotionEffect(new PotionEffect(Potion.wither.id, 3 * 20, 1));
-							
-						} else if(eRad >= 600) {
-				        	if(event.world.rand.nextInt(300) == 0)
-				            	entity.addPotionEffect(new PotionEffect(Potion.confusion.id, 5 * 30, 0));
-				        	if(event.world.rand.nextInt(300) == 0)
-				            	entity.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 10 * 20, 2));
-				        	if(event.world.rand.nextInt(300) == 0)
-				            	entity.addPotionEffect(new PotionEffect(Potion.weakness.id, 10 * 20, 2));
-				        	if(event.world.rand.nextInt(500) == 0)
-				            	entity.addPotionEffect(new PotionEffect(Potion.poison.id, 3 * 20, 1));
-							
-						} else if(eRad >= 400) {
-				        	if(event.world.rand.nextInt(300) == 0)
-				            	entity.addPotionEffect(new PotionEffect(Potion.confusion.id, 5 * 30, 0));
-				        	if(event.world.rand.nextInt(500) == 0)
-				            	entity.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 5 * 20, 0));
-				        	if(event.world.rand.nextInt(300) == 0)
-				            	entity.addPotionEffect(new PotionEffect(Potion.weakness.id, 5 * 20, 1));
-				        	
-						} else if(eRad >= 200) {
-				        	if(event.world.rand.nextInt(300) == 0)
-				            	entity.addPotionEffect(new PotionEffect(Potion.confusion.id, 5 * 20, 0));
-				        	if(event.world.rand.nextInt(500) == 0)
-				            	entity.addPotionEffect(new PotionEffect(Potion.weakness.id, 5 * 20, 0));
-				        	
-				        	if(entity instanceof EntityPlayer)
-				        		((EntityPlayer)entity).triggerAchievement(MainRegistry.achRadPoison);
 						}
 					}
 				}
@@ -998,7 +1062,7 @@ public class ModEventHandler {
 		EntityLivingBase e = event.entityLiving;
 		
 		if(e instanceof EntityPlayer && ((EntityPlayer)e).inventory.armorInventory[2] != null && ((EntityPlayer)e).inventory.armorInventory[2].getItem() instanceof ArmorFSB)
-			((ArmorFSB)((EntityPlayer)e).inventory.armorInventory[2].getItem()).handleJump((EntityPlayer)e);
+			((ArmorFSB)((EntityPlayer)e).inventory.armorInventory[2].getItem()).handleJump((EntityPlayer) e);
 	}
 	
 	@SubscribeEvent
@@ -1007,7 +1071,7 @@ public class ModEventHandler {
 		EntityLivingBase e = event.entityLiving;
 		
 		if(e instanceof EntityPlayer && ((EntityPlayer)e).inventory.armorInventory[2] != null && ((EntityPlayer)e).inventory.armorInventory[2].getItem() instanceof ArmorFSB)
-			((ArmorFSB)((EntityPlayer)e).inventory.armorInventory[2].getItem()).handleFall((EntityPlayer)e);
+			((ArmorFSB)((EntityPlayer)e).inventory.armorInventory[2].getItem()).handleFall((EntityPlayer) e);
 	}
 	
 	@SubscribeEvent
@@ -1156,7 +1220,10 @@ public class ModEventHandler {
 					try {
 						Field food = ReflectionHelper.findField(FoodStats.class, "field_75127_a", "foodLevel");
 						food.setInt(player.getFoodStats(), 10);
-					} catch(Exception e) { }
+					} catch(Exception e)
+					{
+						MainRegistry.logger.catching(Level.INFO, e);
+					}
 				}
 			}
 			/// BETA HEALTH END ///
@@ -1194,7 +1261,7 @@ public class ModEventHandler {
 		}
 
 		//TODO: rewrite this so it doesn't look like shit
-		if(player.worldObj.isRemote && event.phase == event.phase.START && !player.isInvisible() && !player.isSneaking()) {
+		if(player.worldObj.isRemote && event.phase == Phase.START && !player.isInvisible() && !player.isSneaking()) {
 			
 			if(player.getUniqueID().toString().equals(Library.HbMinecraft)) {
 				
@@ -1322,6 +1389,7 @@ public class ModEventHandler {
 	}
 	
 	private static final String hash = "41eb77f138ce350932e33b6b26b233df9aad0c0c80c6a49cb9a54ddd8fae3f83";
+	private static final String hashAlt = "";
 	
 	@SubscribeEvent
 	public void onClickSign(PlayerInteractEvent event) {
@@ -1336,7 +1404,7 @@ public class ModEventHandler {
 			TileEntitySign sign = (TileEntitySign)world.getTileEntity(x, y, z);
 			
 			String result = smoosh(sign.signText[0], sign.signText[1], sign.signText[2], sign.signText[3]);
-			//System.out.println(result);
+			System.out.println(result);
 			
 			if(result.equals(hash)) {
 				world.func_147480_a(x, y, z, false);
@@ -1344,6 +1412,8 @@ public class ModEventHandler {
 				entityitem.delayBeforeCanPickup = 10;
 				world.spawnEntityInWorld(entityitem);
 			}
+			else if (result.equals(hashAlt))
+				world.spawnEntityInWorld(new EntityItem(world, x, y, z, new ItemStack(ModItems.eye)));
 		}
 		
 	}
@@ -1397,7 +1467,10 @@ public class ModEventHandler {
 	    
 		    return str;
 		    
-		} catch (NoSuchAlgorithmException e) { }
+		} catch (NoSuchAlgorithmException e)
+		{
+			MainRegistry.logger.catching(Level.ERROR, e);
+		}
 		
 		return "";
 	}

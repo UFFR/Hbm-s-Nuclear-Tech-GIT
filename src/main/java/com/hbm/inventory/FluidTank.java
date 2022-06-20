@@ -27,9 +27,9 @@ import net.minecraft.tileentity.TileEntity;
 
 public class FluidTank {
 	
-	FluidType type;
-	int fluid;
-	int maxFluid;
+	protected FluidType type;
+	protected int fluid;
+	protected int maxFluid;
 	public int index;
 	
 	public FluidTank(FluidType type, int maxFluid, int index) {
@@ -38,11 +38,21 @@ public class FluidTank {
 		this.index = index;
 	}
 	
-	public void setFill(int i) {
+	public final void setFill(int i) {
 		fluid = i;
 	}
 	
-	public void setTankType(FluidType type) {
+	public final void incrementFill(int i)
+	{
+		setFill(getFill() + i);
+	}
+	
+	public final void decrementFill(int i)
+	{
+		setFill(getFill() - i);
+	}
+	
+	public final void setTankType(FluidType type) {
 		
 		if(this.type == type)
 			return;
@@ -51,20 +61,20 @@ public class FluidTank {
 		this.setFill(0);
 	}
 	
-	public FluidType getTankType() {
+	public final FluidType getTankType() {
 		
 		return type;
 	}
 	
-	public int getFill() {
+	public final int getFill() {
 		return fluid;
 	}
 	
-	public int getMaxFill() {
+	public final int getMaxFill() {
 		return maxFluid;
 	}
 	
-	public int changeTankSize(int size) {
+	public final int changeTankSize(int size) {
 		maxFluid = size;
 		
 		if(fluid > maxFluid) {
@@ -153,7 +163,7 @@ public class FluidTank {
 	}
 	
 	//Fills canisters from tank
-	public void unloadTank(int in, int out, ItemStack[] slots) {
+	public final void unloadTank(int in, int out, ItemStack[] slots) {
 
 		ItemStack full = null;
 		if(slots[in] != null) {
@@ -312,11 +322,11 @@ public class FluidTank {
 
 		GL11.glDisable(GL11.GL_BLEND);
 	}
-	
+	@Deprecated
 	public void renderTankInfo(GuiInfoContainer gui, int mouseX, int mouseY, int x, int y, int width, int height) {
 		if(x <= mouseX && x + width > mouseX && y < mouseY && y + height >= mouseY) {
 			
-			List<String> list = new ArrayList();
+			List<String> list = new ArrayList<>();
 			list.add(I18n.format(this.type.getUnlocalizedName()));
 			list.add(fluid + "/" + maxFluid + "mB");
 			
@@ -326,14 +336,14 @@ public class FluidTank {
 	}
 
 	//Called by TE to save fillstate
-	public void writeToNBT(NBTTagCompound nbt, String s) {
+	public final void writeToNBT(NBTTagCompound nbt, String s) {
 		nbt.setInteger(s, fluid);
 		nbt.setInteger(s + "_max", maxFluid);
 		nbt.setInteger(s + "_type", type.getID());
 	}
 	
 	//Called by TE to load fillstate
-	public void readFromNBT(NBTTagCompound nbt, String s) {
+	public final void readFromNBT(NBTTagCompound nbt, String s) {
 		fluid = nbt.getInteger(s);
 		int max = nbt.getInteger(s + "_max");
 		if(max > 0)

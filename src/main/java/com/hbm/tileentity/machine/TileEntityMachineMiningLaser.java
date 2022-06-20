@@ -47,9 +47,9 @@ public class TileEntityMachineMiningLaser extends TileEntityMachineBase implemen
 	public long power;
 	public int age = 0;
 	public static final long maxPower = 100000000;
-	public static final int consumption = 10000;
+	public static final int baseConsumption = 10000;
 	public FluidTank tank;
-	public List<IFluidAcceptor> list = new ArrayList();
+	public List<IFluidAcceptor> list = new ArrayList<IFluidAcceptor>();
 
 	public boolean isOn;
 	public int targetX;
@@ -119,9 +119,9 @@ public class TileEntityMachineMiningLaser extends TileEntityMachineBase implemen
 				int speed = 1 + Math.min(UpgradeManager.getLevel(UpgradeType.SPEED), 12);
 				int range = 1 + Math.min(UpgradeManager.getLevel(UpgradeType.EFFECT) * 2, 24);
 				int fortune = Math.min(UpgradeManager.getLevel(UpgradeType.FORTUNE), 3);
-				int consumption = this.consumption
-						- (this.consumption * Math.min(UpgradeManager.getLevel(UpgradeType.POWER), 12) / 16)
-						+ (this.consumption * Math.min(UpgradeManager.getLevel(UpgradeType.SPEED), 12) / 16);
+				int consumption = baseConsumption
+						- (baseConsumption * Math.min(UpgradeManager.getLevel(UpgradeType.POWER), 12) / 16)
+						+ (baseConsumption * Math.min(UpgradeManager.getLevel(UpgradeType.SPEED), 12) / 16);
 				
 				for(int i = 0; i < cycles; i++) {
 					
@@ -189,6 +189,7 @@ public class TileEntityMachineMiningLaser extends TileEntityMachineBase implemen
 		this.trySubscribe(worldObj, xCoord, yCoord + 2, zCoord, ForgeDirection.UP);
 	}
 	
+	@Override
 	public void networkUnpack(NBTTagCompound data) {
 
 		this.power = data.getLong("power");
@@ -532,7 +533,7 @@ public class TileEntityMachineMiningLaser extends TileEntityMachineBase implemen
 	}
 	
 	public int getConsumption() {
-		return this.consumption;
+		return baseConsumption;
 	}
 	
 	public int getWidth() {

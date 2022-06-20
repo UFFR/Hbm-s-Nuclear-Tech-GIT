@@ -2,13 +2,13 @@ package com.hbm.tileentity.machine;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import com.hbm.blocks.ModBlocks;
 import com.hbm.inventory.RecipesCommon.AStack;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.recipes.AssemblerRecipes;
 import com.hbm.inventory.UpgradeManager;
+import com.hbm.inventory.recipes.AssemblerRecipes;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemAssemblyTemplate;
 import com.hbm.items.machine.ItemMachineUpgrade.UpgradeType;
@@ -46,8 +46,6 @@ public class TileEntityMachineAssembler extends TileEntityMachineBase implements
 	public int recipe;
 	
 	private AudioWrapper audio;
-	
-	Random rand = new Random();
 	
 	public TileEntityMachineAssembler() {
 		super(18);
@@ -289,7 +287,8 @@ public class TileEntityMachineAssembler extends TileEntityMachineBase implements
     	}
     }
 	
-    public void invalidate() {
+    @Override
+	public void invalidate() {
     	
     	super.invalidate();
     	
@@ -299,6 +298,7 @@ public class TileEntityMachineAssembler extends TileEntityMachineBase implements
     	}
     }
 	
+	@Override
 	public void networkUnpack(NBTTagCompound nbt) {
 		this.power = nbt.getLong("power");
 		this.progress = nbt.getInteger("progress");
@@ -594,6 +594,7 @@ public class TileEntityMachineAssembler extends TileEntityMachineBase implements
 		return 65536.0D;
 	}
 	
+	@Override
 	public int countMufflers() {
 		
 		int count = 0;

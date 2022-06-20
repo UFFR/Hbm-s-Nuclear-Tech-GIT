@@ -7,20 +7,20 @@ import java.util.List;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.config.MobConfig;
+import com.hbm.entity.projectile.EntityDebrisBase.DebrisType;
 import com.hbm.entity.projectile.EntityZirnoxDebris;
-import com.hbm.entity.projectile.EntityZirnoxDebris.DebrisType;
 import com.hbm.explosion.ExplosionNukeGeneric;
 import com.hbm.handler.MultiblockHandlerXR;
 import com.hbm.handler.radiation.ChunkRadiationManager;
 import com.hbm.interfaces.IControlReceiver;
 import com.hbm.interfaces.IFluidAcceptor;
-import com.hbm.interfaces.IFluidContainer;
 import com.hbm.interfaces.IFluidSource;
 import com.hbm.inventory.FluidTank;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.items.ModItems;
+import com.hbm.items.machine.ItemFuelRod;
 import com.hbm.items.machine.ItemZirnoxBreedingRod;
 import com.hbm.items.machine.ItemZirnoxRod;
 import com.hbm.lib.Library;
@@ -57,7 +57,7 @@ public class TileEntityReactorZirnox extends TileEntityMachineBase implements IF
 	static {
 		fuelMap.put(new ComparableStack(ModItems.rod_zirnox_natural_uranium_fuel), new ItemStack(ModItems.rod_zirnox_natural_uranium_fuel_depleted));
 		fuelMap.put(new ComparableStack(ModItems.rod_zirnox_uranium_fuel), new ItemStack(ModItems.rod_zirnox_uranium_fuel_depleted));
-		fuelMap.put(new ComparableStack(ModItems.rod_zirnox_th232), new ItemStack(ModItems.rod_zirnox_thorium_fuel));
+		fuelMap.put(new ComparableStack(ModItems.rod_zirnox_th232), new ItemStack(ModItems.rod_zirnox_tha));
 		fuelMap.put(new ComparableStack(ModItems.rod_zirnox_thorium_fuel), new ItemStack(ModItems.rod_zirnox_thorium_fuel_depleted));
 		fuelMap.put(new ComparableStack(ModItems.rod_zirnox_mox_fuel), new ItemStack(ModItems.rod_zirnox_mox_fuel_depleted));
 		fuelMap.put(new ComparableStack(ModItems.rod_zirnox_plutonium_fuel), new ItemStack(ModItems.rod_zirnox_plutonium_fuel_depleted));
@@ -102,6 +102,7 @@ public class TileEntityReactorZirnox extends TileEntityMachineBase implements IF
 
 	}
 
+	@Override
 	public void networkUnpack(NBTTagCompound data) {
 		this.heat = data.getInteger("heat");
 		this.pressure = data.getInteger("pressure");
@@ -119,7 +120,7 @@ public class TileEntityReactorZirnox extends TileEntityMachineBase implements IF
 		}
 	}
 
-	private int[] getNeighbouringSlots(int id) {
+	private static int[] getNeighbouringSlots(int id) {
 
 		switch(id) {
 		case 0: return new int[] { 1, 7 };
@@ -147,8 +148,6 @@ public class TileEntityReactorZirnox extends TileEntityMachineBase implements IF
 		case 22: return new int[] { 15, 21, 23 };
 		case 23: return new int[] { 16, 22 };
 		}
-
-		return null;
 	}
 
 	@Override
@@ -252,7 +251,7 @@ public class TileEntityReactorZirnox extends TileEntityMachineBase implements IF
 
 	private int getNeighbourCount(int id) {
 
-		int[] neighbours = this.getNeighbouringSlots(id);
+		int[] neighbours = getNeighbouringSlots(id);
 
 		if(neighbours == null)
 			return 0;
@@ -281,9 +280,9 @@ public class TileEntityReactorZirnox extends TileEntityMachineBase implements IF
 		for(int i = 0; i < decay; i++) {
 			ItemZirnoxRod rod = ((ItemZirnoxRod) slots[id].getItem());
 			this.heat += rod.heat;
-			ItemZirnoxRod.setLifeTime(slots[id], ItemZirnoxRod.getLifeTime(slots[id]) + 1);
+			ItemFuelRod.setLifeTime(slots[id], ItemFuelRod.getLifeTime(slots[id]) + 1);
 			
-			if(ItemZirnoxRod.getLifeTime(slots[id]) > ((ItemZirnoxRod) slots[id].getItem()).lifeTime) {
+			if(ItemFuelRod.getLifeTime(slots[id]) > ((ItemZirnoxRod) slots[id].getItem()).lifeTime) {
 				slots[id] = fuelMap.get(new ComparableStack(getStackInSlot(id))).copy();
 				break;
 			}
@@ -401,6 +400,7 @@ public class TileEntityReactorZirnox extends TileEntityMachineBase implements IF
 		};
 	}
 
+	@Override
 	public boolean getTact() {
 		if(age >= 0 && age < 10) {
 			return true;
@@ -409,6 +409,7 @@ public class TileEntityReactorZirnox extends TileEntityMachineBase implements IF
 		return false;
 	}
 
+	@Override
 	public int getMaxFluidFill(FluidType type) {
 		if(type == Fluids.SUPERHOTSTEAM) return 0;
 		if(type == Fluids.CARBONDIOXIDE) return carbonDioxide.getMaxFill();
@@ -417,12 +418,14 @@ public class TileEntityReactorZirnox extends TileEntityMachineBase implements IF
 		return 0;
 	}
 
+	@Override
 	public void setFluidFill(int i, FluidType type) {
 		if(type == Fluids.SUPERHOTSTEAM) steam.setFill(i);
 		if(type == Fluids.CARBONDIOXIDE) carbonDioxide.setFill(i);
 		if(type == Fluids.WATER) water.setFill(i);
 	}
 
+	@Override
 	public int getFluidFill(FluidType type) {
 		if(type == Fluids.SUPERHOTSTEAM) return steam.getFill();
 		if(type == Fluids.CARBONDIOXIDE) return carbonDioxide.getFill();
@@ -454,6 +457,7 @@ public class TileEntityReactorZirnox extends TileEntityMachineBase implements IF
 		}
 	}
 
+	@Override
 	public List<FluidTank> getTanks() {
 		List<FluidTank> list = new ArrayList<FluidTank>();
 		list.add(steam);
@@ -463,18 +467,22 @@ public class TileEntityReactorZirnox extends TileEntityMachineBase implements IF
 		return list;
 	}
 
+	@Override
 	public List<IFluidAcceptor> getFluidList(FluidType type) {
 		return list;
 	}
 
+	@Override
 	public void clearFluidList(FluidType type) {
 		list.clear();
 	}
 
+	@Override
 	public AxisAlignedBB getRenderBoundingBox() {
 		return AxisAlignedBB.getBoundingBox(xCoord - 2, yCoord, zCoord - 2, xCoord + 3, yCoord + 5, zCoord + 3);
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
 	public double getMaxRenderDistanceSquared() {
 		return 65536.0D;

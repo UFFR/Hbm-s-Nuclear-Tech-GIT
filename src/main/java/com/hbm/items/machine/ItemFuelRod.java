@@ -1,14 +1,8 @@
 package com.hbm.items.machine;
 
-import java.util.List;
-
-import com.hbm.lib.Library;
-
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
 
 public class ItemFuelRod extends Item {
 
@@ -17,6 +11,7 @@ public class ItemFuelRod extends Item {
 	public ItemFuelRod(int life) {
 		this.lifeTime = life;
 		this.canRepair = false;
+		setMaxStackSize(1);
 	}
 	
 	public static void setLifeTime(ItemStack stack, int time) {
@@ -37,11 +32,13 @@ public class ItemFuelRod extends Item {
 		return stack.stackTagCompound.getInteger("life");
 	}
     
-    public boolean showDurabilityBar(ItemStack stack) {
+    @Override
+	public boolean showDurabilityBar(ItemStack stack) {
         return true;
     }
     
-    public double getDurabilityForDisplay(ItemStack stack) {
+    @Override
+	public double getDurabilityForDisplay(ItemStack stack) {
         return (double)getLifeTime(stack) / (double)((ItemFuelRod)stack.getItem()).lifeTime;
     }
 }

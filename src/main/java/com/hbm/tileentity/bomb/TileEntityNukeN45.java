@@ -17,7 +17,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -282,7 +281,7 @@ public class TileEntityNukeN45 extends TileEntity implements ISidedInventory {
 
 			if(slots[0].getItem() == Item.getItemFromBlock(ModBlocks.det_cord))
 				return 1;
-			if(slots[0].getItem() == Item.getItemFromBlock(Blocks.tnt))
+			if(slots[0].getItem() == Item.getItemFromBlock(ModBlocks.tnt))
 				return 2;
 			if(slots[0].getItem() == Item.getItemFromBlock(ModBlocks.det_charge))
 				return 3;

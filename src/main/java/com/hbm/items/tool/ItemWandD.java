@@ -75,6 +75,16 @@ public class ItemWandD extends Item {
 			
 			//new Spaceship().generate_r0(world, world.rand, x - 4, y, z - 8);
 
+    		/*NBTTagCompound data = new NBTTagCompound();
+    		data.setString("type", "rift");
+    		data.setDouble("posX", x);
+    		data.setDouble("posY", y + 1);
+    		data.setDouble("posZ", z);
+    		
+    		MainRegistry.proxy.effectNT(data);*/
+			
+			//new Spaceship().generate_r0(world, world.rand, x - 4, y, z - 8);
+
 			//new Ruin001().generate_r0(world, world.rand, x, y - 8, z);
 
 			//CellularDungeonFactory.jungle.generate(world, x, y, z, world.rand);

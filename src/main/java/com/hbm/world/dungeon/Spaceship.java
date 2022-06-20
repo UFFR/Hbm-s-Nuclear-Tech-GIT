@@ -24,7 +24,7 @@ public class Spaceship extends WorldGenerator
 	Block Block5 = ModBlocks.block_meteor;
 	Block Block6 = ModBlocks.reactor_element;
 	Block Block7 = ModBlocks.cable_switch;
-	Block Block8 = ModBlocks.fusion_hatch;
+	Block Block8 = ModBlocks.fusion_center;
 	Block Block9 = ModBlocks.reinforced_light;
 	Block Block10 = ModBlocks.reinforced_glass;
 	

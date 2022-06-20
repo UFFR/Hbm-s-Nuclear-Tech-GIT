@@ -165,6 +165,8 @@ public class TileEntityFEL extends TileEntityMachineBase implements IEnergyUser 
 			data.setBoolean("valid", missingValidSilex);
 			data.setInteger("distance", distance);
 			this.networkPack(data, 250);
+			
+			PacketDispatcher.wrapper.sendToAllAround(new AuxElectricityPacket(xCoord, yCoord, zCoord, power), new TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 50));
 		}
 	}
 	

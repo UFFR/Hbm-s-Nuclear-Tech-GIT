@@ -118,7 +118,7 @@ public class SmeltingRecipes {
 		GameRegistry.addSmelting(new ItemStack(ModBlocks.gravel_diamond), new ItemStack(Items.diamond), 3.0F);
 		GameRegistry.addSmelting(new ItemStack(ModBlocks.sand_uranium), new ItemStack(ModBlocks.glass_uranium), 0.25F);
 		GameRegistry.addSmelting(new ItemStack(ModBlocks.sand_polonium), new ItemStack(ModBlocks.glass_polonium), 0.75F);
-		GameRegistry.addSmelting(new ItemStack(ModBlocks.sand_quartz), new ItemStack(ModBlocks.glass_quartz), 0.75F);
+//		GameRegistry.addSmelting(new ItemStack(ModBlocks.sand_quartz), new ItemStack(ModBlocks.glass_quartz), 0.75F);
 		GameRegistry.addSmelting(new ItemStack(ModBlocks.waste_trinitite), new ItemStack(ModBlocks.glass_trinitite), 0.25F);
 		GameRegistry.addSmelting(new ItemStack(ModBlocks.waste_trinitite_red), new ItemStack(ModBlocks.glass_trinitite), 0.25F);
 		GameRegistry.addSmelting(new ItemStack(ModBlocks.sand_boron), new ItemStack(ModBlocks.glass_boron), 0.25F);
@@ -176,6 +176,20 @@ public class SmeltingRecipes {
 		GameRegistry.addSmelting(ModItems.battery_steam, ItemBattery.getFullBattery(ModItems.battery_steam), 1.0F);
 		
 		GameRegistry.addSmelting(new ItemStack(ModItems.scrap_plastic, 1, OreDictionary.WILDCARD_VALUE), new ItemStack(ModItems.ingot_polymer), 0.1F);
+		
+//		for (String ore : OreDictionary.getOreNames())
+//		{
+//			if (ore.startsWith("dustTiny"))
+//			{
+//				if (OreDictionary.doesOreNameExist("nugget".concat(ore.substring(8))))
+//					for (ItemStack stack : OreDictionary.getOres(ore))
+//						GameRegistry.addSmelting(stack, OreDictionary.getOres("nugget".concat(ore.substring(8))).get(0), 1);
+//			}
+//			else if (ore.startsWith("dust"))
+//				if (OreDictionary.doesOreNameExist("ingot".concat(ore.substring(4))))
+//					for (ItemStack stack : OreDictionary.getOres(ore))
+//						GameRegistry.addSmelting(stack, OreDictionary.getOres("ingot".concat(ore.substring(4))).get(0), 1);
+//		}
 		
 		for(int i = 0; i < 10; i++)
 			GameRegistry.addSmelting(new ItemStack(ModItems.ingot_steel_dusted, 1, i), ItemHot.heatUp(new ItemStack(ModItems.ingot_steel_dusted, 1, i)), 1.0F);

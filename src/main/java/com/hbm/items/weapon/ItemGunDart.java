@@ -39,6 +39,7 @@ public class ItemGunDart extends ItemGunBase implements IDesignatorItem {
 		return MinecraftServer.getServer().getConfigurationManager().func_152612_a(stack.stackTagCompound.getString("player"));
 	}
 	
+	@Override
 	public void startAction(ItemStack stack, World world, EntityPlayer player, boolean main) {
 		
 		if(main) {

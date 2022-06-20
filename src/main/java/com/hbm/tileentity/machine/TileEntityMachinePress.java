@@ -12,6 +12,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -33,7 +34,7 @@ public class TileEntityMachinePress extends TileEntity implements ISidedInventor
 	public int item;
 	public int meta;
 	boolean isRetracting = false;
-	
+	private static Item[] deshStamps = new Item[] {ModItems.stamp_desh_circuit, ModItems.stamp_desh_disc, ModItems.stamp_desh_flat, ModItems.stamp_desh_plate, ModItems.stamp_desh_wire, ModItems.stamp_357_desh, ModItems.stamp_44_desh, ModItems.stamp_50_desh, ModItems.stamp_9_desh};
 	private String customName;
 	
 	public TileEntityMachinePress() {
