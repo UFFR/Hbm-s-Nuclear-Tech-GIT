@@ -1,25 +1,23 @@
 package com.hbm.calc;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.CheckForNull;
 
+import com.hbm.interfaces.ILocationProvider;
 import com.hbm.main.DeserializationException;
 
 import api.hbm.serialization.ISerializable;
 import api.hbm.serialization.SerializationRegistry;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-public class EasyLocation implements Cloneable, Comparable<EasyLocation>, ISerializable<EasyLocation>
+public class EasyLocation implements Cloneable, Comparable<EasyLocation>, ISerializable<EasyLocation>, ILocationProvider
 {
 	/**
 	 * 
@@ -84,7 +82,7 @@ public class EasyLocation implements Cloneable, Comparable<EasyLocation>, ISeria
 	{
 		try
 		{
-			final ByteBuf buf = Unpooled.copiedBuffer(bytes);
+			final ByteBuf buf = allocCopy.apply(bytes);
 			posX = buf.readDouble();
 			posY = buf.readDouble();
 			posZ = buf.readDouble();
@@ -94,24 +92,11 @@ public class EasyLocation implements Cloneable, Comparable<EasyLocation>, ISeria
 			throw new DeserializationException(e);
 		}
 	}
-	
-	private void writeObject(ObjectOutputStream out) throws IOException
-	{
-		out.write(serialize());
-	}
-	
-	private void readObject(ObjectInputStream in) throws IOException
-	{
-		posX = in.readDouble();
-		posY = in.readDouble();
-		posZ = in.readDouble();
-		dimID = in.readInt();
-	}
-	
+
 	@Override
 	public byte[] serialize()
 	{
-		final ByteBuf buf = Unpooled.buffer();
+		final ByteBuf buf = alloc.get();
 		buf.writeDouble(posX);
 		buf.writeDouble(posY);
 		buf.writeDouble(posZ);
@@ -119,50 +104,7 @@ public class EasyLocation implements Cloneable, Comparable<EasyLocation>, ISeria
 		return buf.array();
 	}
 	
-	public static double distance(EasyLocation loc1, EasyLocation loc2)
-	{
-		return Math.sqrt(Math.pow(loc2.posX - loc1.posX, 2) + Math.pow(loc2.posY - loc1.posY, 2) + Math.pow(loc2.posZ - loc1.posZ, 2));
-	}
-	
-	public double distance(EasyLocation loc)
-	{
-		return distance(this, loc);
-	}
-	
-	public static double yaw(EasyLocation loc1, EasyLocation loc2)
-	{
-		return Math.atan2(loc1.posZ - loc2.posZ, loc1.posX - loc2.posX);
-	}
-	
-	public double yaw(EasyLocation loc)
-	{
-		return yaw(this, loc);
-	}
-	
-	public static double pitch(EasyLocation loc1, EasyLocation loc2)
-	{
-		Vec3 vec = makeVector(loc1, loc2);
-		return Math.atan2(Math.sqrt(vec.zCoord * vec.zCoord + vec.xCoord * vec.xCoord), vec.yCoord) + Math.PI;
-	}
-	
-	public double pitch(EasyLocation loc)
-	{
-		return pitch(this, loc);
-	}
-	
-	public static Vec3 makeVector(EasyLocation loc1, EasyLocation loc2)
-	{
-//		final double calcX = Math.sin(pitch(loc1, loc2)) * Math.cos(yaw(loc1, loc2)), calcY = Math.sin(pitch(loc1, loc2)) * Math.sin(yaw(loc1, loc2)), calcZ = Math.cos(yaw(loc1, loc2));
-//		return Vec3.createVectorHelper(calcX, calcY, calcZ);
-		return Vec3.createVectorHelper(loc2.posX - loc1.posX, loc2.posY - loc1.posY, loc2.posZ - loc1.posZ);
-	}
-	
-	public Vec3 makeVector(EasyLocation loc)
-	{
-		return makeVector(this, loc);
-	}
-	
-	public EasyLocation normalize()
+	public EasyLocation round()
 	{
 		posX = Math.round(posX);
 		posY = Math.round(posY);
@@ -170,10 +112,6 @@ public class EasyLocation implements Cloneable, Comparable<EasyLocation>, ISeria
 		return this;
 	}
 	
-	public boolean isInvalid()
-	{
-		return Double.isNaN(posX) || Double.isNaN(posY) || Double.isNaN(posZ);
-	}
 	@CheckForNull
 	public static EasyLocation constructGeneric(Object obj)
 	{
@@ -194,20 +132,17 @@ public class EasyLocation implements Cloneable, Comparable<EasyLocation>, ISeria
 
 	}
 	
-	/**
-	 * Also accepts the same objects the constructor can take
-	 */
 	@Override
 	public boolean equals(Object obj)
 	{
-		if (obj == null)
+		if (this == obj)
+			return true;
+		if (!(obj instanceof EasyLocation))
 			return false;
-		
-		EasyLocation test = constructGeneric(obj);
-		if (test == null)
-			return false;
-		
-		return (posX == test.posX && posY == test.posY && posZ == test.posZ && dimID == test.dimID && world.equals(test.world));
+		final EasyLocation other = (EasyLocation) obj;
+		return dimID == other.dimID && Double.doubleToLongBits(posX) == Double.doubleToLongBits(other.posX)
+				&& Double.doubleToLongBits(posY) == Double.doubleToLongBits(other.posY)
+				&& Double.doubleToLongBits(posZ) == Double.doubleToLongBits(other.posZ);
 	}
 	/** Also sets the dimID **/
 	public EasyLocation setWorld(World worldIn)
@@ -245,6 +180,23 @@ public class EasyLocation implements Cloneable, Comparable<EasyLocation>, ISeria
 		posZ += loc.posZ;
 		return this;
 	}
+	
+	public EasyLocation addCoord(Vec3 vec)
+	{
+		posX += vec.xCoord;
+		posY += vec.yCoord;
+		posZ += vec.zCoord;
+		return this;
+	}
+	
+	public EasyLocation subtractCoord(Vec3 vec)
+	{
+		posX -= vec.xCoord;
+		posY -= vec.yCoord;
+		posZ -= vec.zCoord;
+		return this;
+	}
+	
 	/**Preserves both original EasyLocation instances**/
 	public static EasyLocation subtractCoord(EasyLocation loc1, EasyLocation loc2)
 	{
@@ -258,45 +210,32 @@ public class EasyLocation implements Cloneable, Comparable<EasyLocation>, ISeria
 		posZ -= loc.posZ;
 		return this;
 	}
-	
-	public double[] getCoordDouble()
-	{
-		double[] coord = new double[3];
-		coord[0] = posX;
-		coord[1] = posY;
-		coord[2] = posZ;
-		return coord;
-	}
-	
-	public int[] getCoordInt()
-	{
-		int[] coord = new int[3];
-		coord[0] = (int) posX;
-		coord[1] = (int) posY;
-		coord[2] = (int) posZ;
-		return coord;
-	}
+
 	/** <b><i>Must</i></b> have world set!
 	 * @param e The entity to spawn
-	 * @return Whatever spawnEntityInWorld() returns**/
+	 * @return Whatever spawnEntityInWorld() returns
+	 * @throws NoSuchElementException If the world is not set**/
 	public boolean spawnEntityAtCoord(Entity e)
 	{
 		return world.get().spawnEntityInWorld(e);
 	}
 	
-	/** <b><i>Has prerequisite of having the world object set</b></i> **/
+	/** <b><i>Has prerequisite of having the world object set</b></i>
+	 * @throws NoSuchElementException If the world is not set**/
 	public TileEntity getTEAtCoord()
 	{
 		return world.get().getTileEntity((int) posX, (int) posY, (int) posZ);
 	}
-	/** <b><i>Has prerequisite of having the world object set</b></i> **/
+	/** <b><i>Has prerequisite of having the world object set</b></i>
+	 * @throws NoSuchElementException If the world is not set**/
 	public Block getBlockAtCoord()
 	{
 		return world.get().getBlock((int) posX, (int) posY, (int) posZ);
 	}
 	/** <b><i>Has prerequisite of having the world object set</b></i>
 	 * @param b The block in question
-	 * @return Whatever the {@link#World.setBlock()} method is supposed to return**/
+	 * @return Whatever the {@link#World.setBlock()} method is supposed to return
+	 * @throws NoSuchElementException If the world is not set**/
 	public boolean setBlockAtCoord(Block b)
 	{
 		return world.get().setBlock((int) posX, (int) posY, (int) posZ, b);
@@ -312,7 +251,7 @@ public class EasyLocation implements Cloneable, Comparable<EasyLocation>, ISeria
 		catch (CloneNotSupportedException e)
 		{
 			e.printStackTrace();
-			EasyLocation cloned = new EasyLocation(getCoordDouble());
+			final EasyLocation cloned = new EasyLocation(getCoordDouble());
 			if (world.isPresent())
 				cloned.setWorld(world.get());
 			return cloned;
@@ -322,14 +261,16 @@ public class EasyLocation implements Cloneable, Comparable<EasyLocation>, ISeria
 	@Override
 	public String toString()
 	{
-		double[] coord = getCoordDouble();
-		return String.format("posX: %s; posY: %s; posZ: %s; dimID: %s, hasWorld: %s", coord[0], coord[1], coord[2], dimID, world.isPresent());
+		final StringBuilder builder = new StringBuilder();
+		builder.append("EasyLocation [posX=").append(posX).append(", posY=").append(posY).append(", posZ=").append(posZ)
+				.append(", dimID=").append(dimID).append(", world=").append(world).append(']');
+		return builder.toString();
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		return (int) (dimID + posX * posY * posZ) * 7 * 31 + world.hashCode();
+		return Objects.hash(dimID, posX, posY, posZ);
 	}
 	
 	public Vec3 toVec3()
@@ -340,9 +281,9 @@ public class EasyLocation implements Cloneable, Comparable<EasyLocation>, ISeria
 	@Override
 	public int compareTo(EasyLocation o)
 	{
-		EasyLocation zero = new EasyLocation(0, 0, 0);
-		double testDist = distance(o, zero);
-		double myDist = distance(this, zero);
+		final EasyLocation zero = new EasyLocation(0, 0, 0);
+		final double testDist = ILocationProvider.distance(o, zero);
+		final double myDist = ILocationProvider.distance(this, zero);
 		if (equals(o) || testDist == myDist)
 			return 0;
 		return myDist < testDist ? 1 : -1;
@@ -352,5 +293,35 @@ public class EasyLocation implements Cloneable, Comparable<EasyLocation>, ISeria
 	public EasyLocation deserialize(byte[] bytes) throws DeserializationException
 	{
 		return new EasyLocation(bytes);
+	}
+
+	@Override
+	public double getX()
+	{
+		return posX;
+	}
+
+	@Override
+	public double getY()
+	{
+		return posY;
+	}
+
+	@Override
+	public double getZ()
+	{
+		return posZ;
+	}
+
+	@Override
+	public boolean hasWorld()
+	{
+		return world.isPresent();
+	}
+
+	@Override
+	public World getWorld()
+	{
+		return world.get();
 	}
 }

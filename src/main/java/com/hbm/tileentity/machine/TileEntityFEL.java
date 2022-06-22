@@ -11,17 +11,20 @@ import com.hbm.items.machine.ItemFELCrystal;
 import com.hbm.items.machine.ItemFELCrystal.EnumWavelengths;
 import com.hbm.lib.Library;
 import com.hbm.main.MainRegistry;
+import com.hbm.packet.AuxElectricityPacket;
+import com.hbm.packet.PacketDispatcher;
 import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.ContaminationUtil;
 import com.hbm.util.ContaminationUtil.ContaminationType;
 import com.hbm.util.ContaminationUtil.HazardType;
 
 import api.hbm.energy.IEnergyUser;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
+import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -41,7 +44,7 @@ public class TileEntityFEL extends TileEntityMachineBase implements IEnergyUser 
 	public boolean isOn;
 	public boolean missingValidSilex = true	;
 	public int distance;
-	public List<EntityLivingBase> entities = new ArrayList();
+	public List<EntityLivingBase> entities = new ArrayList<EntityLivingBase>();
 	
 	
 	public TileEntityFEL() {
@@ -170,7 +173,7 @@ public class TileEntityFEL extends TileEntityMachineBase implements IEnergyUser 
 		}
 	}
 	
-	public boolean rotationIsValid(int silexMeta, int felMeta) {
+	public static boolean rotationIsValid(int silexMeta, int felMeta) {
 		ForgeDirection silexDir = ForgeDirection.getOrientation(silexMeta);
 		ForgeDirection felDir = ForgeDirection.getOrientation(felMeta);
 		if(silexDir == felDir || silexDir == felDir.getOpposite()) {

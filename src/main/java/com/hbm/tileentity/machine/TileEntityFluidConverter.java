@@ -1,8 +1,5 @@
 package com.hbm.tileentity.machine;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.annotation.CheckReturnValue;
 
 import com.google.common.annotations.Beta;
@@ -45,30 +42,10 @@ public class TileEntityFluidConverter extends TileEntityMachineBase implements I
 	}
 
 	@Override
-	public void setFillstate(int fill, int index)
-	{
-		bobTank.setFill(fill);
-	}
-
-	@Override
 	public void setFluidFill(int fill, FluidType type)
 	{
 		if (bobTank.getTankType().equals(type))
 			bobTank.setFill(fill);
-	}
-
-	@Override
-	public void setType(FluidType type, int index)
-	{
-		bobTank.setTankType(type);
-	}
-
-	@Override
-	public List<FluidTank> getTanks()
-	{
-		ArrayList<FluidTank> tanks = new ArrayList<FluidTank>(1);
-		tanks.add(bobTank);
-		return tanks;
 	}
 
 	@Override
@@ -206,6 +183,18 @@ public class TileEntityFluidConverter extends TileEntityMachineBase implements I
 	public static Fluid getForgeFromBob(FluidType f)
 	{
 		return conversions.containsKey(f) ? conversions.get(f) : null;
+	}
+
+	@Override
+	public void setFillForSync(int fill, int index)
+	{
+		bobTank.setFill(fill);
+	}
+
+	@Override
+	public void setTypeForSync(FluidType type, int index)
+	{
+		bobTank.setTankType(type);
 	}
 
 }

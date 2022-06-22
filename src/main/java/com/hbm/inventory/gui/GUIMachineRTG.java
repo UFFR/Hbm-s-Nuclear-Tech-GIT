@@ -10,8 +10,6 @@ import com.hbm.lib.RefStrings;
 import com.hbm.tileentity.machine.TileEntityMachineRTG;
 import com.hbm.util.I18nUtil;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -34,13 +32,13 @@ public class GUIMachineRTG extends GuiInfoContainer {
 	public void drawScreen(int mouseX, int mouseY, float f) {
 		super.drawScreen(mouseX, mouseY, f);
 
-		this.drawElectricityInfo(this, mouseX, mouseY, guiLeft + 152, guiTop + 69 - 52, 16, 52, rtg.power, TileEntityMachineRTG.powerMax);
+		drawElectricityInfo(this, mouseX, mouseY, guiLeft + 152, guiTop + 69 - 52, 16, 52, rtg.power, TileEntityMachineRTG.powerMax);
 		
 		String[] heatText = I18nUtil.resolveKeyArray("desc.gui.rtg.heat", rtg.heat);
 		this.drawCustomInfoStat(mouseX, mouseY, guiLeft + 134, guiTop + 17, 16, 52, mouseX, mouseY, heatText);
 		
-		List<ItemRTGPellet> pellets = ItemRTGPellet.pelletList;
-		String[] pelletText = new String[pellets.size() + 1];
+		final List<ItemRTGPellet> pellets = ItemRTGPellet.getPellets();
+		final String[] pelletText = new String[pellets.size() + 1];
 		pelletText[0] = I18nUtil.resolveKey("desc.gui.rtg.pellets");
 		
 		for(int i = 0; i < pellets.size(); i++) {

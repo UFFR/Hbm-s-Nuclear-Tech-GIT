@@ -45,6 +45,7 @@ public class ItemAmmoArty extends Item {
 	
 	private IIcon[] icons = new IIcon[EnumArtyType.values().length];
 
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister reg) {
 		

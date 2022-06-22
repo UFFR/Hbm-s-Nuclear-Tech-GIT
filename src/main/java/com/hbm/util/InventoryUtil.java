@@ -216,7 +216,7 @@ public class InventoryUtil {
 	
 	public static boolean doesPlayerHaveAStack(EntityPlayer player, AStack stack, boolean shouldRemove)
 	{
-		ArrayList<AStack> single = new ArrayList<>(1);
+		final ArrayList<AStack> single = new ArrayList<>(1);
 		single.add(stack);
 		return doesPlayerHaveAStacks(player, single, shouldRemove);
 	}

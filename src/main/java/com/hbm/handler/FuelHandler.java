@@ -35,7 +35,7 @@ public class FuelHandler implements IFuelHandler
 	@Override
 	public int getBurnTime(ItemStack fuel)
 	{
-		return fuelMap.getOrElse(fuel.getItem, 0);
+		return fuelMap.getOrDefault(fuel.getItem(), 0);
 	}
 
 }

@@ -20,3 +20,25 @@ build
 
 # other
 run
+
+asm/
+
+config/
+
+crash-reports/
+
+gradle/
+
+logs/
+
+README.txt
+
+CREDITS-fml.txt
+
+forge-1.7.10-10.13.4.1614-1.7.10-changelog.txt
+
+LICENSE-fml.txt
+
+MinecraftForge-Credits.txt
+
+MinecraftForge-License.txt

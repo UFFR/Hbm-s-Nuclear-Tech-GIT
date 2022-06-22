@@ -21,29 +21,25 @@ import net.minecraftforge.common.util.FakePlayer;
 @Spaghetti("yet another if statement chain")
 public class ItemEnergy extends ItemCustomLore
 {
-	private boolean isCan = false;
+	private boolean isCan = false, requiresOpener;
 	private final Consumer<EntityPlayer> onConsume;
 	private Optional<Item> cap = Optional.empty(), container = Optional.empty();
 	public ItemEnergy(Consumer<EntityPlayer> onConsume)
 	{
 		this.onConsume = onConsume;
-	}
-	
-	public ItemEnergy()
-	{
-		// TODO Auto-generated constructor stub
-		onConsume = (player) -> {return;};
+		this.setCreativeTab(MainRegistry.consumableTab);
 	}
 	
 	public ItemEnergy() {
 		this.setCreativeTab(MainRegistry.consumableTab);
+		onConsume = player -> {return;};
 	}
 	
 	public ItemEnergy makeCan() {
-		this.container = ModItems.can_empty;
-		this.cap = ModItems.ring_pull;
+		this.container = Optional.of(ModItems.can_empty);
+		this.cap = Optional.of(ModItems.ring_pull);
 		this.requiresOpener = false;
-		this.setContainerItem(this.container);
+		this.setContainerItem(this.container.get());
 		return this;
 	}
 	

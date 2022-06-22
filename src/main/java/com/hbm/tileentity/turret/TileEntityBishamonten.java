@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import com.hbm.blocks.ModBlocks;
 import com.hbm.calc.EasyLocation;
@@ -15,6 +16,7 @@ import com.hbm.entity.logic.EntityNukeExplosionMK3;
 import com.hbm.entity.logic.EntityNukeExplosionMK4;
 import com.hbm.extprop.HbmLivingProps;
 import com.hbm.interfaces.IControlReceiver;
+import com.hbm.interfaces.ILocationProvider;
 import com.hbm.lib.ModDamageSource;
 import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.I18nUtil;
@@ -94,8 +96,8 @@ public class TileEntityBishamonten extends TileEntityMachineBase implements ILas
 			
 			if (targLoc.isPresent())
 			{
-				elevation = myLoc.pitch(targLoc.get()) - 90;
-				direction = myLoc.yaw(targLoc.get());
+				elevation = Math.toDegrees(ILocationProvider.pitch(myLoc, targLoc.get())) - 90;
+				direction = Math.toDegrees(ILocationProvider.yaw(myLoc, targLoc.get()));
 			}
 			
 			if (bufferQueued && fillBuffer())
@@ -126,22 +128,22 @@ public class TileEntityBishamonten extends TileEntityMachineBase implements ILas
 	{
 		if (!target.isInvalid() && !myLoc.equals(target))
 		{
-			HashSet<EntityLivingBase> entityBuffer = new HashSet<>();
-			LinkedHashSet<EasyLocation> blockBuffer = new LinkedHashSet<>();
-			final double distanceToTarg = EasyLocation.distance(myLoc, target);
-			Vec3 vector = EasyLocation.makeVector(myLoc, target);
+			final Set<EntityLivingBase> entityBuffer = new HashSet<>();
+			final Set<EasyLocation> blockBuffer = new LinkedHashSet<>();
+			final double distanceToTarg = ILocationProvider.distance(myLoc, target);
+			final Vec3 vector = ILocationProvider.makeVector(myLoc, target);
 			vector.xCoord /= distanceToTarg;
 			vector.yCoord /= distanceToTarg;
 			vector.zCoord /= distanceToTarg;
-			EasyLocation checkCoord = myLoc.clone();
+			final EasyLocation checkCoord = myLoc.clone();
 			double distance = 0;
 			do
 			{
 				checkCoord.modifyCoord(vector.xCoord, vector.yCoord, vector.zCoord);
 				entityBuffer.addAll(worldObj.getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(checkCoord.posX - 5, checkCoord.posY - 5, checkCoord.posZ - 5, checkCoord.posX + 5, checkCoord.posY + 5, checkCoord.posZ + 5)));
 				if (checkCoord.getBlockAtCoord() == Blocks.air)
-					blockBuffer.add(checkCoord.clone().normalize());
-				distance = checkCoord.distance(myLoc);
+					blockBuffer.add(checkCoord.clone().round());
+				distance = ILocationProvider.distance(checkCoord, myLoc);
 			} while (distance <= range && checkCoord.posY < 255 && checkCoord.posY > 0);
 			for (EntityLivingBase entity : entityBuffer)
 			{
@@ -390,7 +392,7 @@ public class TileEntityBishamonten extends TileEntityMachineBase implements ILas
 	{
 		if (yield >= 100)
 		{
-			EntityNukeExplosionMK3 field = new EntityNukeExplosionMK3(getWorldObj());
+			final EntityNukeExplosionMK3 field = new EntityNukeExplosionMK3(getWorldObj());
 			field.posX = loc.posX;
 			field.posY = loc.posY;
 			field.posZ = loc.posZ;
@@ -398,7 +400,7 @@ public class TileEntityBishamonten extends TileEntityMachineBase implements ILas
 			field.coefficient = 1.0F;
 			field.waste = false;
 			worldObj.spawnEntityInWorld(field);
-			EntityCloudSolinium sphere = new EntityCloudSolinium(getWorldObj(), yield);
+			final EntityCloudSolinium sphere = new EntityCloudSolinium(getWorldObj(), yield);
 			sphere.posX = loc.posX;
 			sphere.posY = loc.posY;
 			sphere.posZ = loc.posZ;

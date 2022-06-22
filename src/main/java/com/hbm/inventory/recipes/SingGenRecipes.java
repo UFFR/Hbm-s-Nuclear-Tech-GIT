@@ -43,19 +43,19 @@ public class SingGenRecipes
 				}, new ComparableStack(ModItems.singularity)).setLevel(4));
 		recipes.add(addRecipe(new ItemStack(ModItems.overfuse, 1), new ComparableStack[]
 				{
-					new ComparableStack(ModItems.screwdriver_chad), new ComparableStack(ModItems.board_copper), new ComparableStack(ModItems.powder_nitan_mix),
+					new ComparableStack(ModItems.screwdriver_desh), new ComparableStack(ModItems.board_copper), new ComparableStack(ModItems.powder_nitan_mix),
 					new ComparableStack(ModItems.powder_nitan_mix), new ComparableStack(ModItems.powder_nitan_mix),
 					new ComparableStack(ModItems.powder_nitan_mix), new ComparableStack(ModItems.powder_nitan_mix), new ComparableStack(ModItems.powder_nitan_mix)
 				}, new ComparableStack(ModItems.black_hole)).setLevel(5).setShapeless());
 		recipes.add(addRecipe(new ItemStack(ModItems.overfuse, 1), new AStack[]
 				{
-					new ComparableStack(ModItems.screwdriver_chad), new ComparableStack(ModItems.board_copper), new OreDictStack(NP237.dust()),
+					new ComparableStack(ModItems.screwdriver_desh), new ComparableStack(ModItems.board_copper), new OreDictStack(NP237.dust()),
 					new OreDictStack(I.dust()), new OreDictStack(TH232.dust()),
 					new OreDictStack(AT.dust()), new OreDictStack(ND.dust()), new OreDictStack(CS.dust())
 				}, new ComparableStack(ModItems.black_hole)).setLevel(5).setShapeless());
 		recipes.add(addRecipe(new ItemStack(ModItems.overfuse, 1), new AStack[]
 				{
-					new ComparableStack(ModItems.screwdriver_chad), new ComparableStack(ModItems.board_copper), new OreDictStack(ST.dust()),
+					new ComparableStack(ModItems.screwdriver_desh), new ComparableStack(ModItems.board_copper), new OreDictStack(ST.dust()),
 					new OreDictStack(BR.dust()), new OreDictStack(CO.dust()),
 					new OreDictStack(TS.dust()), new OreDictStack(NB.dust()), new OreDictStack(CE.dust())
 				}, new ComparableStack(ModItems.black_hole)).setLevel(5).setShapeless());

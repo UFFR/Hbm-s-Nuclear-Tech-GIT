@@ -26,8 +26,8 @@ public class ItemWatch extends Item
 	
 	public static String getTime(World world)
 	{
-		double time = TimeSavedData.getData(world).getTime();
-		time = Library.roundNumber(time, 4);
+		int time = TimeSavedData.getData(world).dateData.getTime();
+		time = (int) Library.roundNumber(time, 4);
 		return String.valueOf(time);
 	}
 }

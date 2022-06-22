@@ -26,7 +26,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
-import net.minecraft.entity.passive.*;
+import net.minecraft.entity.passive.EntityVillager;
+import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
@@ -69,7 +70,7 @@ public class HbmLivingProps implements IExtendedEntityProperties, IHasAge
 	
 	public HbmLivingProps(EntityLivingBase entity) {
 		this.entity = entity;
-		intDate = TimeSavedData.getData(entity.worldObj).dateData;
+//		intDate = TimeSavedData.getData(entity.worldObj).dateData; TODO FINISH
 		// Zero meaning it does not die of old age
 		maxAge = maxAges.getOrDefault(entity.getClass(), new Date());
 		if (!maxAge.equals(new Date()))

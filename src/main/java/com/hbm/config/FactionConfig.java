@@ -10,7 +10,7 @@ public class FactionConfig
 	public static boolean enableFactionMode = false;
 	public static boolean enableFriendlyFire = false;
 	public static boolean enableDefaultFriendlyEarth = true;
-	public static final boolean[] enableFactions = new boolean[factionRegistry.size() - 1];
+	public static final boolean[] enableFactions = new boolean[factionRegistry.size()];
 	
 	public static void loadFromConfig(Configuration config)
 	{

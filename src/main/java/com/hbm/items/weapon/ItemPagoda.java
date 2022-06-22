@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.hbm.calc.EasyLocation;
 import com.hbm.extprop.HbmLivingProps;
+import com.hbm.interfaces.ILocationProvider;
 import com.hbm.lib.Library;
 import com.hbm.main.MainRegistry;
 import com.hbm.util.BobMathUtil;
@@ -17,6 +18,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 public class ItemPagoda extends Item implements IClickReceiver
@@ -38,32 +40,27 @@ public class ItemPagoda extends Item implements IClickReceiver
 		switch (button)
 		{
 		case 1:
-			final short strength = stack.stackTagCompound.getShort(KEY_CHARGE);
+			final short strength = getCharge(stack);
 			final float radius = strength / 100;
-			EasyLocation playerLoc = new EasyLocation(Library.getPosition(1, player)).modifyCoord(0, player.getEyeHeight(), 0);
-			EasyLocation checkCoord = playerLoc.clone().setWorld(player.worldObj);
-			HashSet<Entity> entities = new HashSet<>();
+			final EasyLocation playerLoc = new EasyLocation(Library.getPosition(1, player)).modifyCoord(0, player.getEyeHeight(), 0);
+			final EasyLocation checkCoord = playerLoc.clone().setWorld(player.worldObj);
+			final HashSet<Entity> entities = new HashSet<>();
 			BobMathUtil.offsetForHand(player, checkCoord);
-			EasyLocation step = new EasyLocation
-					(
-						-(Math.sin(player.rotationYaw / 180 * Math.PI) * Math.cos(player.rotationPitch / 180 * Math.PI)),
-						-Math.sin(player.rotationPitch / 180 * Math.PI),
-						Math.cos(player.rotationYaw / 180 * Math.PI) * Math.cos(player.rotationPitch / 180 * Math.PI)
-					);
+			final Vec3 step = BobMathUtil.entityUnitVector(player);
 			do
 			{
 				checkCoord.addCoord(step);
 				entities.addAll(player.worldObj.getEntitiesWithinAABBExcludingEntity(player, AxisAlignedBB.getBoundingBox(checkCoord.posX - radius, checkCoord.posY - radius, checkCoord.posZ - radius, checkCoord.posX + radius, checkCoord.posY + radius, checkCoord.posZ + radius)));
-			} while (!checkCoord.getBlockAtCoord().isBlockNormalCube() && EasyLocation.distance(checkCoord, playerLoc) < 50);
+			} while (!checkCoord.getBlockAtCoord().isBlockNormalCube() && ILocationProvider.distance(checkCoord, playerLoc) < 50);
 			for (Entity entity : entities)
-				if (entity instanceof EntityLivingBase && !Library.isObstructed(player.getEntityWorld(), player.posX, player.posY, player.posZ, entity.posX, entity.posY, entity.posZ))
+				if (entity instanceof EntityLivingBase && !Library.isObstructed(player.getEntityWorld(), ILocationProvider.wrap(player), ILocationProvider.wrap(entity)))
 					HbmLivingProps.incrementRadiation((EntityLivingBase) entity, strength);
 			break;
 		case 2:
 			stack.stackTagCompound.setBoolean(KEY_CHARGING, !isCharging(stack));
 			break;
 		case 4:
-			List<Entity> entityList = player.worldObj.getEntitiesWithinAABBExcludingEntity(player, AxisAlignedBB.getBoundingBox(player.posX - MAX_RADIUS, player.posY - MAX_RADIUS, player.posZ - MAX_RADIUS, player.posX + MAX_RADIUS, player.posY + MAX_RADIUS, player.posZ + MAX_RADIUS));
+			final List<Entity> entityList = player.worldObj.getEntitiesWithinAABBExcludingEntity(player, AxisAlignedBB.getBoundingBox(player.posX - MAX_RADIUS, player.posY - MAX_RADIUS, player.posZ - MAX_RADIUS, player.posX + MAX_RADIUS, player.posY + MAX_RADIUS, player.posZ + MAX_RADIUS));
 			for (Entity entity : entityList)
 				if (!Library.isObstructed(player.getEntityWorld(), player.posX, player.posY, player.posZ, entity.posX, entity.posY, entity.posZ) && entity instanceof EntityLivingBase)
 					HbmLivingProps.incrementRadiation((EntityLivingBase) entity, getCharge(stack) / 100);
@@ -122,7 +119,7 @@ public class ItemPagoda extends Item implements IClickReceiver
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack)
 	{
-		return 1d - (double) getCharge(stack) / (double) MAX_CHARGE;
+		return BobMathUtil.durabilityBarDisplay(getCharge(stack), MAX_CHARGE);
 	}
 	
 	@Override

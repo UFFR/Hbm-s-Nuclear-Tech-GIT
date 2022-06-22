@@ -11,10 +11,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
+@Deprecated
 public class TurretFritz extends TurretBaseNT {
 
 	public TurretFritz(Material mat) {
-		super(mat);
+		super(mat, TileEntityTurretFritz.class, EnumGUI.TURRET_FRITZ);
 	}
 
 	@Override

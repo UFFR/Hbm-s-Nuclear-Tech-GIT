@@ -1,8 +1,10 @@
 package com.hbm.calc;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import com.google.common.annotations.Beta;
+import com.hbm.interfaces.ILocationProvider;
 import com.hbm.main.DeserializationException;
 
 import api.hbm.serialization.SerializationRegistry;
@@ -127,7 +129,7 @@ public final class EasyLocationStep extends EasyLocation implements Iterable<Eas
 
 	public double distanceFromOrigin()
 	{
-		return distance(this, origin);
+		return ILocationProvider.distance(this, origin);
 	}
 	
 	public EasyLocation getOrigin()
@@ -160,7 +162,10 @@ public final class EasyLocationStep extends EasyLocation implements Iterable<Eas
 		@Override
 		public EasyLocationStep next()
 		{
-			return stepAhead();
+			if (conclude.hasConcluded(getOrigin(), getCurrentPos(), vector))
+				throw new NoSuchElementException("Attempted to step when specified conclusion has been reached already.");
+			else
+				return stepAhead();
 		}
 
 	}

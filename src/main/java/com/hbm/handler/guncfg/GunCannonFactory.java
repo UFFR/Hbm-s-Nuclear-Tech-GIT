@@ -12,13 +12,13 @@ public class GunCannonFactory {
 	static byte i = 0;
 	public static BulletConfiguration getShellConfig() {
 		
-		BulletConfiguration bullet = BulletConfigFactory.standardShellConfig();
+		final BulletConfiguration bullet = BulletConfigFactory.standardShellConfig();
 		
 		bullet.ammo = new ComparableStack(ModItems.ammo_shell, 1, i++);
 		bullet.dmgMin = 225;
 		bullet.dmgMax = 235;
 		bullet.penetration = stockPen;
-		bullet.explosive = 4F;
+		bullet.explosive = 40F;
 		bullet.blockDamage = false;
 		
 		return bullet;
@@ -26,13 +26,13 @@ public class GunCannonFactory {
 
 	public static BulletConfiguration getShellExplosiveConfig() {
 		
-		BulletConfiguration bullet = BulletConfigFactory.standardShellConfig();
+		final BulletConfiguration bullet = BulletConfigFactory.standardShellConfig();
 		
 		bullet.ammo = new ComparableStack(ModItems.ammo_shell, 1, i++);
 		bullet.dmgMin = 235;
 		bullet.dmgMax = 245;
 		bullet.penetration = stockPen;
-		bullet.explosive = 4F;
+		bullet.explosive = 40F;
 		bullet.blockDamage = true;
 		
 		return bullet;
@@ -40,7 +40,7 @@ public class GunCannonFactory {
 
 	public static BulletConfiguration getShellAPConfig() {
 		
-		BulletConfiguration bullet = BulletConfigFactory.standardShellConfig();
+		final BulletConfiguration bullet = BulletConfigFactory.standardShellConfig();
 		
 		bullet.ammo = new ComparableStack(ModItems.ammo_shell, 1, i++);
 		bullet.dmgMin = 250;
@@ -54,7 +54,7 @@ public class GunCannonFactory {
 
 	public static BulletConfiguration getShellDUConfig() {
 		
-		BulletConfiguration bullet = BulletConfigFactory.standardShellConfig();
+		final BulletConfiguration bullet = BulletConfigFactory.standardShellConfig();
 		
 		bullet.ammo = new ComparableStack(ModItems.ammo_shell, 1, i++);
 		bullet.dmgMin = 270;
@@ -68,7 +68,7 @@ public class GunCannonFactory {
 
 	public static BulletConfiguration getShellW9Config() {
 		
-		BulletConfiguration bullet = BulletConfigFactory.standardShellConfig();
+		final BulletConfiguration bullet = BulletConfigFactory.standardShellConfig();
 		
 		bullet.ammo = new ComparableStack(ModItems.ammo_shell, 1, i++);
 		bullet.dmgMin = 1200;
@@ -85,7 +85,7 @@ public class GunCannonFactory {
 	
 	public static BulletConfiguration getShellW9FullConfig()
 	{
-		BulletConfiguration bullet = getShellW9Config().clone();
+		final BulletConfiguration bullet = getShellW9Config().clone();
 		
 		bullet.ammo = new ComparableStack(ModItems.ammo_shell, 1, i++);
 		

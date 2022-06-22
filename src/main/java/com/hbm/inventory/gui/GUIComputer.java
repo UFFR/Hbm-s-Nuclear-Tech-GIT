@@ -80,12 +80,10 @@ public class GUIComputer extends GuiInfoContainer
 		GL11.glScalef(0.5f, 0.5f, 0.5f);
 		
 		String currText = textInput.getText();
-		char cursor = getCursor(blockCursor);
+		final char cursor = getCursor(blockCursor);
 		if (textInput.isFocused())
 			currText = currText.substring(0, textInput.getCursorPosition()) + cursor + currText.substring(textInput.getCursorPosition(), currText.length());
-		List<String> consoleText = computer.getConsoleText(maxRows, maxColumns);
-		for (int i = 0; i < consoleText.size(); i++)
-			fontRendererObj.drawString(consoleText.get(i), 12 * 2, (20 + (i * 5)) * 2, color1);
+		final char[][] consoleText = computer.getConsoleText();
 		
 		GL11.glScalef(2, 2, 2);
 		

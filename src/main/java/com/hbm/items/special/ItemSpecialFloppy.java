@@ -56,7 +56,7 @@ public final class ItemSpecialFloppy extends ItemCustomLore implements IDataStor
 		return 0;
 	}
 	@Override
-	public boolean writeFile(FileBase file, ItemStack stack)
+	public boolean writeFile(FileBase file, FileMetadata metadata, ItemStack stack)
 	{
 		return false;
 	}
@@ -66,7 +66,7 @@ public final class ItemSpecialFloppy extends ItemCustomLore implements IDataStor
 		return false;
 	}
 	@Override
-	public boolean overwriteFile(FileBase file, ItemStack stack)
+	public boolean overwriteFile(FileBase file, FileMetadata metadata, ItemStack stack)
 	{
 		return false;
 	}
@@ -81,9 +81,9 @@ public final class ItemSpecialFloppy extends ItemCustomLore implements IDataStor
 		return filename.equals(name) ? blueprint.clone() : null;
 	}
 	@Override
-	public String getFileHash(String filename, ItemStack stack)
+	public byte[] getFileHash(String filename, ItemStack stack)
 	{
-		return filename.equals(name) ? Library.getHash(blueprint.serialize()) : "";
+		return filename.equals(name) ? Library.getHash(blueprint.serialize()) : FileBase.emptyBytes;
 	}
 	@Override
 	public FileMetadata getFileMetadata(String filename, ItemStack stack)

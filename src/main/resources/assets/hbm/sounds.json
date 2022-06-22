@@ -422,8 +422,5 @@
     "entity.ufoBlast": {"category": "hostile", "sounds": [{"name": "entity/ufoBlast", "stream": false}]},
     "entity.siegeIdle": {"category": "hostile", "sounds": ["entity/siegeIdle1"]},
     "entity.siegeHurt": {"category": "hostile", "sounds": ["entity/siegeHurt1", "entity/siegeHurt2"]},
-    "entity.siegeDeath": {"category": "hostile", "sounds": ["entity/siegeDeath1", "entity/siegeDeath2", "entity/siegeDeath3"]},
-    "step.metalBlock": {"category": "block", "sounds": ["footsteps/metalStep1", "footsteps/metalStep2", "footsteps/metalStep3", "footsteps/metalStep4"]},
-    "player.vomit": {"category": "player", "sounds": [{"name": "player/vomit", "stream": false}]},
-    "player.cough": {"category": "player", "sounds": ["player/cough1", "player/cough2", "player/cough3", "player/cough4"]}
+    "entity.siegeDeath": {"category": "hostile", "sounds": ["entity/siegeDeath1", "entity/siegeDeath2", "entity/siegeDeath3"]}
 }

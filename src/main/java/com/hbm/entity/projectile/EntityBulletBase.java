@@ -17,6 +17,7 @@ import com.hbm.explosion.ExplosionLarge;
 import com.hbm.explosion.ExplosionNukeGeneric;
 import com.hbm.handler.BulletConfigSyncingUtil;
 import com.hbm.handler.BulletConfiguration;
+import com.hbm.interfaces.ILocationProvider;
 import com.hbm.main.MainRegistry;
 import com.hbm.packet.AuxParticlePacketNT;
 import com.hbm.packet.PacketDispatcher;
@@ -320,12 +321,12 @@ public class EntityBulletBase extends Entity implements IProjectile {
 				
 				if (victim instanceof EntityLivingBase && startingPoint != null)
 				{
-					int armor = ((EntityLivingBase) victim).getTotalArmorValue();
-					int stockPen = config.penetration;
-					double distance = EasyLocation.distance(startingPoint, new EasyLocation(victim));
-					float penMod = config.penetrationModifier;
-					double newPen = config.modFunction.orElse(BulletConfiguration.defaultModifier).mod(stockPen, penMod, distance);
-					boolean closePen = armor - newPen <= armor * 0.2;
+					final int armor = ((EntityLivingBase) victim).getTotalArmorValue();
+					final int stockPen = config.penetration;
+					final double distance = ILocationProvider.distance(startingPoint, ILocationProvider.wrap(victim));
+					final float penMod = config.penetrationModifier;
+					final double newPen = config.modFunction.orElse(BulletConfiguration.defaultModifier).mod(stockPen, penMod, distance);
+					final boolean closePen = armor - newPen <= armor * 0.2;
 					if (armor <= newPen || closePen)
 						damagesource.setDamageBypassesArmor();
 					else

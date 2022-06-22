@@ -22,9 +22,9 @@ public class DataStorageSystem implements IDataStorageSystem, ISerializable<Data
 	 * 
 	 */
 	private static final long serialVersionUID = 4781614731522225061L;
-	private final HashMap<String, Pair<FileMetadata, FileBase>> fileList = new HashMap<>();
+	private final HashMap<String, FilePair> fileList = new HashMap<>();
 	private final long maxSize, readSpeed, writeSpeed;
-	private transient Optional<Pair<FileMetadata, FileBase>> currentOperation = Optional.empty();
+	private transient Optional<FilePair> currentOperation = Optional.empty();
 	public DataStorageSystem(long maxSize, long readSpeed, long writeSpeed)
 	{
 		this.maxSize = maxSize;
@@ -32,7 +32,7 @@ public class DataStorageSystem implements IDataStorageSystem, ISerializable<Data
 		this.writeSpeed = writeSpeed;
 	}
 
-	public DataStorageSystem(Map<String, Pair<FileMetadata, FileBase>> source, long maxSize, long readSpeed, long writeSpeed)
+	public DataStorageSystem(Map<String, FilePair> source, long maxSize, long readSpeed, long writeSpeed)
 	{
 		this(maxSize, readSpeed, writeSpeed);
 		fileList.putAll(source);
@@ -73,7 +73,7 @@ public class DataStorageSystem implements IDataStorageSystem, ISerializable<Data
 		if (currentOperation.isPresent() || getUsedCapacity() + metadata.fileSize > getMaxCapacity())
 			return false;
 		
-		currentOperation = Optional.of(new Pair<>(metadata, file));
+		currentOperation = Optional.of(new FilePair(metadata, file));
 		return true;
 	}
 
@@ -104,9 +104,9 @@ public class DataStorageSystem implements IDataStorageSystem, ISerializable<Data
 	}
 
 	@Override
-	public String getFileHash(String filename)
+	public byte[] getFileHash(String filename)
 	{
-		return fileList.containsKey(filename) ? Library.getHash(fileList.get(filename).getValue().serialize()) : "";
+		return fileList.containsKey(filename) ? Library.getHash(fileList.get(filename).getValue().serialize()) : FileBase.emptyBytes;
 	}
 
 	@Override
@@ -118,22 +118,29 @@ public class DataStorageSystem implements IDataStorageSystem, ISerializable<Data
 	@Override
 	public DataStorageSystem deserialize(byte[] bytes) throws DeserializationException
 	{
-		final ByteBuf buf = allocCopy.apply(bytes);
-		final HashMap<String, Pair<FileMetadata, FileBase>> readFiles = new HashMap<>();
-		final long mSize = buf.readLong(), rSpeed = buf.readLong(), wSpeed = buf.readLong();
-		
-		while (buf.readBoolean())
+		try
 		{
-			final byte[] metadataBytes = new byte[buf.readInt()];
-			final byte[] fileBytes = new byte[buf.readInt()];
-			buf.readBytes(metadataBytes);
-			buf.readBytes(fileBytes);
-			final FileMetadata metadata = FileMetadata.deserializer.deserialize(metadataBytes);
-			final FileBase fileBase = FileBase.deserializeFromRegistry(metadata.fileType, fileBytes);
-			readFiles.put(metadata.filename, new Pair<FileMetadata, FileBase>(metadata, fileBase));
+			final ByteBuf buf = allocCopy.apply(bytes);
+			final HashMap<String, FilePair> readFiles = new HashMap<>();
+			final long mSize = buf.readLong(), rSpeed = buf.readLong(), wSpeed = buf.readLong();
+			
+			while (buf.readBoolean())
+			{
+				final byte[] metadataBytes = new byte[buf.readInt()];
+				final byte[] fileBytes = new byte[buf.readInt()];
+				buf.readBytes(metadataBytes);
+				buf.readBytes(fileBytes);
+				final FileMetadata metadata = FileMetadata.deserializer.deserialize(metadataBytes);
+				final FileBase fileBase = FileBase.deserializeFromRegistry(metadata.fileType, fileBytes);
+				readFiles.put(metadata.filename, new FilePair(metadata, fileBase));
+			}
+			
+			return new DataStorageSystem(readFiles, mSize, rSpeed, wSpeed);
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			throw new DeserializationException(e);
 		}
-		
-		return new DataStorageSystem(readFiles, mSize, rSpeed, wSpeed);
 	}
 
 	@Override
@@ -143,11 +150,11 @@ public class DataStorageSystem implements IDataStorageSystem, ISerializable<Data
 		buf.writeLong(maxSize);
 		buf.writeLong(readSpeed);
 		buf.writeLong(writeSpeed);
-		final Iterator<Pair<FileMetadata, FileBase>> iterator = fileList.values().iterator();
+		final Iterator<FilePair> iterator = fileList.values().iterator();
 		buf.writeBoolean(iterator.hasNext());
 		while (iterator.hasNext())
 		{
-			final Pair<FileMetadata, FileBase> file = iterator.next();
+			final FilePair file = iterator.next();
 			final byte[] metadataBytes = file.getKey().serialize();
 			final byte[] fileBytes = file.getValue().serialize();
 			buf.writeInt(metadataBytes.length);

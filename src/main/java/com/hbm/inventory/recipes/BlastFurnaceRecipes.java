@@ -23,6 +23,11 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+/**
+ * Magic!
+ * @author UFFR
+ *
+ */
 public class BlastFurnaceRecipes
 {
 	private static final ArrayList<Triplet<Object, Object, ItemStack>> blastFurnaceRecipes = new ArrayList<Triplet<Object,Object,ItemStack>>();
@@ -58,7 +63,7 @@ public class BlastFurnaceRecipes
 		addRecipe(ModItems.meteorite_sword_hardened, CO, new ItemStack(ModItems.meteorite_sword_alloyed));
 		addRecipe(DNT, OSMIRIDIUM, new ItemStack(ModItems.ingot_dineutronium_forged));
 		addRecipe(ModBlocks.block_meteor, CO, new ItemStack(ModItems.ingot_meteorite));
-		addRecipe(ST, ModBlocks.glass_lead, new ItemStack(ModBlocks.glass_strontium));
+//		addRecipe(ST, ModBlocks.glass_lead, new ItemStack(ModBlocks.glass_strontium));
 		
 		if (!IMCBlastFurnace.buffer.isEmpty())
 		{
@@ -124,7 +129,6 @@ public class BlastFurnaceRecipes
 		
 		return recipeItem1;
 	}
-	// TODO
 	public static Map<List<ItemStack>[], ItemStack> getRecipesForNEI()
 	{
 		final HashMap<List<ItemStack>[], ItemStack> recipes = new HashMap<>();

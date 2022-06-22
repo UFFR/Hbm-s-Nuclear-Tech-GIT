@@ -76,7 +76,7 @@ public class ItemCustomLore extends Item implements IHasLore
 				list.add(I18nUtil.resolveKey(this.getUnlocalizedName() + "desc.10"));
 		}
 		if (this == ModItems.ingot_schraranium)
-			if(GeneralConfig.enableBabyMode)
+			if(GeneralConfig.enableLBSM)
 				list.add("shut up peer please for the love of god shut up i can't stand it any longer shut up shut up shut up shut up shut up");
 				
 	}

@@ -2,14 +2,12 @@ package com.hbm.blocks.machine.computer;
 
 import java.util.Random;
 
-import com.hbm.interfaces.Untested;
 import com.hbm.inventory.RecipesCommon.AStack;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.recipes.AssemblerRecipes;
 import com.hbm.items.ModItems;
 import com.hbm.lib.Library;
 import com.hbm.main.MainRegistry;
-import com.hbm.tileentity.machine.computer.TileEntityComputerMatrix;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -21,7 +19,6 @@ import net.minecraft.world.World;
 
 public class BlockCircuit extends Block
 {
-	private TileEntityComputerMatrix te;
 	public int strength;
 	/**
 	 * Construct a new circuit tier
@@ -37,30 +34,9 @@ public class BlockCircuit extends Block
 		setResistance(2.5F);
 	}
 	
-	@Untested
-	public int[] getData()
-	{
-		int[] data = new int[2];
-		
-		data = te.getNetStats();
-		
-		return data;
-	}
-	
-	public int getCollectiveStrength()
-	{
-		return getData()[0];
-	}
-	
-	public int getCount()
-	{
-		return getData()[1];
-	}
-	
 	@Override
 	public TileEntity createTileEntity(World world, int metadata)
 	{
-		te = new TileEntityComputerMatrix(strength);
 		return null;
 	}
 	

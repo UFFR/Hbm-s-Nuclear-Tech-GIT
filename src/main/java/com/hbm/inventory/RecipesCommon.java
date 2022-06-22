@@ -366,7 +366,7 @@ public class RecipesCommon {
 		@Override
 		public byte[] serialize()
 		{
-			final ByteBuf buf = ISerializable.allocateByteBuffer();
+			final ByteBuf buf = alloc.get();
 			buf.writeInt(Item.itemRegistry.getNameForObject(item).length());
 			buf.writeBytes(Item.itemRegistry.getNameForObject(item).getBytes());
 			buf.writeInt(stacksize);
@@ -377,7 +377,7 @@ public class RecipesCommon {
 		@Override
 		public ComparableStack deserialize(byte[] bytes)
 		{
-			final ByteBuf buf = ISerializable.allocateCopy(bytes);
+			final ByteBuf buf = allocCopy.apply(bytes);
 			final byte[] stringBytes = new byte[buf.readInt()];
 			buf.readBytes(stringBytes);
 			final Item item = (Item) Item.itemRegistry.getObject(new String(stringBytes));
@@ -461,7 +461,7 @@ public class RecipesCommon {
 		@Override
 		public byte[] serialize()
 		{
-			final ByteBuf buf = ISerializable.allocateByteBuffer();
+			final ByteBuf buf = alloc.get();
 			buf.writeInt(Item.itemRegistry.getNameForObject(item).length());
 			buf.writeBytes(Item.itemRegistry.getNameForObject(item).getBytes());
 			buf.writeInt(stacksize);
@@ -488,7 +488,7 @@ public class RecipesCommon {
 		@Override
 		public ComparableNBTStack deserialize(byte[] bytes)
 		{
-			final ByteBuf buf = ISerializable.allocateCopy(bytes);
+			final ByteBuf buf = allocCopy.apply(bytes);
 			final byte[] stringBytes = new byte[buf.readInt()];
 			buf.readBytes(stringBytes);
 			Item item = (Item) Item.itemRegistry.getObject(new String(stringBytes));
@@ -640,7 +640,7 @@ public class RecipesCommon {
 		@Override
 		public byte[] serialize()
 		{
-			final ByteBuf buf = ISerializable.allocateByteBuffer();
+			final ByteBuf buf = alloc.get();
 			buf.writeInt(name.length());
 			buf.writeBytes(name.getBytes());
 			buf.writeInt(stacksize);
@@ -650,7 +650,7 @@ public class RecipesCommon {
 		@Override
 		public OreDictStack deserialize(byte[] bytes)
 		{
-			final ByteBuf buf = ISerializable.allocateCopy(bytes);
+			final ByteBuf buf = allocCopy.apply(bytes);
 			final byte[] stringBytes = new byte[buf.readInt()];
 			buf.readBytes(stringBytes);
 			return new OreDictStack(new String(stringBytes), buf.readInt());

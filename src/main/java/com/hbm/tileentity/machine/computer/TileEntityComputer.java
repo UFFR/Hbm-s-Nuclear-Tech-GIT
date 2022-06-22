@@ -1,7 +1,9 @@
 package com.hbm.tileentity.machine.computer;
 
+import static com.hbm.inventory.gui.GUIComputer.maxColumns;
+import static com.hbm.inventory.gui.GUIComputer.maxRows;
+
 import java.awt.Shape;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -9,46 +11,46 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.hbm.interfaces.IControlReceiver;
 import com.hbm.items.ItemEnums.EnumCPU;
 import com.hbm.lib.Library;
-import com.hbm.saveddata.TimeSavedData;
+import com.hbm.main.DeserializationException;
 import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.BobMathUtil;
 
-import api.hbm.computer.*;
-import api.hbm.computer.File.FileType;
+import api.hbm.Date;
+import api.hbm.computer.ITerminal;
+import api.hbm.computer.Program;
+import api.hbm.computer.ReturnCode;
+import api.hbm.computer.filesystem.DataStorageSystem;
+import api.hbm.computer.filesystem.FilePair;
 import api.hbm.energy.IEnergyUser;
-import api.hbm.internet.*;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityComputer extends TileEntityMachineBase implements IEnergyUser, IControlReceiver, ITerminal, IDataReceiver, IDataStorageSystem
+public class TileEntityComputer extends TileEntityMachineBase implements IEnergyUser, IControlReceiver, ITerminal
 {
 	public static final short maxPower = 30000;
 	private short power = 0;
+	private byte line = 0;
 	private long uptime = 0;
 	private UUID id = UUID.randomUUID();
 	private String friendlyName = "";
-	private final ArrayList<String> consoleText = new ArrayList<String>();
+	private final char[][] screen = new char[maxRows][maxColumns];
+//	private final ArrayList<String> consoleText = new ArrayList<String>();
 	private final ArrayList<String> prevCommands = new ArrayList<String>();
 	private final ArrayList<FloatingText> floatingText = new ArrayList<FloatingText>();
 	private final ArrayList<Shape> shapes = new ArrayList<Shape>();
 	private final HashMap<String, Class<? extends Program>> installedPrograms = new HashMap<String, Class<? extends Program>>();
 	private Optional<Program> currentProgram = Optional.empty();
-	private Optional<File> activeFile = Optional.empty();
+	private Optional<FilePair> activeFile = Optional.empty();
 	private boolean[] statuses = new boolean[7];
-	private BigInteger intClock = BigInteger.ZERO;
-	private HashMap<String, File> fileManager = new HashMap<String, File>();
+	private Date intClock = new Date();
+	private DataStorageSystem storageSystem = new DataStorageSystem(BobMathUtil.MB * 100, BobMathUtil.MB * 2, BobMathUtil.MB);
 	public TileEntityComputer()
 	{
 		super(0);
@@ -70,13 +72,13 @@ public class TileEntityComputer extends TileEntityMachineBase implements IEnergy
 				if (statuses[6])
 					return;
 				
-				if (activeFile.isPresent())
-				{
-					if (writeChunk(activeFile.get().getName(), Math.min(getWriteSpeed(), activeFile.get().getSize())))
-						activeFile = Optional.empty();
-					else
-						activeFile.get().setFilesize(-getWriteSpeed());
-				}
+//				if (activeFile.isPresent())
+//				{
+//					if (writeChunk(activeFile.get().getName(), Math.min(getWriteSpeed(), activeFile.get().getSize())))
+//						activeFile = Optional.empty();
+//					else
+//						activeFile.get().setFilesize(-getWriteSpeed());
+//				}
 				
 				uptime++;
 				try
@@ -93,7 +95,7 @@ public class TileEntityComputer extends TileEntityMachineBase implements IEnergy
 				onShutdown();
 		}
 
-		NBTTagCompound data = new NBTTagCompound();
+		final NBTTagCompound data = new NBTTagCompound();
 		data.setShort("power", power);
 		data.setByteArray("statuses", Library.boolToByte(getStatuses()));
 		saveTerminalToNBT(data);
@@ -132,9 +134,9 @@ public class TileEntityComputer extends TileEntityMachineBase implements IEnergy
 		switch (parsed.getCommand())
 		{
 		case "gettime":
-			print("Current time:", Arrays.toString(TimeSavedData.decompress(getInternalDate())), intClock.toString()); break;
+			print("Current time:", Arrays.toString(getInternalDate().export())); break;
 		case "files":
-			print(getFileList().toString()); break;
+			/*print(getFileList().toString());*/ break;
 		case "netname":
 			if (parsed.getArgs().length == 0)
 				print(friendlyName);
@@ -150,7 +152,7 @@ public class TileEntityComputer extends TileEntityMachineBase implements IEnergy
 	public void receiveControl(NBTTagCompound data)
 	{
 		// TODO Auto-generated method stub
-		String toWrite = new String();
+		final String toWrite;
 		switch (data.getString("TYPE"))
 		{
 		case "COMMAND":
@@ -170,10 +172,10 @@ public class TileEntityComputer extends TileEntityMachineBase implements IEnergy
 //			consoleText.add(toWrite);
 			break;
 		case "CONSOLE_TEXT":
-			consoleText.add(data.getString("text"));
+			final char[] text = data.getString("text").toCharArray();
 			break;
 		case "CLEAR":
-			consoleText.clear();
+			clearScreen(-1);
 			break;
 		default:
 			break;
@@ -196,17 +198,8 @@ public class TileEntityComputer extends TileEntityMachineBase implements IEnergy
 		nbt.setString("computerID", id.toString());
 		nbt.setByteArray("statuses", Library.boolToByte(getStatuses()));
 		nbt.setString("name", friendlyName);
-		nbt.setByteArray("clock", intClock.toByteArray());
-		ByteBuf buf = Unpooled.buffer();
-		for (File file : fileManager.values())
-		{
-			buf.writeBoolean(true);
-			byte[] bytes = file.toBytes();
-			buf.writeInt(bytes.length);
-			buf.writeBytes(bytes);
-		}
-		buf.writeBoolean(false);
-		nbt.setByteArray("fileStorage", buf.array());
+		nbt.setByteArray("clock", intClock.serialize());
+		nbt.setByteArray("fileManager", storageSystem.serialize());
 		saveTerminalToNBT(nbt);
 	}
 	
@@ -217,15 +210,14 @@ public class TileEntityComputer extends TileEntityMachineBase implements IEnergy
 		power = nbt.getShort("power");
 		statuses = Library.byteToBool(nbt.getByteArray("statuses"), false);
 		friendlyName = nbt.getString("name");
-		intClock = new BigInteger(nbt.getByteArray("clock"));
-		ByteBuf buf = Unpooled.copiedBuffer(nbt.getByteArray("fileStorage"));
-		while (buf.capacity() > 0 && buf.readBoolean())
+		intClock = intClock.deserialize(nbt.getByteArray("clock"));
+		try
 		{
-			byte[] bytes = new byte[buf.readInt()];
-			File file = File.fromBytes(bytes);
-			fileManager.put(file.getName(), file);
+			storageSystem = storageSystem.deserialize(nbt.getByteArray("fileManager"));
+		} catch (DeserializationException e)
+		{
+			e.printStackTrace();
 		}
-		
 		loadTerminalFromNBT(nbt);
 		try
 		{
@@ -277,35 +269,6 @@ public class TileEntityComputer extends TileEntityMachineBase implements IEnergy
 	{
 		return uptime;
 	}
-	
-	@Override
-	public MessageResponse recieveData(MessagePacket data)
-	{
-		return MessageResponse.LOCKED;
-	}
-
-	@Override
-	public boolean canDataConnect(ForgeDirection dir)
-	{
-		return dir == ForgeDirection.SOUTH;
-	}
-
-	@Override
-	public long getStorage()
-	{
-		int used = 0;
-		
-		for (File file : fileManager.values())
-			used += file.getSize();
-		
-		return used;
-	}
-
-	@Override
-	public long getMaxCapacity()
-	{
-		return 5 *BobMathUtil.MB;
-	}
 
 	@Override
 	public UUID getUUID()
@@ -339,15 +302,15 @@ public class TileEntityComputer extends TileEntityMachineBase implements IEnergy
 	}
 
 	@Override
-	public List<String> getConsoleText()
+	public char[][] getConsoleText()
 	{
-		return ImmutableList.copyOf(consoleText);
+		return screen.clone();
 	}
 	
 	@Override
 	public void print(String s)
 	{
-		consoleText.add(s);
+		// TODO
 	}
 
 	@Override
@@ -381,7 +344,10 @@ public class TileEntityComputer extends TileEntityMachineBase implements IEnergy
 		{
 		case 0:
 		default:
-			consoleText.clear();
+			for (byte x = 0; x < maxRows; x++)
+				for (byte y = 0; y < maxColumns; y++)
+					screen[x][y] = ' ';
+			line = 0;
 			break;
 		case 1:
 			floatingText.clear();
@@ -390,7 +356,11 @@ public class TileEntityComputer extends TileEntityMachineBase implements IEnergy
 			shapes.clear();
 			break;
 		case -1:
-			consoleText.clear();
+			for (byte x = 0; x < maxRows; x++)
+				for (byte y = 0; y < maxColumns; y++)
+					screen[x][y] = ' ';
+			line = 0;
+
 			floatingText.clear();
 			shapes.clear();
 			break;
@@ -469,117 +439,117 @@ public class TileEntityComputer extends TileEntityMachineBase implements IEnergy
 		if (currentProgram.isPresent())
 			used += currentProgram.get().getRAM();
 		if (activeFile.isPresent())
-			used += activeFile.get().getSize();
+			used += activeFile.get().getKey().fileSize;
 		return used;
 	}
 	
 	@Override
 	public void incrementAge()
 	{
-		intClock = intClock.add(BigInteger.ONE);
+		intClock.increment();
 	}
 
 	@Override
-	public void notifyTimeUpdated(BigInteger newTime)
+	public void notifyTimeUpdated(Date newTime)
 	{
-		intClock = newTime;
+		intClock.add(newTime);
 	}
 
 	@Override
-	public BigInteger getInternalDate()
+	public Date getInternalDate()
 	{
 		return intClock;
 	}
 
 	@Override
-	public long getReadSpeed()
+	public byte getRows()
 	{
-		return 100;
+		return maxRows;
 	}
 
 	@Override
-	public long getWriteSpeed()
+	public byte getColumns()
 	{
-		return 80;
+		return maxColumns;
 	}
 
-	@Override
-	public boolean writeChunk(String filename, long size)
-	{
-		if (activeFile.isPresent() && activeFile.get().getName().equals(filename))
-		{
-			if (fileManager.containsKey(filename))
-				fileManager.get(filename).setFilesize(size);
-			else
-				fileManager.put(filename, new File(filename, size, getInternalDate()).setType(FileType.UNFINISHED));
-			
-			long writtenFile = fileManager.get(filename).getSize(), pendingFile = activeFile.get().getSize();
-			setFault(writtenFile > pendingFile);
-			return writtenFile >= pendingFile;
-		}
-		return true;
-	}
-
-	@Override
-	public boolean readChunk(String filename)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean eraseChunk(String filename)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
+//	@Override
+//	public boolean writeChunk(String filename, long size)
+//	{
+//		if (activeFile.isPresent() && activeFile.get().getName().equals(filename))
+//		{
+//			if (fileManager.containsKey(filename))
+//				fileManager.get(filename).setFilesize(size);
+//			else
+//				fileManager.put(filename, new File(filename, size, getInternalDate()).setType(FileType.UNFINISHED));
+//			
+//			long writtenFile = fileManager.get(filename).getSize(), pendingFile = activeFile.get().getSize();
+//			setFault(writtenFile > pendingFile);
+//			return writtenFile >= pendingFile;
+//		}
+//		return true;
+//	}
+//
+//	@Override
+//	public boolean readChunk(String filename)
+//	{
+//		// TODO Auto-generated method stub
+//		return false;
+//	}
+//
+//	@Override
+//	public boolean eraseChunk(String filename)
+//	{
+//		// TODO Auto-generated method stub
+//		return false;
+//	}
 	
-	@Override
-	public boolean writeFile(File file)
-	{
-		activeFile = Optional.of(file);
-		return true;
-	}
-
-	@Override
-	public boolean deleteFile(String filename)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean overwriteFile(File file)
-	{
-		activeFile = Optional.of(file);
-		return true;
-	}
-
-	@Override
-	public File getFile(String filename)
-	{
-		return fileManager.get(filename);
-	}
-
-	@Override
-	public byte[] extractFiles()
-	{
-		ByteBuf buf = Unpooled.buffer();
-		buf.writeShort(fileManager.size());
-		
-		fileManager.values().forEach(f ->
-		{
-			byte[] bytes = f.toBytes();
-			buf.writeInt(bytes.length);
-			buf.writeBytes(bytes);
-		});
-		
-		return buf.array();
-	}
-
-	@Override
-	public Set<String> getFileList()
-	{
-		return ImmutableSet.copyOf(fileManager.keySet());
-	}
+//	@Override
+//	public boolean writeFile(FileBase file)
+//	{
+//		activeFile = Optional.of(file);
+//		return true;
+//	}
+//
+//	@Override
+//	public boolean deleteFile(String filename)
+//	{
+//		// TODO Auto-generated method stub
+//		return false;
+//	}
+//
+//	@Override
+//	public boolean overwriteFile(File file)
+//	{
+//		activeFile = Optional.of(file);
+//		return true;
+//	}
+//
+//	@Override
+//	public File getFile(String filename)
+//	{
+//		return fileManager.get(filename);
+//	}
+//
+//	@Override
+//	public byte[] extractFiles()
+//	{
+//		ByteBuf buf = Unpooled.buffer();
+//		buf.writeShort(fileManager.size());
+//		
+//		fileManager.values().forEach(f ->
+//		{
+//			byte[] bytes = f.toBytes();
+//			buf.writeInt(bytes.length);
+//			buf.writeBytes(bytes);
+//		});
+//		
+//		return buf.array();
+//	}
+//
+//	@Override
+//	public Set<String> getFileList()
+//	{
+//		return ImmutableSet.copyOf(fileManager.keySet());
+//	}
 }

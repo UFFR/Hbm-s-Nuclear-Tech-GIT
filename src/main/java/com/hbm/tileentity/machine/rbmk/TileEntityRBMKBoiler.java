@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hbm.blocks.ModBlocks;
-import com.hbm.entity.projectile.EntityRBMKDebris.DebrisType;
+import com.hbm.entity.projectile.EntityDebrisBase.DebrisType;
 import com.hbm.interfaces.IControlReceiver;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidSource;
@@ -22,7 +22,7 @@ public class TileEntityRBMKBoiler extends TileEntityRBMKSlottedBase implements I
 	
 	public FluidTank feed;
 	public FluidTank steam;
-	public List<IFluidAcceptor> list = new ArrayList();
+	public List<IFluidAcceptor> list = new ArrayList<IFluidAcceptor>();
 	
 	public TileEntityRBMKBoiler() {
 		super(0);
@@ -43,7 +43,7 @@ public class TileEntityRBMKBoiler extends TileEntityRBMKSlottedBase implements I
 			feed.updateTank(xCoord, yCoord, zCoord, worldObj.provider.dimensionId);
 			steam.updateTank(xCoord, yCoord, zCoord, worldObj.provider.dimensionId);
 			
-			double heatCap = this.getHeatFromSteam(steam.getTankType());
+			double heatCap = getHeatFromSteam(steam.getTankType());
 			double heatProvided = this.heat - heatCap;
 			
 			if(heatProvided > 0) {

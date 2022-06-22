@@ -2,7 +2,6 @@ package com.hbm.blocks.machine;
 
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.handler.EnumGUI;
-import com.hbm.handler.MultiblockHandlerXR;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.TileEntityProxyCombo;
 import com.hbm.tileentity.machine.TileEntitySingGen;
@@ -19,6 +18,9 @@ public class MachineSingGen extends BlockDummyable
 	public MachineSingGen(Material mat)
 	{
 		super(mat);
+		setBlockName("machine_sing_gen");
+		setHardness(15);
+		setResistance(1200);
 	}
 	
 	@Override

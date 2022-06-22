@@ -2,7 +2,12 @@ package com.hbm.items.special;
 
 import java.util.List;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+
+import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemFuelRod;
+import com.hbm.util.I18nUtil;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;

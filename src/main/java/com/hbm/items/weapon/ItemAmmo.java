@@ -108,13 +108,13 @@ public class ItemAmmo extends ItemEnumMulti
 		}
 	}
 	private String altName = "";
-	public ItemAmmo(Class<? extends Enum> clazz)
+	public ItemAmmo(Class<? extends Enum<?>> clazz)
 	{
 		super(clazz, true, true);
 		setCreativeTab(MainRegistry.weaponTab);
 	}
 	
-	public ItemAmmo(Class<? extends Enum> clazz, String altName)
+	public ItemAmmo(Class<? extends Enum<?>> clazz, String altName)
 	{
 		this(clazz);
 		this.altName = altName;

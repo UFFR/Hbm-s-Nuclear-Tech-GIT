@@ -5,6 +5,7 @@ import java.util.Random;
 
 import com.hbm.blocks.ITooltipProvider;
 import com.hbm.blocks.ModBlocks;
+import com.hbm.handler.EnumGUI;
 import com.hbm.inventory.fluid.types.FluidTypeCombustible.FuelGrade;
 import com.hbm.lib.RefStrings;
 import com.hbm.main.MainRegistry;

@@ -1,25 +1,137 @@
 package com.hbm.inventory.recipes;
 
-import static com.hbm.blocks.ModBlocks.*;
-import static com.hbm.inventory.OreDictManager.*;
-import static com.hbm.items.ModItems.*;
-import static com.hbm.inventory.fluid.Fluids.*;
-import static com.hbm.inventory.recipes.RefineryRecipes.*;
+import static com.hbm.blocks.ModBlocks.asphalt;
+import static com.hbm.blocks.ModBlocks.concrete_smooth;
+import static com.hbm.blocks.ModBlocks.ducrete_smooth;
+import static com.hbm.blocks.ModBlocks.moon_turf;
+import static com.hbm.blocks.ModBlocks.ore_oil_sand;
+import static com.hbm.blocks.ModBlocks.sand_lead;
+import static com.hbm.inventory.OreDictManager.AL;
+import static com.hbm.inventory.OreDictManager.ANY_TAR;
+import static com.hbm.inventory.OreDictManager.ASBESTOS;
+import static com.hbm.inventory.OreDictManager.B;
+import static com.hbm.inventory.OreDictManager.BR;
+import static com.hbm.inventory.OreDictManager.COAL;
+import static com.hbm.inventory.OreDictManager.COLTAN;
+import static com.hbm.inventory.OreDictManager.CU;
+import static com.hbm.inventory.OreDictManager.DURA;
+import static com.hbm.inventory.OreDictManager.F;
+import static com.hbm.inventory.OreDictManager.FE;
+import static com.hbm.inventory.OreDictManager.KEY_PLANKS;
+import static com.hbm.inventory.OreDictManager.KNO;
+import static com.hbm.inventory.OreDictManager.LI;
+import static com.hbm.inventory.OreDictManager.ND;
+import static com.hbm.inventory.OreDictManager.PB;
+import static com.hbm.inventory.OreDictManager.POLYMER;
+import static com.hbm.inventory.OreDictManager.PU;
+import static com.hbm.inventory.OreDictManager.P_RED;
+import static com.hbm.inventory.OreDictManager.REDSTONE;
+import static com.hbm.inventory.OreDictManager.S;
+import static com.hbm.inventory.OreDictManager.SA326;
+import static com.hbm.inventory.OreDictManager.SI;
+import static com.hbm.inventory.OreDictManager.ST;
+import static com.hbm.inventory.OreDictManager.U;
+import static com.hbm.inventory.OreDictManager.U238;
+import static com.hbm.inventory.fluid.Fluids.ACID;
+import static com.hbm.inventory.fluid.Fluids.ALCOHOL;
+import static com.hbm.inventory.fluid.Fluids.BALEFIRE;
+import static com.hbm.inventory.fluid.Fluids.BIOFUEL;
+import static com.hbm.inventory.fluid.Fluids.BIOGAS;
+import static com.hbm.inventory.fluid.Fluids.BITUMEN;
+import static com.hbm.inventory.fluid.Fluids.CARBONDIOXIDE;
+import static com.hbm.inventory.fluid.Fluids.COOLANT;
+import static com.hbm.inventory.fluid.Fluids.CRYOGEL;
+import static com.hbm.inventory.fluid.Fluids.DEUTERIUM;
+import static com.hbm.inventory.fluid.Fluids.DIESEL;
+import static com.hbm.inventory.fluid.Fluids.FRACKSOL;
+import static com.hbm.inventory.fluid.Fluids.GAS;
+import static com.hbm.inventory.fluid.Fluids.GASOLINE;
+import static com.hbm.inventory.fluid.Fluids.HEATINGOIL;
+import static com.hbm.inventory.fluid.Fluids.HEAVYOIL;
+import static com.hbm.inventory.fluid.Fluids.HEAVYWATER;
+import static com.hbm.inventory.fluid.Fluids.HELIUM3;
+import static com.hbm.inventory.fluid.Fluids.HYDROGEN;
+import static com.hbm.inventory.fluid.Fluids.H_BR;
+import static com.hbm.inventory.fluid.Fluids.KEROSENE;
+import static com.hbm.inventory.fluid.Fluids.LIGHTOIL;
+import static com.hbm.inventory.fluid.Fluids.LPG;
+import static com.hbm.inventory.fluid.Fluids.LUBRICANT;
+import static com.hbm.inventory.fluid.Fluids.MERCURY;
+import static com.hbm.inventory.fluid.Fluids.NAPHTHA;
+import static com.hbm.inventory.fluid.Fluids.NITAN;
+import static com.hbm.inventory.fluid.Fluids.NITER;
+import static com.hbm.inventory.fluid.Fluids.NITROGLYCERIN;
+import static com.hbm.inventory.fluid.Fluids.OXYGEN;
+import static com.hbm.inventory.fluid.Fluids.PAIN;
+import static com.hbm.inventory.fluid.Fluids.PETROIL;
+import static com.hbm.inventory.fluid.Fluids.PETROLEUM;
+import static com.hbm.inventory.fluid.Fluids.PUF6;
+import static com.hbm.inventory.fluid.Fluids.RECLAIMED;
+import static com.hbm.inventory.fluid.Fluids.SALT;
+import static com.hbm.inventory.fluid.Fluids.SARIN;
+import static com.hbm.inventory.fluid.Fluids.SAS3;
+import static com.hbm.inventory.fluid.Fluids.SCHRABIDIC;
+import static com.hbm.inventory.fluid.Fluids.SMEAR;
+import static com.hbm.inventory.fluid.Fluids.STEAM;
+import static com.hbm.inventory.fluid.Fluids.UF6;
+import static com.hbm.inventory.fluid.Fluids.VITRIOL;
+import static com.hbm.inventory.fluid.Fluids.WASTEFLUID;
+import static com.hbm.inventory.fluid.Fluids.WASTEGAS;
+import static com.hbm.inventory.fluid.Fluids.WATER;
+import static com.hbm.inventory.fluid.Fluids.WRATH;
+import static com.hbm.inventory.fluid.Fluids.XENON;
+import static com.hbm.inventory.recipes.RefineryRecipes.heavy_frac_bitu;
+import static com.hbm.inventory.recipes.RefineryRecipes.heavy_frac_smear;
+import static com.hbm.inventory.recipes.RefineryRecipes.light_frac_diesel;
+import static com.hbm.inventory.recipes.RefineryRecipes.light_frac_kero;
+import static com.hbm.inventory.recipes.RefineryRecipes.napht_frac_diesel;
+import static com.hbm.inventory.recipes.RefineryRecipes.napht_frac_heat;
+import static com.hbm.inventory.recipes.RefineryRecipes.smear_frac_heat;
+import static com.hbm.inventory.recipes.RefineryRecipes.smear_frac_lube;
+import static com.hbm.items.ModItems.antiknock;
+import static com.hbm.items.ModItems.biomass;
+import static com.hbm.items.ModItems.chocolate;
+import static com.hbm.items.ModItems.cordite;
+import static com.hbm.items.ModItems.dust;
+import static com.hbm.items.ModItems.egg_balefire_shard;
+import static com.hbm.items.ModItems.gem_tantalium;
+import static com.hbm.items.ModItems.ingot_desh;
+import static com.hbm.items.ModItems.ingot_polymer;
+import static com.hbm.items.ModItems.ingot_saturnite;
+import static com.hbm.items.ModItems.nothing;
+import static com.hbm.items.ModItems.nuclear_waste;
+import static com.hbm.items.ModItems.nuclear_waste_vitrified;
+import static com.hbm.items.ModItems.nuclear_waste_vitrified_tiny;
+import static com.hbm.items.ModItems.nugget_bismuth;
+import static com.hbm.items.ModItems.pellet_charged;
+import static com.hbm.items.ModItems.plate_kevlar;
+import static com.hbm.items.ModItems.powder_acrylic;
+import static com.hbm.items.ModItems.powder_advanced_alloy;
+import static com.hbm.items.ModItems.powder_balefire;
+import static com.hbm.items.ModItems.powder_coltan;
+import static com.hbm.items.ModItems.powder_desh_mix;
+import static com.hbm.items.ModItems.powder_ice;
+import static com.hbm.items.ModItems.powder_niobium;
+import static com.hbm.items.ModItems.powder_nitan_mix;
+import static com.hbm.items.ModItems.powder_paleogenite;
+import static com.hbm.items.ModItems.powder_schrabidate;
+import static com.hbm.items.ModItems.powder_yellowcake;
+import static com.hbm.items.ModItems.rocket_fuel;
+import static com.hbm.items.ModItems.solid_fuel;
+import static com.hbm.items.ModItems.sulfur;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.annotation.Nullable;
 
 import com.google.common.annotations.Beta;
-import com.google.gson.JsonElement;
-import com.google.gson.stream.JsonWriter;
 import com.hbm.config.GeneralConfig;
 import com.hbm.handler.imc.IMCChemPlant;
 import com.hbm.interfaces.Untested;
 import com.hbm.inventory.FluidStack;
-import com.hbm.inventory.RecipesCommon.*;
-import com.hbm.inventory.recipes.loader.SerializableRecipe;
+import com.hbm.inventory.RecipesCommon.AStack;
+import com.hbm.inventory.RecipesCommon.ComparableStack;
+import com.hbm.inventory.RecipesCommon.OreDictStack;
 import com.hbm.lib.Library;
 import com.hbm.main.MainRegistry;
 import com.hbm.util.ItemStackUtil;
@@ -31,7 +143,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 @Untested
 @Beta
-public class ChemPlantRecipesNT extends SerializableRecipe
+public class ChemPlantRecipesNT// extends SerializableRecipe
 {
 //	public static final HashMap<String, ChemPlantRecipe> recipes = new HashMap<>();
 	public static final ArrayList<ChemPlantRecipe> recipes = new ArrayList<ChemPlantRecipesNT.ChemPlantRecipe>();
@@ -121,34 +233,34 @@ public class ChemPlantRecipesNT extends SerializableRecipe
 		}
 	}
 
-	@Override
-	public String getFileName()
-	{
-		return "hbmChemicalPlant.json";
-	}
+//	@Override
+//	public String getFileName()
+//	{
+//		return "hbmChemicalPlant.json";
+//	}
+//
+//	@Override
+//	public Object getRecipeObject()
+//	{
+//		return recipes;
+//	}
+//
+//	@Override
+//	public void readRecipe(JsonElement recipe)
+//	{
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	@Override
+//	public void writeRecipe(Object recipe, JsonWriter writer) throws IOException
+//	{
+//		// TODO Auto-generated method stub
+//		
+//	}
 
-	@Override
-	public Object getRecipeObject()
-	{
-		return recipes;
-	}
-
-	@Override
-	public void readRecipe(JsonElement recipe)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void writeRecipe(Object recipe, JsonWriter writer) throws IOException
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void registerDefaults()
+//	@Override
+	public static void registerDefaults()
 	{
 		recipes.add(new ChemPlantRecipe("FP_HEAVYOIL", 50)
 				.setFluidInput(new FluidStack(HEAVYOIL, 1000))
@@ -385,8 +497,8 @@ public class ChemPlantRecipesNT extends SerializableRecipe
 		Researchable.addAll(recipes);
 	}
 
-	@Override
-	public void deleteRecipes()
+//	@Override
+	public static void deleteRecipes()
 	{
 		recipes.clear();
 	}

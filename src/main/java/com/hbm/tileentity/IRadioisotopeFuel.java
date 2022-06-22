@@ -6,13 +6,12 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import com.hbm.config.VersatileConfig;
-import com.hbm.config.MachineConfig;
-import com.hbm.interfaces.ICustomWarhead.SaltedFuel.HalfLifeType;
 import com.hbm.lib.Library;
 import com.hbm.saveddata.TimeSavedData.TimeDurationType;
 import com.hbm.util.BobMathUtil;
 import com.hbm.util.I18nUtil;
 
+import api.hbm.Date;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -140,8 +139,8 @@ public interface IRadioisotopeFuel
 			{
 				tooltip.add("EXTENDED INFO:");
 				tooltip.add(String.format("%s / %s ticks", instance.getLifespan(stack), instance.getMaxLifespan()));
-				final String[] timeLeft = BobMathUtil.ticksToDate(instance.getLifespan(stack));
-				final String[] maxLife = BobMathUtil.ticksToDate(instance.getMaxLifespan());
+				final Number[] timeLeft = new Date(instance.getLifespan(stack)).export();/*BobMathUtil.ticksToDate(instance.getLifespan(stack));*/
+				final Number[] maxLife = new Date(instance.getMaxLifespan()).export();/*BobMathUtil.ticksToDate(instance.getMaxLifespan());*/
 				tooltip.add(String.format("Time remaining: %s y, %s d, %s h", (Object[]) timeLeft));
 				tooltip.add(String.format("Maximum life: %s y, %s d, %s h", (Object[]) maxLife));
 			}

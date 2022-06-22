@@ -115,6 +115,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.FoodStats;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
@@ -1084,7 +1085,7 @@ public class ModEventHandler {
 			if(player.getCurrentArmor(2) == null && !player.onGround) {
 				
 				boolean isBob = player.getUniqueID().toString().equals(Library.HbMinecraft) || player.getDisplayName().equals("HbMinecraft");
-				boolean isOther = player.getUniqueID().toString().equals(Library.SolsticeUnlimitd) || player.getDisplayName().equals("SolsticeUnlimitd") ||
+				boolean isOther = player.getDisplayName().equals("SolsticeUnlimitd") ||
 						player.getUniqueID().toString().equals(Library.the_NCR) || player.getDisplayName().equals("the_NCR");
 				
 				if(isBob || isOther) {
@@ -1388,8 +1389,8 @@ public class ModEventHandler {
 		}
 	}
 	
-	private static final String hash = "41eb77f138ce350932e33b6b26b233df9aad0c0c80c6a49cb9a54ddd8fae3f83";
-	private static final String hashAlt = "";
+	private static final String hash = "41eb77f138ce350932e33b6b26b233df9aad0c0c80c6a49cb9a54ddd8fae3f83",
+								hashAlt = "";
 	
 	@SubscribeEvent
 	public void onClickSign(PlayerInteractEvent event) {
@@ -1404,7 +1405,7 @@ public class ModEventHandler {
 			TileEntitySign sign = (TileEntitySign)world.getTileEntity(x, y, z);
 			
 			String result = smoosh(sign.signText[0], sign.signText[1], sign.signText[2], sign.signText[3]);
-			System.out.println(result);
+			System.out.println(result);//TODO
 			
 			if(result.equals(hash)) {
 				world.func_147480_a(x, y, z, false);

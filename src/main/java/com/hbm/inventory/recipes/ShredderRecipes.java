@@ -327,12 +327,12 @@ public class ShredderRecipes {
 		ShredderRecipes.setRecipe(ModBlocks.turret_rocket, new ItemStack(ModItems.powder_steel, 16));
 		ShredderRecipes.setRecipe(ModBlocks.turret_cwis, new ItemStack(ModItems.powder_steel, 16));
 		ShredderRecipes.setRecipe(ModBlocks.turret_tau, new ItemStack(ModItems.powder_steel, 16));
-		ShredderRecipes.setRecipe(ModItems.turret_light_ammo, new ItemStack(Items.gunpowder, 4));
-		ShredderRecipes.setRecipe(ModItems.turret_heavy_ammo, new ItemStack(Items.gunpowder, 4));
-		ShredderRecipes.setRecipe(ModItems.turret_flamer_ammo, new ItemStack(Items.gunpowder, 4));
-		ShredderRecipes.setRecipe(ModItems.turret_rocket_ammo, new ItemStack(Items.gunpowder, 4));
-		ShredderRecipes.setRecipe(ModItems.turret_cwis_ammo, new ItemStack(Items.gunpowder, 4));
-		ShredderRecipes.setRecipe(ModItems.turret_tau_ammo, new ItemStack(ModItems.powder_uranium, 4));
+//		ShredderRecipes.setRecipe(ModItems.turret_light_ammo, new ItemStack(Items.gunpowder, 4));
+//		ShredderRecipes.setRecipe(ModItems.turret_heavy_ammo, new ItemStack(Items.gunpowder, 4));
+//		ShredderRecipes.setRecipe(ModItems.turret_flamer_ammo, new ItemStack(Items.gunpowder, 4));
+//		ShredderRecipes.setRecipe(ModItems.turret_rocket_ammo, new ItemStack(Items.gunpowder, 4));
+//		ShredderRecipes.setRecipe(ModItems.turret_cwis_ammo, new ItemStack(Items.gunpowder, 4));
+//		ShredderRecipes.setRecipe(ModItems.turret_tau_ammo, new ItemStack(ModItems.powder_uranium, 4));
 
 		/*
 		 * Wool and clay scrapping

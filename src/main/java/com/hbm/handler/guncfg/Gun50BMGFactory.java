@@ -106,7 +106,7 @@ public class Gun50BMGFactory {
 		config.roundsPerCycle = 1;
 		config.firingSound = "hbm:weapon.heavyShootPB3";
 		config.firingPitch = 0.75F;
-		config.ammoCap = 1;
+		config.ammoCap = 4;
 		config.reloadType = GunConfiguration.RELOAD_SINGLE;
 		config.allowsInfinity = true;
 		config.crosshair = Crosshair.L_CLASSIC;
@@ -128,16 +128,16 @@ public class Gun50BMGFactory {
 				.addBus("EJECT", new BusAnimationSequence()
 						.addKeyframe(new BusAnimationKeyframe(0, 0, 0, 30))//Wait
 						.addKeyframe(new BusAnimationKeyframe(50, 0, 0, 120))));//Fly out
-		config.animations.put(AnimType.RELOAD, new BusAnimation()
-				.addBus("TILT", new BusAnimationSequence()//Tilt gun and release slide to feed next round
-						.addKeyframe(new BusAnimationKeyframe(45, 20, 0, 500))//Tilt for reload
-						.addKeyframe(new BusAnimationKeyframe(45, 20, -0.2, 1200))//Wait and pull back slide
-						.addKeyframe(new BusAnimationKeyframe(45, 20, 0, 75))//Release slide
-						.addKeyframe(new BusAnimationKeyframe(0, 0, 0, 400)))//Return
-				.addBus("INSERT_ROUND", new BusAnimationSequence()//Insert the new round
-						.addKeyframe(new BusAnimationKeyframe(0, 0, 0, 600))//Wait to tilt
-						.addKeyframe(new BusAnimationKeyframe(-20, -2, 0.75, 400))//Just plop that thing in there
-						.addKeyframe(new BusAnimationKeyframe(20, -2, 0.75, 75))));//Wait for the slide to close
+//		config.animations.put(AnimType.RELOAD, new BusAnimation()
+//				.addBus("TILT", new BusAnimationSequence()//Tilt gun and release slide to feed next round
+//						.addKeyframe(new BusAnimationKeyframe(45, 20, 0, 500))//Tilt for reload
+//						.addKeyframe(new BusAnimationKeyframe(45, 20, -0.2, 1200))//Wait and pull back slide
+//						.addKeyframe(new BusAnimationKeyframe(45, 20, 0, 75))//Release slide
+//						.addKeyframe(new BusAnimationKeyframe(0, 0, 0, 400)))//Return
+//				.addBus("INSERT_ROUND", new BusAnimationSequence()//Insert the new round
+//						.addKeyframe(new BusAnimationKeyframe(0, 0, 0, 600))//Wait to tilt
+//						.addKeyframe(new BusAnimationKeyframe(-20, -2, 0.75, 400))//Just plop that thing in there
+//						.addKeyframe(new BusAnimationKeyframe(20, -2, 0.75, 75))));//Wait for the slide to close
 		
 		return config;
 	}

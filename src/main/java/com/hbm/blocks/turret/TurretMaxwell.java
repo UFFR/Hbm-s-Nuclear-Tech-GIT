@@ -11,10 +11,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
+@Deprecated
 public class TurretMaxwell extends TurretBaseNT {
 
 	public TurretMaxwell(Material mat) {
-		super(mat);
+		super(mat, TileEntityTurretMaxwell.class, EnumGUI.TURRET_MAXWELL);
 	}
 
 	@Override

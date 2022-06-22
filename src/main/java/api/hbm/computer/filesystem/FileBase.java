@@ -16,7 +16,7 @@ public abstract class FileBase implements Cloneable, ISerializable<FileBase>
 	 * 
 	 */
 	private static final long serialVersionUID = -5309270065067336455L;
-	protected static final byte[] emptyBytes = new byte[0];
+	public static final byte[] emptyBytes = new byte[0];
 	public FileBase()
 	{
 		SerializationRegistry.register(this.getClass(), this);

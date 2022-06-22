@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
-import com.hbm.inventory.FluidTank;
 import com.hbm.inventory.container.ContainerRadiolysis;
 import com.hbm.items.machine.ItemRTGPellet;
 import com.hbm.lib.RefStrings;
@@ -37,16 +36,16 @@ public class GUIRadiolysis extends GuiInfoContainer {
 		radiolysis.tanks[1].renderTankInfo(this, mouseX, mouseY, guiLeft + 87, guiTop + 17, 12, 16);
 		radiolysis.tanks[2].renderTankInfo(this, mouseX, mouseY, guiLeft + 87, guiTop + 53, 12, 16);
 		
-		this.drawElectricityInfo(this, mouseX, mouseY, guiLeft + 8, guiTop + 17, 16, 34, radiolysis.power, radiolysis.maxPower);
+		drawElectricityInfo(this, mouseX, mouseY, guiLeft + 8, guiTop + 17, 16, 34, radiolysis.power, TileEntityMachineRadiolysis.maxPower);
 		
-		String[] descText = I18nUtil.resolveKeyArray("desc.gui.radiolysis.desc");
+		final String[] descText = I18nUtil.resolveKeyArray("desc.gui.radiolysis.desc");
 		this.drawCustomInfoStat(mouseX, mouseY, guiLeft - 16, guiTop + 16, 16, 16, guiLeft - 8, guiTop + 16 + 16, descText);
 		
-		String[] heatText = I18nUtil.resolveKeyArray("desc.gui.rtg.heat", radiolysis.heat);
+		final String[] heatText = I18nUtil.resolveKeyArray("desc.gui.rtg.heat", radiolysis.heat);
 		this.drawCustomInfoStat(mouseX, mouseY, guiLeft - 16, guiTop + 16 + 18, 16, 16, guiLeft - 8, guiTop + 16 + 18 + 16, heatText);
 		
-		List<ItemRTGPellet> pellets = ItemRTGPellet.pelletList;
-		String[] pelletText = new String[pellets.size() + 1];
+		final List<ItemRTGPellet> pellets = ItemRTGPellet.getPellets();
+		final String[] pelletText = new String[pellets.size() + 1];
 		pelletText[0] = I18nUtil.resolveKey("desc.gui.rtg.pellets");
 		
 		for(int i = 0; i < pellets.size(); i++) {

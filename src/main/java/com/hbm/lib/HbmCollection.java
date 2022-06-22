@@ -469,7 +469,6 @@ public final class HbmCollection
 						new ItemStack(ModItems.battery_advanced_cell_4, 2),
 						new ItemStack(ModItems.battery_lithium, 2),
 						new ItemStack(ModItems.battery_potato),
-						new ItemStack(ModItems.limiter),
 						new ItemStack(ModItems.screwdriver),
 						new ItemStack(ModBlocks.machine_coal_off, 3),
 						new ItemStack(ModBlocks.machine_diesel, 2),

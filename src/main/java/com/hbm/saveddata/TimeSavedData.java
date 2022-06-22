@@ -66,12 +66,11 @@ public class TimeSavedData extends WorldSavedData
 		MainRegistry.logger.info("[TimeSavedData] Time data was reset");
 	}
 	
-	@SuppressWarnings("unchecked")
 	public static void updateNormal(World worldIn)
 	{
 //		if (!worldIn.getGameRules().getGameRuleBooleanValue("doDaylightCycle"))
 //			return;
-		TimeSavedData date = getData(worldIn);
+		final TimeSavedData date = getData(worldIn);
 //		System.out.println(Arrays.toString(date.getDateFull()));
 		date.dateData.increment();
 		
@@ -81,7 +80,7 @@ public class TimeSavedData extends WorldSavedData
 			{
 				HbmPlayerProps.setAge(p, 1, true);
 				PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(I18nUtil.resolveKey("desc.player.birthday"), 0), (EntityPlayerMP) p);
-				String[] msg = HbmPlayerProps.hasAscended(p) ? I18nUtil.resolveKeyArray("desc.player.birthdayAlt") : I18nUtil.resolveKeyArray("desc.player.birhdayMsg");
+				final String[] msg = HbmPlayerProps.hasAscended(p) ? I18nUtil.resolveKeyArray("desc.player.birthdayAlt") : I18nUtil.resolveKeyArray("desc.player.birhdayMsg");
 				PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(Library.randomFromArray(msg), 0), (EntityPlayerMP) p);
 			}
 		}
@@ -139,9 +138,10 @@ public class TimeSavedData extends WorldSavedData
 //		MainRegistry.logger.info("[TimeSavedData] Time data has been written to NBT");
 	}
 	
+	@Deprecated
 	public static Number[] constructUncompressed(long year, int day, int time)
 	{
-		Number[] date = new Number[4];
+		final Number[] date = new Number[4];
 		date[0] = year;
 		date[1] = (byte) day;
 		date[2] = Library.convertScale(time, 0, 48000, 0, 10);

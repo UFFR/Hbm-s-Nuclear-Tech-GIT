@@ -63,7 +63,6 @@ public class TileMappings {
 		put(TileEntityDecoBlockAltF.class, "tileentity_deco_f");
 		put(TileEntityCoreTitanium.class, "tileentity_core_titanium");
 		put(TileEntityCoreAdvanced.class, "tileentity_core_advanced");
-		put(TileEntityFusionMultiblock.class, "tileentity_fusion_multiblock");
 		put(TileEntityCrashedBomb.class, "tileentity_crashed_balefire");
 		put(TileEntityConverterHeRf.class, "tileentity_converter_herf");
 		put(TileEntityConverterRfHe.class, "tileentity_converter_rfhe");
@@ -72,7 +71,6 @@ public class TileMappings {
 		put(TileEntityWatzCore.class, "tileentity_watz_multiblock");
 		put(TileEntityMachineShredder.class, "tileentity_machine_shredder");
 		put(TileEntityMachineCMBFactory.class, "tileentity_machine_cmb");
-		put(TileEntityFWatzCore.class, "tileentity_fwatz_multiblock");
 		put(TileEntityMachineTeleporter.class, "tileentity_teleblock");
 		put(TileEntityHatch.class, "tileentity_seal_lid");
 		put(TileEntityMachineIGenerator.class, "tileentity_igenerator");

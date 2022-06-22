@@ -41,8 +41,8 @@ public class RenderAccessoryUtility {
 	private static final ResourceLocation tankish = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/CapeTankish.png");
 	private static final ResourceLocation blaze2 = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/CapeBlaze2.png");
 	private static final ResourceLocation frizzlefrazzle = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/CapeFrizzleFrazzle.png");
-	private static ResourceLocation pheo = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/CapePheo.png");
-	private static ResourceLocation vaer = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/CapeVaer.png");
+	private static final ResourceLocation pheo = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/CapePheo.png");
+	private static final ResourceLocation vaer = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/CapeVaer.png");
 	
 	public static ResourceLocation getCloakFromPlayer(EntityPlayer player)
 	{
@@ -91,6 +91,12 @@ public class RenderAccessoryUtility {
 			return rightnugget;
 		case Library.Tankish:
 			return tankish;
+		case Library.FrizzleFrazzle:
+			return frizzlefrazzle;
+		case Library.Barnaby99_x:
+			return pheo;
+		case Library.Ma118:
+			return vaer;
 		default:
 			if (Library.contributors.contains(uuid))
 				return wiki;
@@ -99,23 +105,6 @@ public class RenderAccessoryUtility {
 			else
 				return null;
 		}
-		if(uuid.equals(Library.FrizzleFrazzle)) {
-			return frizzlefrazzle;
-		}
-		if(uuid.equals(Library.Barnaby99_x)) {
-			return pheo;
-		}
-		if(uuid.equals(Library.Ma118)) {
-			return vaer;
-		}
-		if(Library.contributors.contains(uuid)) {
-			return wiki;
-		}
-		if(name.startsWith("Player")) {
-			return test;
-		}
-		
-		return null;
 	}
 	
 	private static ModelBiped solModel;

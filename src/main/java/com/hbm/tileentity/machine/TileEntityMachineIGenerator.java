@@ -1,6 +1,5 @@
 package com.hbm.tileentity.machine;
 
-import java.math.BigInteger;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.inventory.FluidTank;
@@ -8,12 +7,14 @@ import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.types.FluidTypeFlammable;
 import com.hbm.items.ModItems;
+import com.hbm.items.machine.ItemRTGPellet;
 import com.hbm.lib.Library;
 import com.hbm.tileentity.IRTGUser;
 import com.hbm.tileentity.IRadioisotopeFuel;
 import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.RTGUtil;
 
+import api.hbm.Date;
 import api.hbm.energy.IEnergyGenerator;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -40,7 +41,7 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 	public float prevRotation;
 	
 	public FluidTank[] tanks;
-	
+	private Date date = new Date();
 	public int age = 0;
 	public TileEntityMachineIGenerator() {
 		super(21);
@@ -156,7 +157,7 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 			data.setInteger("spin", spin);
 			data.setIntArray("burn", burn);
 			data.setBoolean("hasRTG", hasRTG);
-			data.setByteArray("date", date.toByteArray());
+			data.setByteArray("date", date.serialize());
 			this.networkPack(data, 150);
 			
 			for(int i = 0; i < 3; i++)
@@ -183,7 +184,7 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 		this.spin = nbt.getInteger("spin");
 		this.burn = nbt.getIntArray("burn");
 		this.hasRTG = nbt.getBoolean("hasRTG");
-		date = new BigInteger(nbt.getByteArray("date"));
+		date = date.deserialize(nbt.getByteArray("date"));
 	}
 	
 	public static final int coalGenRate = 75;
@@ -243,7 +244,7 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 		
 		this.power = nbt.getLong("power");
 		this.burn = nbt.getIntArray("burn");
-		date = new BigInteger(nbt.getByteArray("date"));
+		date = date.deserialize(nbt.getByteArray("date"));
 	}
 	
 	@Override
@@ -255,7 +256,7 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 		
 		nbt.setLong("power", power);
 		nbt.setIntArray("burn", burn);
-		nbt.setByteArray("date", date.toByteArray());
+		nbt.setByteArray("date", date.serialize());
 	}
 	
 	@Override
@@ -294,7 +295,7 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 	@Override
 	public ItemStack[] getInventory()
 	{
-		ItemStack[] rtgSlots = new ItemStack[RTGSlots.length];
+		final ItemStack[] rtgSlots = new ItemStack[RTGSlots.length];
 		for (byte i = 0; i < RTGSlots.length; i++)
 			rtgSlots[i] = slots[RTGSlots[i]];
 		return rtgSlots;
@@ -309,11 +310,11 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 	@Override
 	public void incrementAge()
 	{
-		date = date.add(BigInteger.ONE);
+		date.increment();
 	}
 
 	@Override
-	public BigInteger getInternalDate()
+	public Date getInternalDate()
 	{
 		return date;
 	}

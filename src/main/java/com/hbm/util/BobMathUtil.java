@@ -11,11 +11,13 @@ import java.util.List;
 
 import javax.annotation.Nonnegative;
 
+import com.hbm.calc.EasyLocation;
 import com.hbm.interfaces.Untested;
 import com.hbm.lib.HbmCollection;
 
 import api.hbm.Date;
 import ch.obermuhlner.math.big.BigDecimalMath;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -93,9 +95,9 @@ public class BobMathUtil {
 	
 	public static ForgeDirection[] getShuffledDirs() {
 		
-		ForgeDirection[] dirs = new ForgeDirection[6];
+		final ForgeDirection[] dirs = new ForgeDirection[6];
 //		List<Integer> indices = new ArrayList() {{ add(0); add(1); add(2); add(3); add(4); add(5); }};
-		List<Integer> indices = Arrays.asList(0, 1, 2, 3, 4, 5);
+		final List<Integer> indices = Arrays.asList(0, 1, 2, 3, 4, 5);
 		Collections.shuffle(indices);
 		
 		for(int i = 0; i < 6; i++) {
@@ -215,5 +217,22 @@ public class BobMathUtil {
 	public static double radiologicalDating(double remaining, Date halflife)
 	{
 		return BigDecimal.valueOf(Math.log(remaining)).divide((BigDecimal.valueOf(Math.log(0.5)).divide(new BigDecimal(halflife.getData())))).doubleValue();
+	}
+
+	public static Vec3 entityUnitVector(Entity entity)
+	{
+		return Vec3.createVectorHelper
+					(
+						-(Math.sin(entity.rotationYaw / 180 * Math.PI) * Math.cos(entity.rotationPitch / 180 * Math.PI)),
+						-Math.sin(entity.rotationPitch / 180 * Math.PI),
+						Math.cos(entity.rotationYaw / 180 * Math.PI) * Math.cos(entity.rotationPitch / 180 * Math.PI)
+					);
+	}
+	
+	public static void offsetForHand(Entity entity, EasyLocation loc)
+	{
+		loc.posX -= Math.cos(entity.rotationYaw / 180 * Math.PI) * 0.16;
+		loc.posY -= 0.16;
+		loc.posZ -= Math.sin(entity.rotationYaw / 180 * Math.PI) * 0.16;
 	}
 }

@@ -82,8 +82,8 @@ public class HazardTypeRadiation extends HazardTypeBase
 			return;
 		
 		list.add(EnumChatFormatting.GREEN + "[" + I18nUtil.resolveKey("trait.radioactive") + "]");
-		float[] radTypes = HazardSystem.getRadTypes(stack);
-		StringBuilder types = new StringBuilder();
+		final byte[] radTypes = HazardSystem.getRadTypes(stack);
+		final StringBuilder types = new StringBuilder();
 		// Could be neater
 		boolean flag = false;
 		for (byte i = 0; i < 4; i++)

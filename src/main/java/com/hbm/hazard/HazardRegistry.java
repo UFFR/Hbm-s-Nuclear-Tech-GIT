@@ -9,6 +9,7 @@ import static com.hbm.inventory.OreDictManager.*;
 import java.util.List;
 
 import com.hbm.blocks.ModBlocks;
+import com.hbm.config.GeneralConfig;
 import com.hbm.extprop.HbmLivingProps;
 import com.hbm.hazard.modifier.*;
 import com.hbm.hazard.transformer.*;

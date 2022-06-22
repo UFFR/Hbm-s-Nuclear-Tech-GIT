@@ -1,11 +1,7 @@
 package com.hbm.blocks.turret;
 
-import com.hbm.blocks.BlockDummyable;
-import com.hbm.blocks.ModBlocks;
-import com.hbm.blocks.generic.BlockGeneric;
 import com.hbm.handler.EnumGUI;
 import com.hbm.main.MainRegistry;
-import com.hbm.tileentity.TileEntityProxyCombo;
 import com.hbm.tileentity.turret.TileEntityTsukuyomi;
 
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
@@ -13,8 +9,6 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 // TODO Finish with model (wtf does it look like though?)
 public class TurretTsukuyomi extends BlockContainer
@@ -23,6 +17,7 @@ public class TurretTsukuyomi extends BlockContainer
 	public TurretTsukuyomi()
 	{
 		super(Material.iron);
+		setBlockName("turret_tsukuyomi");
 		setHardness(5.0F);
 		setResistance(600.0F);
 		setCreativeTab(MainRegistry.weaponTab);

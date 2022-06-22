@@ -1,12 +1,9 @@
 package com.hbm.blocks.machine;
 
 import com.hbm.blocks.BlockDummyable;
-import com.hbm.blocks.ModBlocks;
-import com.hbm.handler.EnumGUI;
-import com.hbm.main.MainRegistry;
+import com.hbm.lib.RefStrings;
 import com.hbm.tileentity.machine.TileEntityReactorWarp;
 
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -15,9 +12,13 @@ import net.minecraft.world.World;
 public class ReactorAmat extends BlockDummyable
 {
 
-	public ReactorAmat(Material material)
+	public ReactorAmat()
 	{
-		super(material);
+		super(Material.iron);
+		setBlockName("reactor_warp");
+		setResistance(1800);
+		setHardness(20);
+		setBlockTextureName(RefStrings.MODID + ":machine_alpha");
 	}
 	
 	@Override

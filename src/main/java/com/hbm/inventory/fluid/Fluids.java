@@ -8,7 +8,9 @@ import com.hbm.inventory.fluid.FluidType.ExtContainer;
 import com.hbm.inventory.fluid.FluidType.FluidTrait;
 import com.hbm.inventory.fluid.types.*;
 import com.hbm.inventory.fluid.types.FluidTypeCombustible.FuelGrade;
+import com.hbm.items.ModItems;
 import com.hbm.render.util.EnumSymbol;
+import com.hbm.util.StringWrapper;
 
 import net.minecraft.item.ItemStack;
 
@@ -205,9 +207,8 @@ public class Fluids {
 		MUG =				new FluidType(				"MUG",				0x4B2D28, 0, 0, 0, EnumSymbol.NONE).setHeatCap(1D);
 		MUG_HOT =			new FluidType(78,			"MUG_HOT",			0x6B2A20, 0, 0, 0, EnumSymbol.NONE).setHeatCap(MUG.heatCap).setTemp(500);
 		
-		
 		SALT = 				new FluidType(				"SALT",				0x00e1ed, 4, 0, 4, EnumSymbol.ACID).addTraits(FluidTrait.CORROSIVE_2).setTemp(220);
-		SARIN = 			new FluidType(				"SARIN",			0x00b4b4, 4, 1, 1, EnumSymbol.CHEMICAL).addTraits(FluidTrait.CHEMICAL, FluidTrait.LEAD_CONTAINER);
+		SARIN = 			new FluidType(				"SARIN",			0x00b4b4, 4, 1, 1, EnumSymbol.CHEMICAL).addTraits(FluidTrait.CHEMICAL, FluidTrait.LEAD_CONTAINER);//TODO New hazardous fluid type
 		ALCOHOL = 			new FluidTypeFlammable(		"ALCOHOL",			0x00bcbc, 1, 3, 0, EnumSymbol.NONE);
 		WRATH = 			new FluidType(				"WRATH",			0x2ECC71, 4, 0, 3, EnumSymbol.ACID).addTraits(FluidTrait.CORROSIVE_2, FluidTrait.LEAD_CONTAINER);
 		PLASMA_WARP =		new FluidTypeFlammable(		"PLASMA_WARP",		0x00FFFF, 5, 5, 5, EnumSymbol.ANTIMATTER).addTraits(FluidTrait.AMAT).setTemp(1200000);
@@ -320,11 +321,32 @@ public class Fluids {
 		metaOrder.add(PLASMA_DH3);
 		metaOrder.add(PLASMA_XM);
 		metaOrder.add(PLASMA_BF);
-		
-		if(idMapping.size() != metaOrder.size()) {
-			throw new IllegalStateException("A severe error has occoured during NTM's fluid registering process! The MetaOrder and Mappings are inconsistent! Mapping size: " + idMapping.size()+ " / MetaOrder size: " + metaOrder.size());
-		}
 		metaOrder.add(PLASMA_WARP);
+		
+		if(idMapping.size() != metaOrder.size())
+		{
+			final List<StringWrapper<FluidType>> missingTypes;
+			final String collectionName;
+			if (idMapping.size() > metaOrder.size())
+			{
+				missingTypes = new ArrayList<StringWrapper<FluidType>>(idMapping.size() - metaOrder.size());
+				for (FluidType type : idMapping.values())
+					if (!metaOrder.contains(type))
+						missingTypes.add(new StringWrapper<FluidType>(type, FluidType::getLocalizedName));
+				collectionName = "metaOrder";
+			}
+			else
+			{
+				missingTypes = new ArrayList<StringWrapper<FluidType>>(metaOrder.size() - idMapping.size());
+				for (FluidType type : metaOrder)
+					if (!idMapping.containsValue(type))
+						missingTypes.add(new StringWrapper<FluidType>(type, FluidType::getLocalizedName));
+				collectionName = "idMapping";
+			}
+			
+			throw new IllegalStateException("A severe error has occoured during NTM's fluid registering process! The MetaOrder and Mappings are inconsistent! Mapping size: " + idMapping.size()+ " / MetaOrder size: " + metaOrder.size() + '\n' + collectionName + " appears to be missing following fluids: " + missingTypes);
+		}
+		
 	}
 	
 	protected static int registerSelf(FluidType fluid) {

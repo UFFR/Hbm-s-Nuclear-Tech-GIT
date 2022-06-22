@@ -30,7 +30,6 @@ import com.hbm.items.armor.ArmorFSB;
 import com.hbm.items.armor.ArmorFSBPowered;
 import com.hbm.items.armor.ItemArmorMod;
 import com.hbm.items.armor.JetpackBase;
-import com.hbm.items.tool.ItemWatch;
 import com.hbm.items.weapon.ItemGunBase;
 import com.hbm.lib.Library;
 import com.hbm.lib.RefStrings;
@@ -56,14 +55,11 @@ import com.hbm.tileentity.bomb.TileEntityNukeCustom;
 import com.hbm.tileentity.bomb.TileEntityNukeCustom.CustomNukeEntry;
 import com.hbm.tileentity.bomb.TileEntityNukeCustom.EnumEntryType;
 import com.hbm.tileentity.machine.TileEntityNukeFurnace;
-import com.hbm.util.I18nUtil;
-import com.hbm.util.ItemStackUtil;
-import com.hbm.util.LoggingUtil;
 import com.hbm.util.ArmorRegistry;
-import com.hbm.util.ArmorUtil;
 import com.hbm.util.ArmorRegistry.HazardClass;
 import com.hbm.util.ArmorUtil;
 import com.hbm.util.I18nUtil;
+import com.hbm.util.ItemStackUtil;
 import com.hbm.util.LoggingUtil;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
@@ -160,8 +156,8 @@ public class ModEventHandlerClient {
 				}
 			}
 			
-			if (player.inventory.hasItem(ModItems.watch_digital))
-				RenderScreenOverlay.renderWatchTime(event.resolution, ItemWatch.getTime(player.worldObj));
+//			if (player.inventory.hasItem(ModItems.watch_digital))
+//				RenderScreenOverlay.renderWatchTime(event.resolution, ItemWatch.getTime(player.worldObj));
 		}
 
 		/// DODD DIAG HOOK FOR RBMK
@@ -276,7 +272,7 @@ public class ModEventHandlerClient {
 			}
 			
 		}
-		if(!event.isCanceled() && event.type == event.type.HOTBAR) {
+		if(!event.isCanceled() && event.type == ElementType.HOTBAR) {
 			
 			HbmPlayerProps props = HbmPlayerProps.getData(player);
 			if(props.getDashCount() > 0) {
@@ -370,7 +366,7 @@ public class ModEventHandlerClient {
 		}
 		
 		if(player.getCurrentArmor(2) == null && !player.isPotionActive(Potion.invisibility)) {
-			if(player.getUniqueID().toString().equals(Library.SolsticeUnlimitd) || player.getDisplayName().equals("SolsticeUnlimitd"))
+			if(player.getDisplayName().equals("SolsticeUnlimitd"))
 				RenderAccessoryUtility.renderSol(event);
 			if(player.getUniqueID().toString().equals(Library.HbMinecraft) || player.getDisplayName().equals("HbMinecraft"))
 				RenderAccessoryUtility.renderWings(event, 2);
@@ -718,12 +714,12 @@ public class ModEventHandlerClient {
 			if(BlockAshes.ashes < 0) BlockAshes.ashes = 0;
 			
 			if(mc.theWorld.getTotalWorldTime() % 20 == 0) {
-				this.lastBrightness = this.currentBrightness;
+				ModEventHandlerClient.lastBrightness = ModEventHandlerClient.currentBrightness;
 				currentBrightness = mc.theWorld.getLightBrightnessForSkyBlocks(MathHelper.floor_double(mc.thePlayer.posX), MathHelper.floor_double(mc.thePlayer.posY), MathHelper.floor_double(mc.thePlayer.posZ), 0);
 			}
 			
 			if(ArmorUtil.isWearingEmptyMask(mc.thePlayer)) {
-				MainRegistry.proxy.displayTooltip(EnumChatFormatting.RED + "Your mask has no filter!", MainRegistry.proxy.ID_FILTER);
+				MainRegistry.proxy.displayTooltip(EnumChatFormatting.RED + "Your mask has no filter!", ServerProxy.ID_FILTER);
 			}
 		}
 	}

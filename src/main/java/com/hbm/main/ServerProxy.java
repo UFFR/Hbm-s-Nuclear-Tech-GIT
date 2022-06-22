@@ -2,10 +2,13 @@ package com.hbm.main;
 
 import com.hbm.handler.HbmKeybinds.EnumKeybind;
 import com.hbm.sound.AudioWrapper;
+import com.hbm.sound.nt.ISoundSourceTE;
+import com.hbm.sound.nt.SoundWrapper;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 
 public abstract class ServerProxy {
 
@@ -34,7 +37,7 @@ public abstract class ServerProxy {
 	public abstract void registerMissileItems();
 
 	public abstract AudioWrapper getLoopedSound(String sound, float x, float y, float z, float volume, float pitch);
-	
+	public abstract AudioWrapper getLoopedSoundStartStop(World world, String sound, String start, String stop, float x, float y, float z, float volume, float pitch);
 	public abstract void playSound(String sound, Object data);
 	
 	public abstract boolean isVanished(Entity e);
@@ -47,4 +50,5 @@ public abstract class ServerProxy {
 	public abstract boolean getIsKeyPressed(EnumKeybind key);
 	public abstract EntityPlayer me();
 	public abstract void openLink(String url);
+	public abstract SoundWrapper getTileSound(String sound, ISoundSourceTE source);
 }

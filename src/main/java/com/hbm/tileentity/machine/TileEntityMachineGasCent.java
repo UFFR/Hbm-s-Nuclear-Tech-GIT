@@ -10,7 +10,6 @@ import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.recipes.GasCentrifugeRecipes.PseudoFluidType;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.IItemFluidIdentifier;
-import com.hbm.items.machine.ItemFluidIdentifier;
 import com.hbm.lib.Library;
 import com.hbm.packet.LoopedSoundPacket;
 import com.hbm.packet.PacketDispatcher;
@@ -44,7 +43,7 @@ public class TileEntityMachineGasCent extends TileEntityMachineBase implements I
 	
 	private static final int[] slots_io = new int[] { 0, 1, 2, 3 };
 	
-	private static HashMap<FluidType, PseudoFluidType> fluidConversions = new HashMap();
+	private static HashMap<FluidType, PseudoFluidType> fluidConversions = new HashMap<>();
 	
 	static {
 		fluidConversions.put(Fluids.UF6, PseudoFluidType.NUF6);
@@ -170,6 +169,7 @@ public class TileEntityMachineGasCent extends TileEntityMachineBase implements I
 		return false;
 	}
 	
+	@Override
 	public void networkUnpack(NBTTagCompound data) {
 		this.power = data.getLong("power");
 		this.progress = data.getInteger("progress");
@@ -307,7 +307,7 @@ public class TileEntityMachineGasCent extends TileEntityMachineBase implements I
 				}
 				if(newType == Fluids.WATZ) {
 					inputTank.setTankType(PseudoFluidType.MUD);
-					outputTank.setTankType(PseudoFluidType.MUD.getOutputFluid());
+					outputTank.setTankType(PseudoFluidType.MUD.getOutputType());
 					return;
 				}
 			}

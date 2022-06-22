@@ -11,6 +11,7 @@ import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.recipes.loader.SerializableRecipe;
 import com.hbm.items.ModItems;
 import com.hbm.tileentity.machine.TileEntityHadron.EnumHadronState;
+import com.hbm.util.I18nUtil;
 
 import api.hbm.computer.Researchable;
 import net.minecraft.init.Items;
@@ -203,7 +204,7 @@ public class HadronRecipes extends SerializableRecipe {
 
 	@Override
 	public Object getRecipeObject() {
-		return this.recipes;
+		return recipes;
 	}
 
 	@Override
@@ -211,10 +212,10 @@ public class HadronRecipes extends SerializableRecipe {
 		JsonObject obj = (JsonObject) recipe;
 		int momentum = obj.get("momentum").getAsInt();
 		boolean lineMode = obj.get("lineMode").getAsBoolean();
-		ItemStack[] in = this.readItemStackArray(obj.get("inputs").getAsJsonArray());
-		ItemStack[] out = this.readItemStackArray(obj.get("outputs").getAsJsonArray());
+		ItemStack[] in = readItemStackArray(obj.get("inputs").getAsJsonArray());
+		ItemStack[] out = readItemStackArray(obj.get("outputs").getAsJsonArray());
 		
-		this.recipes.add(new HadronRecipe(
+		recipes.add(new HadronRecipe(
 				in[0],
 				in[1],
 				momentum,
@@ -242,12 +243,13 @@ public class HadronRecipes extends SerializableRecipe {
 		writer.endArray();
 	}
 	
+	@Override
 	public String getComment() {
 		return "Rules: Both in- and output stacks cannot be null. Stacksizes are set to 1 for all stacks.";
 	}
 
 	@Override
 	public void deleteRecipes() {
-		this.recipes.clear();
+		recipes.clear();
 	}
 }

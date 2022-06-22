@@ -746,7 +746,7 @@ public class ClientProxy extends ServerProxy {
 		
 		MissilePart.registerAllParts();
 		
-		Iterator it = MissilePart.parts.entrySet().iterator();
+		final Iterator<Entry<Integer, MissilePart>> it = MissilePart.parts.entrySet().iterator();
 		
 		while(it.hasNext()) {
 			Map.Entry pair = (Map.Entry) it.next();

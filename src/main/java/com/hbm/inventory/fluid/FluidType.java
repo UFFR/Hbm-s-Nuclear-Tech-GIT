@@ -13,7 +13,6 @@ import com.hbm.render.util.EnumSymbol;
 import com.hbm.util.I18nUtil;
 
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -46,8 +45,8 @@ public class FluidType {
 	/** How much "stuff" there is in one mB. 1mB of water turns into 100mB of steam, therefore steam has a compression of 0.01. Compression is only used for translating fluids into other fluids, heat calculations should ignore this. */
 	public double compression = DEFAULT_COMPRESSION;
 	
-	public Set<ExtContainer> containers = new HashSet();
-	public List<FluidTrait> traits = new ArrayList();
+	public final Set<ExtContainer> containers = new HashSet<>();
+	public final Set<FluidTrait> traits = new HashSet<>();
 	
 	private ResourceLocation texture;
 	
@@ -61,9 +60,7 @@ public class FluidType {
 		this.symbol = symbol;
 		this.texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/fluids/" + name.toLowerCase() + ".png");
 		
-		if(this.id != forcedId) {
-			throw new IllegalStateException("Howdy! I am a safeguard put into place by Bob to protect you, the player, from Bob's dementia. For whatever reason, Bob decided to either add or remove a fluid in a way that shifts the IDs, despite the entire system being built to prevent just that. Instead of people's fluids getting jumbled for the 500th time, I am here to prevent the game from starting entirely. The expected ID was " + forcedId + ", but turned out to be " + this.id + ".");
-		}
+		id = Fluids.registerSelf(this);
 	}
 	
 	public FluidType(int forcedId, String name, int color, int p, int f, int r, EnumSymbol symbol) {
@@ -72,11 +69,6 @@ public class FluidType {
 		if(this.id != forcedId) {
 			throw new IllegalStateException("Howdy! I am a safeguard put into place by Bob to protect you, the player, from Bob's dementia. For whatever reason, Bob decided to either add or remove a fluid in a way that shifts the IDs, despite the entire system being built to prevent just that. Instead of people's fluids getting jumbled for the 500th time, I am here to prevent the game from starting entirely. The expected ID was " + forcedId + ", but turned out to be " + this.id + ".");
 		}
-	}
-	
-	public FluidType setTemp(int temperature) {
-		this.temperature = temperature;
-		return this;
 	}
 	
 	public FluidType setHeatCap(double heatCap) {
@@ -92,11 +84,6 @@ public class FluidType {
 	public FluidType addContainers(int color, ExtContainer... containers) {
 		this.containerColor = color;
 		Collections.addAll(this.containers, containers);
-		return this;
-	}
-	
-	public FluidType addTraits(FluidTrait... traits) {
-		Collections.addAll(this.traits, traits);
 		return this;
 	}
 	
@@ -143,9 +130,6 @@ public class FluidType {
 	{
 		return I18nUtil.resolveKey(getUnlocalizedName().toLowerCase());
 	}
-	public String getDict(int quantity) {
-		return "container" + quantity + this.stringId.replace("_", "");
-	}
 	
 	public boolean isHot() {
 		return this.temperature >= 100;
@@ -191,9 +175,14 @@ public class FluidType {
 	public void onFluidRelease(World world, int x, int y, int z, FluidTank tank, int overflowAmount) { }
 	//public void onFluidTransmit(FluidNetwork net) { }
 	
+	public Set<FluidTrait> getFluidTraits()
+	{
+		return ImmutableSet.copyOf(traits);
+	}
+	
 	public void addInfo(List<String> info) {
 		// Little funky, but it's better than before I guess
-		ArrayList<FluidTrait> sortedTraits = new ArrayList<>(getTraitSet());
+		final ArrayList<FluidTrait> sortedTraits = new ArrayList<>(getFluidTraits());
 		Collections.sort(sortedTraits);
 		for (FluidTrait trait : sortedTraits)
 		{

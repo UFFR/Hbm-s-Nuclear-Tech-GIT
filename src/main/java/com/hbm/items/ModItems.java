@@ -1687,6 +1687,7 @@ public class ModItems {
 //	public static Item ammo_shell_w9;
 //	public static Item ammo_shell_w9_true;
 	public static Item ammo_dgk;
+	public static Item ammo_arty;
 	public static ItemEnumMulti ammo_nuke;
 //	public static Item ammo_nuke_low;
 //	public static Item ammo_nuke_high;
@@ -3421,7 +3422,7 @@ public class ModItems {
 			@Override
 			public void addInformation(ItemStack stack, EntityPlayer player, List tooltip, boolean b)
 			{
-				EnumCPU cpuItem = EnumUtil.grabEnumSafely(theEnum, stack.getItemDamage());
+				final EnumCPU cpuItem = EnumUtil.grabEnumSafely(theEnum, stack.getItemDamage());
 				tooltip.add(BobMathUtil.getShortNumber(cpuItem.power) + "hz");
 				super.addInformation(stack, player, tooltip, b);
 			}
@@ -3431,7 +3432,7 @@ public class ModItems {
 			@Override
 			public void addInformation(ItemStack stack, EntityPlayer player, List tooltip, boolean b)
 			{
-				EnumRAM ramItem = EnumUtil.grabEnumSafely(theEnum, stack.getItemDamage());
+				final EnumRAM ramItem = EnumUtil.grabEnumSafely(theEnum, stack.getItemDamage());
 				tooltip.add(BobMathUtil.getShortNumber(ramItem.capacity) + 'B');
 				super.addInformation(stack, player, tooltip, b);
 			};
@@ -5034,6 +5035,7 @@ public class ModItems {
 		spawn_chopper = new ItemSpawner(EntityHunterChopper.class).setUnlocalizedName("chopper").setMaxStackSize(1).setCreativeTab(MainRegistry.consumableTab).setTextureName(RefStrings.MODID + ":chopper");
 		spawn_worm = new ItemSpawner(EntityBOTPrimeHead.class).setUnlocalizedName("spawn_worm").setMaxStackSize(1).setCreativeTab(MainRegistry.consumableTab).setTextureName(RefStrings.MODID + ":spawn_worm");
 		spawn_ufo = new ItemSpawner(EntityUFO.class).setUnlocalizedName("spawn_ufo").setMaxStackSize(1).setCreativeTab(MainRegistry.consumableTab).setTextureName(RefStrings.MODID + ":spawn_ufo");
+		spawn_duck = new ItemSpawner(EntityQuackos.class).setUnlocalizedName("spawn_duck").setMaxStackSize(1).setCreativeTab(MainRegistry.consumableTab).setTextureName(RefStrings.MODID + ":spawn_duck");
 		linker = new ItemTeleLink().setUnlocalizedName("linker").setMaxStackSize(1).setCreativeTab(MainRegistry.consumableTab).setTextureName(RefStrings.MODID + ":linker");
 		reactor_sensor = new ItemReactorSensor().setUnlocalizedName("reactor_sensor").setMaxStackSize(1).setCreativeTab(MainRegistry.consumableTab).setTextureName(RefStrings.MODID + ":reactor_sensor");
 		oil_detector = new ItemOilDetector().setUnlocalizedName("oil_detector").setMaxStackSize(1).setCreativeTab(MainRegistry.consumableTab).setTextureName(RefStrings.MODID + ":oil_detector");
@@ -5943,6 +5945,7 @@ public class ModItems {
 //		ammo_shell_w9 = new ItemAmmo().setUnlocalizedName("ammo_shell_w9");
 //		ammo_shell_w9_true = new ItemAmmo().addTraits(AmmoItemTrait.PRO_NUCLEAR, AmmoItemTrait.PRO_HEAVY_DAMAGE).setRarity(EnumRarity.uncommon).setUnlocalizedName("ammo_shell_w9_true");
 		ammo_dgk = new ItemCustomLore().setUnlocalizedName("ammo_dgk").setCreativeTab(MainRegistry.weaponTab);
+		ammo_arty = new ItemAmmoArty().setUnlocalizedName("ammo_arty");
 		ammo_nuke = new ItemAmmo(AmmoFatman.class).setUnlocalizedName("ammo_nuke");
 //		ammo_nuke_low = new ItemAmmo().addTraits(AmmoItemTrait.CON_RADIUS).setUnlocalizedName("ammo_nuke_low");
 //		ammo_nuke_high = new ItemAmmo().addTraits(AmmoItemTrait.PRO_RADIUS, AmmoItemTrait.PRO_FALLOUT).setUnlocalizedName("ammo_nuke_high");
@@ -6092,19 +6095,19 @@ public class ModItems {
 		grenade_generic = new ItemGrenade(4, EntityGrenadeGeneric.class).setUnlocalizedName("grenade_generic").setCreativeTab(MainRegistry.weaponTab).setTextureName(RefStrings.MODID + ":grenade_generic");
 		grenade_smoke = new ItemGrenadeNT(4, (thrower, loc, nade) ->
 		{
-			int radius = 20;
-			List<Entity> hit = loc.world.get().getEntitiesWithinAABBExcludingEntity(nade, AxisAlignedBB.getBoundingBox(loc.posX - radius, loc.posY - radius, loc.posZ - radius, loc.posX + radius, loc.posY + radius, loc.posZ + radius));
+			final int radius = 20;
+			final List<Entity> hit = loc.world.get().getEntitiesWithinAABBExcludingEntity(nade, AxisAlignedBB.getBoundingBox(loc.posX - radius, loc.posY - radius, loc.posZ - radius, loc.posX + radius, loc.posY + radius, loc.posZ + radius));
 			
-			for(Entity e : hit) {
-				
-				if(!Library.isObstructed(loc.world.get(), loc.posX, loc.posY, loc.posZ, e.posX, e.posY + e.getEyeHeight(), e.posZ)) {
+			for (Entity e : hit)
+			{
+				if(!Library.isObstructed(loc.world.get(), loc.posX, loc.posY, loc.posZ, e.posX, e.posY + e.getEyeHeight(), e.posZ))
+				{
 					e.setFire(5);
-					
-					if(e instanceof EntityLivingBase) {
-						
-						PotionEffect eff = new PotionEffect(HbmPotion.phosphorus.id, 120 * 20, 0, true);
+					if (e instanceof EntityLivingBase)
+					{
+						final PotionEffect eff = new PotionEffect(HbmPotion.phosphorus.id, 120 * 20, 0, true);
 						eff.getCurativeItems().clear();
-						((EntityLivingBase)e).addPotionEffect(eff);
+						((EntityLivingBase) e).addPotionEffect(eff);
 					}
 				}
 			}
@@ -6139,6 +6142,7 @@ public class ModItems {
 		grenade_schrabidium = new ItemGrenade(7, EntityGrenadeSchrabidium.class).setRarity(EnumRarity.rare).setUnlocalizedName("grenade_schrabidium").setCreativeTab(MainRegistry.weaponTab).setTextureName(RefStrings.MODID + ":grenade_schrabidium_alt");
 		grenade_lemon = new ItemGrenade(4, EntityGrenadeLemon.class).setRarity(EnumRarity.uncommon).setUnlocalizedName("grenade_lemon").setCreativeTab(MainRegistry.weaponTab).setTextureName(RefStrings.MODID + ":grenade_lemon");
 		grenade_gascan = new ItemGrenade(EntityGrenadeGascan.class).setRarity(EnumRarity.uncommon).setUnlocalizedName("grenade_gascan").setCreativeTab(MainRegistry.weaponTab).setTextureName(RefStrings.MODID + ":grenade_gascan");
+		grenade_kyiv = new ItemGrenadeKyiv(-1).setUnlocalizedName("grenade_kyiv").setCreativeTab(MainRegistry.weaponTab).setTextureName(RefStrings.MODID + ":grenade_kyiv");
 		grenade_mk2 = new ItemGrenade(5, EntityGrenadeMk2.class).setRarity(EnumRarity.uncommon).setUnlocalizedName("grenade_mk2").setCreativeTab(MainRegistry.weaponTab).setTextureName(RefStrings.MODID + ":grenade_mk2_alt");
 		grenade_aschrab = new ItemGrenade(EntityGrenadeASchrab.class).setRarity(EnumRarity.rare).setUnlocalizedName("grenade_aschrab").setCreativeTab(MainRegistry.weaponTab).setTextureName(RefStrings.MODID + ":grenade_aschrab");
 		grenade_nuke = new ItemGrenade(EntityGrenadeNuke.class).setRarity(EnumRarity.uncommon).setUnlocalizedName("grenade_nuke").setCreativeTab(MainRegistry.weaponTab).setTextureName(RefStrings.MODID + ":grenade_nuke_alt");
@@ -6956,7 +6960,6 @@ public class ModItems {
 
 		//Nuggets
 		GameRegistry.registerItem(nugget_silicon, nugget_silicon.getUnlocalizedName());
-		GameRegistry.registerItem(nugget_sr90, nugget_sr90.getUnlocalizedName());
 		GameRegistry.registerItem(nugget_uranium, nugget_uranium.getUnlocalizedName());
 		GameRegistry.registerItem(nugget_u233, nugget_u233.getUnlocalizedName());
 		GameRegistry.registerItem(nugget_u234, nugget_u234.getUnlocalizedName());
@@ -8197,6 +8200,7 @@ public class ModItems {
 		GameRegistry.registerItem(gun_lunatic_marksman, gun_lunatic_marksman.getUnlocalizedName());
 		GameRegistry.registerItem(gun_hlr, gun_hlr.getUnlocalizedName());
 		GameRegistry.registerItem(gun_twr, gun_twr.getUnlocalizedName());
+		GameRegistry.registerItem(pagoda, pagoda.getUnlocalizedName());
 		GameRegistry.registerItem(crucible, crucible.getUnlocalizedName());
 		
 		//Ammo

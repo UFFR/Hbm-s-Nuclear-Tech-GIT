@@ -14,6 +14,6 @@ public interface IDataStorageSystem extends IDataStorageBase
 	@CheckReturnValue
 	public FileBase readFile(String filename);
 	@CheckReturnValue
-	public String getFileHash(String filename);
+	public byte[] getFileHash(String filename);
 	public Set<String> getFileList();
 }

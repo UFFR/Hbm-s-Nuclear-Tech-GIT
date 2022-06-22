@@ -29,6 +29,7 @@ import com.hbm.entity.projectile.EntityChopperMine;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidDuct;
 import com.hbm.interfaces.IFluidSource;
+import com.hbm.interfaces.ILocationProvider;
 import com.hbm.interfaces.Spaghetti;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.items.ModItems;
@@ -98,6 +99,7 @@ public class Library
 	public static final String ShimmeringBlaze = "061bc566-ec74-4307-9614-ac3a70d2ef38";
 	public static final String FifeMiner = "37e5eb63-b9a2-4735-9007-1c77d703daa3";
 	public static final String lag_add = "259785a0-20e9-4c63-9286-ac2f93ff528f";
+	public static final String Pu_238 = "c95fdfd3-bea7-4255-a44b-d21bc3df95e3";
 	public static final String Tankish = "609268ad-5b34-49c2-abba-a9d83229af03";
 	public static final String FrizzleFrazzle = "fc4cc2ee-12e8-4097-b26a-1c6cb1b96531";
 	public static final String the_NCR = "28ae585f-4431-4491-9ce8-3def6126e3c6";
@@ -649,30 +651,28 @@ public class Library
 		}
 	}
 	
-	public static String getHash(String input)
+	public static byte[] getHash(String input)
 	{
 		return getHash(input.getBytes(), EnumHashAlgorithm.SHA256);
 	}
 	
-	public static String getHash(byte[] input)
+	public static byte[] getHash(byte[] input)
 	{
 		return getHash(input, EnumHashAlgorithm.SHA256);
 	}
 	
 	@CheckReturnValue
-	public static String getHash(byte[] input, EnumHashAlgorithm algorithm)
+	public static byte[] getHash(byte[] input, EnumHashAlgorithm algorithm)
 	{
 		try
 		{
-			final MessageDigest sha256 = MessageDigest.getInstance(algorithm.name);
-			
-			return toHexString(sha256.digest(input));
+			return MessageDigest.getInstance(algorithm.name).digest(input);
 		}
 		catch (NoSuchAlgorithmException e)
 		{
 			e.printStackTrace();
 			MainRegistry.logger.catching(e);
-			return "";
+			return new byte[0];
 		}
 	}
 	
@@ -1074,6 +1074,11 @@ public class Library
 		}
 		
 		return flag;
+	}
+	
+	public static boolean isObstructed(World world, ILocationProvider loc1, ILocationProvider loc2)
+	{
+		return isObstructed(world, loc1.getX(), loc1.getY(), loc1.getZ(), loc2.getX(), loc2.getY(), loc2.getZ());
 	}
 	
 	public static boolean isObstructed(World world, double x, double y, double z, double a, double b, double c) {

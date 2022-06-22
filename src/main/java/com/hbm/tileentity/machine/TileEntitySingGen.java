@@ -1,8 +1,6 @@
 package com.hbm.tileentity.machine;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -16,7 +14,8 @@ import com.hbm.interfaces.Spaghetti;
 import com.hbm.inventory.FluidTank;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.container.ContainerSingGen;
-import com.hbm.inventory.fluid.*;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.recipes.SingGenRecipes;
 import com.hbm.inventory.recipes.SingGenRecipes.SingGenRecipe;
 import com.hbm.items.machine.ItemFluidIdentifier;
@@ -370,30 +369,10 @@ public class TileEntitySingGen extends TileEntityMachineBase implements IFluidAc
 	}
 
 	@Override
-	public void setFillstate(int fill, int index)
-	{
-		tank.setFill(fill);
-	}
-
-	@Override
 	public void setFluidFill(int fill, FluidType type)
 	{
 		if (type.equals(tank.getTankType()))
 			tank.setFill(fill);
-	}
-
-	@Override
-	public void setType(FluidType type, int index)
-	{
-		tank.setTankType(type);
-	}
-
-	@Override
-	public List<FluidTank> getTanks()
-	{
-		List<FluidTank> list = new ArrayList<FluidTank>();
-		list.add(tank);
-		return list;
 	}
 
 	@Override
@@ -418,5 +397,17 @@ public class TileEntitySingGen extends TileEntityMachineBase implements IFluidAc
 	public double getMaxRenderDistanceSquared()
 	{
 		return renderRange;
+	}
+
+	@Override
+	public void setFillForSync(int fill, int index)
+	{
+		tank.setFill(fill);
+	}
+
+	@Override
+	public void setTypeForSync(FluidType type, int index)
+	{
+		tank.setTankType(type);
 	}
 }

@@ -1,7 +1,5 @@
 package com.hbm.tileentity.machine;
 
-import java.math.BigInteger;
-
 import com.google.common.annotations.Beta;
 import com.hbm.interfaces.Untested;
 import com.hbm.items.machine.ItemRTGPellet;
@@ -10,6 +8,7 @@ import com.hbm.tileentity.IRTGUser;
 import com.hbm.tileentity.IRadioisotopeFuel;
 import com.hbm.tileentity.TileEntityMachineBase;
 
+import api.hbm.Date;
 import api.hbm.energy.IEnergyGenerator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,7 +20,7 @@ public class TileEntityBigRTG extends TileEntityMachineBase implements IRTGUser,
 	public static final short maxHeat = 32000;
 	private short heat = 0;
 	private long power = 0;
-	private BigInteger date = BigInteger.ZERO;
+	private Date date = new Date();
 	public TileEntityBigRTG()
 	{
 		super(24);
@@ -42,7 +41,7 @@ public class TileEntityBigRTG extends TileEntityMachineBase implements IRTGUser,
 	@Override
 	public void updateEntity()
 	{
-		date = TimeSavedData.getData(getWorldObj()).getFullTotal();
+		date = TimeSavedData.getData(getWorldObj()).dateData;
 		if (!worldObj.isRemote)
 		{
 			heat = (short) updateRTGs();
@@ -57,7 +56,7 @@ public class TileEntityBigRTG extends TileEntityMachineBase implements IRTGUser,
 		NBTTagCompound data = new NBTTagCompound();
 		data.setShort("heat", heat);
 		data.setLong("power", power);
-		data.setByteArray("date", date.toByteArray());
+		data.setByteArray("date", date.serialize());
 		networkPack(data, 25);
 	}
 	
@@ -66,7 +65,7 @@ public class TileEntityBigRTG extends TileEntityMachineBase implements IRTGUser,
 	{
 		heat = nbt.getShort("heat");
 		power = nbt.getLong("power");
-		date = new BigInteger(nbt.getByteArray("date"));
+		date = new Date(nbt.getByteArray("date"));
 	}
 	
 	@Override
@@ -75,7 +74,7 @@ public class TileEntityBigRTG extends TileEntityMachineBase implements IRTGUser,
 		super.writeToNBT(nbt);
 		nbt.setLong("power", power);
 		nbt.setShort("heat", heat);
-		nbt.setByteArray("date", date.toByteArray());
+		nbt.setByteArray("date", date.serialize());
 	}
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
@@ -83,7 +82,7 @@ public class TileEntityBigRTG extends TileEntityMachineBase implements IRTGUser,
 		super.readFromNBT(nbt);
 		power = nbt.getLong("power");
 		heat = nbt.getShort("heat");
-		date = new BigInteger(nbt.getByteArray("date"));
+		date = new Date(nbt.getByteArray("date"));
 	}
 
 	@Override
@@ -119,11 +118,11 @@ public class TileEntityBigRTG extends TileEntityMachineBase implements IRTGUser,
 	@Override
 	public void incrementAge()
 	{
-		date = date.add(BigInteger.ONE);
+		date.increment();
 	}
 
 	@Override
-	public BigInteger getInternalDate()
+	public Date getInternalDate()
 	{
 		return date;
 	}

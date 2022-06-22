@@ -14,6 +14,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+@Deprecated
 public class TurretHoward extends BlockDummyable {
 
 	public TurretHoward(Material mat) {

@@ -120,7 +120,7 @@ public class AESEncryptionKey extends FileBase
 			final SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
 			final byte[] salt = new byte[256];
 			RANDOM.nextBytes(salt);
-			KeySpec spec = new PBEKeySpec(Library.getHash(password).toCharArray(), salt, 65536, 256);
+			KeySpec spec = new PBEKeySpec(Library.toHexString(Library.getHash(password)).toCharArray(), salt, 65536, 256);
 			return new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
 		} catch (InvalidKeySpecException | NoSuchAlgorithmException e)
 		{

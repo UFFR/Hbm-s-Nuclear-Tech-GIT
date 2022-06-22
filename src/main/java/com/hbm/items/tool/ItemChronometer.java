@@ -28,7 +28,7 @@ public class ItemChronometer extends ItemCustomLore
 			final long playerBirthyear = HbmPlayerProps.getBirthyear(playerIn); 
 			worldIn.playSoundAtEntity(playerIn, "hbm:item.syringe", 1.0F, 1.0F);
 //			playerIn.addChatMessage(new ChatComponentText(I18nUtil.resolveKey("desc.player.ageData", playerAge, playerBirthday, playerBirthyear)));
-			PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(I18nUtil.resolveKey("desc.player.ageData", playerAge, playerBirthday, playerBirthyear)), (EntityPlayerMP) playerIn);
+			PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(I18nUtil.resolveKey("desc.player.ageData", playerAge, playerBirthday, playerBirthyear), 0), (EntityPlayerMP) playerIn);
 		}
 		return stack;
 	}
@@ -42,7 +42,7 @@ public class ItemChronometer extends ItemCustomLore
 			final byte pBDay = HbmPlayerProps.getBirthday((EntityPlayer) entity);
 			final long pBYear = HbmPlayerProps.getBirthyear((EntityPlayer) entity);
 			player.playSound("hbm:item.syringe", 1.0F, 1.0F);
-			PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(I18nUtil.resolveKey("desc.player.ageData", pAge, pBDay, pBYear)), (EntityPlayerMP) player);
+			PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(I18nUtil.resolveKey("desc.player.ageData", pAge, pBDay, pBYear), 0), (EntityPlayerMP) player);
 		}
 		return true;
 	}

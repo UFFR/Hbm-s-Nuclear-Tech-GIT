@@ -3,6 +3,7 @@ package com.hbm.entity;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.hbm.entity.cart.*;
 import com.hbm.entity.effect.*;
 import com.hbm.entity.grenade.*;
 import com.hbm.entity.item.*;
@@ -98,7 +99,6 @@ public class EntityMappings
 		add(EntityOilSpillFX.class, "entity_spill_fx", 1000);
 		add(EntityOilSpill.class, "entity_oil_spill", 1000);
 		add(EntityGasFX.class, "entity_spill_fx", 1000);
-		add(EntityGasFlameFX.class, "entity_gasflame_fx", 1000);
 		add(EntityMinecartTest.class, "entity_minecart_test", 1000);
 		add(EntitySparkBeam.class, "entity_spark_beam", 1000);
 		add(EntityMissileDoomsday.class, "entity_missile_doomsday", 1000);
@@ -189,12 +189,21 @@ public class EntityMappings
 		add(EntityGrenadeStunning.class, "entity_grenade_stunning", 250);
 		add(EntityGhost.class, "entity_ntm_ghost", 1000);
 		add(EntityGrenadeDynamite.class, "entity_grenade_dynamite", 250);
-		add(EntityGhost.class, "entity_ntm_ghost", 1000);
-		add(EntityGrenadeDynamite.class, "entity_grenade_dynamite", 250);
 		add(EntitySiegeLaser.class, "entity_ntm_siege_laser", 1000);
 		add(EntitySiegeDropship.class, "entity_ntm_siege_dropship", 1000);
 		add(EntityTNTPrimedBase.class, "entity_ntm_tnt_primed", 1000);
 		add(EntitySPV.class, "entity_self_propelled_vehicle_mark_1", 1000);
+		add(EntityGrenadeBouncyGeneric.class, "entity_grenade_bouncy_generic", 250);
+		add(EntityGrenadeImpactGeneric.class, "entity_grenade_impact_generic", 250);
+		add(EntityMinecartCrate.class, "entity_ntm_cart_crate", 250);
+		add(EntityMinecartDestroyer.class, "entity_ntm_cart_crate", 250);
+		add(EntityMinecartOre.class, "entity_ntm_cart_ore", 250);
+		add(EntityMinecartBogie.class, "entity_ntm_cart_bogie", 250);
+		add(EntityMagnusCartus.class, "entity_ntm_cart_chungoid", 250);
+		add(EntityMinecartPowder.class, "entity_ntm_cart_powder", 250);
+		add(EntityMinecartSemtex.class, "entity_ntm_cart_semtex", 250);
+		add(EntityNukeTorex.class, "entity_effect_torex", 250);
+		add(EntityArtilleryShell.class, "entity_artillery_shell", 250);
 		add(EntitySiegeTunneler.class, "entity_meme_tunneler", 1000);
 		add(EntityTesseract.class, "entity_tesseract", 50);
 		add(EntityGrenadeBouncyBaseNT.class, "entity_grenade_bouncy_nt", 500);
@@ -227,18 +236,17 @@ public class EntityMappings
 	private static int i = 0;
 	public static void registerEntities(Object mod)
 	{
-		Iterator<Triplet<Class<? extends Entity>, String, Integer>> technicalIterator = new ArrayList<>(technicalMap).iterator();
-		Iterator<Quartet<Class<? extends Entity>, String, Integer, Integer>> mobIterator = new ArrayList<>(mobMap).iterator();
+		final Iterator<Triplet<Class<? extends Entity>, String, Integer>> technicalIterator = new ArrayList<>(technicalMap).iterator();
+		final Iterator<Quartet<Class<? extends Entity>, String, Integer, Integer>> mobIterator = new ArrayList<>(mobMap).iterator();
 		while (technicalIterator.hasNext())
 		{
-			Triplet<Class<? extends Entity>, String, Integer> reg = technicalIterator.next();
-			EntityRegistry.registerModEntity(reg.getX(), reg.getY(), i, mod, reg.getZ(), 1, true);
+			final Triplet<Class<? extends Entity>, String, Integer> reg = technicalIterator.next();
+			EntityRegistry.registerModEntity(reg.getX(), reg.getY(), i++, mod, reg.getZ(), 1, true);
 			technicalIterator.remove();
-			i++;
 		}
 		while (mobIterator.hasNext())
 		{
-			Quartet<Class<? extends Entity>, String, Integer, Integer> reg = mobIterator.next();
+			final Quartet<Class<? extends Entity>, String, Integer, Integer> reg = mobIterator.next();
 			EntityRegistry.registerGlobalEntityID(reg.getW(), reg.getX(), EntityRegistry.findGlobalUniqueEntityId(), reg.getY(), reg.getZ());
 			mobIterator.remove();
 		}

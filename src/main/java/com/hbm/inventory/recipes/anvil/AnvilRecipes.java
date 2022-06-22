@@ -405,11 +405,20 @@ public class AnvilRecipes {
 		
 		constructionRecipes.add(new AnvilConstructionRecipe(new AStack[]
 				{
-					new OreDictStack(KEY_ANYPANE),
-					new OreDictStack(NETHERQUARTZ.gem()),
-					new ComparableStack(ModItems.magnetron),
-					new ComparableStack(ModItems.circuit_aluminium)
-				}, new AnvilOutput(new ItemStack(ModItems.watch_digital))).setTier(2));
+					new OreDictStack(AU.plate(), 6),
+					new OreDictStack(LAPIS.gem(), 4),
+					new OreDictStack(EMERALD.gem(), 4),
+					new OreDictStack(DIAMOND.gem(), 4),
+					new ComparableStack(ModItems.gem_alexandrite)
+				}, new AnvilOutput(new ItemStack(ModItems.pagoda))).setTier(5));
+		
+//		constructionRecipes.add(new AnvilConstructionRecipe(new AStack[]
+//				{
+//					new OreDictStack(KEY_ANYPANE),
+//					new OreDictStack(NETHERQUARTZ.gem()),
+//					new ComparableStack(ModItems.magnetron),
+//					new ComparableStack(ModItems.circuit_aluminium)
+//				}, new AnvilOutput(new ItemStack(ModItems.watch_digital))).setTier(2));
 		
 //		constructionRecipes.add(new AnvilConstructionRecipe(new AStack[]
 //				{

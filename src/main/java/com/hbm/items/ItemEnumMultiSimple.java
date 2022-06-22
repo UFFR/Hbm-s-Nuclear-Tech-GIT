@@ -9,7 +9,7 @@ import net.minecraft.util.IIcon;
 public class ItemEnumMultiSimple extends ItemEnumMulti
 {
 
-	public ItemEnumMultiSimple(Class<? extends Enum> theEnum, boolean multiName, boolean multiTexture)
+	public ItemEnumMultiSimple(Class<? extends Enum<?>> theEnum, boolean multiName, boolean multiTexture)
 	{
 		super(theEnum, multiName, multiTexture);
 	}
@@ -19,7 +19,7 @@ public class ItemEnumMultiSimple extends ItemEnumMulti
 	{
 		if (multiName)
 		{
-			Enum e = EnumUtil.grabEnumSafely(theEnum, stack.getItemDamage());
+			Enum<?> e = EnumUtil.grabEnumSafely(theEnum, stack.getItemDamage());
 			return "item." + e.toString().toLowerCase();
 		}
 		else
@@ -31,11 +31,11 @@ public class ItemEnumMultiSimple extends ItemEnumMulti
 	{
 		if (multiTexture)
 		{
-			Enum[] enums = theEnum.getEnumConstants();
+			Enum<?>[] enums = theEnum.getEnumConstants();
 			icons = new IIcon[enums.length];
 			for (int i = 0; i < icons.length; i++)
 			{
-				Enum num = enums[i];
+				Enum<?> num = enums[i];
 				icons[i] = reg.registerIcon("hbm:" + num.toString().toLowerCase());
 			}
 		}

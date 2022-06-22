@@ -3,7 +3,6 @@ package com.hbm.items.machine;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -16,13 +15,20 @@ import org.lwjgl.input.Keyboard;
 import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableSet;
 import com.hbm.items.ItemEnumMultiSimple;
-import com.hbm.items.ItemStorageEnums.*;
+import com.hbm.items.ItemStorageEnums.EnumStorageMagneticNew;
+import com.hbm.items.ItemStorageEnums.EnumStorageMagneticOld;
+import com.hbm.items.ItemStorageEnums.EnumStorageOptical;
+import com.hbm.items.ItemStorageEnums.IDataStorageItemEnum;
 import com.hbm.lib.HbmCollection;
 import com.hbm.lib.Library;
+import com.hbm.lib.Library.EnumHashAlgorithm;
+import com.hbm.main.DeserializationException;
 import com.hbm.util.BobMathUtil;
 import com.hbm.util.I18nUtil;
 
-import api.hbm.computer.filesystem.*;
+import api.hbm.computer.filesystem.FileBase;
+import api.hbm.computer.filesystem.FileMetadata;
+import api.hbm.computer.filesystem.IDataStorageItem;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -44,7 +50,7 @@ public class ItemStorageMedium extends ItemEnumMultiSimple implements IDataStora
 		super(clazz, true, true);
 	}
 	
-	public static enum EnumStorageItemType
+	public enum EnumStorageItemType
 	{
 		MAGNETIC_BASIC,// FDDs & tape drives, tells it its very weak to magnets
 		MAGNETIC_ENHANCED,// HDDs, somewhat weak to magnets
@@ -54,7 +60,7 @@ public class ItemStorageMedium extends ItemEnumMultiSimple implements IDataStora
 		CRYSTALLINE,// Quite stable, immune to almost everything, overall very good albeit expensive, similar to optical
 		SINGULARITY;// Endgame(?), immune to radiation
 	}
-	public static enum EnumStorageItemTraits
+	public enum EnumStorageItemTraits
 	{
 		//DIRTY("dirty"),// Prone to errors, makes more of a hassle to use, but easy to fix
 		DAMAGED("damaged"),// Physically damaged, prone to further corruption, fixable?
@@ -67,7 +73,7 @@ public class ItemStorageMedium extends ItemEnumMultiSimple implements IDataStora
 			key = "trait." + string;
 		}
 	}
-	public static enum ProsConsList
+	public enum ProsConsList
 	{
 		LIFESPAN_GOOD("pro.lifespan1"),
 		LIFESPAN_DECENT("pro.lifespan2"),
@@ -193,7 +199,7 @@ public class ItemStorageMedium extends ItemEnumMultiSimple implements IDataStora
 	}
 
 	@Override
-	public boolean writeFile(FileBase file, ItemStack stack)
+	public boolean writeFile(FileBase file, FileMetadata metadata, ItemStack stack)
 	{
 		final IDataStorageItemEnum instance = IDataStorageItemEnum.getInstance(theEnum, stack);
 		if (file.getSize() + getUsedCapacity(stack) > instance.getMaxCapacity())
@@ -202,10 +208,11 @@ public class ItemStorageMedium extends ItemEnumMultiSimple implements IDataStora
 		{
 			if (!stack.hasTagCompound())
 				stack.stackTagCompound = new NBTTagCompound();
-			stack.stackTagCompound.setByteArray(PREFIX + file.getName(), file.toBytes());
-			stack.stackTagCompound.setString(PREFIX + file.getName() + H_SUFFIX, Library.getHash(file.toBytes()));
-			HashSet<String> list = new HashSet<String>(getFileList(stack));
-			list.add(file.getName());
+			stack.stackTagCompound.setByteArray(PREFIX + metadata.filename, file.serialize());
+			stack.stackTagCompound.setByteArray(M_PREFIX + metadata.filename, metadata.serialize());
+			stack.stackTagCompound.setByteArray(PREFIX + metadata.filename + H_SUFFIX, Library.getHash(file.serialize(), EnumHashAlgorithm.MD5));
+			final HashSet<String> list = new HashSet<String>(getFileList(stack));
+			list.add(metadata.filename);
 			stack.stackTagCompound.setByteArray(KEY_FILE_LIST, Library.compressStringCollection(list));
 			IDataStorageItem.setUsedCapacity(stack, getUsedCapacity(stack) + file.getSize());
 			return true;
@@ -217,10 +224,10 @@ public class ItemStorageMedium extends ItemEnumMultiSimple implements IDataStora
 	{
 		if (getFileList(stack).contains(filename))
 		{
-			long size = readFile(filename, stack).getSize();
-			IDataStorageItem.setUsedCapacity(stack, IDataStorageItem.getUsedCapacity(stack) - size);
+			final long size = readFile(filename, stack).getSize();
+			IDataStorageItem.setUsedCapacity(stack, getUsedCapacity(stack) - size);
 			stack.stackTagCompound.removeTag(PREFIX + filename);
-			HashSet<String> list = new HashSet<>(getFileList(stack));
+			final HashSet<String> list = new HashSet<>(getFileList(stack));
 			list.remove(filename);
 			stack.stackTagCompound.setByteArray(KEY_FILE_LIST, Library.compressStringCollection(list));
 			return true;
@@ -230,16 +237,16 @@ public class ItemStorageMedium extends ItemEnumMultiSimple implements IDataStora
 	}
 
 	@Override
-	public boolean overwriteFile(File file, ItemStack stack)
+	public boolean overwriteFile(FileBase file, FileMetadata metadata, ItemStack stack)
 	{
-		IDataStorageItemEnum instance = IDataStorageItemEnum.getInstance(theEnum, stack);
-		if (getFileList(stack).contains(file.getName()))
+		final IDataStorageItemEnum instance = IDataStorageItemEnum.getInstance(theEnum, stack);
+		if (getFileList(stack).contains(metadata.filename))
 		{
-			if (file.getSize() + IDataStorageItem.getUsedCapacity(stack) > instance.getMaxCapacity())
+			if (file.getSize() + getUsedCapacity(stack) > instance.getMaxCapacity())
 				return false;
 			else
 			{
-				writeFile(file, stack);
+				writeFile(file, metadata, stack);
 				return true;
 			}
 		}
@@ -248,26 +255,58 @@ public class ItemStorageMedium extends ItemEnumMultiSimple implements IDataStora
 	}
 
 	@Override
-	public File readFile(String filename, ItemStack stack)
+	public FileBase readFile(String filename, ItemStack stack)
 	{
 		if (getFileList(stack).contains(PREFIX + filename))
-			return File.fromBytes(stack.stackTagCompound.getByteArray(PREFIX + filename));
+			try
+			{
+				return FileBase.deserializeFromRegistry(getFileMetadata(filename, stack).fileType, stack.stackTagCompound.getByteArray(PREFIX + filename));
+			} catch (DeserializationException e)
+			{
+				e.printStackTrace();
+				return null;
+			}
 		else
 			return null;
 	}
 	
 	@Override
-	public String readFileHash(String filename, ItemStack stack)
+	public byte[] getFileHash(String filename, ItemStack stack)
 	{
 		if (getFileList(stack).contains(PREFIX + filename))
-			return stack.stackTagCompound.getString(PREFIX + filename + H_SUFFIX);
+			return stack.stackTagCompound.getByteArray(PREFIX + filename + H_SUFFIX);
 		else
-			return "";
+			return FileBase.emptyBytes;
+	}
+	
+	@Override
+	public FileMetadata getFileMetadata(String filename, ItemStack stack)
+	{
+		if (getFileList(stack).contains(filename))
+		{
+			try
+			{
+				return FileMetadata.deserializer.deserialize(stack.stackTagCompound.getByteArray(M_PREFIX + filename));
+			} catch (DeserializationException e)
+			{
+				e.printStackTrace();
+				return null;
+			}
+		}
+		else
+			return null;
 	}
 
 	@Override
 	public Set<String> getFileList(ItemStack stack)
 	{
-		return ImmutableSet.copyOf(Library.decompressStringBytes(stack.getTagCompound().getByteArray(KEY_FILE_LIST)));
+		try
+		{
+			return ImmutableSet.copyOf(Library.decompressStringBytes(stack.getTagCompound().getByteArray(KEY_FILE_LIST)));
+		} catch (DeserializationException e)
+		{
+			e.printStackTrace();
+			return ImmutableSet.of();
+		}
 	}
 }

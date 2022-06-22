@@ -31,6 +31,7 @@ import cpw.mods.fml.common.Mod.Metadata;
 import cpw.mods.fml.common.ModMetadata;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -45,18 +46,10 @@ import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.generic.BlockMotherOfAllOres;
 import com.hbm.config.*;
 import com.hbm.creativetabs.*;
-import com.hbm.entity.cart.*;
-import com.hbm.entity.effect.*;
 import com.hbm.entity.EntityMappings;
 import com.hbm.entity.grenade.*;
 import com.hbm.entity.logic.*;
-import com.hbm.entity.missile.*;
-import com.hbm.entity.mob.*;
-import com.hbm.entity.mob.botprime.*;
 import com.hbm.entity.mob.siege.*;
-import com.hbm.entity.particle.*;
-import com.hbm.entity.projectile.*;
-import com.hbm.entity.qic.EntitySPV;
 import com.hbm.handler.*;
 import com.hbm.handler.imc.*;
 import com.hbm.handler.radiation.ChunkRadiationManager;
@@ -80,6 +73,7 @@ import com.hbm.tileentity.bomb.TileEntityNukeCustom;
 import com.hbm.tileentity.machine.*;
 import com.hbm.tileentity.machine.rbmk.RBMKDials;
 import com.hbm.util.ArmorUtil;
+import com.hbm.util.Tuple.Pair;
 import com.hbm.world.feature.OreCave;
 import com.hbm.world.feature.SchistStratum;
 import com.hbm.world.generator.CellularDungeonFactory;
@@ -989,7 +983,7 @@ public class MainRegistry {
 		MinecraftForge.EVENT_BUS.register(radiationSystem);
 		FMLCommonHandler.instance().bus().register(radiationSystem);
 		
-		PacketDispatcher.registerPackets();
+//		PacketDispatcher.registerPackets();
 	}
 	
 	//yes kids, this is where we would usually register commands

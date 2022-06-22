@@ -1,16 +1,13 @@
 package com.hbm.packet;
 
 import com.hbm.calc.EasyLocation;
+import com.hbm.tileentity.machine.computer.MessagePacket;
 
-import api.hbm.internet.IDataConnector;
-import api.hbm.internet.MessagePacket;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
-import net.minecraft.tileentity.TileEntity;
-
+// TODO
 public class NBTInternetDataPacket implements IMessage
 {
 	private EasyLocation loc;
@@ -30,7 +27,6 @@ public class NBTInternetDataPacket implements IMessage
 		coord[2] = buf.readInt();
 		byte[] msgBytes = new byte[buf.readInt()];
 		buf.readBytes(msgBytes);
-		msg = MessagePacket.fromBytes(msgBytes);
 	}
 
 	@Override
@@ -40,9 +36,6 @@ public class NBTInternetDataPacket implements IMessage
 		buf.writeInt(coord[0]);
 		buf.writeInt(coord[1]);
 		buf.writeInt(coord[2]);
-		byte[] msgBytes = msg.toBytes();
-		buf.writeByte(msgBytes.length);
-		buf.writeBytes(msgBytes);
 	}
 
 	
@@ -52,11 +45,11 @@ public class NBTInternetDataPacket implements IMessage
 		@Override
 		public IMessage onMessage(NBTInternetDataPacket message, MessageContext ctx)
 		{
-			loc.setWorld(Minecraft.getMinecraft().theWorld);
-			TileEntity te = loc.getTEAtCoord();
+//			loc.setWorld(Minecraft.getMinecraft().theWorld);
+//			TileEntity te = loc.getTEAtCoord();
 			
-			if (te != null && te instanceof IDataConnector)
-				((IDataConnector) te).recieveData(message.msg);
+//			if (te != null && te instanceof IDataConnector)
+//				((IDataConnector) te).recieveData(message.msg);
 			
 			return null;
 		}

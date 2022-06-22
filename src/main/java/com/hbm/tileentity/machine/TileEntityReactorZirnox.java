@@ -11,9 +11,9 @@ import com.hbm.entity.projectile.EntityDebrisBase.DebrisType;
 import com.hbm.entity.projectile.EntityZirnoxDebris;
 import com.hbm.explosion.ExplosionNukeGeneric;
 import com.hbm.handler.MultiblockHandlerXR;
-import com.hbm.handler.radiation.ChunkRadiationManager;
 import com.hbm.interfaces.IControlReceiver;
 import com.hbm.interfaces.IFluidAcceptor;
+import com.hbm.interfaces.IFluidContainer;
 import com.hbm.interfaces.IFluidSource;
 import com.hbm.inventory.FluidTank;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
@@ -147,6 +147,7 @@ public class TileEntityReactorZirnox extends TileEntityMachineBase implements IF
 		case 21: return new int[] { 14, 22 };
 		case 22: return new int[] { 15, 21, 23 };
 		case 23: return new int[] { 16, 22 };
+		default: return null;
 		}
 	}
 
@@ -455,16 +456,6 @@ public class TileEntityReactorZirnox extends TileEntityMachineBase implements IF
 			break;
 		default: break;
 		}
-	}
-
-	@Override
-	public List<FluidTank> getTanks() {
-		List<FluidTank> list = new ArrayList<FluidTank>();
-		list.add(steam);
-		list.add(carbonDioxide);
-		list.add(water);
-
-		return list;
 	}
 
 	@Override

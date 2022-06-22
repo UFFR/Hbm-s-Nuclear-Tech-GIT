@@ -1,7 +1,5 @@
 package com.hbm.tileentity.machine;
 
-import java.math.BigInteger;
-
 import com.google.common.annotations.Beta;
 import com.hbm.inventory.RecipesCommon.AStack;
 import com.hbm.inventory.recipes.BetavoltaicFuels;
@@ -9,6 +7,7 @@ import com.hbm.tileentity.IRTGUser;
 import com.hbm.tileentity.IRadioisotopeFuel;
 import com.hbm.tileentity.TileEntityMachineBase;
 
+import api.hbm.Date;
 import api.hbm.energy.IEnergyGenerator;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -20,7 +19,7 @@ public class TileEntityBetavoltaic extends TileEntityMachineBase implements IRTG
 	public static final short maxHeat = 32000;
 	private short heat = 0;
 	private long power = 0;
-	private BigInteger date = BigInteger.ZERO;
+	private Date date = new Date();
 	public TileEntityBetavoltaic()
 	{
 		super(24);
@@ -73,7 +72,7 @@ public class TileEntityBetavoltaic extends TileEntityMachineBase implements IRTG
 		NBTTagCompound data = new NBTTagCompound();
 		data.setLong("power", power);
 		data.setShort("heat", heat);
-		data.setByteArray("date", date.toByteArray());
+		data.setByteArray("date", date.serialize());
 		networkPack(data, 25);
 	}
 
@@ -82,7 +81,7 @@ public class TileEntityBetavoltaic extends TileEntityMachineBase implements IRTG
 	{
 		power = nbt.getLong("power");
 		heat = nbt.getShort("heat");
-		date = new BigInteger(nbt.getByteArray("date"));
+		date = new Date(nbt.getByteArray("date"));
 	}
 	
 	@Override
@@ -91,7 +90,7 @@ public class TileEntityBetavoltaic extends TileEntityMachineBase implements IRTG
 		super.writeToNBT(nbt);
 		nbt.setLong("power", power);
 		nbt.setShort("heat", heat);
-		nbt.setByteArray("date", date.toByteArray());
+		nbt.setByteArray("date", date.serialize());
 	}
 	
 	@Override
@@ -100,7 +99,7 @@ public class TileEntityBetavoltaic extends TileEntityMachineBase implements IRTG
 		super.readFromNBT(nbt);
 		power = nbt.getLong("power");
 		heat = nbt.getShort("heat");
-		date = new BigInteger(nbt.getByteArray("date"));
+		date = new Date(nbt.getByteArray("date"));
 	}
 	
 	@Override
@@ -135,11 +134,11 @@ public class TileEntityBetavoltaic extends TileEntityMachineBase implements IRTG
 	@Override
 	public void incrementAge()
 	{
-		date = date.add(BigInteger.ONE);
+		date.increment();
 	}
 
 	@Override
-	public BigInteger getInternalDate()
+	public Date getInternalDate()
 	{
 		return date;
 	}

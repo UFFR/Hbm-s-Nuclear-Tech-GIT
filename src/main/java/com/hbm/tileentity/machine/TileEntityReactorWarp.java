@@ -19,8 +19,11 @@ import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidSource;
 import com.hbm.interfaces.Untested;
 import com.hbm.inventory.FluidTank;
-import com.hbm.inventory.RecipesCommon.*;
-import com.hbm.inventory.fluid.*;
+import com.hbm.inventory.RecipesCommon.AStack;
+import com.hbm.inventory.RecipesCommon.ComparableStack;
+import com.hbm.inventory.RecipesCommon.OreDictStack;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.recipes.BreederRecipes;
 import com.hbm.inventory.recipes.BreederRecipes.BreederRecipe;
 import com.hbm.items.ModItems;
@@ -36,15 +39,14 @@ import api.hbm.energy.IEnergyUser;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import scala.actors.threadpool.Arrays;
 @Beta
 public class TileEntityReactorWarp extends TileEntityMachineBase implements IEnergyUser, IFluidAcceptor, IFluidSource, IControlReceiver
 {
-	private FluidTank[] tanks = new FluidTank[4];
+	private final FluidTank[] tanks = new FluidTank[4];
 	private static final HashMap<AStack, ThreeInts> catalystList = new HashMap<AStack, ThreeInts>(); 
 	private static final HashMap<AStack, ThreeInts> boosterList = new HashMap<AStack, ThreeInts>();
 	private static final HashMap<AStack, Quartet<Boolean, Integer, Integer, Integer>> coreList = new HashMap<>();
-	private List<IFluidAcceptor> cList = new ArrayList<IFluidAcceptor>();
+	private final List<IFluidAcceptor> cList = new ArrayList<IFluidAcceptor>();
 	public static final long maxPower = 1000000000, powerRate = 100000;
 	private long power = 0;
 	public static final int maxTemp = 3500000, maxBar = 200000, maxDyne = 5000, breedingSpeed = 2000;
@@ -305,28 +307,11 @@ public class TileEntityReactorWarp extends TileEntityMachineBase implements IEne
 		}
 	}
 	
-	@Override
-	public void setFillstate(int fill, int index)
-	{
-		tanks[index].setFill(fill);
-	}
 
 	@Override
 	public void setFluidFill(int fill, FluidType type)
 	{
 		tanks[indexFromType(type)].setFill(fill);
-	}
-
-	@Override
-	public void setType(FluidType type, int index)
-	{
-		tanks[index].setTankType(type);
-	}
-
-	@Override
-	public List<FluidTank> getTanks()
-	{
-		return Arrays.asList(tanks);
 	}
 
 	@Override
@@ -454,5 +439,17 @@ public class TileEntityReactorWarp extends TileEntityMachineBase implements IEne
 	public void receiveControl(NBTTagCompound data)
 	{
 		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void setFillForSync(int fill, int index)
+	{
+		tanks[index].setFill(fill);
+	}
+
+	@Override
+	public void setTypeForSync(FluidType type, int index)
+	{
+		tanks[index].setTankType(type);
 	}
 }

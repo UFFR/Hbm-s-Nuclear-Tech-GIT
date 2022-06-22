@@ -12,7 +12,6 @@ import com.hbm.util.I18nUtil;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 
-@SuppressWarnings("deprecation")
 public class GUIAtomicClock extends GuiInfoContainer
 {
 	private static final ResourceLocation texture = new ResourceLocation(RefStrings.MODID, "textures/gui/machine/gui_atomic_clock.png");
@@ -36,7 +35,7 @@ public class GUIAtomicClock extends GuiInfoContainer
 		super.drawScreen(mouseX, mouseY, f);
 		drawElectricityInfo(this, mouseX, mouseY, guiLeft + 8, guiTop + 16, 16, 55, clock.getPower(), clock.getMaxPower());
 //		clock.getTanks().get(0).renderTankInfo(this, mouseX, mouseY, guiLeft + 26, guiTop + 16, 16, 73);
-		if (clock.getIsOn() && clock.getTanks().get(0).getFill() > 0 && clock.getPower() >= clock.consumption)
+		if (clock.getIsOn() && clock.getTank().getFill() > 0 && clock.getPower() >= clock.consumption)
 		{
 			drawCustomInfoStat(mouseX, mouseY, guiLeft + 47, guiTop + 21, 46, 16, mouseX, mouseY, String.valueOf(displays[0].getNumber()));
 			drawCustomInfoStat(mouseX, mouseY, guiLeft + 100, guiTop + 21, 28, 16, mouseX, mouseY, String.valueOf(displays[1].getNumber().byteValue()));
@@ -81,11 +80,11 @@ public class GUIAtomicClock extends GuiInfoContainer
 		if (clock.getIsOn())
 		{
 			drawTexturedModalRect(guiLeft + 44, guiTop + 43, 67, 187, 18, 18);
-			if (clock.getTanks().get(0).getFill() > 0 && clock.getPower() >= clock.consumption)
+			if (clock.getTank().getFill() > 0 && clock.getPower() >= clock.consumption)
 				for (byte i = 0; i < 3; i++)
 					displays[i].drawNumber(clock.getTimeData()[i]);
 		}
-		clock.getTanks().get(0).renderTank(26, 16, zLevel, 16, 73);
+		clock.getTank().renderTank(26, 16, zLevel, 16, 73);
 		
 //		FluidTank cTank = clock.getTanks().get(0);
 //		mc.getTextureManager().bindTexture(cTank.getSheet());

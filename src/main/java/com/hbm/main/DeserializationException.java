@@ -11,7 +11,7 @@ public class DeserializationException extends Exception
 	public DeserializationException()
 	{
 		// TODO Auto-generated constructor stub
-		this("Something occurred during deserialization of an object.");
+		this("Something occurred during the deserialization of an object.");
 	}
 
 	public DeserializationException(String message)

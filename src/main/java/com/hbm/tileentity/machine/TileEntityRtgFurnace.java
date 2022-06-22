@@ -1,13 +1,12 @@
 package com.hbm.tileentity.machine;
 
-import java.math.BigInteger;
-
 import com.hbm.blocks.machine.MachineRtgFurnace;
 import com.hbm.items.machine.ItemRTGPellet;
 import com.hbm.tileentity.IRTGUser;
 import com.hbm.tileentity.IRadioisotopeFuel;
 import com.hbm.tileentity.TileEntityMachineBase;
 
+import api.hbm.Date;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -24,7 +23,7 @@ public class TileEntityRtgFurnace extends TileEntityMachineBase implements IRTGU
 	private static final int[] slots_top = new int[] {0};
 	private static final int[] slots_bottom = new int[] {4};
 	private static final int[] slots_side = new int[] {1, 2, 3};
-	private BigInteger date = BigInteger.ZERO;
+	private Date date = new Date();
 	public TileEntityRtgFurnace()
 	{
 		super(5);
@@ -92,7 +91,7 @@ public class TileEntityRtgFurnace extends TileEntityMachineBase implements IRTGU
 		super.readFromNBT(nbt);
 		
 		dualCookTime = nbt.getShort("CookTime");
-		date = new BigInteger(nbt.getByteArray("date"));
+		date = date.deserialize(nbt.getByteArray("date"));
 	}
 	
 	@Override
@@ -100,7 +99,7 @@ public class TileEntityRtgFurnace extends TileEntityMachineBase implements IRTGU
 	{
 		super.writeToNBT(nbt);
 		nbt.setInteger("cookTime", dualCookTime);
-		nbt.setByteArray("date", date.toByteArray());
+		nbt.setByteArray("date", date.serialize());
 	}
 	
 	@Override
@@ -223,7 +222,7 @@ public class TileEntityRtgFurnace extends TileEntityMachineBase implements IRTGU
 		
 		NBTTagCompound data = new NBTTagCompound();
 		data.setInteger("cookTime", dualCookTime);
-		data.setByteArray("date", date.toByteArray());
+		data.setByteArray("date", date.serialize());
 		networkPack(data, 25);
 	}
 	
@@ -231,7 +230,7 @@ public class TileEntityRtgFurnace extends TileEntityMachineBase implements IRTGU
 	public void networkUnpack(NBTTagCompound nbt)
 	{
 		dualCookTime = nbt.getShort("cookTime");
-		date = new BigInteger(nbt.getByteArray("date"));
+		date = date.deserialize(nbt.getByteArray("date"));
 	}
 
 	@Override
@@ -264,11 +263,11 @@ public class TileEntityRtgFurnace extends TileEntityMachineBase implements IRTGU
 	@Override
 	public void incrementAge()
 	{
-		date = date.add(BigInteger.ONE);
+		date.increment();
 	}
 
 	@Override
-	public BigInteger getInternalDate()
+	public Date getInternalDate()
 	{
 		return date;
 	}

@@ -75,6 +75,7 @@ public class ItemRTGPellet extends ItemCustomLore implements IRadioisotopeFuel
 		return decayItem == null ? null : decayItem.copy();
 	}
 	
+	@Override
 	public long getMaxLifespan() {
 		return lifespan;
 	}

@@ -1,16 +1,17 @@
 package com.hbm.tileentity.machine;
 
-import java.math.BigInteger;
-
 import com.hbm.blocks.machine.MachineDiFurnaceRTG;
-import com.hbm.inventory.recipes.MachineRecipes;
-import com.hbm.util.RTGUtil;
+import com.hbm.inventory.recipes.BlastFurnaceRecipes;
+import com.hbm.items.machine.ItemRTGPellet;
+import com.hbm.tileentity.IRTGUser;
+import com.hbm.tileentity.IRadioisotopeFuel;
 import com.hbm.tileentity.TileEntityMachineBase;
 
+import api.hbm.Date;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class TileEntityDiFurnaceRTG extends TileEntityMachineBase
+public class TileEntityDiFurnaceRTG extends TileEntityMachineBase implements IRTGUser
 {
 	public short progress;
 	private short processSpeed = 0;
@@ -18,7 +19,7 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase
 	private static final short timeRequired = 1200;
 	private static final int[] rtgIn = new int[] {3, 4, 5, 6, 7, 8};
 	private String name;
-	private BigInteger date = BigInteger.ZERO;
+	private Date date = new Date();
 	public TileEntityDiFurnaceRTG() {
 		super(9);
 	}
@@ -62,7 +63,7 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase
 		NBTTagCompound data = new NBTTagCompound();
 		data.setShort("progress", progress);
 		data.setShort("speed", processSpeed);
-		data.setByteArray("date", date.toByteArray());
+		data.setByteArray("date", date.serialize());
 		networkPack(data, 10);
 	}
 	
@@ -70,7 +71,7 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase
 	public void networkUnpack(NBTTagCompound nbt) {
 		progress = nbt.getShort("progress");
 		processSpeed = nbt.getShort("speed");
-		date = new BigInteger(nbt.getByteArray("date"));
+		date = new Date(nbt.getByteArray("date"));
 	}
 	
 	private void processItem() {
@@ -99,7 +100,7 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase
 		super.readFromNBT(nbt);
 		progress = nbt.getShort("progress");
 		processSpeed = nbt.getShort("speed");
-		date = new BigInteger(nbt.getByteArray("date"));
+		date = new Date(nbt.getByteArray("date"));
 	}
 
 	@Override
@@ -107,7 +108,7 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase
 		super.writeToNBT(nbt);
 		nbt.setShort("progress", progress);
 		nbt.setShort("speed", processSpeed);
-		nbt.setByteArray("date", date.toByteArray());
+		nbt.setByteArray("date", date.serialize());
 	}
 
 	public int getDiFurnaceProgressScaled(int i) {
@@ -170,8 +171,10 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase
 	}
 
 	@Override
-	public String getName() {
+	public String getName()
+	{
 		return "container.diFurnaceRTG";
+	}
 	public int getHeat()
 	{
 		return (updateRTGs() / 10);
@@ -195,11 +198,11 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase
 	@Override
 	public void incrementAge()
 	{
-		date = date.add(BigInteger.ONE);
+		date.increment();
 	}
 
 	@Override
-	public BigInteger getInternalDate()
+	public Date getInternalDate()
 	{
 		return date;
 	}

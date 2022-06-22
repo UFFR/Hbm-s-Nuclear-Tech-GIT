@@ -10,7 +10,6 @@ import api.hbm.Date;
 import api.hbm.serialization.Deserializer;
 import api.hbm.serialization.ISerializable;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 @Immutable
 @org.apache.http.annotation.Immutable
@@ -20,7 +19,7 @@ public final class FileMetadata implements ISerializable<FileMetadata>
 	{
 		try
 		{
-			final ByteBuf buf = Unpooled.copiedBuffer(bytes);
+			final ByteBuf buf = allocCopy.apply(bytes);
 			final byte[] filenameBytes = new byte[buf.readByte()];
 			final byte[] fileTypeBytes = new byte[buf.readByte()];
 			buf.readBytes(filenameBytes);
@@ -70,7 +69,7 @@ public final class FileMetadata implements ISerializable<FileMetadata>
 	@Override
 	public byte[] serialize()
 	{
-		ByteBuf buf = Unpooled.buffer();
+		final ByteBuf buf = alloc.get();
 		final byte[] filenameBytes = filename.getBytes();
 		final byte[] fileTypeBytes = fileType.getBytes();
 		buf.writeByte(filenameBytes.length);

@@ -9,6 +9,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.CheckForNull;
@@ -303,20 +305,21 @@ public class PreciseLocation implements Cloneable, Comparable<PreciseLocation>, 
 	@Override
 	public boolean equals(Object obj)
 	{
-		if (obj == null)
+		if (this == obj)
+			return true;
+		if (!(obj instanceof PreciseLocation))
 			return false;
-		
-		PreciseLocation test = constructGeneric(obj);
-		if (test == null)
-			return false;
-		
-		return coord.equals(test.coord) && world.equals(test.world) && dimID == test.dimID;
+		final PreciseLocation other = (PreciseLocation) obj;
+		return Arrays.equals(coord, other.coord) && dimID == other.dimID;
 	}
 	
 	@Override
 	public String toString()
 	{
-		return String.format("posX: %s; posY: %s; posZ: %s; dimID: %s, hasWorld: %s", coord[0], coord[1], coord[2], dimID, world.isPresent());
+		final StringBuilder builder = new StringBuilder();
+		builder.append("PreciseLocation [coord=").append(Arrays.toString(coord)).append(", dimID=").append(dimID)
+				.append(", world=").append(world).append(']');
+		return builder.toString();
 	}
 	
 	@Override
@@ -338,15 +341,19 @@ public class PreciseLocation implements Cloneable, Comparable<PreciseLocation>, 
 	@Override
 	public int hashCode()
 	{
-		return 7 * coord[0].hashCode() * coord[1].hashCode() * coord[2].hashCode() * 13 + world.hashCode();
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(coord);
+		result = prime * result + Objects.hash(dimID);
+		return result;
 	}
 
 	@Override
 	public int compareTo(PreciseLocation o)
 	{
-		PreciseLocation zero = new PreciseLocation(0, 0, 0);
-		BigDecimal testDist = distance(o, zero);
-		BigDecimal myDist = distance(this, zero);
+		final PreciseLocation zero = new PreciseLocation(0, 0, 0);
+		final BigDecimal testDist = distance(o, zero);
+		final BigDecimal myDist = distance(this, zero);
 		if (equals(o))
 			return 0;
 		return myDist.compareTo(testDist);

@@ -1,13 +1,11 @@
 package com.hbm.tileentity.machine;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.common.annotations.Beta;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.inventory.FluidTank;
 import com.hbm.inventory.UpgradeManager;
-import com.hbm.inventory.fluid.*;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.items.machine.ItemMachineUpgrade;
 import com.hbm.items.machine.ItemMachineUpgrade.UpgradeType;
 import com.hbm.lib.Library;
@@ -21,7 +19,7 @@ import net.minecraft.util.MathHelper;
 @Beta
 public class TileEntityAtomicClock extends TileEntityMachineBase implements IEnergyUser, IFluidAcceptor
 {
-	private FluidTank tank = new FluidTank(Fluids.CRYOGEL, 64000, 0);
+	private final FluidTank tank = new FluidTank(Fluids.CRYOGEL, 64000, 0);
 	private long power = 0, internalTime;
 	public static final long powerRate = 100000;
 	public static final long maxPower = 50000000;
@@ -51,9 +49,9 @@ public class TileEntityAtomicClock extends TileEntityMachineBase implements IEne
 //			year = timeData.getYear();
 			if (needsReset)
 			{
-				TimeSavedData data = TimeSavedData.getData(worldObj);
-				time = data.getDateFull();
-				internalTime = data.getInternalTime();
+				final TimeSavedData data = TimeSavedData.getData(worldObj);
+				time = data.dateData.export();
+				internalTime = data.dateData.getTime();
 			}
 			else
 				increment();
@@ -93,6 +91,11 @@ public class TileEntityAtomicClock extends TileEntityMachineBase implements IEne
 		if (rand.nextInt(upgrades[0] * 100) == 0)
 			internalTime = rand.nextInt(20 - upgrades[0]);
 		time[3] = (float) Library.convertScale(internalTime, 0L, 24000L, 0F, 10.0000F);
+	}
+	
+	public FluidTank getTank()
+	{
+		return tank;
 	}
 	
 	public boolean canOperate()
@@ -174,29 +177,9 @@ public class TileEntityAtomicClock extends TileEntityMachineBase implements IEne
 	}
 	
 	@Override
-	public void setFillstate(int fill, int index)
-	{
-		tank.setFill(fill);
-	}
-
-	@Override
 	public void setFluidFill(int fill, FluidType type)
 	{
 		tank.setFill(fill);
-	}
-
-	@Override
-	public void setType(FluidType type, int index)
-	{
-		tank.setTankType(type);
-	}
-
-	@Override
-	public List<FluidTank> getTanks()
-	{
-		List<FluidTank> l = new ArrayList<FluidTank>(1);
-		l.add(tank);
-		return l;
 	}
 
 	@Override
@@ -257,5 +240,17 @@ public class TileEntityAtomicClock extends TileEntityMachineBase implements IEne
 //		System.out.println("Inserted item is: " + (itemStack == null ? "null" : itemStack.getItem().getUnlocalizedName()));
 		if(itemStack != null && i >= 1 && i <= 5 && itemStack.getItem() instanceof ItemMachineUpgrade)
 			worldObj.playSoundEffect(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, "hbm:item.upgradePlug", 1.0F, 1.0F);
+	}
+
+	@Override
+	public void setFillForSync(int fill, int index)
+	{
+		tank.setFill(fill);
+	}
+
+	@Override
+	public void setTypeForSync(FluidType type, int index)
+	{
+		tank.setTankType(type);
 	}
 }

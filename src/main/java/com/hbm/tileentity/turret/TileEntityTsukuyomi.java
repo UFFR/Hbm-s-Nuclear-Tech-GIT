@@ -409,7 +409,7 @@ public class TileEntityTsukuyomi extends TileEntityMachineBase implements IEnerg
 	public String getPlayerHash()
 	{
 		if (currPlayer.isPresent())
-			return Library.getHash(Integer.toHexString((int) (7 * new EasyLocation(currPlayer.get()).hashCode() * currPlayer.get().getHealth() * currPlayer.get().dimension)).getBytes(), EnumHashAlgorithm.MD5);
+			return Library.toHexString(Library.getHash(Integer.toHexString((int) (7 * new EasyLocation(currPlayer.get()).hashCode() * currPlayer.get().getHealth() * currPlayer.get().dimension)).getBytes(), EnumHashAlgorithm.MD5));
 		else
 			return "N/A";
 	}
