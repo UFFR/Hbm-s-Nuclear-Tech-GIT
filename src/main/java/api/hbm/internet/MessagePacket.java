@@ -3,8 +3,6 @@ package api.hbm.internet;
 import java.io.IOException;
 import java.util.UUID;
 
-import com.hbm.lib.Library;
-import com.hbm.lib.Library.EnumHashAlgorithm;
 import com.hbm.main.DeserializationException;
 
 import api.hbm.serialization.ISerializable;
@@ -27,11 +25,11 @@ public class MessagePacket implements ISerializable<MessagePacket>
 		MIDDLE,
 		END,
 		COMMAND,
+		HASH,
 		CORRUPT;
 	}
 	private final UUID sender, target;
 	private final long size;
-	private final byte[] expectedHash;
 	private final NBTTagCompound nbt;
 	private final PacketType type;
 	
@@ -42,12 +40,23 @@ public class MessagePacket implements ISerializable<MessagePacket>
 		this.size = size;
 		this.nbt = nbt;
 		this.type = type;
-		expectedHash = Library.getHash(serialize(), EnumHashAlgorithm.MD5);
 	}
 	
 	public MessagePacket(UUID sender, UUID target, long size, PacketType type)
 	{
 		this(sender, target, size, new NBTTagCompound(), type);
+	}
+	
+	
+
+	public MessagePacket(UUID sender, UUID target, byte[] hash)
+	{
+		this.sender = sender;
+		this.target = target;
+		size = hash.length;
+		nbt = new NBTTagCompound();
+		nbt.setByteArray("hash", hash);
+		type = PacketType.HASH;
 	}
 
 	/**
@@ -75,14 +84,6 @@ public class MessagePacket implements ISerializable<MessagePacket>
 	}
 
 	/**
-	 * @return the expectedHash
-	 */
-	public byte[] getExpectedHash()
-	{
-		return expectedHash.clone();
-	}
-
-	/**
 	 * @return the nbt
 	 */
 	public NBTTagCompound getNbt()
@@ -105,26 +106,26 @@ public class MessagePacket implements ISerializable<MessagePacket>
 		{
 			final ByteBuf buf = allocCopy.apply(bytes);
 			final byte[] senderBytes = new byte[36],
-						 targetBytes = new byte[36],
-						 expectedHash = new byte[16];
+						 targetBytes = new byte[36];
 			buf.readBytes(senderBytes);
 			buf.readBytes(targetBytes);
 			final UUID sender = UUID.nameUUIDFromBytes(senderBytes),
 					   target = UUID.nameUUIDFromBytes(targetBytes);
 			final long size = buf.readLong();
-			buf.readBytes(expectedHash);
 			final byte typeOrdinal = buf.readByte();
 			final PacketType type;
 			if (typeOrdinal < 0 || typeOrdinal > 5)
 				return new MessagePacket(sender, target, size, PacketType.CORRUPT);
 			type = PacketType.values()[typeOrdinal];
+			if (type == PacketType.HASH)
+			{
+				final byte[] hashBytes = new byte[16];
+				buf.readBytes(hashBytes);
+				return new MessagePacket(sender, target, hashBytes);
+			}
 			final short nbtSize = buf.readShort();
 			if (nbtSize == 0)
-			{
-				final MessagePacket packet = new MessagePacket(sender, target, size, type);
-				return Library.doHashesMatch(expectedHash, Library.getHash(packet.serialize(), EnumHashAlgorithm.MD5)) ? packet
-						: new MessagePacket(sender, target, size, PacketType.CORRUPT);
-			}
+				return new MessagePacket(sender, target, size, type);
 			else if (nbtSize > 0)
 				return new MessagePacket(sender, target, size, PacketType.CORRUPT);
 			else
@@ -148,9 +149,13 @@ public class MessagePacket implements ISerializable<MessagePacket>
 		buf.writeBytes(sender.toString().getBytes());
 		buf.writeBytes(target.toString().getBytes());
 		buf.writeLong(getSize());
-		buf.writeBytes(getExpectedHash());
 		buf.writeByte(type.ordinal());
-		if (nbt.hasNoTags())
+		if (type == PacketType.HASH)
+		{
+			buf.writeBytes(nbt.getByteArray("hash"));
+			return buf.array();
+		}
+		else if (nbt.hasNoTags())
 			buf.writeShort(0);
 		else
 		{

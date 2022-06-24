@@ -175,6 +175,7 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase implements IRT
 	{
 		return "container.diFurnaceRTG";
 	}
+	@Override
 	public int getHeat()
 	{
 		return (updateRTGs() / 10);
@@ -183,10 +184,13 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase implements IRT
 	@Override
 	public ItemStack[] getInventory()
 	{
-		ItemStack[] rtgSlots = new ItemStack[rtgIn.length];
-		for (byte i = 0; i < rtgIn.length; i++)
-			rtgSlots[i] = slots[rtgIn[i]];
-		return rtgSlots;
+		return slots;
+	}
+	
+	@Override
+	public int[] getSlots()
+	{
+		return rtgIn;
 	}
 
 	@Override

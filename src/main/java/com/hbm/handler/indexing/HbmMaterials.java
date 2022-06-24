@@ -34,7 +34,7 @@ public class HbmMaterials {
 		}
 	}
 	
-	private static HashMap<AStack, List<Tuple.Pair<Mat, Double>>> map = new HashMap(); //ACHIEVEMENT GET! Stack three generics inside of each other!
+	private static HashMap<AStack, List<Tuple.Pair<Mat, Double>>> map = new HashMap<>(); //ACHIEVEMENT GET! Stack three generics inside of each other!
 	
 	/**
 	 * Quickly adds our tuples to the map, or expands the list if it already exists
@@ -46,7 +46,7 @@ public class HbmMaterials {
 		List<Tuple.Pair<Mat, Double>> existing = map.get(stack);
 		
 		if(existing == null)
-			existing = new ArrayList();
+			existing = new ArrayList<>();
 		
 		existing.addAll(Arrays.asList(tuples));
 		

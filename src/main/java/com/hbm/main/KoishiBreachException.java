@@ -4,6 +4,8 @@ import javax.swing.JOptionPane;
 
 import com.hbm.lib.Library;
 
+import net.minecraft.client.Minecraft;
+
 public class KoishiBreachException extends RuntimeException
 {
 	private static final String[] messages =
@@ -48,37 +50,35 @@ public class KoishiBreachException extends RuntimeException
 	public KoishiBreachException(String arg0, boolean b)
 	{
 		super(arg0);
-		if (b)
-			displayErrorDialog();
+		pauseAndDisplay(b);
 		// TODO Auto-generated constructor stub
 	}
 
 	public KoishiBreachException(Throwable arg0, boolean b)
 	{
 		super(arg0);
-		if (b)
-			displayErrorDialog();
+		pauseAndDisplay(b);
 		// TODO Auto-generated constructor stub
 	}
 
 	public KoishiBreachException(String arg0, Throwable arg1, boolean b)
 	{
 		super(arg0, arg1);
-		if (b)
-			displayErrorDialog();
+		pauseAndDisplay(b);
 		// TODO Auto-generated constructor stub
 	}
 
 	public KoishiBreachException(String arg0, Throwable arg1, boolean arg2, boolean arg3, boolean b)
 	{
 		super(arg0, arg1, arg2, arg3);
-		if (b)
-			displayErrorDialog();
+		pauseAndDisplay(b);
 		// TODO Auto-generated constructor stub
 	}
 	
-	private void displayErrorDialog()
+	private void pauseAndDisplay(boolean b)
 	{
-		JOptionPane.showMessageDialog(null, getMessage(), "Minecraft has crashed!", JOptionPane.ERROR_MESSAGE);
+		Minecraft.getMinecraft().displayInGameMenu();
+		if (b)
+			JOptionPane.showMessageDialog(null, getMessage(), "Minecraft has crashed!", JOptionPane.ERROR_MESSAGE);
 	}
 }

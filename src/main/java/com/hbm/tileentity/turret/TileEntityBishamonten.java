@@ -141,7 +141,7 @@ public class TileEntityBishamonten extends TileEntityMachineBase implements ILas
 			{
 				checkCoord.modifyCoord(vector.xCoord, vector.yCoord, vector.zCoord);
 				entityBuffer.addAll(worldObj.getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(checkCoord.posX - 5, checkCoord.posY - 5, checkCoord.posZ - 5, checkCoord.posX + 5, checkCoord.posY + 5, checkCoord.posZ + 5)));
-				if (checkCoord.getBlockAtCoord() == Blocks.air)
+				if (checkCoord.getBlock() == Blocks.air)
 					blockBuffer.add(checkCoord.clone().round());
 				distance = ILocationProvider.distance(checkCoord, myLoc);
 			} while (distance <= range && checkCoord.posY < 255 && checkCoord.posY > 0);
@@ -154,7 +154,7 @@ public class TileEntityBishamonten extends TileEntityMachineBase implements ILas
 				entity.onDeath(ModDamageSource.light);
 			}
 			for (EasyLocation blockPos : blockBuffer)
-				blockPos.setBlockAtCoord(ModBlocks.block_australium);
+				blockPos.setBlock(ModBlocks.block_australium);
 		}
 	}
 	

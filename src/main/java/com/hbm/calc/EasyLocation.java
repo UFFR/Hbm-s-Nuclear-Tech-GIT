@@ -1,5 +1,6 @@
 package com.hbm.calc;
 
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -11,7 +12,6 @@ import com.hbm.main.DeserializationException;
 import api.hbm.serialization.ISerializable;
 import api.hbm.serialization.SerializationRegistry;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
@@ -23,6 +23,7 @@ public class EasyLocation implements Cloneable, Comparable<EasyLocation>, ISeria
 	 * 
 	 */
 	private static final long serialVersionUID = -1791762616348589379L;
+	private static final EasyLocation ZERO_LOCATION = new EasyLocation(0, 0, 0);
 	public double posX, posY, posZ;
 	public int dimID;
 	public transient Optional<World> world = Optional.empty();
@@ -212,33 +213,14 @@ public class EasyLocation implements Cloneable, Comparable<EasyLocation>, ISeria
 	}
 
 	/** <b><i>Must</i></b> have world set!
+	 * @deprecated No point in existing since the entity itself needs the coordinates.
 	 * @param e The entity to spawn
 	 * @return Whatever spawnEntityInWorld() returns
 	 * @throws NoSuchElementException If the world is not set**/
-	public boolean spawnEntityAtCoord(Entity e)
+	@Deprecated
+	public boolean spawnEntity(Entity e)
 	{
 		return world.get().spawnEntityInWorld(e);
-	}
-	
-	/** <b><i>Has prerequisite of having the world object set</b></i>
-	 * @throws NoSuchElementException If the world is not set**/
-	public TileEntity getTEAtCoord()
-	{
-		return world.get().getTileEntity((int) posX, (int) posY, (int) posZ);
-	}
-	/** <b><i>Has prerequisite of having the world object set</b></i>
-	 * @throws NoSuchElementException If the world is not set**/
-	public Block getBlockAtCoord()
-	{
-		return world.get().getBlock((int) posX, (int) posY, (int) posZ);
-	}
-	/** <b><i>Has prerequisite of having the world object set</b></i>
-	 * @param b The block in question
-	 * @return Whatever the {@link#World.setBlock()} method is supposed to return
-	 * @throws NoSuchElementException If the world is not set**/
-	public boolean setBlockAtCoord(Block b)
-	{
-		return world.get().setBlock((int) posX, (int) posY, (int) posZ, b);
 	}
 	
 	@Override
@@ -263,7 +245,7 @@ public class EasyLocation implements Cloneable, Comparable<EasyLocation>, ISeria
 	{
 		final StringBuilder builder = new StringBuilder();
 		builder.append("EasyLocation [posX=").append(posX).append(", posY=").append(posY).append(", posZ=").append(posZ)
-				.append(", dimID=").append(dimID).append(", world=").append(world).append(']');
+				.append(", dimID=").append(dimID).append(", hasWorld()=").append(hasWorld()).append(']');
 		return builder.toString();
 	}
 	
@@ -281,10 +263,11 @@ public class EasyLocation implements Cloneable, Comparable<EasyLocation>, ISeria
 	@Override
 	public int compareTo(EasyLocation o)
 	{
-		final EasyLocation zero = new EasyLocation(0, 0, 0);
-		final double testDist = ILocationProvider.distance(o, zero);
-		final double myDist = ILocationProvider.distance(this, zero);
-		if (equals(o) || testDist == myDist)
+		if (equals(o))
+			return 0;
+		final double testDist = ILocationProvider.distance(o, ZERO_LOCATION);
+		final double myDist = ILocationProvider.distance(this, ZERO_LOCATION);
+		if (testDist == myDist)
 			return 0;
 		return myDist < testDist ? 1 : -1;
 	}

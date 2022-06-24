@@ -1,10 +1,11 @@
-package com.hbm.inventory.fluid;
+package com.hbm.inventory.fluid.types;
 
 import java.util.List;
 
 import com.hbm.explosion.ExplosionNT;
 import com.hbm.explosion.ExplosionNT.ExAttrib;
 import com.hbm.inventory.FluidTank;
+import com.hbm.inventory.fluid.FluidType;
 import com.hbm.render.util.EnumSymbol;
 
 import net.minecraft.tileentity.TileEntity;
@@ -23,7 +24,7 @@ public class FluidTypeExplosive extends FluidType
 		super(forcedId, name, color, p, f, r, symbol);
 	}
 
-	public FluidTypeExplosive addPower(float p)
+	public FluidTypeExplosive setPower(float p)
 	{
 		power = p;
 		return this;

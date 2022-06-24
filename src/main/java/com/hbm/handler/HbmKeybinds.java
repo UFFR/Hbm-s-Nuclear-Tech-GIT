@@ -70,6 +70,7 @@ public class HbmKeybinds {
 		TOGGLE_JETPACK,
 		TOGGLE_HEAD,
 		RELOAD,
+		UNLOAD,
 		DASH,
 		CRANE_UP,
 		CRANE_DOWN,

@@ -16,11 +16,17 @@ import net.minecraft.nbt.NBTTagCompound;
 @Untested
 public class TileEntityBigRTG extends TileEntityMachineBase implements IRTGUser, IEnergyGenerator
 {
+	private static final int[] SLOTS = new int[24];
 	public static final long maxPower = 1000000;
 	public static final short maxHeat = 32000;
 	private short heat = 0;
 	private long power = 0;
 	private Date date = new Date();
+	static
+	{
+		for (byte i = 0; i < 24; i++)
+			SLOTS[i] = i;
+	}
 	public TileEntityBigRTG()
 	{
 		super(24);
@@ -97,6 +103,12 @@ public class TileEntityBigRTG extends TileEntityMachineBase implements IRTGUser,
 		return slots;
 	}
 
+	@Override
+	public int[] getSlots()
+	{
+		return SLOTS;
+	}
+	
 	@Override
 	public void setPower(long power)
 	{

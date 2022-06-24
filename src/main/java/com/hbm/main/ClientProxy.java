@@ -749,8 +749,8 @@ public class ClientProxy extends ServerProxy {
 		final Iterator<Entry<Integer, MissilePart>> it = MissilePart.parts.entrySet().iterator();
 		
 		while(it.hasNext()) {
-			Map.Entry pair = (Map.Entry) it.next();
-			MissilePart part = (MissilePart) pair.getValue();
+			Entry<Integer, MissilePart> pair = it.next();
+			MissilePart part = pair.getValue();
 			MinecraftForgeClient.registerItemRenderer(part.part, new ItemRenderMissilePart(part));
 		}
 		
@@ -1774,15 +1774,15 @@ public class ClientProxy extends ServerProxy {
 		case TOGGLE_JETPACK:	return HbmKeybinds.jetpackKey.getIsKeyPressed();
 		case TOGGLE_HEAD:		return HbmKeybinds.hudKey.getIsKeyPressed();
 		case RELOAD:			return HbmKeybinds.reloadKey.getIsKeyPressed();
+		case UNLOAD:			return HbmKeybinds.unloadKey.getIsKeyPressed();
 		case DASH:				return HbmKeybinds.dashKey.getIsKeyPressed();
 		case CRANE_UP:			return HbmKeybinds.craneUpKey.getIsKeyPressed();
 		case CRANE_DOWN:		return HbmKeybinds.craneDownKey.getIsKeyPressed();
 		case CRANE_LEFT:		return HbmKeybinds.craneLeftKey.getIsKeyPressed();
 		case CRANE_RIGHT:		return HbmKeybinds.craneRightKey.getIsKeyPressed();
 		case CRANE_LOAD:		return HbmKeybinds.craneLoadKey.getIsKeyPressed();
+		default: 				return false;
 		}
-		
-		return false;
 	}
 
 	@Override

@@ -32,7 +32,7 @@ public class ItemModMagBoots extends ItemArmorMod implements IBatteryItem
 		if (!player.capabilities.isCreativeMode)
 			dischargeBattery(itemStack, rate);
 		EasyLocation pLoc = new EasyLocation(player).modifyCoord(0, -1, 0);
-		Block b = pLoc.getBlockAtCoord();
+		Block b = pLoc.getBlock();
 		boolean flag = false;
 		for (String metal : validMetals)
 			if (b.getUnlocalizedName().toLowerCase().contains(metal.toLowerCase()))

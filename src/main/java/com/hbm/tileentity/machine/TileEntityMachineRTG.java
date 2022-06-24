@@ -252,6 +252,12 @@ public class TileEntityMachineRTG extends TileEntityLoadedBase implements ISided
 	}
 
 	@Override
+	public int[] getSlots()
+	{
+		return slot_io;
+	}
+	
+	@Override
 	public Class<ItemRTGPellet> getDesiredClass()
 	{
 		return ItemRTGPellet.class;

@@ -141,10 +141,10 @@ public class GunConfiguration implements Cloneable
 //		newConfig.roundsPerCycle = roundsPerCycle;
 //		newConfig.showAmmo = showAmmo;
 //		return newConfig;
-		try {
+		try
+		{
 			return (GunConfiguration) super.clone();
-		}
-		catch (CloneNotSupportedException e)
+		} catch (CloneNotSupportedException e)
 		{
 			e.printStackTrace();
 			MainRegistry.logger.catching(Level.ERROR, e);

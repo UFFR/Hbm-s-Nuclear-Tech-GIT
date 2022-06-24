@@ -24,7 +24,7 @@ import net.minecraft.world.World;
 public class ItemPagoda extends Item implements IClickReceiver
 {
 	private static final String KEY_CHARGE = "PAGODA_CHARGE", KEY_CHARGING = "PAGODA_CHARGING";
-	private static final short MAX_CHARGE = 1000;
+	private static final short MAX_CHARGE = 1200;
 	private static final byte MAX_RADIUS = 20;
 	public ItemPagoda()
 	{
@@ -51,7 +51,7 @@ public class ItemPagoda extends Item implements IClickReceiver
 			{
 				checkCoord.addCoord(step);
 				entities.addAll(player.worldObj.getEntitiesWithinAABBExcludingEntity(player, AxisAlignedBB.getBoundingBox(checkCoord.posX - radius, checkCoord.posY - radius, checkCoord.posZ - radius, checkCoord.posX + radius, checkCoord.posY + radius, checkCoord.posZ + radius)));
-			} while (!checkCoord.getBlockAtCoord().isBlockNormalCube() && ILocationProvider.distance(checkCoord, playerLoc) < 50);
+			} while (!checkCoord.getBlock().isBlockNormalCube() && ILocationProvider.distance(checkCoord, playerLoc) < 50);
 			for (Entity entity : entities)
 				if (entity instanceof EntityLivingBase && !Library.isObstructed(player.getEntityWorld(), ILocationProvider.wrap(player), ILocationProvider.wrap(entity)))
 					HbmLivingProps.incrementRadiation((EntityLivingBase) entity, strength);

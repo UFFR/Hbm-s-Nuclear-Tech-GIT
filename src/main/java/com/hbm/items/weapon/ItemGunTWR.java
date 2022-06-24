@@ -40,7 +40,7 @@ public class ItemGunTWR extends ItemGunBase
 		{
 			checkCoord.addCoord(step);
 			entities.addAll(world.getEntitiesWithinAABBExcludingEntity(player, AxisAlignedBB.getBoundingBox(checkCoord.posX - 1, checkCoord.posY - 1, checkCoord.posZ - 1, checkCoord.posX + 1, checkCoord.posY + 1, checkCoord.posZ + 1)));
-		} while (!checkCoord.getBlockAtCoord().isBlockNormalCube() && ILocationProvider.distance(checkCoord, playerLoc) < 500);
+		} while (!checkCoord.getBlock().isBlockNormalCube() && ILocationProvider.distance(checkCoord, playerLoc) < 500);
 		for (Entity entity : entities)
 		{
 			if (entity instanceof EntityLivingBase)

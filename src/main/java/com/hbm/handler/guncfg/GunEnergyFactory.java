@@ -35,7 +35,7 @@ import net.minecraft.util.EnumChatFormatting;
 
 public class GunEnergyFactory
 {
-	private static Random rand = new Random();
+	private static final Random rand = new Random();
 	public static GunConfiguration getEMPConfig() {
 		
 		GunConfiguration config = new GunConfiguration();
@@ -523,7 +523,6 @@ public class GunEnergyFactory
 		bullet.effects.add(new PotionEffect(HbmPotion.perforated.id, 60 * 20, 4));
 		
 		//bullet.instakill = true;
-		// TODO Placeholder
 		//bullet.style = BulletConfiguration.STYLE_ORB;
 		bullet.trail = 1;
 

@@ -16,25 +16,25 @@ public class IMCBlastFurnace extends IMCHandler
 	@Override
 	public void process(IMCMessage message)
 	{
-		NBTTagCompound data = message.getNBTValue();
-		NBTTagCompound outputData = data.getCompoundTag("output");
-		ItemStack output = ItemStack.loadItemStackFromNBT(outputData);
+		final NBTTagCompound data = message.getNBTValue();
+		final NBTTagCompound outputData = data.getCompoundTag("output");
+		final ItemStack output = ItemStack.loadItemStackFromNBT(outputData);
 		
 		if (output == null)
 		{
 			printError(message, "Output stack could not be read!");
 			return;
 		}
-		Object input1;
-		Object input2;
+		final Object input1;
+		final Object input2;
 		switch (data.getString("inputType1"))
 		{
 		case "ore":
 			input1 = data.getString("input1");
 			break;
 		case "orelist":
-			NBTTagList list = data.getTagList("input1", 8);
-			ArrayList<String> ores = new ArrayList<String>(list.tagCount());
+			final NBTTagList list = data.getTagList("input1", 8);
+			final ArrayList<String> ores = new ArrayList<String>(list.tagCount());
 			for (int i = 0; i < list.tagCount(); i++)
 				ores.add(list.getStringTagAt(i));
 			input1 = ores;
@@ -52,8 +52,8 @@ public class IMCBlastFurnace extends IMCHandler
 			input2 = data.getString("input2");
 			break;
 		case "orelist":
-			NBTTagList list = data.getTagList("input2", 9);
-			ArrayList<String> ores = new ArrayList<String>(list.tagCount());
+			final NBTTagList list = data.getTagList("input2", 9);
+			final ArrayList<String> ores = new ArrayList<String>(list.tagCount());
 			for (int i = 0; i < list.tagCount(); i++)
 				ores.add(list.getStringTagAt(i));
 			input2 = ores;

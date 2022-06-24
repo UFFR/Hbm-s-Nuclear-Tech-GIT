@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.hbm.main.DeserializationException;
 import com.hbm.main.MainRegistry;
 
+import api.hbm.serialization.Deserializer;
 import api.hbm.serialization.ISerializable;
 import api.hbm.serialization.SerializationRegistry;
 import io.netty.buffer.ByteBuf;
@@ -26,9 +28,9 @@ import net.minecraftforge.oredict.OreDictionary;
 public class RecipesCommon {
 	static
 	{
-		SerializationRegistry.register(ComparableStack.class, new ComparableStack(Items.stick));
-		SerializationRegistry.register(ComparableNBTStack.class, new ComparableNBTStack(Items.stick));
-		SerializationRegistry.register(OreDictStack.class, new OreDictStack(""));
+		SerializationRegistry.register(ComparableStack.class, ComparableStack.C_DESERIALIZER);
+		SerializationRegistry.register(ComparableNBTStack.class, ComparableNBTStack.C_NBT_DESERIALIZER);
+		SerializationRegistry.register(OreDictStack.class, OreDictStack.DESERIALIZER);
 	}
 	public static ItemStack[] copyStackArray(ItemStack[] array) {
 		
@@ -156,7 +158,14 @@ public class RecipesCommon {
 		private static final long serialVersionUID = 6396702514319374418L;
 		public transient Item item;
 		public int meta;
-		
+		public static final Deserializer<ComparableStack> C_DESERIALIZER = bytes ->
+		{
+			final ByteBuf buf = allocCopy.apply(bytes);
+			final byte[] stringBytes = new byte[buf.readInt()];
+			buf.readBytes(stringBytes);
+			final Item item = (Item) Item.itemRegistry.getObject(new String(stringBytes));
+			return new ComparableStack(item, buf.readInt(), buf.readShort());
+		};
 		public ComparableStack(ItemStack stack) {
 			this.item = stack.getItem();
 			this.stacksize = stack.stackSize;
@@ -375,13 +384,19 @@ public class RecipesCommon {
 		}
 
 		@Override
-		public ComparableStack deserialize(byte[] bytes)
+		public String toString()
 		{
-			final ByteBuf buf = allocCopy.apply(bytes);
-			final byte[] stringBytes = new byte[buf.readInt()];
-			buf.readBytes(stringBytes);
-			final Item item = (Item) Item.itemRegistry.getObject(new String(stringBytes));
-			return new ComparableStack(item, buf.readInt(), buf.readShort());
+			final StringBuilder builder = new StringBuilder();
+			builder.append("ComparableStack [item=").append(item).append(", meta=").append(meta).append(", stacksize=")
+					.append(stacksize).append(", getFriendlyName()=").append(getFriendlyName())
+					.append(", getDictKeys()=").append(Arrays.toString(getDictKeys())).append(']');
+			return builder.toString();
+		}
+
+		@Override
+		public ComparableStack deserialize(byte[] bytes) throws DeserializationException
+		{
+			return C_DESERIALIZER.deserialize(bytes);
 		}
 	}
 	
@@ -397,7 +412,30 @@ public class RecipesCommon {
 		 */
 		private static final long serialVersionUID = -8166670902183709354L;
 		transient NBTTagCompound nbt;
-		
+		public static final Deserializer<ComparableNBTStack> C_NBT_DESERIALIZER = bytes ->
+		{
+			final ByteBuf buf = allocCopy.apply(bytes);
+			final byte[] stringBytes = new byte[buf.readInt()];
+			buf.readBytes(stringBytes);
+			final Item item = (Item) Item.itemRegistry.getObject(new String(stringBytes));
+			final int stackSize = buf.readInt();
+			final short stackMeta = buf.readShort(), dataLength = buf.readShort();
+			if (dataLength <= 0)
+				return new ComparableNBTStack(item, stackSize, stackMeta);
+			else
+			{
+				try
+				{
+					byte[] nbtBytes = new byte[dataLength];
+					final NBTTagCompound data = CompressedStreamTools.func_152457_a(nbtBytes, new NBTSizeTracker(2097152L));
+					return new ComparableNBTStack(item, stackSize, stackMeta).addNBT(data);
+				} catch (IOException e)
+				{
+					MainRegistry.logger.catching(e);
+					return new ComparableNBTStack(item, stackSize, stackMeta);
+				}
+			}
+		};
 		public ComparableNBTStack(ItemStack stack) {
 			super(stack);
 			if (stack.hasTagCompound())
@@ -486,29 +524,9 @@ public class RecipesCommon {
 		}
 		
 		@Override
-		public ComparableNBTStack deserialize(byte[] bytes)
+		public ComparableNBTStack deserialize(byte[] bytes) throws DeserializationException
 		{
-			final ByteBuf buf = allocCopy.apply(bytes);
-			final byte[] stringBytes = new byte[buf.readInt()];
-			buf.readBytes(stringBytes);
-			Item item = (Item) Item.itemRegistry.getObject(new String(stringBytes));
-			final int stackSize = buf.readInt();
-			final short stackMeta = buf.readShort(), dataLength = buf.readShort();
-			if (dataLength <= 0)
-				return new ComparableNBTStack(item, stackSize, stackMeta);
-			else
-			{
-				try
-				{
-					byte[] nbtBytes = new byte[dataLength];
-					NBTTagCompound data = CompressedStreamTools.func_152457_a(nbtBytes, new NBTSizeTracker(2097152L));
-					return new ComparableNBTStack(item, stackSize, stackMeta).addNBT(data);
-				} catch (IOException e)
-				{
-					MainRegistry.logger.catching(e);
-					return new ComparableNBTStack(item, stackSize, stackMeta);
-				}
-			}
+			return C_NBT_DESERIALIZER.deserialize(bytes);
 		}
 		
 		private void writeObject(ObjectOutputStream stream) throws IOException
@@ -532,6 +550,17 @@ public class RecipesCommon {
 				nbt = CompressedStreamTools.func_152457_a(nbtBytes, new NBTSizeTracker(2097152L));
 			}
 		}
+
+		@Override
+		public String toString()
+		{
+			final StringBuilder builder = new StringBuilder();
+			builder.append("ComparableNBTStack [nbt=").append(nbt).append(", item=").append(item).append(", meta=")
+					.append(meta).append(", stacksize=").append(stacksize).append(", getFriendlyName()=")
+					.append(getFriendlyName()).append(", getDictKeys()=").append(Arrays.toString(getDictKeys()))
+					.append(']');
+			return builder.toString();
+		}
 	}
 	
 	public static class OreDictStack extends AStack {
@@ -541,7 +570,13 @@ public class RecipesCommon {
 		 */
 		private static final long serialVersionUID = -9165927601026982547L;
 		public String name;
-		
+		public static final Deserializer<OreDictStack> DESERIALIZER = bytes ->
+		{
+			final ByteBuf buf = allocCopy.apply(bytes);
+			final byte[] stringBytes = new byte[buf.readInt()];
+			buf.readBytes(stringBytes);
+			return new OreDictStack(new String(stringBytes), buf.readInt());
+		};
 		public OreDictStack(String name) {
 			this.name = name;
 			this.stacksize = 1;
@@ -648,12 +683,17 @@ public class RecipesCommon {
 		}
 
 		@Override
-		public OreDictStack deserialize(byte[] bytes)
+		public OreDictStack deserialize(byte[] bytes) throws DeserializationException
 		{
-			final ByteBuf buf = allocCopy.apply(bytes);
-			final byte[] stringBytes = new byte[buf.readInt()];
-			buf.readBytes(stringBytes);
-			return new OreDictStack(new String(stringBytes), buf.readInt());
+			return DESERIALIZER.deserialize(bytes);
+		}
+
+		@Override
+		public String toString()
+		{
+			final StringBuilder builder = new StringBuilder();
+			builder.append("OreDictStack [name=").append(name).append(", stacksize=").append(stacksize).append(']');
+			return builder.toString();
 		}
 	}
 	/**

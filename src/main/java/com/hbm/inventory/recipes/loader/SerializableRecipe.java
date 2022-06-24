@@ -20,7 +20,9 @@ import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.RecipesCommon.OreDictStack;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
-import com.hbm.inventory.recipes.*;
+import com.hbm.inventory.recipes.ChemplantRecipes;
+import com.hbm.inventory.recipes.FuelPoolRecipes;
+import com.hbm.inventory.recipes.HadronRecipes;
 import com.hbm.items.ModItems;
 import com.hbm.main.MainRegistry;
 
@@ -30,14 +32,14 @@ import net.minecraft.item.ItemStack;
 public abstract class SerializableRecipe {
 	
 	public static final Gson gson = new Gson();
-	public static List<SerializableRecipe> recipeHandlers = new ArrayList();
+	public static final List<SerializableRecipe> recipeHandlers = new ArrayList<SerializableRecipe>();
 	
 	/*
 	 * INIT
 	 */
 	
 	public static void registerAllHandlers() {
-		recipeHandlers.add(new ChemPlantRecipesNT());
+		recipeHandlers.add(new ChemplantRecipes());
 		recipeHandlers.add(new HadronRecipes());
 		recipeHandlers.add(new FuelPoolRecipes());
 	}

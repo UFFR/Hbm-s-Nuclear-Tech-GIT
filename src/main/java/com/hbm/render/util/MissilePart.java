@@ -11,7 +11,7 @@ import net.minecraftforge.client.model.IModelCustom;
 
 public class MissilePart {
 	
-	public static HashMap<Integer, MissilePart> parts = new HashMap<Integer, MissilePart>();
+	public static final HashMap<Integer, MissilePart> parts = new HashMap<Integer, MissilePart>();
 
 	public Item part;
 	public PartType type;

@@ -280,13 +280,13 @@ public class CentrifugeRecipes {
 				new ItemStack(ModItems.powder_copper, 1),
 				new ItemStack(Blocks.gravel, 1) });
 		
-		recipes.put(new ComparableStack(ModItems.pellet_solinium_laced), new ItemStack[]
-				{
-					new ItemStack(ModItems.nugget_euphemium, 5),
-					new ItemStack(ModItems.nugget_solinium, 31),
-					new ItemStack(ModItems.powder_combine_steel, 2),
-					new ItemStack(ModItems.powder_lead)
-				});
+//		recipes.put(new ComparableStack(ModItems.pellet_solinium_laced), new ItemStack[]
+//				{
+//					new ItemStack(ModItems.nugget_euphemium, 5),
+//					new ItemStack(ModItems.nugget_solinium, 31),
+//					new ItemStack(ModItems.powder_combine_steel, 2),
+//					new ItemStack(ModItems.powder_lead)
+//				});
 		recipes.put(new ComparableStack(ModItems.powder_tektite), new ItemStack[] {
 				new ItemStack(ModItems.powder_meteorite_tiny, 1),
 				new ItemStack(ModItems.powder_paleogenite_tiny, 1),

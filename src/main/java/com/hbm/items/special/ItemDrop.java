@@ -70,7 +70,7 @@ public class ItemDrop extends ItemCustomLore {
 				newLoc = loc.clone();
 				newLoc.modifyCoord(worldIn.rand.nextInt(10), worldIn.rand.nextInt(10), worldIn.rand.nextInt(10));
 			}
-			while (newLoc.getBlockAtCoord() != Blocks.air);
+			while (newLoc.getBlock() != Blocks.air);
 			EntityTesseract tesseract = new EntityTesseract(worldIn);
 			tesseract.posX = newLoc.posX;
 			tesseract.posY = newLoc.posY;

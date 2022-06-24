@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Level;
 import com.google.common.collect.Multimap;
 import com.hbm.blocks.IStepTickReceiver;
 import com.hbm.blocks.ModBlocks;
+import com.hbm.calc.EasyLocation;
 import com.hbm.config.GeneralConfig;
 import com.hbm.config.MobConfig;
 import com.hbm.entity.missile.EntityMissileBaseAdvanced;
@@ -1390,26 +1391,27 @@ public class ModEventHandler {
 	}
 	
 	private static final String hash = "41eb77f138ce350932e33b6b26b233df9aad0c0c80c6a49cb9a54ddd8fae3f83",
-								hashAlt = "";
+								hashAlt = "7703cc9740573a65599cc6d96603b05ce31ca704751e4f6c77aa01cd3d818e2d";
 	
 	@SubscribeEvent
 	public void onClickSign(PlayerInteractEvent event) {
 
-		int x = event.x;
-		int y = event.y;
-		int z = event.z;
-		World world = event.world;
-		
-		if(!world.isRemote && event.action == Action.RIGHT_CLICK_BLOCK && world.getBlock(x, y, z) == Blocks.standing_sign) {
+		final int x = event.x;
+		final int y = event.y;
+		final int z = event.z;
+		final EasyLocation location = new EasyLocation(event.x, event.y, event.z);
+		final World world = event.world;
+		location.setWorld(world);
+		if(!world.isRemote && event.action == Action.RIGHT_CLICK_BLOCK && location.getBlock() == Blocks.standing_sign) {
 			
-			TileEntitySign sign = (TileEntitySign)world.getTileEntity(x, y, z);
+			final TileEntitySign sign = (TileEntitySign) location.getTE();
 			
-			String result = smoosh(sign.signText[0], sign.signText[1], sign.signText[2], sign.signText[3]);
+			final String result = smoosh(sign.signText[0], sign.signText[1], sign.signText[2], sign.signText[3]);
 			System.out.println(result);//TODO
 			
 			if(result.equals(hash)) {
 				world.func_147480_a(x, y, z, false);
-				EntityItem entityitem = new EntityItem(world, x, y, z, new ItemStack(ModItems.bobmazon_hidden));
+				final EntityItem entityitem = new EntityItem(world, x, y, z, new ItemStack(ModItems.bobmazon_hidden));
 				entityitem.delayBeforeCanPickup = 10;
 				world.spawnEntityInWorld(entityitem);
 			}
@@ -1419,54 +1421,54 @@ public class ModEventHandler {
 		
 	}
 	
-	private String smoosh(String s1, String s2, String s3, String s4) {
+	private static String smoosh(String s1, String s2, String s3, String s4) {
 		
-		Random rand = new Random();
-		String s = "";
+		final Random rand = new Random();
+		final StringBuilder s = new StringBuilder();
 
-		byte[] b1 = s1.getBytes();
-		byte[] b2 = s2.getBytes();
-		byte[] b3 = s3.getBytes();
-		byte[] b4 = s4.getBytes();
+		final byte[] b1 = s1.getBytes();
+		final byte[] b2 = s2.getBytes();
+		final byte[] b3 = s3.getBytes();
+		final byte[] b4 = s4.getBytes();
 		
 		if(b1.length == 0 || b2.length == 0 || b3.length == 0 || b4.length == 0)
 			return "";
 		
-		s += s1;
+		s.append(s1);
 		rand.setSeed(b1[0]);
-		s += rand.nextInt(0xffffff);
+		s.append(rand.nextInt(0xffffff));
 		
-		s += s2;
+		s.append(s2);
 		rand.setSeed(rand.nextInt(0xffffff) + b2[0]);
 		rand.setSeed(b2[0]);
-		s += rand.nextInt(0xffffff);
+		s.append(rand.nextInt(0xffffff));
 		
-		s += s3;
+		s.append(s3);
 		rand.setSeed(rand.nextInt(0xffffff) + b3[0]);
 		rand.setSeed(b3[0]);
-		s += rand.nextInt(0xffffff);
+		s.append(rand.nextInt(0xffffff));
 		
-		s += s4;
+		s.append(s4);
 		rand.setSeed(rand.nextInt(0xffffff) + b4[0]);
 		rand.setSeed(b4[0]);
-		s += rand.nextInt(0xffffff);
+		s.append(rand.nextInt(0xffffff));
 		
 		//System.out.println(s);
 		
-		return getHash(s);
+		return getHash(s.toString());
 	}
 	
-	private String getHash(String inp) {
+	private static String getHash(String inp) {
 		
 		try {
-			MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
-			byte[] bytes = sha256.digest(inp.getBytes());
-			String str = "";
+			final MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
+			final byte[] bytes = sha256.digest(inp.getBytes());
+			final StringBuilder str = new StringBuilder();
 			
-		    for(int b : bytes)
-		      str = str + Integer.toString((b & 0xFF) + 256, 16).substring(1);
+		    for (byte b : bytes)
+		      str.append(Integer.toString((b & 0xFF) + 256, 16).substring(1));
 	    
-		    return str;
+		    return str.toString();
 		    
 		} catch (NoSuchAlgorithmException e)
 		{

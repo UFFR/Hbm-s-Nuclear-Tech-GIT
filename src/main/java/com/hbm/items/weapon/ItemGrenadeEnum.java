@@ -44,30 +44,30 @@ public class ItemGrenadeEnum extends ItemEnumMulti
 		logicMap.put(AmmoHandGrenade.SMOKE, (thrower, loc, nade) ->
 		{
 			final int radius = 20;
-			List<Entity> hit = loc.world.get().getEntitiesWithinAABBExcludingEntity(null, AxisAlignedBB.getBoundingBox(loc.posX - radius, loc.posY - radius, loc.posZ - radius, loc.posX + radius, loc.posY + radius, loc.posZ + radius));
+			final List<Entity> hit = loc.world.get().getEntitiesWithinAABBExcludingEntity(null, AxisAlignedBB.getBoundingBox(loc.posX - radius, loc.posY - radius, loc.posZ - radius, loc.posX + radius, loc.posY + radius, loc.posZ + radius));
 			
-			for(Entity e : hit) {
+			for (Entity e : hit) {
 				
 				if(!Library.isObstructed(loc.world.get(), loc.posX, loc.posY, loc.posZ, e.posX, e.posY + e.getEyeHeight(), e.posZ)) {
 					e.setFire(5);
 					
-					if(e instanceof EntityLivingBase) {
+					if (e instanceof EntityLivingBase) {
 						
-						PotionEffect eff = new PotionEffect(HbmPotion.phosphorus.id, 120 * 20, 0, true);
+						final PotionEffect eff = new PotionEffect(HbmPotion.phosphorus.id, 120 * 20, 0, true);
 						eff.getCurativeItems().clear();
 						((EntityLivingBase)e).addPotionEffect(eff);
 					}
 				}
 			}
 			
-			NBTTagCompound data = new NBTTagCompound();
+			final NBTTagCompound data = new NBTTagCompound();
 			data.setString("type", "vanillaburst");
 			data.setString("mode", "flame");
 			data.setInteger("count", 200);
 			data.setDouble("motion", 0.5);
 			
 			
-			NBTTagCompound haze = new NBTTagCompound();
+			final NBTTagCompound haze = new NBTTagCompound();
 			haze.setString("type", "haze");
 			for (byte i = 0; i < 5; i++)
 			{
@@ -81,7 +81,7 @@ public class ItemGrenadeEnum extends ItemEnumMulti
 		});
 		logicMap.put(AmmoHandGrenade.FRAG, (thrower, loc, nade) ->
 		{
-			World world = loc.world.get();
+			final World world = loc.world.get();
 			if(nade.isBurning())
         	{
         		ExplosionChaos.frag(world, (int)loc.posX, (int)loc.posY, (int)loc.posZ, 100, true, thrower);
@@ -95,7 +95,7 @@ public class ItemGrenadeEnum extends ItemEnumMulti
 		});
 		logicMap.put(AmmoHandGrenade.FIRE, (thrower, loc, nade) ->
 		{
-			World world = loc.world.get();
+			final World world = loc.world.get();
             ExplosionChaos.frag(world, (int)loc.posX, (int)loc.posY, (int)loc.posZ, 100, true, thrower);
             ExplosionChaos.burn(world, (int)loc.posX, (int)loc.posY, (int)loc.posZ, 5);
             ExplosionChaos.flameDeath(world, (int)loc.posX, (int)loc.posY, (int)loc.posZ, 15);
@@ -103,14 +103,14 @@ public class ItemGrenadeEnum extends ItemEnumMulti
 		});
 		logicMap.put(AmmoHandGrenade.SHRAPNEL, (thrower, loc, nade) ->
 		{
-			World world = loc.world.get();
+			final World world = loc.world.get();
 			world.createExplosion(nade, loc.posX, loc.posY, loc.posZ, 2.0F, true);
 			for (byte i = 0; i < 5; i++) 
 				ExplosionLarge.spawnShrapnels(world, loc.posX, loc.posY, loc.posZ, 5);
 		});
 		logicMap.put(AmmoHandGrenade.CLUSTER, (thrower, loc, nade) ->
 		{
-			World world = loc.world.get();
+			final World world = loc.world.get();
             ExplosionChaos.cluster(world, (int)loc.posX, (int)loc.posY, (int)loc.posZ, 10, 50);
             world.createExplosion(nade, loc.posX, loc.posY, loc.posZ, 1.5F, true);
 		});
@@ -121,32 +121,32 @@ public class ItemGrenadeEnum extends ItemEnumMulti
 		});
 		logicMap.put(AmmoHandGrenade.ELECTRIC, (thrower, loc, nade) ->
 		{
-			World world = loc.world.get();
+			final World world = loc.world.get();
             world.createExplosion(nade, loc.posX, loc.posY, loc.posZ, 2.0F, true);
-            loc.spawnEntityAtCoord(new EntityLightningBolt(world, loc.posX, loc.posY, loc.posZ));
+            loc.spawnEntity(new EntityLightningBolt(world, loc.posX, loc.posY, loc.posZ));
 		});
 		logicMap.put(AmmoHandGrenade.POISON, (thrower, loc, nade) ->
 		{
-			World world = loc.world.get();
+			final World world = loc.world.get();
 			world.createExplosion(nade, loc.posX, loc.posY, loc.posZ, 2.0F, true);
 			ExplosionNukeGeneric.wasteNoSchrab(world, (int) loc.posX, (int) loc.posY, (int) loc.posZ, 10);
 		});
 		logicMap.put(AmmoHandGrenade.GAS, (thrower, loc, nade) ->
 		{
-			World world = loc.world.get();
+			final World world = loc.world.get();
 			world.createExplosion(nade, loc.posX, loc.posY, loc.posZ, 0.0F, true);
 			ExplosionChaos.spawnChlorine(world, loc.posX, loc.posY, loc.posZ, 50, 1.25, 0);
 		});
 		logicMap.put(AmmoHandGrenade.PULSE, (thrower, loc, nade) ->
 		{
-			World world = loc.world.get();
+			final World world = loc.world.get();
 			ExplosionChaos.pulse(world, (int) loc.posX, (int) loc.posY, (int) loc.posZ, 7);
     		world.playSoundEffect((int)loc.posX, (int)loc.posY, (int)loc.posZ, "random.explode", 4.0F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F);
     		ExplosionLarge.spawnShock(world, loc.posX, loc.posY, loc.posZ, 24, 2);
 		});
 		logicMap.put(AmmoHandGrenade.PLASMA, (thrower, loc, nade) ->
 		{
-			World world = loc.world.get();
+			final World world = loc.world.get();
 			world.createExplosion(nade, loc.posX, loc.posY, loc.posZ, 2.0F, true);
 			ExplosionChaos.plasma(world, (int) loc.posX, (int) loc.posY, (int) loc.posZ, 7);
 		});
@@ -172,7 +172,7 @@ public class ItemGrenadeEnum extends ItemEnumMulti
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List tooltip, boolean b)
 	{
-		AmmoHandGrenade nade = EnumUtil.grabEnumSafely(theEnum, stack.getItemDamage());
+		final AmmoHandGrenade nade = EnumUtil.grabEnumSafely(theEnum, stack.getItemDamage());
 		tooltip.add(I18nUtil.resolveKey("desc.item.grenade.fuse", translateFuse(nade.fuse)));
 		if (ItemCustomLore.getHasLore(stack))
 			tooltip.add("");
@@ -182,7 +182,7 @@ public class ItemGrenadeEnum extends ItemEnumMulti
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-		AmmoHandGrenade nade = EnumUtil.grabEnumSafely(theEnum, stack.getItemDamage());
+		final AmmoHandGrenade nade = EnumUtil.grabEnumSafely(theEnum, stack.getItemDamage());
 		
 		if (!player.capabilities.isCreativeMode)
 			stack.stackSize--;

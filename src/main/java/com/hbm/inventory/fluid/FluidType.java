@@ -186,7 +186,7 @@ public class FluidType {
 		Collections.sort(sortedTraits);
 		for (FluidTrait trait : sortedTraits)
 		{
-			String uloc = "desc.fTrait.".concat(trait.toString().toLowerCase());
+			final String uloc = "desc.fTrait.".concat(trait.toString().toLowerCase());
 			if (trait == FluidTrait.NO_ID)
 				continue;
 			else if (trait == FluidTrait.CRYO || trait == FluidTrait.HOT)

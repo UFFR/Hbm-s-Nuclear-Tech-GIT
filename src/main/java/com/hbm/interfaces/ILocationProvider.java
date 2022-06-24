@@ -1,7 +1,10 @@
 package com.hbm.interfaces;
 
+import java.util.NoSuchElementException;
+
 import javax.annotation.Nonnull;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
@@ -22,7 +25,38 @@ public interface ILocationProvider
 	{
 		return new int[] {(int) getX(), (int) getY(), (int) getZ()};
 	}
+	/**
+	 * Checks if the coordinates are invalid.
+	 * @return If any of the coordinates are {@code NaN}.
+	 */
+	public default boolean isInvalid()
+	{
+		return Double.isNaN(getX()) || Double.isNaN(getY()) || Double.isNaN(getZ());
+	}
+	/** <b><i>Has prerequisite of having the world object set</b></i>
+	 * @throws NoSuchElementException If the world is not set and is backed by an Optional
+	 * @throws NullPointerException If the world is not set and is not backed by an Optional**/
+	public default Block getBlock()
+	{
+		return getWorld().getBlock((int) getX(), (int) getY(), (int) getZ());
+	}
+	/** <b><i>Has prerequisite of having the world object set</b></i>
+	 * @throws NoSuchElementException If the world is not set and is backed by an Optional
+	 * @throws NullPointerException If the world is not set and is not backed by an Optional**/
+	public default TileEntity getTE()
+	{
+		return getWorld().getTileEntity((int) getX(), (int) getY(), (int) getZ());
+	}
 	
+	/** <b><i>Has prerequisite of having the world object set</b></i>
+	 * @param b The block in question
+	 * @return Whatever the {@link#World.setBlock()} method is supposed to return
+	 * @throws NoSuchElementException If the world is not set and is backed by an Optional
+	 * @throws NullPointerException If the world is not set and is not backed by an Optional**/
+	public default boolean setBlock(Block block)
+	{
+		return getWorld().setBlock((int) getX(), (int) getY(), (int) getZ(), block);
+	}
 	public static Vec3 makeVector(@Nonnull ILocationProvider loc1, @Nonnull ILocationProvider loc2)
 	{
 		return Vec3.createVectorHelper(loc2.getX() - loc1.getX(), loc2.getY() - loc1.getY(), loc2.getZ() - loc2.getZ());
@@ -43,11 +77,6 @@ public interface ILocationProvider
 	{
 		final Vec3 vec = makeVector(loc1, loc2);
 		return Math.atan2(Math.sqrt(vec.zCoord * vec.zCoord + vec.xCoord * vec.xCoord), vec.yCoord) + Math.PI;
-	}
-	
-	public default boolean isInvalid()
-	{
-		return Double.isNaN(getX()) || Double.isNaN(getY()) || Double.isNaN(getZ());
 	}
 	
 	public static ILocationProvider wrap(Entity entity)

@@ -59,6 +59,7 @@ public class TileEntityRtgFurnace extends TileEntityMachineBase implements IRTGU
 		return true;
 	}
 	
+	@Override
 	public boolean isLoaded() {
 		return getHeat() > 0;
 	}
@@ -242,10 +243,13 @@ public class TileEntityRtgFurnace extends TileEntityMachineBase implements IRTGU
 	@Override
 	public ItemStack[] getInventory()
 	{
-		ItemStack[] rtgSlots = new ItemStack[slots_side.length];
-		for (byte i = 0; i < slots_side.length; i++)
-			rtgSlots[i] = slots[slots_side[i]];
-		return rtgSlots;
+		return slots;
+	}
+	
+	@Override
+	public int[] getSlots()
+	{
+		return slots_side;
 	}
 
 	@Override

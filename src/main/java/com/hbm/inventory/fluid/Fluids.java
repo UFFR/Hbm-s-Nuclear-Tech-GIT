@@ -214,7 +214,7 @@ public class Fluids {
 		PLASMA_WARP =		new FluidTypeFlammable(		"PLASMA_WARP",		0x00FFFF, 5, 5, 5, EnumSymbol.ANTIMATTER).addTraits(FluidTrait.AMAT).setTemp(1200000);
 		H_BR =				new FluidType(				"H_BR",				0xFF0000, 3, 0, 0, EnumSymbol.ACID).addTraits(FluidTrait.CORROSIVE_2);
 		VITRIOL = 			new FluidType(				"VITRIOL",			0xF1C40F, 3, 0, 2, EnumSymbol.OXIDIZER).addTraits(FluidTrait.CORROSIVE_2, FluidTrait.LEAD_CONTAINER);
-		NITROGLYCERIN =		new FluidTypeExplosive(		"NITROGLYCERIN", 	0xa6a4a2, 3, 2, 4, EnumSymbol.NONE).addPower(5);
+		NITROGLYCERIN =		new FluidTypeExplosive(		"NITROGLYCERIN", 	0xa6a4a2, 3, 2, 4, EnumSymbol.NONE).setPower(5);
 		NITER = 			new FluidType(				"NITER", 			0x808059, 4, 0, 3, EnumSymbol.OXIDIZER).addTraits(FluidTrait.CORROSIVE_2);
 		// ^ ^ ^ ^ ^ ^ ^ ^
 		//ADD NEW FLUIDS HERE
@@ -344,7 +344,7 @@ public class Fluids {
 				collectionName = "idMapping";
 			}
 			
-			throw new IllegalStateException("A severe error has occoured during NTM's fluid registering process! The MetaOrder and Mappings are inconsistent! Mapping size: " + idMapping.size()+ " / MetaOrder size: " + metaOrder.size() + '\n' + collectionName + " appears to be missing following fluids: " + missingTypes);
+			throw new IllegalStateException("A severe error has occoured during NTM's fluid registering process! The MetaOrder and Mappings are inconsistent! Mapping size: " + idMapping.size()+ " / MetaOrder size: " + metaOrder.size() + '\n' + collectionName + " appears to be missing the following fluids: " + missingTypes);
 		}
 		
 	}

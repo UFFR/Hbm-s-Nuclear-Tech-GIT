@@ -198,12 +198,12 @@ public class NBTBuilder
 			return true;
 		else if (obj instanceof NBTBuilder)
 		{
-			NBTBuilder b = (NBTBuilder) obj;
+			final NBTBuilder b = (NBTBuilder) obj;
 			return b.construct().equals(nbt);
 		}
 		else if (obj instanceof NBTTagCompound)
 		{
-			NBTTagCompound t = (NBTTagCompound) obj;
+			final NBTTagCompound t = (NBTTagCompound) obj;
 			return t.equals(nbt);
 		}
 		else

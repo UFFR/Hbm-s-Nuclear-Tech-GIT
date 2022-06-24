@@ -2,6 +2,7 @@ package com.hbm.calc;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import com.google.common.annotations.Beta;
 import com.hbm.interfaces.ILocationProvider;
@@ -9,7 +10,6 @@ import com.hbm.main.DeserializationException;
 
 import api.hbm.serialization.SerializationRegistry;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
@@ -28,7 +28,7 @@ public final class EasyLocationStep extends EasyLocation implements Iterable<Eas
 	/**Origin coordinates**/
 	private final EasyLocation origin;
 	protected final Vec3 vector;
-	protected ConcludeIteration conclude = (start, current, vec) -> {return current.posY > 255 || current.posY < 0 || distanceFromOrigin() >= 1000;};
+	protected transient ConcludeIteration conclude = (start, current, vec) -> {return current.posY > 255 || current.posY < 0 || distanceFromOrigin() >= 1000;};
 	static
 	{
 		SerializationRegistry.register(EasyLocationStep.class, bytes -> fromBytes(bytes));
@@ -78,7 +78,7 @@ public final class EasyLocationStep extends EasyLocation implements Iterable<Eas
 	@Override
 	public byte[] serialize()
 	{
-		ByteBuf buf = Unpooled.buffer();
+		final ByteBuf buf = alloc.get();
 		buf.writeBytes(origin.serialize());
 		buf.writeBytes(super.serialize());
 		buf.writeDouble(vector.xCoord);
@@ -91,8 +91,8 @@ public final class EasyLocationStep extends EasyLocation implements Iterable<Eas
 	{
 		try
 		{
-			ByteBuf buf = Unpooled.copiedBuffer(bytes);
-			EasyLocationStep out = new EasyLocationStep(buf.readDouble(), buf.readDouble(), buf.readDouble(), Vec3.createVectorHelper(buf.readDouble(), buf.readDouble(), buf.readDouble()));
+			final ByteBuf buf = allocCopy.apply(bytes);
+			final EasyLocationStep out = new EasyLocationStep(buf.readDouble(), buf.readDouble(), buf.readDouble(), Vec3.createVectorHelper(buf.readDouble(), buf.readDouble(), buf.readDouble()));
 			out.posX = buf.readDouble();
 			out.posY = buf.readDouble();
 			out.posZ = buf.readDouble();
@@ -109,6 +109,39 @@ public final class EasyLocationStep extends EasyLocation implements Iterable<Eas
 		return fromBytes(bytes);
 	}
 	
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(origin, vector);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (!(obj instanceof EasyLocationStep))
+			return false;
+		final EasyLocationStep other = (EasyLocationStep) obj;
+		return Objects.equals(origin, other.origin) && Objects.equals(vector, other.vector);
+	}
+
+	@Override
+	public String toString()
+	{
+		final StringBuilder builder = new StringBuilder();
+		builder.append("EasyLocationStep [origin=").append(origin).append(", vector=").append(vector).append(", posX=")
+				.append(posX).append(", posY=").append(posY).append(", posZ=").append(posZ).append(", dimID=")
+				.append(dimID).append(", distanceFromOrigin()=").append(distanceFromOrigin()).append(", hasWorld()=")
+				.append(hasWorld()).append(']');
+		return builder.toString();
+	}
+
 	public EasyLocationStep setConclusionCondition(ConcludeIteration conclude)
 	{
 		this.conclude = conclude;

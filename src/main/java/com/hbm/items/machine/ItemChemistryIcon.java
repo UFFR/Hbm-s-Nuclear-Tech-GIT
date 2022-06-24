@@ -2,8 +2,8 @@ package com.hbm.items.machine;
 
 import java.util.List;
 
-import com.hbm.inventory.recipes.ChemPlantRecipesNT;
-import com.hbm.inventory.recipes.ChemPlantRecipesNT.ChemPlantRecipe;
+import com.hbm.inventory.recipes.ChemplantRecipes;
+import com.hbm.inventory.recipes.ChemplantRecipes.ChemRecipe;
 import com.hbm.items.ModItems;
 
 import cpw.mods.fml.relauncher.Side;
@@ -28,10 +28,10 @@ public class ItemChemistryIcon extends Item {
 	@Override
 	public String getItemStackDisplayName(ItemStack stack) {
 		
-		final ChemPlantRecipe recipe = ChemPlantRecipesNT.recipes.get(stack.getItemDamage());
+		ChemRecipe recipe = ChemplantRecipes.indexMapping.get(stack.getItemDamage());
 		
 		String s = ("" + StatCollector.translateToLocal(ModItems.chemistry_template.getUnlocalizedName() + ".name")).trim();
-		final String s1 = ("" + StatCollector.translateToLocal("chem." + recipe.name)).trim();
+		String s1 = ("" + StatCollector.translateToLocal("chem." + recipe.name)).trim();
 
 		if(s1 != null) {
 			s = s + " " + s1;
@@ -43,28 +43,28 @@ public class ItemChemistryIcon extends Item {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(Item item, CreativeTabs tabs, List list) {
-		for(int i = 0; i < ChemPlantRecipesNT.recipes.size(); i++) {
-			list.add(new ItemStack(item, 1, i));
+		for(int i = 0; i < ChemplantRecipes.recipes.size(); i++) {
+			list.add(new ItemStack(item, 1, ChemplantRecipes.recipes.get(i).getId()));
 		}
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister reg) {
-		this.icons = new IIcon[ChemPlantRecipesNT.recipes.size()];
+		this.icons = new IIcon[ChemplantRecipes.recipes.size()];
 
 		for(int i = 0; i < icons.length; ++i) {
-			this.icons[i] = reg.registerIcon("hbm:chem_icon_" + ChemPlantRecipesNT.recipes.get(i).name);
+			this.icons[i] = reg.registerIcon("hbm:chem_icon_" + ChemplantRecipes.recipes.get(i).name);
 		}
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getIconFromDamage(int i) {
-		final ChemPlantRecipe rec = ChemPlantRecipesNT.recipes.get(i);
+		ChemRecipe rec = ChemplantRecipes.indexMapping.get(i);
 		
 		if(rec != null) {
-			return this.icons[ChemPlantRecipesNT.recipes.indexOf(rec) % this.icons.length];
+			return this.icons[rec.listing % this.icons.length];
 		} else {
 			return ModItems.nothing.getIconFromDamage(i);
 		}

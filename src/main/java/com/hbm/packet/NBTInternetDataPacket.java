@@ -1,8 +1,8 @@
 package com.hbm.packet;
 
 import com.hbm.calc.EasyLocation;
-import com.hbm.tileentity.machine.computer.MessagePacket;
 
+import api.hbm.internet.MessagePacket;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;

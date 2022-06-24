@@ -15,11 +15,17 @@ import net.minecraft.nbt.NBTTagCompound;
 @Beta
 public class TileEntityBetavoltaic extends TileEntityMachineBase implements IRTGUser, IEnergyGenerator
 {
+	private static final int[] SLOTS = new int[24];
 	public static final long maxPower = 5000000;
 	public static final short maxHeat = 32000;
 	private short heat = 0;
 	private long power = 0;
 	private Date date = new Date();
+	static
+	{
+		for (byte i = 0; i < 24; i++)
+			SLOTS[i] = i;
+	}
 	public TileEntityBetavoltaic()
 	{
 		super(24);
@@ -41,6 +47,12 @@ public class TileEntityBetavoltaic extends TileEntityMachineBase implements IRTG
 	public ItemStack[] getInventory()
 	{
 		return slots;
+	}
+	
+	@Override
+	public int[] getSlots()
+	{
+		return SLOTS;
 	}
 
 	@Override

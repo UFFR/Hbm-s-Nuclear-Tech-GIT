@@ -21,6 +21,7 @@ public interface IRTGUser extends IHasAge
 {
 	/** Get the heat provided by the RTGs **/
 	public int getHeat();
+	public int[] getSlots();
 	public ItemStack[] getInventory();
 	/** Item class that only works in the machine, simply return {@link#IRadioisotopeFuel} to accept all **/
 	public Class<? extends IRadioisotopeFuel> getDesiredClass();
@@ -66,7 +67,7 @@ public interface IRTGUser extends IHasAge
 	default int updateRTGs()
 	{
 		int newHeat = 0;
-		for (int slot = 0; slot < getInventory().length; slot++)
+		for (int slot : getSlots())
 		{
 			if (getInventory()[slot] == null)
 				continue;
@@ -157,7 +158,7 @@ public interface IRTGUser extends IHasAge
 	{
 		int newHeat = 0;
 		
-		for (int slot = 0; slot < getInventory().length; slot++)
+		for (int slot : getSlots())
 		{
 			boolean flag = false;
 			for (Entry<AStack, IRadioisotopeFuel> fuelEntry : fuelMap.entrySet())
@@ -180,7 +181,7 @@ public interface IRTGUser extends IHasAge
 	{
 		final long difference = getInternalDate().subtract(newTime).getData().longValue();
 		
-		for (int slot = 0; slot < getInventory().length; slot++)
+		for (int slot : getSlots())
 		{
 			if (getInventory()[slot] == null)
 				continue;

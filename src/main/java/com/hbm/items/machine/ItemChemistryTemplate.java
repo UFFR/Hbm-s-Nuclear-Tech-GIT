@@ -2,10 +2,11 @@ package com.hbm.items.machine;
 
 import java.util.List;
 
+import com.hbm.inventory.recipes.ChemplantRecipes;
+import com.hbm.inventory.recipes.ChemplantRecipes.ChemRecipe;
 import com.hbm.items.ModItems;
 import com.hbm.util.I18nUtil;
-import com.hbm.inventory.recipes.ChemPlantRecipesNT;
-import com.hbm.inventory.recipes.ChemPlantRecipesNT.ChemPlantRecipe;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.resources.I18n;
@@ -26,7 +27,7 @@ public class ItemChemistryTemplate extends Item {
 	@Override
 	public String getItemStackDisplayName(ItemStack stack) {
 		
-		final ChemPlantRecipe recipe = ChemPlantRecipesNT.recipes.get(stack.getItemDamage());
+		ChemRecipe recipe = ChemplantRecipes.indexMapping.get(stack.getItemDamage());
 		
 		if(recipe == null) {
 			return EnumChatFormatting.RED + "Broken Template" + EnumChatFormatting.RESET;
@@ -45,8 +46,8 @@ public class ItemChemistryTemplate extends Item {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(Item item, CreativeTabs tabs, List list) {
-		for(int i = 0; i < ChemPlantRecipesNT.recipes.size(); i++) {
-			list.add(new ItemStack(item, 1, i));
+		for(int i = 0; i < ChemplantRecipes.recipes.size(); i++) {
+			list.add(new ItemStack(item, 1, ChemplantRecipes.recipes.get(i).getId()));
 		}
 	}
 	
@@ -56,7 +57,7 @@ public class ItemChemistryTemplate extends Item {
 		if(!(stack.getItem() instanceof ItemChemistryTemplate))
 			return;
 		
-		final ChemPlantRecipe recipe = ChemPlantRecipesNT.recipes.get(stack.getItemDamage());
+		ChemRecipe recipe = ChemplantRecipes.indexMapping.get(stack.getItemDamage());
 
 		if(recipe == null) {
 			return;
@@ -74,8 +75,8 @@ public class ItemChemistryTemplate extends Item {
 			}
 
 			for(int i = 0; i < 2; i++) {
-				if(recipe.fOut[i] != null) {
-					list.add(recipe.fOut[i].fill + "mB " + I18n.format(recipe.fOut[i].type.getUnlocalizedName()));
+				if(recipe.outputFluids[i] != null) {
+					list.add(recipe.outputFluids[i].fill + "mB " + I18n.format(recipe.outputFluids[i].type.getUnlocalizedName()));
 				}
 			}
 
@@ -88,13 +89,13 @@ public class ItemChemistryTemplate extends Item {
 			}
 
 			for(int i = 0; i < 2; i++) {
-				if(recipe.fIn[i] != null) {
-					list.add(recipe.fIn[i].fill + "mB " + I18n.format(recipe.fIn[i].type.getUnlocalizedName()));
+				if(recipe.inputFluids[i] != null) {
+					list.add(recipe.inputFluids[i].fill + "mB " + I18n.format(recipe.inputFluids[i].type.getUnlocalizedName()));
 				}
 			}
 
 			list.add(EnumChatFormatting.BOLD + I18nUtil.resolveKey("info.template_time"));
-			list.add(Math.floor((float) (recipe.time) / 20 * 100) / 100 + " " + I18nUtil.resolveKey("info.template_seconds"));
+			list.add(Math.floor((float) (recipe.getDuration()) / 20 * 100) / 100 + " " + I18nUtil.resolveKey("info.template_seconds"));
 		} catch(Exception e) {
 			list.add("###INVALID###");
 			list.add("0x334077-0x6A298F-0xDF3795-0x334077");

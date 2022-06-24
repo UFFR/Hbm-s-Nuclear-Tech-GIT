@@ -129,12 +129,12 @@ public class ItemAmmo extends ItemEnumMulti
 		if (new ComparableStack(ModItems.ammo_rocket.stackFromEnum(AmmoRocket.DIGAMMA)).matchesRecipe(stack, true))
 			list.add(player.worldObj.rand.nextInt(3) < 2 ? EnumChatFormatting.RED + "COVER YOURSELF IN OIL" : EnumChatFormatting.RED + "" + EnumChatFormatting.OBFUSCATED + "COVER YOURSELF IN OIL");
 		
-		IAmmoItemEnum item = (IAmmoItemEnum) EnumUtil.grabEnumSafely(theEnum, stack.getItemDamage());
-		AmmoItemTrait[] traitArray = item.getTraits();
+		final IAmmoItemEnum item = (IAmmoItemEnum) EnumUtil.grabEnumSafely(theEnum, stack.getItemDamage());
+		final AmmoItemTrait[] traitArray = item.getTraits();
 		
 		if (bool)
 		{
-			BulletConfiguration config = item.getConfig();
+			final BulletConfiguration config = item.getConfig();
 			list.add("Damage: " + config.dmgMin + '-' + config.dmgMax);
 			list.add("Penetration value: " + config.penetration);
 			list.add("Penetration value at 50 meters: ~" + Math.round(config.modFunction.orElse(BulletConfiguration.defaultModifier).mod(config.penetration, config.penetrationModifier, 50)));
@@ -143,11 +143,11 @@ public class ItemAmmo extends ItemEnumMulti
 		if (traitArray.length > 0)
 		{
 			//List traits = Arrays.asList(traitArray);
-			ArrayList<AmmoItemTrait> sortedTraits = new ArrayList<AmmoItemTrait>(Arrays.asList(traitArray));
+			final ArrayList<AmmoItemTrait> sortedTraits = new ArrayList<AmmoItemTrait>(Arrays.asList(traitArray));
 			Collections.sort(sortedTraits, Collections.reverseOrder());
 			for (AmmoItemTrait trait : sortedTraits)
 			{
-				EnumChatFormatting color;
+				final EnumChatFormatting color;
 				switch(trait.toString().substring(0, 3))
 				{
 				case "PRO":

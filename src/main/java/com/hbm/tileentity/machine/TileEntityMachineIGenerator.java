@@ -12,7 +12,6 @@ import com.hbm.lib.Library;
 import com.hbm.tileentity.IRTGUser;
 import com.hbm.tileentity.IRadioisotopeFuel;
 import com.hbm.tileentity.TileEntityMachineBase;
-import com.hbm.util.RTGUtil;
 
 import api.hbm.Date;
 import api.hbm.energy.IEnergyGenerator;
@@ -129,8 +128,9 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 			}
 			
 			// RTG ///
-			this.hasRTG = RTGUtil.hasHeat(slots, RTGSlots);
-			this.spin += RTGUtil.updateRTGs(slots, RTGSlots) * 0.2;
+			final int heat = getHeat();
+			this.hasRTG = heat > 0;
+			this.spin += heat * 0.2;
 			
 			if(this.spin > 0) {
 				
@@ -295,10 +295,13 @@ public class TileEntityMachineIGenerator extends TileEntityMachineBase implement
 	@Override
 	public ItemStack[] getInventory()
 	{
-		final ItemStack[] rtgSlots = new ItemStack[RTGSlots.length];
-		for (byte i = 0; i < RTGSlots.length; i++)
-			rtgSlots[i] = slots[RTGSlots[i]];
-		return rtgSlots;
+		return slots;
+	}
+	
+	@Override
+	public int[] getSlots()
+	{
+		return RTGSlots;
 	}
 	
 	@Override

@@ -22,7 +22,6 @@ import api.hbm.serialization.ISerializable;
 import api.hbm.serialization.SerializationRegistry;
 import ch.obermuhlner.math.big.BigDecimalMath;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
@@ -34,6 +33,7 @@ public class PreciseLocation implements Cloneable, Comparable<PreciseLocation>, 
 	 * 
 	 */
 	private static final long serialVersionUID = -525812461028759983L;
+	private static final PreciseLocation ZERO_LOCATION = new PreciseLocation(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
 	public final BigDecimal[] coord = new BigDecimal[3];
 	public int dimID;
 	public transient Optional<World> world = Optional.empty();
@@ -141,7 +141,7 @@ public class PreciseLocation implements Cloneable, Comparable<PreciseLocation>, 
 	{
 		try
 		{
-			final ByteBuf buf = Unpooled.buffer();
+			final ByteBuf buf = alloc.get();
 			final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			final ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
 			objectOutputStream.writeObject(coord);
@@ -244,6 +244,21 @@ public class PreciseLocation implements Cloneable, Comparable<PreciseLocation>, 
 	{
 		this.world = Optional.of(world);
 		return this;
+	}
+	
+	public BigDecimal getX()
+	{
+		return coord[0];
+	}
+	
+	public BigDecimal getY()
+	{
+		return coord[1];
+	}
+	
+	public BigDecimal getZ()
+	{
+		return coord[2];
 	}
 	
 	public BigDecimal[] getCoordBigDecimal()
@@ -351,11 +366,10 @@ public class PreciseLocation implements Cloneable, Comparable<PreciseLocation>, 
 	@Override
 	public int compareTo(PreciseLocation o)
 	{
-		final PreciseLocation zero = new PreciseLocation(0, 0, 0);
-		final BigDecimal testDist = distance(o, zero);
-		final BigDecimal myDist = distance(this, zero);
 		if (equals(o))
 			return 0;
+		final BigDecimal testDist = distance(o, ZERO_LOCATION);
+		final BigDecimal myDist = distance(this, ZERO_LOCATION);
 		return myDist.compareTo(testDist);
 	}
 

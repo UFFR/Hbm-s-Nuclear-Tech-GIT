@@ -44,7 +44,7 @@ public class TimeSavedData extends WorldSavedData
 	{
 		super(dataKey);
 		
-		dateData = new Date(worldIn.getWorldTime()).add(new Date(2040 + worldIn.rand.nextInt(50), worldIn.rand.nextInt(99), 0));
+		dateData.add(new Date(worldIn.getWorldTime()).add(new Date(worldIn.rand.nextInt(5), worldIn.rand.nextInt(99), 0)));
 		
 		worldObj = worldIn;
 		markDirty();
