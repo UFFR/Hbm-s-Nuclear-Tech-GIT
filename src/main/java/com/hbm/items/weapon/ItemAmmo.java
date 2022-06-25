@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import com.hbm.handler.BulletConfiguration;
-import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.items.ItemAmmoEnums.AmmoRocket;
 import com.hbm.items.ItemAmmoEnums.IAmmoItemEnum;
 import com.hbm.items.ItemEnumMulti;
@@ -126,7 +125,7 @@ public class ItemAmmo extends ItemEnumMulti
 		super.addInformation(stack, player, list, bool);
 		if (!altName.isEmpty())
 			list.add(EnumChatFormatting.ITALIC + I18nUtil.resolveKey(altName));
-		if (new ComparableStack(ModItems.ammo_rocket.stackFromEnum(AmmoRocket.DIGAMMA)).matchesRecipe(stack, true))
+		if (stack.getItem() == ModItems.ammo_rocket && stack.getItemDamage() == AmmoRocket.DIGAMMA.ordinal())
 			list.add(player.worldObj.rand.nextInt(3) < 2 ? EnumChatFormatting.RED + "COVER YOURSELF IN OIL" : EnumChatFormatting.RED + "" + EnumChatFormatting.OBFUSCATED + "COVER YOURSELF IN OIL");
 		
 		final IAmmoItemEnum item = (IAmmoItemEnum) EnumUtil.grabEnumSafely(theEnum, stack.getItemDamage());
@@ -170,7 +169,7 @@ public class ItemAmmo extends ItemEnumMulti
 	@Override
 	public ItemEnumMulti setUnlocalizedName(String uloc)
 	{
-		setTextureName(RefStrings.MODID + ":" + uloc);
+		setTextureName(RefStrings.MODID + ':' + uloc);
 		return (ItemEnumMulti) super.setUnlocalizedName(uloc);
 	}
 }

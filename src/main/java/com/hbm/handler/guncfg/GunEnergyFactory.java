@@ -236,7 +236,7 @@ public class GunEnergyFactory
 		int randLore = rand.nextInt(4);
 		config.rateOfFire = 1;
 		config.roundsPerCycle = 1;
-		config.ammoCap = 100000000000L;
+		config.ammoChargeCap = 100000000000L;
 		config.ammoRate = 10000000;
 		config.chargeRate = 100000000;
 		config.gunMode = GunConfiguration.MODE_NORMAL;
@@ -276,7 +276,7 @@ public class GunEnergyFactory
 		GunConfigurationEnergy config = new GunConfigurationEnergy();
 		config.rateOfFire = 5;
 		config.roundsPerCycle = 1;
-		config.ammoCap = 100000000L;
+		config.ammoChargeCap = 100000000L;
 		config.ammoRate = 1000000;
 		config.chargeRate = 1000000;
 		config.gunMode = GunConfiguration.MODE_NORMAL;
@@ -300,7 +300,7 @@ public class GunEnergyFactory
 		GunConfigurationEnergy config = getLunaticConfig().clone();
 		
 		config.ammoRate *= 5;
-		config.ammoCap *= 1.5;
+		config.ammoChargeCap *= 1.5;
 		config.durability *= 1.5;
 		config.crosshair = Crosshair.L_CIRCLE;
 		config.name = "lunaShotty";
@@ -315,7 +315,7 @@ public class GunEnergyFactory
 		GunConfigurationEnergy config = new GunConfigurationEnergy();
 		config.rateOfFire = 1;
 		config.roundsPerCycle = 1;
-		config.ammoCap = 10000000000L;
+		config.ammoChargeCap = 10000000000L;
 		config.ammoRate = 100000;
 		config.chargeRate = 100000000;
 		config.gunMode = GunConfiguration.MODE_NORMAL;

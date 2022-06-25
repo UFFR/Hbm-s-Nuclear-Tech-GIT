@@ -193,15 +193,15 @@ public class ItemEnums {
 		@Override
 		public String overrideTexture()
 		{
-			String prefix = toString().split("_")[0].toLowerCase();
-			String suffix;
+			final String prefix = toString().split("_")[0].toLowerCase();
+			final String suffix;
 			if (toString().contains("SLOW"))
 				suffix = "slow";
 			else if (toString().contains("FAST"))
 				suffix = "fast";
 			else
 			{
-				char c = toString().charAt(toString().length() - 1);
+				final char c = toString().charAt(toString().length() - 1);
 				suffix = Character.isDigit(c) ? (Character.getNumericValue(c) % 2 == 0 ? "fast" : "slow") : "fast";
 			}
 			return String.format("%s_curium_%s", prefix, suffix);
@@ -213,6 +213,11 @@ public class ItemEnums {
 		INGOT_PA233,
 		NUGGET_PA233,
 		BILLET_PA233;
+		@Override
+		public boolean getHasEffect()
+		{
+			return true;
+		}
 	}
 	
 	public enum EnumRAM implements IItemEnum
@@ -225,7 +230,7 @@ public class ItemEnums {
 		DIAMOND(EnumRarity.rare, BobMathUtil.GB * 128),
 		CAESIUM(EnumRarity.epic, BobMathUtil.TB),
 		SPARK(EnumRarity.epic, BobMathUtil.TB * 16);
-		EnumRarity rarity = EnumRarity.common;
+		private EnumRarity rarity = EnumRarity.common;
 		public final long capacity;
 		private EnumRAM(long capacity)
 		{
@@ -252,7 +257,7 @@ public class ItemEnums {
 		DIAMOND(EnumRarity.rare),
 		CAESIUM(EnumRarity.epic),
 		SPARK(EnumRarity.epic);
-		EnumRarity rarity = EnumRarity.common;
+		private EnumRarity rarity = EnumRarity.common;
 		private EnumWaferType()
 		{
 		}

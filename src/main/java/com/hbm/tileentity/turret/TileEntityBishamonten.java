@@ -63,13 +63,6 @@ public class TileEntityBishamonten extends TileEntityMachineBase implements ILas
 	{
 		super(0);
 	}
-
-	@Override
-	public void setWorldObj(World world)
-	{
-		super.setWorldObj(world);
-	}
-	
 	@Override
 	public void updateEntity()
 	{
@@ -333,6 +326,7 @@ public class TileEntityBishamonten extends TileEntityMachineBase implements ILas
 		direction = nbt.getDouble("direction");
 		currMode = byteToMode(nbt.getByte("mode"));
 		powPercentage = nbt.getByte("percentage");
+		myLoc = new EasyLocation(this).modifyCoord(0, 2, 0);
 	}
 	
 	

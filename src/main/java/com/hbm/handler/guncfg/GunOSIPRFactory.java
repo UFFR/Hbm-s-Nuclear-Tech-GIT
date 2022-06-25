@@ -45,7 +45,7 @@ public class GunOSIPRFactory {
 	{
 		GunConfigurationEnergy config = (GunConfigurationEnergy) getOSIPRConfig().clone();
 		
-		config.ammoCap = 300000;
+		config.ammoChargeCap = 300000;
 		config.ammoRate = 10000;
 		
 		return config;

@@ -16,12 +16,12 @@ import java.util.Optional;
 import javax.annotation.CheckForNull;
 
 import com.google.common.annotations.Beta;
+import com.hbm.interfaces.ILocationProvider;
 import com.hbm.main.DeserializationException;
 
 import api.hbm.serialization.ISerializable;
 import api.hbm.serialization.SerializationRegistry;
 import ch.obermuhlner.math.big.BigDecimalMath;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
@@ -105,11 +105,11 @@ public class PreciseLocation implements Cloneable, Comparable<PreciseLocation>, 
 		dimID = te.getWorldObj().provider.dimensionId;
 	}
 	
-	public PreciseLocation(EasyLocation loc)
+	public PreciseLocation(ILocationProvider loc)
 	{
 		this(loc.getCoordDouble());
-		if (loc.world.isPresent())
-			setWorld(loc.world.get());
+		if (loc.hasWorld())
+			setWorld(loc.getWorld());
 	}
 	
 	public PreciseLocation(Vec3 vector)
@@ -121,15 +121,12 @@ public class PreciseLocation implements Cloneable, Comparable<PreciseLocation>, 
 	{
 		try
 		{
-			final ByteBuf buf = allocCopy.apply(bytes);
-			final byte[] coordBytes = new byte[buf.readInt()];
-			final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(coordBytes);
+			final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
 			final ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
 			final BigDecimal[] readCoord = (BigDecimal[]) objectInputStream.readObject();
 			for (byte i = 0; i < 3; i++)
 				coord[i] = readCoord[i];
-			
-			dimID = buf.readInt();
+			dimID = objectInputStream.readInt();
 		} catch (Exception e)
 		{
 			throw new DeserializationException(e);
@@ -141,15 +138,11 @@ public class PreciseLocation implements Cloneable, Comparable<PreciseLocation>, 
 	{
 		try
 		{
-			final ByteBuf buf = alloc.get();
 			final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			final ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
 			objectOutputStream.writeObject(coord);
-			final byte[] coordBytes = byteArrayOutputStream.toByteArray();
-			buf.writeInt(coordBytes.length);
-			buf.writeBytes(coordBytes);
-			buf.writeInt(dimID);
-			return buf.array();
+			objectOutputStream.writeInt(dimID);
+			return byteArrayOutputStream.toByteArray();
 		} catch (IOException e)
 		{
 			e.printStackTrace();

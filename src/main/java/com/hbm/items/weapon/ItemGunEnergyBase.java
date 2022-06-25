@@ -41,21 +41,21 @@ public class ItemGunEnergyBase extends ItemGunBase implements IFastChargeable
 	public ItemGunEnergyBase(GunConfigurationEnergy main)
 	{
 		super(main);
-		if (main.ammoRate > main.ammoCap)
+		if (main.ammoRate > main.ammoChargeCap)
 			throw new IllegalArgumentException("Energy consumption rate exceeds energy cap!");
 		mainConfig = main;
-		maxCharge = mainConfig.ammoCap;
+		maxCharge = mainConfig.ammoChargeCap;
 		chargeRate = mainConfig.chargeRate;
 	}
 	
 	public ItemGunEnergyBase(GunConfigurationEnergy main, GunConfigurationEnergy alt)
 	{
 		super(main, alt);
-		if (main.ammoRate > main.ammoCap || alt.ammoRate > main.ammoCap)
+		if (main.ammoRate > main.ammoChargeCap || alt.ammoRate > main.ammoChargeCap)
 			throw new IllegalArgumentException("Energy consumption rate exceeds energy cap!");
 		mainConfig = main;
 		altConfig = alt;
-		maxCharge = mainConfig.ammoCap;
+		maxCharge = mainConfig.ammoChargeCap;
 		chargeRate = mainConfig.chargeRate;
 		
 	}
@@ -71,7 +71,7 @@ public class ItemGunEnergyBase extends ItemGunBase implements IFastChargeable
 	{
 		GunConfigurationEnergy mainConfigEnergy = mainConfig;
 		GunConfigurationEnergy altConfigEnergy = altConfig;
-		long gunChargeMax = mainConfigEnergy.ammoCap;
+		long gunChargeMax = mainConfigEnergy.ammoChargeCap;
 		long gunCurrentCharge = getGunCharge(stack);
 		String gunChargeMaxString = BobMathUtil.getShortNumber(gunChargeMax);
 		String gunCurrentChargeString = BobMathUtil.getShortNumber(gunCurrentCharge);

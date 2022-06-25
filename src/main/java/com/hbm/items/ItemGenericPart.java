@@ -25,10 +25,11 @@ public class ItemGenericPart extends ItemEnumMulti {
 		super(EnumPartType.class, true, true);
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister reg) {
 		
-		Enum[] enums = theEnum.getEnumConstants();
+		final Enum<?>[] enums = theEnum.getEnumConstants();
 		this.icons = new IIcon[enums.length];
 		
 		for(int i = 0; i < icons.length; i++) {

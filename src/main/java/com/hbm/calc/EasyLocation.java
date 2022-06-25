@@ -31,6 +31,14 @@ public class EasyLocation implements Cloneable, Comparable<EasyLocation>, ISeria
 	{
 		SerializationRegistry.register(EasyLocation.class, bytes -> new EasyLocation(bytes));
 	}
+	public EasyLocation(ILocationProvider locationProvider)
+	{
+		posX = locationProvider.getX();
+		posY = locationProvider.getY();
+		posZ = locationProvider.getZ();
+		if (locationProvider.hasWorld())
+			world = Optional.of(locationProvider.getWorld());
+	}
 	public EasyLocation(double x, double y, double z)
 	{
 		posX = x;

@@ -255,7 +255,7 @@ public class HbmPotion extends Potion {
 			boolean ret = isBadEffect.getBoolean(potion);
 			return ret;
 			
-		} catch (@SuppressWarnings("unused") Exception x) {
+		} catch (Exception x) {
 			return false;
 		}
 	}

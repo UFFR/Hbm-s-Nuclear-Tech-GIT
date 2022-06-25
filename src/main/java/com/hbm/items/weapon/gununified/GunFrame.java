@@ -19,7 +19,7 @@ import net.minecraft.world.World;
 
 public abstract class GunFrame extends Item implements IGunHUDProvider, IClickReceiver {
 	
-	private List<IStatusBarProvider> statusBars = new ArrayList();
+	protected List<IStatusBarProvider> statusBars = new ArrayList<IStatusBarProvider>();
 
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isCurrentItem) {
@@ -47,7 +47,7 @@ public abstract class GunFrame extends Item implements IGunHUDProvider, IClickRe
 
 	@Override
 	public List<Triplet<Double, Integer, Integer>> getStatusBars(ItemStack stack, EntityPlayer player) {
-		return new ArrayList();
+		return new ArrayList<Triplet<Double, Integer, Integer>>();
 	}
 
 	@Override

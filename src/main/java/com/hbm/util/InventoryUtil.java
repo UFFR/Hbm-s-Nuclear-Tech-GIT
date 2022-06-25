@@ -230,7 +230,7 @@ public class InventoryUtil {
 	 */
 	public static boolean doesPlayerHaveAStacks(EntityPlayer player, List<AStack> stacks, boolean shouldRemove) {
 		
-		ItemStack[] original = player.inventory.mainInventory;
+		final ItemStack[] original = player.inventory.mainInventory;
 		return doesInventoryHaveAStacks(original, stacks, shouldRemove);
 	}
 	
@@ -298,6 +298,29 @@ public class InventoryUtil {
 		}
 		
 		return true;
+	}
+	
+	public static int countAStackMatches(IInventory inventory, AStack stack, boolean ignoreSize)
+	{
+		final ItemStack[] stacks = new ItemStack[inventory.getSizeInventory()];
+		for (int i = 0; i < inventory.getSizeInventory(); i++)
+			stacks[i] = inventory.getStackInSlot(i);
+		return countAStackMatches(stacks, stack, ignoreSize);
+	}
+	
+	public static int countAStackMatches(EntityPlayer player, AStack stack, boolean ignoreSize)
+	{
+		return countAStackMatches(player.inventory.mainInventory, stack, ignoreSize);
+	}
+	
+	public static int countAStackMatches(ItemStack[] inventory, AStack stack, boolean ignoreSize)
+	{
+		int count = 0;
+		for (ItemStack itemStack : inventory)
+			if (itemStack != null)
+				if (stack.matchesRecipe(itemStack, ignoreSize))
+					count += ignoreSize ? itemStack.stackSize : stack.stacksize;
+		return count;
 	}
 	
 	public static void giveChanceStacksToPlayer(EntityPlayer player, List<AnvilOutput> stacks) {
