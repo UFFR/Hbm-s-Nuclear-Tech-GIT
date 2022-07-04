@@ -1,7 +1,5 @@
 package com.hbm.tileentity.machine;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import com.hbm.config.BombConfig;
@@ -41,7 +39,6 @@ public class TileEntitySingGen extends TileEntityMachineBase implements IFluidAc
 	public boolean isOn;
 	private int progress;
 	private static final int[] ringSlots = new int[] {5, 9, 6, 11, 12, 7, 10, 8};
-	private final Map<Integer, ItemStack> ring = new HashMap<Integer, ItemStack>(8);
 	
 	private final ItemStack[] ringArray = new ItemStack[8];
 	private Optional<SingGenRecipe> currentRecipe = Optional.empty();
@@ -69,7 +66,7 @@ public class TileEntitySingGen extends TileEntityMachineBase implements IFluidAc
 	 */
 	private SingGenRecipe validateRecipe(ItemStack[] ringIn, ItemStack centerIn, FluidType fluidIn, int amountIn)
 	{
-		for (SingGenRecipe recipe : SingGenRecipes.recipes)
+		for (SingGenRecipe recipe : SingGenRecipes.RECIPES)
 		{
 			//System.out.println(String.format("Checking recipe ring input: %s, Recipe center input: %s", recipe.inputRing, recipe.inputCenter.getUnlocalizedName()));
 			//System.out.println("Is shaped? " + recipe.shaped);
@@ -132,7 +129,6 @@ public class TileEntitySingGen extends TileEntityMachineBase implements IFluidAc
 	private void updateRing()
 	{
 		//System.out.println("Updating machine ring input...");
-		ring.clear();
 		int index = 0;
 		for (int slot : ringSlots)
 		{
@@ -140,24 +136,16 @@ public class TileEntitySingGen extends TileEntityMachineBase implements IFluidAc
 			{
 				//System.out.println(String.format("Item in slot #%s is not null, is: %s", slot, this.getStackInSlot(slot).getItem().getUnlocalizedName()));
 				ringArray[index] = this.getStackInSlot(slot);
-				ring.put(slot, getStackInSlot(slot));
 			}
 			else
 			{
 				//System.out.println(String.format("Item in slot #%s is null", slot));
 				ringArray[index] = null;
-				ring.put(slot, null);
 			}
 			index++;
 		}
 		//System.out.println(String.format("Ring input: %s", ring));
 	}
-	
-	public Map<Integer, ItemStack> getRingMap()
-	{
-		return ring;
-	}
-	
 	public ItemStack[] getRingArray()
 	{
 		return ringArray.clone();

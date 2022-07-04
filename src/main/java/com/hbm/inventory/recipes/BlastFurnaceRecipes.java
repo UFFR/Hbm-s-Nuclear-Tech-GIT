@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.annotation.CheckForNull;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.config.GeneralConfig;
@@ -176,5 +177,13 @@ public class BlastFurnaceRecipes
 			}
 		}
 		return ImmutableMap.copyOf(recipes);
+	}
+	
+	public static List<Triplet<AStack[], AStack[], ItemStack>> getRecipes()
+	{
+		final List<Triplet<AStack[], AStack[], ItemStack>> subRecipes = new ArrayList<>();
+		for (Triplet<Object, Object, ItemStack> recipe : blastFurnaceRecipes)
+			subRecipes.add(new Triplet<AStack[], AStack[], ItemStack>(getRecipeStacks(recipe.getX()), getRecipeStacks(recipe.getY()), recipe.getZ()));
+		return ImmutableList.copyOf(subRecipes);
 	}
 }

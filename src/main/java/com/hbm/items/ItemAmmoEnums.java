@@ -1,5 +1,9 @@
 package com.hbm.items;
 
+import java.util.Collection;
+import java.util.Set;
+
+import com.google.common.collect.ImmutableSet;
 import com.hbm.handler.BulletConfiguration;
 import com.hbm.handler.guncfg.*;
 import com.hbm.items.ItemEnums.IItemEnum;
@@ -69,7 +73,7 @@ public class ItemAmmoEnums
 		WATER(GunEnergyFactory.getFextConfig()),
 		FOAM(GunEnergyFactory.getFextFoamConfig()),
 		SAND(GunEnergyFactory.getFextSandConfig());
-		private final AmmoItemTrait[] traits;
+		private final Set<AmmoItemTrait> traits;
 		private final BulletConfiguration config;
 		private AmmoFireExt(BulletConfiguration config, AmmoItemTrait...traits)
 		{
@@ -78,7 +82,7 @@ public class ItemAmmoEnums
 		}
 		
 		@Override
-		public AmmoItemTrait[] getTraits()
+		public Set<AmmoItemTrait> getTraits()
 		{
 			return traits;
 		}
@@ -97,7 +101,7 @@ public class ItemAmmoEnums
 		PHOSPHORUS(GunEnergyFactory.getPhosphorusConfig(), AmmoItemTrait.PRO_PHOSPHORUS_SPLASH, AmmoItemTrait.PRO_DAMAGE, AmmoItemTrait.PRO_RANGE, AmmoItemTrait.PRO_RANGE, AmmoItemTrait.PRO_ACCURATE1, AmmoItemTrait.NEU_WARCRIME1, AmmoItemTrait.CON_SING_PROJECTILE, AmmoItemTrait.CON_HEAVY_WEAR),
 		VAPORIZER(GunEnergyFactory.getVaporizerConfig(), AmmoItemTrait.PRO_PHOSPHORUS, AmmoItemTrait.PRO_FLAMES, AmmoItemTrait.PRO_DAMAGE, AmmoItemTrait.NEU_ERASER, AmmoItemTrait.CON_ACCURACY2, AmmoItemTrait.CON_RANGE2, AmmoItemTrait.CON_HEAVY_WEAR, AmmoItemTrait.CON_LING_FIRE),
 		CHLORINE(GunEnergyFactory.getGasConfig(), AmmoItemTrait.PRO_NO_GRAVITY, AmmoItemTrait.PRO_POISON_GAS, AmmoItemTrait.CON_NO_DAMAGE, AmmoItemTrait.CON_NO_FIRE);
-		private final AmmoItemTrait[] traits;
+		private final Set<AmmoItemTrait> traits;
 		private final BulletConfiguration config;
 		private AmmoFlamethrower(BulletConfiguration config, AmmoItemTrait...traits)
 		{
@@ -106,7 +110,7 @@ public class ItemAmmoEnums
 		}
 		
 		@Override
-		public AmmoItemTrait[] getTraits()
+		public Set<AmmoItemTrait> getTraits()
 		{
 			return traits;
 		}
@@ -122,7 +126,7 @@ public class ItemAmmoEnums
 	{
 		LUNA_SNIPER(Gun50BMGFactory.getLunaticSniperRound(), AmmoItemTrait.PRO_HEAVY_DAMAGE, AmmoItemTrait.PRO_ACCURATE2, AmmoItemTrait.NEU_HEAVY_METAL),
 		DGK(GunDGKFactory.getDGKConfig());
-		private final AmmoItemTrait[] traits;
+		private final Set<AmmoItemTrait> traits;
 		private final BulletConfiguration config;
 		private AmmoMisc(BulletConfiguration config, AmmoItemTrait...traits)
 		{
@@ -131,7 +135,7 @@ public class ItemAmmoEnums
 		}
 		
 		@Override
-		public AmmoItemTrait[] getTraits()
+		public Set<AmmoItemTrait> getTraits()
 		{
 			return traits;
 		}
@@ -150,16 +154,20 @@ public class ItemAmmoEnums
 		INCENDIARY(GunRocketHomingFactory.getRocketStingerIncendiaryConfig(), HbmCollection.IncendiaryType),
 		NUCLEAR(GunRocketHomingFactory.getRocketStingerNuclearConfig(), AmmoItemTrait.PRO_NUCLEAR, AmmoItemTrait.CON_SUPER_WEAR),
 		BONES(GunRocketHomingFactory.getRocketStingerBonesConfig());
-		private final AmmoItemTrait[] traits;
+		private final Set<AmmoItemTrait> traits;
 		private final BulletConfiguration config;
 		private AmmoStinger(BulletConfiguration config, AmmoItemTrait...traits)
 		{
 			this.config = config;
 			this.traits = safeAssign(traits);
 		}
-		
+		private AmmoStinger(BulletConfiguration config, Set<AmmoItemTrait> traits)
+		{
+			this.config = config;
+			this.traits = traits;
+		}
 		@Override
-		public AmmoItemTrait[] getTraits()
+		public Set<AmmoItemTrait> getTraits()
 		{
 			return traits;
 		}
@@ -186,16 +194,20 @@ public class ItemAmmoEnums
 		PHOSPHORUS(GunRocketFactory.getRocketPhosphorusConfig(), HbmCollection.PhosphorusTypeSpecial),
 		CANISTER(GunRocketFactory.getRocketCanisterConfig()),
 		DIGAMMA(GunRocketFactory.getRocketErrorConfig());
-		private final AmmoItemTrait[] traits;
+		private final Set<AmmoItemTrait> traits;
 		private final BulletConfiguration config;
 		private AmmoRocket(BulletConfiguration config, AmmoItemTrait...traits)
 		{
 			this.config = config;
 			this.traits = safeAssign(traits);
 		}
-		
+		private AmmoRocket(BulletConfiguration config, Set<AmmoItemTrait> traits)
+		{
+			this.config = config;
+			this.traits = traits;
+		}
 		@Override
-		public AmmoItemTrait[] getTraits()
+		public Set<AmmoItemTrait> getTraits()
 		{
 			return traits;
 		}
@@ -222,7 +234,7 @@ public class ItemAmmoEnums
 		LUNATIC(GunGrenadeFactory.getGrenadeLunaticConfig(), AmmoItemTrait.PRO_LUNATIC, AmmoItemTrait.PRO_RANGE, AmmoItemTrait.CON_NO_EXPLODE2, AmmoItemTrait.CON_SUPER_WEAR),
 		TRACER(GunGrenadeFactory.getGrenadeTracerConfig(), AmmoItemTrait.NEU_BLANK),
 		KAMPF(GunGrenadeFactory.getGrenadeKampfConfig(), AmmoItemTrait.PRO_ROCKET_PROPELLED, AmmoItemTrait.PRO_RADIUS, AmmoItemTrait.PRO_ACCURATE1, AmmoItemTrait.CON_WEAR);
-		private final AmmoItemTrait[] traits;
+		private final Set<AmmoItemTrait> traits;
 		private final BulletConfiguration config;
 		private AmmoGrenade(BulletConfiguration config, AmmoItemTrait...traits)
 		{
@@ -231,7 +243,7 @@ public class ItemAmmoEnums
 		}
 		
 		@Override
-		public AmmoItemTrait[] getTraits()
+		public Set<AmmoItemTrait> getTraits()
 		{
 			return traits;
 		}
@@ -258,7 +270,7 @@ public class ItemAmmoEnums
 		MIRV_SPECIAL(GunFatmanFactory.getMirvSpecialConfig()),
 		BALEFIRE(GunFatmanFactory.getBalefireConfig()),
 		BARREL(GunFatmanFactory.getNukeBarrelConfig());
-		private final AmmoItemTrait[] traits;
+		private final Set<AmmoItemTrait> traits;
 		private final BulletConfiguration config;
 		private AmmoFatman(BulletConfiguration config, AmmoItemTrait...traits)
 		{
@@ -267,7 +279,7 @@ public class ItemAmmoEnums
 		}
 		
 		@Override
-		public AmmoItemTrait[] getTraits()
+		public Set<AmmoItemTrait> getTraits()
 		{
 			return traits;
 		}
@@ -284,7 +296,7 @@ public class ItemAmmoEnums
 		GPS(GunDartFactory.getGPSConfig()),
 		NUCLEAR(GunDartFactory.getNukeConfig()),
 		NERF(GunDartFactory.getNERFConfig());
-		private final AmmoItemTrait[] traits;
+		private final Set<AmmoItemTrait> traits;
 		private final BulletConfiguration config;
 		private AmmoDart(BulletConfiguration config, AmmoItemTrait...traits)
 		{
@@ -293,7 +305,7 @@ public class ItemAmmoEnums
 		}
 		
 		@Override
-		public AmmoItemTrait[] getTraits()
+		public Set<AmmoItemTrait> getTraits()
 		{
 			return traits;
 		}
@@ -313,7 +325,7 @@ public class ItemAmmoEnums
 		APFSDS_DU(GunCannonFactory.getShellDUConfig()),
 		W9(GunCannonFactory.getShellW9Config()),
 		W9_TRUE(GunCannonFactory.getShellW9FullConfig(), AmmoItemTrait.PRO_NUCLEAR, AmmoItemTrait.PRO_HEAVY_DAMAGE);
-		private final AmmoItemTrait[] traits;
+		private final Set<AmmoItemTrait> traits;
 		private final BulletConfiguration config;
 		private Ammo240Shell(BulletConfiguration config, AmmoItemTrait...traits)
 		{
@@ -322,7 +334,7 @@ public class ItemAmmoEnums
 		}
 		
 		@Override
-		public AmmoItemTrait[] getTraits()
+		public Set<AmmoItemTrait> getTraits()
 		{
 			return traits;
 		}
@@ -347,16 +359,20 @@ public class ItemAmmoEnums
 		DU(Gun9mmFactory.get9mmDUConfig(), HbmCollection.DUType),
 		CHLOROPHYTE(Gun9mmFactory.get9mmConfig().getChlorophyte(), HbmCollection.ChlorophyteType),
 		ROCKET(Gun9mmFactory.get9mmRocketConfig(), AmmoItemTrait.PRO_ROCKET, AmmoItemTrait.NEU_UHH);
-		private final AmmoItemTrait[] traits;
+		private final Set<AmmoItemTrait> traits;
 		private final BulletConfiguration config;
 		private Ammo9mm(BulletConfiguration config, AmmoItemTrait...traits)
 		{
 			this.config = config;
 			this.traits = safeAssign(traits);
 		}
-		
+		private Ammo9mm(BulletConfiguration config, Set<AmmoItemTrait> traits)
+		{
+			this.config = config;
+			this.traits = traits;
+		}
 		@Override
-		public AmmoItemTrait[] getTraits()
+		public Set<AmmoItemTrait> getTraits()
 		{
 			return traits;
 		}
@@ -375,16 +391,20 @@ public class ItemAmmoEnums
 		DU(Gun762mmFactory.get762DUConfig(), HbmCollection.DUType),
 		TRACER(Gun762mmFactory.get762TracerConfig(), AmmoItemTrait.NEU_TRACER),
 		BLANK(Gun762mmFactory.get762BlankConfig(), AmmoItemTrait.NEU_BLANK);
-		private final AmmoItemTrait[] traits;
+		private final Set<AmmoItemTrait> traits;
 		private final BulletConfiguration config;
 		private Ammo762NATO(BulletConfiguration config, AmmoItemTrait...traits)
 		{
 			this.config = config;
 			this.traits = safeAssign(traits);
 		}
-		
+		private Ammo762NATO(BulletConfiguration config, Set<AmmoItemTrait> traits)
+		{
+			this.config = config;
+			this.traits = traits;
+		}
 		@Override
-		public AmmoItemTrait[] getTraits()
+		public Set<AmmoItemTrait> getTraits()
 		{
 			return traits;
 		}
@@ -401,7 +421,7 @@ public class ItemAmmoEnums
 		STOCK(Gun75BoltFactory.get75BoltConfig()),
 		INCENDIARY(Gun75BoltFactory.get75BoltIncConfig()),
 		HE(Gun75BoltFactory.get75BoltHEConfig());
-		private final AmmoItemTrait[] traits;
+		private final Set<AmmoItemTrait> traits;
 		private final BulletConfiguration config;
 		private Ammo75Bolt(BulletConfiguration config, AmmoItemTrait...traits)
 		{
@@ -410,7 +430,7 @@ public class ItemAmmoEnums
 		}
 		
 		@Override
-		public AmmoItemTrait[] getTraits()
+		public Set<AmmoItemTrait> getTraits()
 		{
 			return traits;
 		}
@@ -429,16 +449,20 @@ public class ItemAmmoEnums
 		DU(Gun5mmFactory.get5mmDUConfig(), HbmCollection.DUType),
 		STAR(Gun5mmFactory.get5mmStarConfig(), HbmCollection.StarmetalType),
 		CHLOROPHYTE(Gun5mmFactory.get5mmConfig().getChlorophyte(), HbmCollection.ChlorophyteType);
-		private final AmmoItemTrait[] traits;
+		private final Set<AmmoItemTrait> traits;
 		private final BulletConfiguration config;
 		private Ammo5mm(BulletConfiguration config, AmmoItemTrait...traits)
 		{
 			this.config = config;
 			this.traits = safeAssign(traits);
 		}
-		
+		private Ammo5mm(BulletConfiguration config, Set<AmmoItemTrait> traits)
+		{
+			this.config = config;
+			this.traits = traits;
+		}
 		@Override
-		public AmmoItemTrait[] getTraits()
+		public Set<AmmoItemTrait> getTraits()
 		{
 			return traits;
 		}
@@ -468,16 +492,20 @@ public class ItemAmmoEnums
 		FLECHETTE_CHLOROPHYTE(Gun556mmFactory.get556FlechetteConfig().getChlorophyte(), HbmCollection.ChlorophyteType),
 		FLECHETTE_SLEEK(Gun556mmFactory.get556FlechetteSleekConfig(), AmmoItemTrait.NEU_MASKMAN_METEORITE),
 		K(Gun556mmFactory.get556KConfig(), AmmoItemTrait.NEU_BLANK);
-		private final AmmoItemTrait[] traits;
+		private final Set<AmmoItemTrait> traits;
 		private final BulletConfiguration config;
 		private Ammo556mm(BulletConfiguration config, AmmoItemTrait...traits)
 		{
 			this.config = config;
 			this.traits = safeAssign(traits);
 		}
-		
+		private Ammo556mm(BulletConfiguration config, Set<AmmoItemTrait> traits)
+		{
+			this.config = config;
+			this.traits = traits;
+		}
 		@Override
-		public AmmoItemTrait[] getTraits()
+		public Set<AmmoItemTrait> getTraits()
 		{
 			return traits;
 		}
@@ -503,16 +531,20 @@ public class ItemAmmoEnums
 		FLECHETTE(Gun50BMGFactory.get50BMGFlechetteConfig()),
 		FLECHETTE_AM(Gun50BMGFactory.get50BMGFlechetteAMConfig()),
 		FLECHETTE_PO(Gun50BMGFactory.get50BMGFlechettePOConfig());
-		private final AmmoItemTrait[] traits;
+		private final Set<AmmoItemTrait> traits;
 		private final BulletConfiguration config;
 		private Ammo50BMG(BulletConfiguration config, AmmoItemTrait...traits)
 		{
 			this.config = config;
 			this.traits = safeAssign(traits);
 		}
-		
+		private Ammo50BMG(BulletConfiguration config, Set<AmmoItemTrait> traits)
+		{
+			this.config = config;
+			this.traits = traits;
+		}
 		@Override
-		public AmmoItemTrait[] getTraits()
+		public Set<AmmoItemTrait> getTraits()
 		{
 			return traits;
 		}
@@ -531,16 +563,20 @@ public class ItemAmmoEnums
 		DU(Gun50AEFactory.get50DUConfig(), HbmCollection.DUType),
 		STAR(Gun50AEFactory.get50StarConfig(), HbmCollection.StarmetalType),
 		CHLOROPHYTE(Gun50AEFactory.get50AEConfig().getChlorophyte(), HbmCollection.ChlorophyteType);
-		private final AmmoItemTrait[] traits;
+		private final Set<AmmoItemTrait> traits;
 		private final BulletConfiguration config;
 		private Ammo50AE(BulletConfiguration config, AmmoItemTrait...traits)
 		{
 			this.config = config;
 			this.traits = safeAssign(traits);
 		}
-		
+		private Ammo50AE(BulletConfiguration config, Set<AmmoItemTrait> traits)
+		{
+			this.config = config;
+			this.traits = traits;
+		}
 		@Override
-		public AmmoItemTrait[] getTraits()
+		public Set<AmmoItemTrait> getTraits()
 		{
 			return traits;
 		}
@@ -568,16 +604,20 @@ public class ItemAmmoEnums
 		VAMPIRE(Gun4GaugeFactory.get4GaugeVampireConfig()),
 		VOID(Gun4GaugeFactory.get4GaugeVoidConfig()),
 		QUACK(Gun4GaugeFactory.get4GaugeQuackConfig(), AmmoItemTrait.PRO_MARAUDER, AmmoItemTrait.NEU_NO_CON);
-		private final AmmoItemTrait[] traits;
+		private final Set<AmmoItemTrait> traits;
 		private final BulletConfiguration config;
 		private Ammo4Gauge(BulletConfiguration config, AmmoItemTrait...traits)
 		{
 			this.config = config;
 			this.traits = safeAssign(traits);
 		}
-		
+		private Ammo4Gauge(BulletConfiguration config, Set<AmmoItemTrait> traits)
+		{
+			this.config = config;
+			this.traits = traits;
+		}
 		@Override
-		public AmmoItemTrait[] getTraits()
+		public Set<AmmoItemTrait> getTraits()
 		{
 			return traits;
 		}
@@ -594,16 +634,20 @@ public class ItemAmmoEnums
 		STOCK(Gun45ACPFactory.get45AutoConfig()),
 		AP(Gun45ACPFactory.get45AutoAPConfig(), HbmCollection.APType),
 		DU(Gun45ACPFactory.get45AutoDUConfig(), HbmCollection.DUType);
-		private final AmmoItemTrait[] traits;
+		private final Set<AmmoItemTrait> traits;
 		private final BulletConfiguration config;
 		private Ammo45ACP(BulletConfiguration config, AmmoItemTrait...traits)
 		{
 			this.config = config;
 			this.traits = safeAssign(traits);
 		}
-		
+		private Ammo45ACP(BulletConfiguration config, Set<AmmoItemTrait> traits)
+		{
+			this.config = config;
+			this.traits = traits;
+		}
 		@Override
-		public AmmoItemTrait[] getTraits()
+		public Set<AmmoItemTrait> getTraits()
 		{
 			return traits;
 		}
@@ -627,16 +671,20 @@ public class ItemAmmoEnums
 		BJ(Gun44MagnumFactory.getBJConfig(), AmmoItemTrait.NEU_BOAT, AmmoItemTrait.CON_DAMAGE),
 		SILVER(Gun44MagnumFactory.getSilverStormConfig(), AmmoItemTrait.NEU_BUILDING, AmmoItemTrait.CON_DAMAGE),
 		ROCKET(Gun44MagnumFactory.getRocketConfig(), AmmoItemTrait.PRO_ROCKET, AmmoItemTrait.NEU_UHH);
-		private final AmmoItemTrait[] traits;
+		private final Set<AmmoItemTrait> traits;
 		private final BulletConfiguration config;
 		private Ammo44Magnum(BulletConfiguration config, AmmoItemTrait...traits)
 		{
 			this.config = config;
 			this.traits = safeAssign(traits);
 		}
-		
+		private Ammo44Magnum(BulletConfiguration config, Set<AmmoItemTrait> traits)
+		{
+			this.config = config;
+			this.traits = traits;
+		}
 		@Override
-		public AmmoItemTrait[] getTraits()
+		public Set<AmmoItemTrait> getTraits()
 		{
 			return traits;
 		}
@@ -659,7 +707,7 @@ public class ItemAmmoEnums
 		STEEL(Gun357MagnumFactory.getRevCursedConfig()),
 		NIGHTMARE1(Gun357MagnumFactory.getRevNightmare1Config()),
 		NIGHTMARE2(Gun357MagnumFactory.getRevNightmare2Config());
-		private final AmmoItemTrait[] traits;
+		private final Set<AmmoItemTrait> traits;
 		private final BulletConfiguration config;
 		private Ammo357Magnum(BulletConfiguration config, AmmoItemTrait...traits)
 		{
@@ -667,7 +715,7 @@ public class ItemAmmoEnums
 			this.traits = safeAssign(traits);
 		}
 		@Override
-		public AmmoItemTrait[] getTraits()
+		public Set<AmmoItemTrait> getTraits()
 		{
 			return traits;
 		}
@@ -684,15 +732,20 @@ public class ItemAmmoEnums
 		STOCK(Gun22LRFactory.get22LRConfig()),
 		AP(Gun22LRFactory.get22LRAPConfig(), HbmCollection.APType),
 		CHLOROPHYTE(Gun22LRFactory.get22LRConfig().getChlorophyte(), HbmCollection.ChlorophyteType);
-		private final AmmoItemTrait[] traits;
+		private final Set<AmmoItemTrait> traits;
 		private final BulletConfiguration config;
 		private Ammo22LR(BulletConfiguration config, AmmoItemTrait...traits)
 		{
 			this.config = config;
 			this.traits = safeAssign(traits);
 		}
+		private Ammo22LR(BulletConfiguration config, Set<AmmoItemTrait> traits)
+		{
+			this.config = config;
+			this.traits = traits;
+		}
 		@Override
-		public AmmoItemTrait[] getTraits()
+		public Set<AmmoItemTrait> getTraits()
 		{
 			return traits;
 		}
@@ -716,15 +769,20 @@ public class ItemAmmoEnums
 		SHOCK(Gun20GaugeFactory.get20GaugeShockConfig(), AmmoItemTrait.PRO_DAMAGE, AmmoItemTrait.PRO_STUNNING, AmmoItemTrait.PRO_EMP, AmmoItemTrait.NEU_NO_BOUNCE, AmmoItemTrait.CON_HEAVY_WEAR),
 		WITHER(Gun20GaugeFactory.get20GaugeWitherConfig(), AmmoItemTrait.PRO_DAMAGE, AmmoItemTrait.PRO_WITHERING),
 		SLEEK(Gun20GaugeFactory.get20GaugeSleekConfig(), AmmoItemTrait.NEU_MASKMAN_FLECHETTE);
-		private final AmmoItemTrait[] traits;
+		private final Set<AmmoItemTrait> traits;
 		private final BulletConfiguration config;
 		private Ammo20Gauge(BulletConfiguration config, AmmoItemTrait...traits)
 		{
 			this.config = config;
 			this.traits = safeAssign(traits);
 		}
+		private Ammo20Gauge(BulletConfiguration config, Set<AmmoItemTrait> traits)
+		{
+			this.config = config;
+			this.traits = traits;
+		}
 		@Override
-		public AmmoItemTrait[] getTraits()
+		public Set<AmmoItemTrait> getTraits()
 		{
 			return traits;
 		}
@@ -744,7 +802,7 @@ public class ItemAmmoEnums
 		DU(Gun12GaugeFactory.get12GaugeDUConfig(), AmmoItemTrait.PRO_DAMAGE, AmmoItemTrait.PRO_PENETRATION, AmmoItemTrait.NEU_HEAVY_METAL, AmmoItemTrait.CON_HEAVY_WEAR),
 		MARAUDER(Gun12GaugeFactory.get12GaugeAMConfig(), AmmoItemTrait.PRO_MARAUDER, AmmoItemTrait.NEU_NO_CON),
 		SLEEK(Gun12GaugeFactory.get12GaugeSleekConfig(), AmmoItemTrait.NEU_MASKMAN_FLECHETTE);
-		private final AmmoItemTrait[] traits;
+		private final Set<AmmoItemTrait> traits;
 		private final BulletConfiguration config;
 		private Ammo12Gauge(BulletConfiguration config, AmmoItemTrait...traits)
 		{
@@ -753,7 +811,7 @@ public class ItemAmmoEnums
 		}
 		
 		@Override
-		public AmmoItemTrait[] getTraits()
+		public Set<AmmoItemTrait> getTraits()
 		{
 			return traits;
 		}
@@ -767,12 +825,17 @@ public class ItemAmmoEnums
 
 	public interface IAmmoItemEnum
 	{
-		public AmmoItemTrait[] getTraits();
+		public Set<AmmoItemTrait> getTraits();
 		public BulletConfiguration getConfig();
 	}
 
-	static AmmoItemTrait[] safeAssign(AmmoItemTrait[] traits)
+	static Set<AmmoItemTrait> safeAssign(AmmoItemTrait[] traits)
 	{
-		return traits == null ? new AmmoItemTrait[0] : traits;
+		return traits == null ? ImmutableSet.of() : ImmutableSet.copyOf(traits);
+	}
+	
+	static Set<AmmoItemTrait> safeAssign(Collection<AmmoItemTrait> traits)
+	{
+		return traits == null || traits.size() == 0 ? ImmutableSet.of() : ImmutableSet.copyOf(traits);
 	}
 }

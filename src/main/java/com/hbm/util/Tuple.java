@@ -45,7 +45,7 @@ public class Tuple {
 				return false;
 			if(getClass() != obj.getClass())
 				return false;
-			Pair other = (Pair) obj;
+			Pair<?, ?> other = (Pair<?, ?>) obj;
 			if(key == null) {
 				if(other.key != null)
 					return false;
@@ -102,7 +102,7 @@ public class Tuple {
 				return false;
 			if(getClass() != obj.getClass())
 				return false;
-			Triplet other = (Triplet) obj;
+			Triplet<?, ?, ?> other = (Triplet<?, ?, ?>) obj;
 			if(x == null) {
 				if(other.x != null)
 					return false;
@@ -143,7 +143,7 @@ public class Tuple {
 				return false;
 			if(getClass() != obj.getClass())
 				return false;
-			Quartet other = (Quartet) obj;
+			Quartet<?, ?, ?, ?> other = (Quartet<?, ?, ?, ?>) obj;
 			if(w == null) {
 				if(other.w != null)
 					return false;
@@ -218,7 +218,7 @@ public class Tuple {
 				return false;
 			if(getClass() != obj.getClass())
 				return false;
-			Quintet other = (Quintet) obj;
+			Quintet<?, ?, ?, ?, ?> other = (Quintet<?, ?, ?, ?, ?>) obj;
 			if(v == null) {
 				if(other.v != null)
 					return false;

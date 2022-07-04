@@ -5,15 +5,23 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.hbm.main.DeserializationException;
 
+import api.hbm.serialization.ISerializable;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
-public class NBTBuilder
+public class NBTBuilder implements ISerializable<NBTBuilder>, Iterable<NBTBase>
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 198483453531676699L;
 	private final NBTTagCompound nbt;
 	public NBTBuilder()
 	{
@@ -153,15 +161,15 @@ public class NBTBuilder
 	
 	public Set<String> getKeys()
 	{
-		return nbt.func_150296_c();
+		return ImmutableSet.copyOf(nbt.func_150296_c());
 	}
 	
 	public NBTBase[] getTags()
 	{
-		Set<String> keys = new HashSet<String>(getKeys());
-		NBTBase[] tags = new NBTBase[keys.size()];
+		final Set<String> keys = new HashSet<String>(getKeys());
+		final NBTBase[] tags = new NBTBase[keys.size()];
 		int i = 0;
-		Iterator<String> iterator = keys.iterator();
+		final Iterator<String> iterator = keys.iterator();
 		while (iterator.hasNext())
 		{
 			tags[i] = nbt.getTag(iterator.next());
@@ -173,9 +181,9 @@ public class NBTBuilder
 	
 	public Map<String, NBTBase> decompileNBT()
 	{
-		HashMap<String, NBTBase> map = new HashMap<String, NBTBase>();
-		Set<String> keys = new HashSet<String>(getKeys());
-		Iterator<String> iterator = keys.iterator();
+		final Map<String, NBTBase> map = new HashMap<String, NBTBase>();
+		final Set<String> keys = new HashSet<String>(getKeys());
+		final Iterator<String> iterator = keys.iterator();
 		while (iterator.hasNext())
 		{
 			map.put(iterator.next(), nbt.getTag(iterator.next()));
@@ -218,5 +226,48 @@ public class NBTBuilder
 	public String toString()
 	{
 		return nbt.toString();
+	}
+	
+	public void removeIf(Predicate<NBTBase> predicate)
+	{
+		for (String key : getKeys())
+			if (predicate.test(getTag(key)))
+				removeTag(key);
+	}
+	
+	@Override
+	public NBTBuilder deserialize(byte[] bytes) throws DeserializationException
+	{
+		return new NBTBuilder(NBTSerialization.COMPOUND_DESERIALIZER.deserialize(bytes));
+	}
+	@Override
+	public byte[] serialize()
+	{
+		return NBTSerialization.serializeCompound(nbt);
+	}
+	@Override
+	public Iterator<NBTBase> iterator()
+	{
+		return new NBTIterator();
+	}
+	
+	protected class NBTIterator implements Iterator<NBTBase>
+	{
+		private final Iterator<String> iterator;
+		public NBTIterator()
+		{
+			iterator = getKeys().iterator();
+		}
+		@Override
+		public boolean hasNext()
+		{
+			return iterator.hasNext();
+		}
+
+		@Override
+		public NBTBase next()
+		{
+			return getTag(iterator.next());
+		}
 	}
 }

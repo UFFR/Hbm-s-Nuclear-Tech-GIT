@@ -14,7 +14,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 @Beta
-public final class EasyLocationStep extends EasyLocation implements Iterable<EasyLocationStep>
+public final class EasyLocationStep extends EasyLocation implements Iterable<ILocationProvider>
 {
 	/**
 	 * 
@@ -176,11 +176,11 @@ public final class EasyLocationStep extends EasyLocation implements Iterable<Eas
 	}
 	
 	@Override
-	public Iterator<EasyLocationStep> iterator()
+	public Iterator<ILocationProvider> iterator()
 	{
 		return new EasyLocIterator();
 	}
-	private class EasyLocIterator implements Iterator<EasyLocationStep>
+	private class EasyLocIterator implements Iterator<ILocationProvider>
 	{
 		public EasyLocIterator()
 		{

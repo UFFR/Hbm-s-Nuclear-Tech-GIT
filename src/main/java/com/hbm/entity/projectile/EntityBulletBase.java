@@ -323,7 +323,7 @@ public class EntityBulletBase extends Entity implements IProjectile {
 				{
 					final int armor = ((EntityLivingBase) victim).getTotalArmorValue();
 					final int stockPen = config.penetration;
-					final double distance = ILocationProvider.distance(startingPoint, ILocationProvider.wrap(victim));
+					final double distance = ILocationProvider.distance(startingPoint, ILocationProvider.wrap(victim, false));
 					final float penMod = config.penetrationModifier;
 					final double newPen = config.modFunction.orElse(BulletConfiguration.defaultModifier).mod(stockPen, penMod, distance);
 					final boolean closePen = armor - newPen <= armor * 0.2;

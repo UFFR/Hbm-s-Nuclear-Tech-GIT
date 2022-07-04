@@ -48,8 +48,9 @@ public class ItemPagoda extends Item implements IClickReceiver
 			setCharge(stack, 0);
 			final short strength = getCharge(stack);
 			final float radius = strength / 100;
-			final EasyLocation playerLoc = new EasyLocation(Library.getPosition(1, player)).modifyCoord(0, player.getEyeHeight(), 0);
-			final EasyLocation checkCoord = playerLoc.clone().setWorld(player.worldObj);
+//			final EasyLocation playerLoc = new EasyLocation(Library.getPosition(1, player)).modifyCoord(0, player.getEyeHeight(), 0);
+			final ILocationProvider playerLoc = ILocationProvider.wrap(player, true);
+			final EasyLocation checkCoord = new EasyLocation(playerLoc).setWorld(player.getEntityWorld());
 			final HashSet<Entity> entities = new HashSet<>();
 			BobMathUtil.offsetForHand(player, checkCoord);
 			final Vec3 step = BobMathUtil.entityUnitVector(player);
@@ -78,7 +79,7 @@ public class ItemPagoda extends Item implements IClickReceiver
 			setCharge(stack, 0);
 			final List<Entity> entityList = player.worldObj.getEntitiesWithinAABBExcludingEntity(player, AxisAlignedBB.getBoundingBox(player.posX - MAX_RADIUS, player.posY - MAX_RADIUS, player.posZ - MAX_RADIUS, player.posX + MAX_RADIUS, player.posY + MAX_RADIUS, player.posZ + MAX_RADIUS));
 			for (Entity entity : entityList)
-				if (!Library.isObstructed(player.getEntityWorld(), ILocationProvider.wrap(player), ILocationProvider.wrap(entity)) && entity instanceof EntityLivingBase)
+				if (!Library.isObstructed(player.getEntityWorld(), ILocationProvider.wrap(player, true), ILocationProvider.wrap(entity, false)) && entity instanceof EntityLivingBase)
 					HbmLivingProps.incrementRadiation((EntityLivingBase) entity, getCharge(stack) / 100);
 			break;
 		default: return false;
@@ -92,6 +93,7 @@ public class ItemPagoda extends Item implements IClickReceiver
 		if (b)
 		{
 			tooltip.add("Current charge: " + getCharge(stack) + '/' + MAX_CHARGE);
+			tooltip.add(Library.toPercentage(getCharge(stack), MAX_CHARGE));
 			tooltip.add("Is charging? " + isCharging(stack));
 		}
 	}

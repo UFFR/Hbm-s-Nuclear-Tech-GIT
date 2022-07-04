@@ -797,22 +797,21 @@ public class ModEventHandler {
 			if(thunder > 0)
 				AuxSavedData.setThunder(event.world, thunder - 1);
 			
-			if(!event.world.loadedEntityList.isEmpty()) {
+			if (!event.world.loadedEntityList.isEmpty()) {
 				
-				List<Entity> oList = new ArrayList<Entity>();
-				oList.addAll(event.world.loadedEntityList);
+				final List<Entity> oList = new ArrayList<Entity>(event.world.loadedEntityList);
 				
 				/**
 				 *  REMOVE THIS V V V
 				 */
-				for(Object e : oList) {
+				for(Entity e : oList) {
 					if (e instanceof EntityItem)
 					{
-						EntityItem itemEntity = (EntityItem) e;
+						final EntityItem itemEntity = (EntityItem) e;
 						for (HazardEntry entry : HazardSystem.getHazardsFromStack(itemEntity.getEntityItem()))
 							entry.getType().updateEntity(itemEntity, itemEntity.getEntityItem().stackSize);
 					}
-					if(e instanceof EntityLivingBase) {
+					if (e instanceof EntityLivingBase) {
 						
 						//effect for radiation
 						EntityLivingBase entity = (EntityLivingBase) e;

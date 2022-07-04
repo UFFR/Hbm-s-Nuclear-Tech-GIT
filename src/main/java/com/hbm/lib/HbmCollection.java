@@ -1,5 +1,8 @@
 package com.hbm.lib;
 
+import java.util.List;
+import java.util.Set;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.hbm.blocks.ModBlocks;
@@ -91,15 +94,15 @@ public final class HbmCollection
 	/** LUNAR POWER ARMOR KIT **/
 	public static ItemStack[] lunarKit;
 	/// COMMON AMMO TRAITS
-	public static final AmmoItemTrait[] APType = {AmmoItemTrait.PRO_DAMAGE, AmmoItemTrait.CON_WEAR};
-	public static final AmmoItemTrait[] FlechetteType = {AmmoItemTrait.PRO_DAMAGE, AmmoItemTrait.NEU_LESS_BOUNCY, AmmoItemTrait.CON_WEAR};
-	public static final AmmoItemTrait[] IncendiaryType = {AmmoItemTrait.PRO_INCENDIARY, AmmoItemTrait.CON_WEAR};
-	public static final AmmoItemTrait[] PhosphorusType = {AmmoItemTrait.PRO_PHOSPHORUS, AmmoItemTrait.NEU_WARCRIME1, AmmoItemTrait.CON_WEAR, AmmoItemTrait.CON_PENETRATION};
-	public static final AmmoItemTrait[] PhosphorusTypeSpecial = {AmmoItemTrait.PRO_PHOSPHORUS_SPLASH, AmmoItemTrait.NEU_WARCRIME1, AmmoItemTrait.CON_WEAR};
-	public static final AmmoItemTrait[] ExplosiveType = {AmmoItemTrait.PRO_EXPLOSIVE, AmmoItemTrait.PRO_DAMAGE, AmmoItemTrait.CON_HEAVY_WEAR};
-	public static final AmmoItemTrait[] DUType = {AmmoItemTrait.PRO_HEAVY_DAMAGE, AmmoItemTrait.NEU_HEAVY_METAL, AmmoItemTrait.CON_HEAVY_WEAR};
-	public static final AmmoItemTrait[] StarmetalType = {AmmoItemTrait.PRO_HEAVY_DAMAGE, AmmoItemTrait.NEU_STARMETAL, AmmoItemTrait.CON_HEAVY_WEAR};
-	public static final AmmoItemTrait[] ChlorophyteType = {AmmoItemTrait.PRO_DAMAGE, AmmoItemTrait.PRO_WEAR, AmmoItemTrait.NEU_CHLOROPHYTE, AmmoItemTrait.NEU_HOMING, AmmoItemTrait.CON_PENETRATION};
+	public static final Set<AmmoItemTrait> APType = ImmutableSet.of(AmmoItemTrait.PRO_DAMAGE, AmmoItemTrait.CON_WEAR);
+	public static final Set<AmmoItemTrait> FlechetteType = ImmutableSet.of(AmmoItemTrait.PRO_DAMAGE, AmmoItemTrait.NEU_LESS_BOUNCY, AmmoItemTrait.CON_WEAR);
+	public static final Set<AmmoItemTrait> IncendiaryType = ImmutableSet.of(AmmoItemTrait.PRO_INCENDIARY, AmmoItemTrait.CON_WEAR);
+	public static final Set<AmmoItemTrait> PhosphorusType = ImmutableSet.of(AmmoItemTrait.PRO_PHOSPHORUS, AmmoItemTrait.NEU_WARCRIME1, AmmoItemTrait.CON_WEAR, AmmoItemTrait.CON_PENETRATION);
+	public static final Set<AmmoItemTrait> PhosphorusTypeSpecial = ImmutableSet.of(AmmoItemTrait.PRO_PHOSPHORUS_SPLASH, AmmoItemTrait.NEU_WARCRIME1, AmmoItemTrait.CON_WEAR);
+	public static final Set<AmmoItemTrait> ExplosiveType = ImmutableSet.of(AmmoItemTrait.PRO_EXPLOSIVE, AmmoItemTrait.PRO_DAMAGE, AmmoItemTrait.CON_HEAVY_WEAR);
+	public static final Set<AmmoItemTrait> DUType = ImmutableSet.of(AmmoItemTrait.PRO_HEAVY_DAMAGE, AmmoItemTrait.NEU_HEAVY_METAL, AmmoItemTrait.CON_HEAVY_WEAR);
+	public static final Set<AmmoItemTrait> StarmetalType = ImmutableSet.of(AmmoItemTrait.PRO_HEAVY_DAMAGE, AmmoItemTrait.NEU_STARMETAL, AmmoItemTrait.CON_HEAVY_WEAR);
+	public static final Set<AmmoItemTrait> ChlorophyteType = ImmutableSet.of(AmmoItemTrait.PRO_DAMAGE, AmmoItemTrait.PRO_WEAR, AmmoItemTrait.NEU_CHLOROPHYTE, AmmoItemTrait.NEU_HOMING, AmmoItemTrait.CON_PENETRATION);
 	
 	public static final int tickDay = 48000;
 	public static final int tickYear = tickDay * 100;
@@ -122,58 +125,58 @@ public final class HbmCollection
 	/// BULLET COLLECTIONS
 	// SHOTGUNS
 	/** 12 GAUGE **/
-	public static final ImmutableList<Integer> twelveGauge = ImmutableList.of(BulletConfigSyncingUtil.G12_NORMAL, BulletConfigSyncingUtil.G12_INCENDIARY, BulletConfigSyncingUtil.G12_SHRAPNEL, BulletConfigSyncingUtil.G12_DU, BulletConfigSyncingUtil.G12_AM, BulletConfigSyncingUtil.G12_SLEEK);
+	public static final List<Integer> twelveGauge = ImmutableList.of(BulletConfigSyncingUtil.G12_NORMAL, BulletConfigSyncingUtil.G12_INCENDIARY, BulletConfigSyncingUtil.G12_SHRAPNEL, BulletConfigSyncingUtil.G12_DU, BulletConfigSyncingUtil.G12_AM, BulletConfigSyncingUtil.G12_SLEEK);
 	/** 20 GAUGE **/
-	public static final ImmutableList<Integer> twentyGauge = ImmutableList.of(BulletConfigSyncingUtil.G20_NORMAL, BulletConfigSyncingUtil.G20_SLUG, BulletConfigSyncingUtil.G20_FLECHETTE, BulletConfigSyncingUtil.G20_FIRE, BulletConfigSyncingUtil.G20_SHRAPNEL, BulletConfigSyncingUtil.G20_EXPLOSIVE, BulletConfigSyncingUtil.G20_CAUSTIC, BulletConfigSyncingUtil.G20_SHOCK, BulletConfigSyncingUtil.G20_WITHER, BulletConfigSyncingUtil.G20_SLEEK);
+	public static final List<Integer> twentyGauge = ImmutableList.of(BulletConfigSyncingUtil.G20_NORMAL, BulletConfigSyncingUtil.G20_SLUG, BulletConfigSyncingUtil.G20_FLECHETTE, BulletConfigSyncingUtil.G20_FIRE, BulletConfigSyncingUtil.G20_SHRAPNEL, BulletConfigSyncingUtil.G20_EXPLOSIVE, BulletConfigSyncingUtil.G20_CAUSTIC, BulletConfigSyncingUtil.G20_SHOCK, BulletConfigSyncingUtil.G20_WITHER, BulletConfigSyncingUtil.G20_SLEEK);
 	/** 4 GAUGE **/
-	public static final ImmutableList<Integer> fourGauge = ImmutableList.of(BulletConfigSyncingUtil.G4_NORMAL, BulletConfigSyncingUtil.G4_SLUG, BulletConfigSyncingUtil.G4_FLECHETTE, BulletConfigSyncingUtil.G4_FLECHETTE_PHOSPHORUS, BulletConfigSyncingUtil.G4_EXPLOSIVE, BulletConfigSyncingUtil.G4_SEMTEX, BulletConfigSyncingUtil.G4_BALEFIRE, BulletConfigSyncingUtil.G4_KAMPF, BulletConfigSyncingUtil.G4_CANISTER, BulletConfigSyncingUtil.G4_CLAW, BulletConfigSyncingUtil.G4_VAMPIRE, BulletConfigSyncingUtil.G4_VOID, BulletConfigSyncingUtil.G4_TITAN, BulletConfigSyncingUtil.G4_SLEEK);
+	public static final List<Integer> fourGauge = ImmutableList.of(BulletConfigSyncingUtil.G4_NORMAL, BulletConfigSyncingUtil.G4_SLUG, BulletConfigSyncingUtil.G4_FLECHETTE, BulletConfigSyncingUtil.G4_FLECHETTE_PHOSPHORUS, BulletConfigSyncingUtil.G4_EXPLOSIVE, BulletConfigSyncingUtil.G4_SEMTEX, BulletConfigSyncingUtil.G4_BALEFIRE, BulletConfigSyncingUtil.G4_KAMPF, BulletConfigSyncingUtil.G4_CANISTER, BulletConfigSyncingUtil.G4_CLAW, BulletConfigSyncingUtil.G4_VAMPIRE, BulletConfigSyncingUtil.G4_VOID, BulletConfigSyncingUtil.G4_TITAN, BulletConfigSyncingUtil.G4_SLEEK);
 	// PISTOL CALIBER
 	/** .22 LONG RIFLE **/
-	public static final ImmutableList<Integer> twentyTwoLR = ImmutableList.of(BulletConfigSyncingUtil.LR22_NORMAL_FIRE, BulletConfigSyncingUtil.LR22_AP_FIRE, BulletConfigSyncingUtil.CHL_LR22_FIRE);
+	public static final List<Integer> twentyTwoLR = ImmutableList.of(BulletConfigSyncingUtil.LR22_NORMAL_FIRE, BulletConfigSyncingUtil.LR22_AP_FIRE, BulletConfigSyncingUtil.CHL_LR22_FIRE);
 	/** .44 MAGNUM (BASIC) **/
-	public static final ImmutableList<Integer> fourtyFourMagBasic = ImmutableList.of(BulletConfigSyncingUtil.M44_NORMAL, BulletConfigSyncingUtil.M44_AP, BulletConfigSyncingUtil.M44_DU, BulletConfigSyncingUtil.M44_PHOSPHORUS, BulletConfigSyncingUtil.M44_STAR, BulletConfigSyncingUtil.CHL_M44, BulletConfigSyncingUtil.M44_ROCKET);
+	public static final List<Integer> fourtyFourMagBasic = ImmutableList.of(BulletConfigSyncingUtil.M44_NORMAL, BulletConfigSyncingUtil.M44_AP, BulletConfigSyncingUtil.M44_DU, BulletConfigSyncingUtil.M44_PHOSPHORUS, BulletConfigSyncingUtil.M44_STAR, BulletConfigSyncingUtil.CHL_M44, BulletConfigSyncingUtil.M44_ROCKET);
 	/** .44 MAGNUM (ALL) **/
-	public static final ImmutableList<Integer> fourtyFourMagAll = ImmutableList.of(BulletConfigSyncingUtil.M44_NORMAL, BulletConfigSyncingUtil.M44_AP, BulletConfigSyncingUtil.M44_DU, BulletConfigSyncingUtil.M44_PHOSPHORUS, BulletConfigSyncingUtil.M44_STAR, BulletConfigSyncingUtil.CHL_M44, BulletConfigSyncingUtil.M44_ROCKET, BulletConfigSyncingUtil.M44_PIP, BulletConfigSyncingUtil.M44_BJ, BulletConfigSyncingUtil.M44_SILVER);
+	public static final List<Integer> fourtyFourMagAll = ImmutableList.of(BulletConfigSyncingUtil.M44_NORMAL, BulletConfigSyncingUtil.M44_AP, BulletConfigSyncingUtil.M44_DU, BulletConfigSyncingUtil.M44_PHOSPHORUS, BulletConfigSyncingUtil.M44_STAR, BulletConfigSyncingUtil.CHL_M44, BulletConfigSyncingUtil.M44_ROCKET, BulletConfigSyncingUtil.M44_PIP, BulletConfigSyncingUtil.M44_BJ, BulletConfigSyncingUtil.M44_SILVER);
 	/** .50 ACTION EXPRESS **/
-	public static final ImmutableList<Integer> fiftyAE = ImmutableList.of(BulletConfigSyncingUtil.AE50_NORMAL, BulletConfigSyncingUtil.AE50_AP, BulletConfigSyncingUtil.AE50_DU, BulletConfigSyncingUtil.AE50_STAR, BulletConfigSyncingUtil.CHL_AE50);
+	public static final List<Integer> fiftyAE = ImmutableList.of(BulletConfigSyncingUtil.AE50_NORMAL, BulletConfigSyncingUtil.AE50_AP, BulletConfigSyncingUtil.AE50_DU, BulletConfigSyncingUtil.AE50_STAR, BulletConfigSyncingUtil.CHL_AE50);
 	/** 9MM Parabellum **/
-	public static final ImmutableList<Integer> nineMM = ImmutableList.of(BulletConfigSyncingUtil.P9_NORMAL, BulletConfigSyncingUtil.P9_AP, BulletConfigSyncingUtil.P9_DU, BulletConfigSyncingUtil.CHL_P9, BulletConfigSyncingUtil.P9_ROCKET);
+	public static final List<Integer> nineMM = ImmutableList.of(BulletConfigSyncingUtil.P9_NORMAL, BulletConfigSyncingUtil.P9_AP, BulletConfigSyncingUtil.P9_DU, BulletConfigSyncingUtil.CHL_P9, BulletConfigSyncingUtil.P9_ROCKET);
 	/** .45 AUTOMATIC COLT PISTOL **/
-	public static final ImmutableList<Integer> fourtyFiveACP = ImmutableList.of(BulletConfigSyncingUtil.ACP_45);
+	public static final List<Integer> fourtyFiveACP = ImmutableList.of(BulletConfigSyncingUtil.ACP_45);
 	// RIFLE CALIBER
 	/** .50 BROWNING MACHINE GUN **/
-	public static final ImmutableList<Integer> fiftyBMG = ImmutableList.of(BulletConfigSyncingUtil.BMG50_NORMAL, BulletConfigSyncingUtil.BMG50_INCENDIARY, BulletConfigSyncingUtil.BMG50_PHOSPHORUS, BulletConfigSyncingUtil.BMG50_EXPLOSIVE, BulletConfigSyncingUtil.BMG50_AP, BulletConfigSyncingUtil.BMG50_DU, BulletConfigSyncingUtil.BMG50_STAR, BulletConfigSyncingUtil.CHL_BMG50, BulletConfigSyncingUtil.BMG50_SLEEK);
+	public static final List<Integer> fiftyBMG = ImmutableList.of(BulletConfigSyncingUtil.BMG50_NORMAL, BulletConfigSyncingUtil.BMG50_INCENDIARY, BulletConfigSyncingUtil.BMG50_PHOSPHORUS, BulletConfigSyncingUtil.BMG50_EXPLOSIVE, BulletConfigSyncingUtil.BMG50_AP, BulletConfigSyncingUtil.BMG50_DU, BulletConfigSyncingUtil.BMG50_STAR, BulletConfigSyncingUtil.CHL_BMG50, BulletConfigSyncingUtil.BMG50_SLEEK);
 	/** .50 BROWNING MACHINE GUN (FLECHETTE) **/
-	public static final ImmutableList<Integer> fiftyBMGFlechette = ImmutableList.of(BulletConfigSyncingUtil.BMG50_FLECHETTE_AM, BulletConfigSyncingUtil.BMG50_FLECHETTE_NORMAL, BulletConfigSyncingUtil.BMG50_FLECHETTE_PO);
+	public static final List<Integer> fiftyBMGFlechette = ImmutableList.of(BulletConfigSyncingUtil.BMG50_FLECHETTE_AM, BulletConfigSyncingUtil.BMG50_FLECHETTE_NORMAL, BulletConfigSyncingUtil.BMG50_FLECHETTE_PO);
 	/** 5.56MMx45 NATO (BASIC) **/
-	public static final ImmutableList<Integer> NATO = ImmutableList.of(BulletConfigSyncingUtil.R556_NORMAL, BulletConfigSyncingUtil.R556_GOLD, BulletConfigSyncingUtil.R556_TRACER, BulletConfigSyncingUtil.R556_PHOSPHORUS, BulletConfigSyncingUtil.R556_AP, BulletConfigSyncingUtil.R556_DU, BulletConfigSyncingUtil.R556_STAR, BulletConfigSyncingUtil.CHL_R556, BulletConfigSyncingUtil.R556_SLEEK, BulletConfigSyncingUtil.R556_K);
+	public static final List<Integer> NATO = ImmutableList.of(BulletConfigSyncingUtil.R556_NORMAL, BulletConfigSyncingUtil.R556_GOLD, BulletConfigSyncingUtil.R556_TRACER, BulletConfigSyncingUtil.R556_PHOSPHORUS, BulletConfigSyncingUtil.R556_AP, BulletConfigSyncingUtil.R556_DU, BulletConfigSyncingUtil.R556_STAR, BulletConfigSyncingUtil.CHL_R556, BulletConfigSyncingUtil.R556_SLEEK, BulletConfigSyncingUtil.R556_K);
 	/** 5.56MMx45 NATO (FLECHETTE) **/
-	public static final ImmutableList<Integer> NATOFlechette = ImmutableList.of(BulletConfigSyncingUtil.R556_FLECHETTE, BulletConfigSyncingUtil.R556_FLECHETTE_INCENDIARY, BulletConfigSyncingUtil.R556_FLECHETTE_PHOSPHORUS, BulletConfigSyncingUtil.R556_FLECHETTE_DU, BulletConfigSyncingUtil.CHL_R556_FLECHETTE, BulletConfigSyncingUtil.R556_FLECHETTE_SLEEK, BulletConfigSyncingUtil.R556_K);
+	public static final List<Integer> NATOFlechette = ImmutableList.of(BulletConfigSyncingUtil.R556_FLECHETTE, BulletConfigSyncingUtil.R556_FLECHETTE_INCENDIARY, BulletConfigSyncingUtil.R556_FLECHETTE_PHOSPHORUS, BulletConfigSyncingUtil.R556_FLECHETTE_DU, BulletConfigSyncingUtil.CHL_R556_FLECHETTE, BulletConfigSyncingUtil.R556_FLECHETTE_SLEEK, BulletConfigSyncingUtil.R556_K);
 	/** 7.62x51mm NATO **/
-	public static final ImmutableList<Integer> threeZeroEight = ImmutableList.of(BulletConfigSyncingUtil.W308);
+	public static final List<Integer> threeZeroEight = ImmutableList.of(BulletConfigSyncingUtil.W308);
 	/** 5MM **/
-	public static final ImmutableList<Integer> fiveMM = ImmutableList.of(BulletConfigSyncingUtil.R5_NORMAL_BOLT, BulletConfigSyncingUtil.R5_EXPLOSIVE_BOLT, BulletConfigSyncingUtil.R5_DU_BOLT, BulletConfigSyncingUtil.R5_STAR_BOLT, BulletConfigSyncingUtil.CHL_R5_BOLT);
+	public static final List<Integer> fiveMM = ImmutableList.of(BulletConfigSyncingUtil.R5_NORMAL_BOLT, BulletConfigSyncingUtil.R5_EXPLOSIVE_BOLT, BulletConfigSyncingUtil.R5_DU_BOLT, BulletConfigSyncingUtil.R5_STAR_BOLT, BulletConfigSyncingUtil.CHL_R5_BOLT);
 	// MISC
 	/** .75 **/
-	public static final ImmutableList<Integer> seventyFive = ImmutableList.of(BulletConfigSyncingUtil.B75_NORMAL, BulletConfigSyncingUtil.B75_INCENDIARY, BulletConfigSyncingUtil.B75_HE);
+	public static final List<Integer> seventyFive = ImmutableList.of(BulletConfigSyncingUtil.B75_NORMAL, BulletConfigSyncingUtil.B75_INCENDIARY, BulletConfigSyncingUtil.B75_HE);
 	/** 240MM SHELL **/
-	public static final ImmutableList<Integer> cannon = ImmutableList.of(BulletConfigSyncingUtil.SHELL_NORMAL, BulletConfigSyncingUtil.SHELL_EXPLOSIVE, BulletConfigSyncingUtil.SHELL_AP, BulletConfigSyncingUtil.SHELL_DU, BulletConfigSyncingUtil.SHELL_W9, BulletConfigSyncingUtil.SHELL_W9_FULL);
+	public static final List<Integer> cannon = ImmutableList.of(BulletConfigSyncingUtil.SHELL_NORMAL, BulletConfigSyncingUtil.SHELL_EXPLOSIVE, BulletConfigSyncingUtil.SHELL_AP, BulletConfigSyncingUtil.SHELL_DU, BulletConfigSyncingUtil.SHELL_W9, BulletConfigSyncingUtil.SHELL_W9_FULL);
 	/** FLAMETHROWER FUEL **/
-	public static final ImmutableList<Integer> flamer = ImmutableList.of(BulletConfigSyncingUtil.FLAMER_NORMAL, BulletConfigSyncingUtil.FLAMER_NAPALM, BulletConfigSyncingUtil.FLAMER_WP, BulletConfigSyncingUtil.FLAMER_VAPORIZER, BulletConfigSyncingUtil.FLAMER_GAS);
+	public static final List<Integer> flamer = ImmutableList.of(BulletConfigSyncingUtil.FLAMER_NORMAL, BulletConfigSyncingUtil.FLAMER_NAPALM, BulletConfigSyncingUtil.FLAMER_WP, BulletConfigSyncingUtil.FLAMER_VAPORIZER, BulletConfigSyncingUtil.FLAMER_GAS);
 	/** MINI-NUKES **/
-	public static final ImmutableList<Integer> fatman = ImmutableList.of(BulletConfigSyncingUtil.NUKE_NORMAL, BulletConfigSyncingUtil.NUKE_LOW, BulletConfigSyncingUtil.NUKE_HIGH, BulletConfigSyncingUtil.NUKE_TOTS, BulletConfigSyncingUtil.NUKE_SAFE, BulletConfigSyncingUtil.NUKE_PUMPKIN, BulletConfigSyncingUtil.NUKE_BARREL);
+	public static final List<Integer> fatman = ImmutableList.of(BulletConfigSyncingUtil.NUKE_NORMAL, BulletConfigSyncingUtil.NUKE_LOW, BulletConfigSyncingUtil.NUKE_HIGH, BulletConfigSyncingUtil.NUKE_TOTS, BulletConfigSyncingUtil.NUKE_SAFE, BulletConfigSyncingUtil.NUKE_PUMPKIN, BulletConfigSyncingUtil.NUKE_BARREL);
 	/** MIRV MINI-NUKES **/
-	public static final ImmutableList<Integer> fatmanMIRV = ImmutableList.of(BulletConfigSyncingUtil.NUKE_MIRV_NORMAL, BulletConfigSyncingUtil.NUKE_MIRV_LOW, BulletConfigSyncingUtil.NUKE_MIRV_HIGH, BulletConfigSyncingUtil.NUKE_MIRV_SAFE, BulletConfigSyncingUtil.NUKE_MIRV_SPECIAL);
+	public static final List<Integer> fatmanMIRV = ImmutableList.of(BulletConfigSyncingUtil.NUKE_MIRV_NORMAL, BulletConfigSyncingUtil.NUKE_MIRV_LOW, BulletConfigSyncingUtil.NUKE_MIRV_HIGH, BulletConfigSyncingUtil.NUKE_MIRV_SAFE, BulletConfigSyncingUtil.NUKE_MIRV_SPECIAL);
 	/** 40MM GRENADE **/
-	public static final ImmutableList<Integer> grenade = ImmutableList.of(BulletConfigSyncingUtil.GRENADE_NORMAL, BulletConfigSyncingUtil.GRENADE_HE, BulletConfigSyncingUtil.GRENADE_INCENDIARY, BulletConfigSyncingUtil.GRENADE_PHOSPHORUS, BulletConfigSyncingUtil.GRENADE_SMOKE, BulletConfigSyncingUtil.GRENADE_CHEMICAL, BulletConfigSyncingUtil.GRENADE_CONCUSSION, BulletConfigSyncingUtil.GRENADE_FINNED, BulletConfigSyncingUtil.GRENADE_SLEEK, BulletConfigSyncingUtil.GRENADE_NUCLEAR, BulletConfigSyncingUtil.GRENADE_TRACER, BulletConfigSyncingUtil.GRENADE_KAMPF, BulletConfigSyncingUtil.GRENADE_LUNATIC);
+	public static final List<Integer> grenade = ImmutableList.of(BulletConfigSyncingUtil.GRENADE_NORMAL, BulletConfigSyncingUtil.GRENADE_HE, BulletConfigSyncingUtil.GRENADE_INCENDIARY, BulletConfigSyncingUtil.GRENADE_PHOSPHORUS, BulletConfigSyncingUtil.GRENADE_SMOKE, BulletConfigSyncingUtil.GRENADE_CHEMICAL, BulletConfigSyncingUtil.GRENADE_CONCUSSION, BulletConfigSyncingUtil.GRENADE_FINNED, BulletConfigSyncingUtil.GRENADE_SLEEK, BulletConfigSyncingUtil.GRENADE_NUCLEAR, BulletConfigSyncingUtil.GRENADE_TRACER, BulletConfigSyncingUtil.GRENADE_KAMPF, BulletConfigSyncingUtil.GRENADE_LUNATIC);
 	/** 84MM ROCKET **/
-	public static final ImmutableList<Integer> rocket = ImmutableList.of(BulletConfigSyncingUtil.ROCKET_NORMAL, BulletConfigSyncingUtil.ROCKET_HE, BulletConfigSyncingUtil.ROCKET_INCENDIARY, BulletConfigSyncingUtil.ROCKET_PHOSPHORUS, BulletConfigSyncingUtil.ROCKET_SHRAPNEL, BulletConfigSyncingUtil.ROCKET_EMP, BulletConfigSyncingUtil.ROCKET_GLARE, BulletConfigSyncingUtil.ROCKET_TOXIC, BulletConfigSyncingUtil.ROCKET_CANISTER, BulletConfigSyncingUtil.ROCKET_SLEEK, BulletConfigSyncingUtil.ROCKET_NUKE, BulletConfigSyncingUtil.ROCKET_CHAINSAW);
+	public static final List<Integer> rocket = ImmutableList.of(BulletConfigSyncingUtil.ROCKET_NORMAL, BulletConfigSyncingUtil.ROCKET_HE, BulletConfigSyncingUtil.ROCKET_INCENDIARY, BulletConfigSyncingUtil.ROCKET_PHOSPHORUS, BulletConfigSyncingUtil.ROCKET_SHRAPNEL, BulletConfigSyncingUtil.ROCKET_EMP, BulletConfigSyncingUtil.ROCKET_GLARE, BulletConfigSyncingUtil.ROCKET_TOXIC, BulletConfigSyncingUtil.ROCKET_CANISTER, BulletConfigSyncingUtil.ROCKET_SLEEK, BulletConfigSyncingUtil.ROCKET_NUKE, BulletConfigSyncingUtil.ROCKET_CHAINSAW);
 	/// HASH SETS
 	// PRIMES
-	public static final ImmutableSet<Integer> primes = ImmutableSet.of(3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283,	293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607, 613, 617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719, 727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827, 829, 839, 853, 857, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997, 1009, 1013, 1019, 1021, 1031, 1033, 1039, 1049, 1051, 1061, 1063, 1069, 1087, 1091, 1093, 1097, 1103, 1109, 1117, 1123, 1129, 1151, 1153, 1163, 1171, 1181, 1187, 1193, 1201, 1213, 1217, 1223);
+	public static final Set<Integer> primes = ImmutableSet.of(3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283,	293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607, 613, 617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719, 727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827, 829, 839, 853, 857, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997, 1009, 1013, 1019, 1021, 1031, 1033, 1039, 1049, 1051, 1061, 1063, 1069, 1087, 1091, 1093, 1097, 1103, 1109, 1117, 1123, 1129, 1151, 1153, 1163, 1171, 1181, 1187, 1193, 1201, 1213, 1217, 1223);
 	// ENERGY BULLET SPECTRAL-ABLE
-	public static ImmutableSet<Block> energyRoundBlock;
-	public static ImmutableSet<Material> energyRoundMaterial;
+	public static Set<Block> energyRoundBlock;
+	public static Set<Material> energyRoundMaterial;
 	/// DATA STORAGE TYPES
 	public static enum EnumDataTypes
 	{
@@ -184,7 +187,7 @@ public final class HbmCollection
 		PROGRAM("DATA_PROGRAM"),
 		COMMAND_TASK("DATA_COMMAND_TASK");
 
-		String key;
+		public final String key;
 		EnumDataTypes(String keyIn)
 		{
 			key = keyIn;
@@ -336,10 +339,10 @@ public final class HbmCollection
 	public static final String func = "desc.misc.func";
 	/// Damage sources that entities can be immune to
 	/** ROBOTS / INORGANIC ENTITIES **/
-	public static final ImmutableSet<String> damageImmuneRobot = ImmutableSet.of("oxygenSuffocation", "thermal", "lead", "mudPoisoning", "acid", "monoxide", "bleed", "asbestos", "broadcast", "lead", "electricity", "drown", "starve", "wither", "inWall");
+	public static final Set<String> damageImmuneRobot = ImmutableSet.of("oxygenSuffocation", "thermal", "lead", "mudPoisoning", "acid", "monoxide", "bleed", "asbestos", "broadcast", "lead", "electricity", "drown", "starve", "wither", "inWall");
 	/// Potions that entities can be immune to
 	/** ROBOTS / INORGANIC ENTITIES **/
-	public static final ImmutableSet<Integer> potionImmuneRobot = ImmutableSet.of(HbmPotion.radiation.id, HbmPotion.lead.id, HbmPotion.phosphorus.id, HbmPotion.potionsickness.id, Potion.harm.id, Potion.heal.id, Potion.hunger.id, Potion.poison.id, Potion.wither.id);
+	public static final Set<Integer> potionImmuneRobot = ImmutableSet.of(HbmPotion.radiation.id, HbmPotion.lead.id, HbmPotion.phosphorus.id, HbmPotion.potionsickness.id, Potion.harm.id, Potion.heal.id, Potion.hunger.id, Potion.poison.id, Potion.wither.id);
 	/** Do AFTER blocks and items are initialized  **/
 	public static final void initKits()
 	{

@@ -1,16 +1,17 @@
 package com.hbm.util;
 
 import java.util.function.Function;
+import java.util.function.Predicate;
 
-public class ObjectWrapper<T>
+public class ObjectWrapper<T> implements Wrapper<T>
 {
-	public final T storedObj;
+	private final T storedObj;
 	private final Function<T, String> stringFunction;
 	private final Function<T, Integer> hashFunction;
-	private final Function<T, Boolean> equalFunction;
+	private final Predicate<T> equalFunction;
 	public ObjectWrapper(
 			T storedObj, Function<T, String> stringFunction, Function<T, Integer> hashFunction,
-			Function<T, Boolean> equalFunction
+			Predicate<T> equalFunction
 	)
 	{
 		this.storedObj = storedObj;
@@ -20,13 +21,19 @@ public class ObjectWrapper<T>
 	}
 	
 	@Override
+	public T getStoredObj()
+	{
+		return storedObj;
+	}
+	
+	@Override
 	public boolean equals(Object obj)
 	{
 		if (obj == null)
 			return false;
 		if (!(obj.getClass().equals(storedObj.getClass())))
 			return false;
-		return equalFunction.apply((T) obj);
+		return equalFunction.test((T) obj);
 	}
 	
 	@Override

@@ -1,8 +1,8 @@
 package com.hbm.packet;
 
-import com.hbm.calc.EasyLocation;
 import com.hbm.config.MobConfig;
 import com.hbm.entity.mob.EntityDuck;
+import com.hbm.interfaces.ILocationProvider;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.items.weapon.ItemMissile.PartSize;
@@ -61,12 +61,12 @@ public class AuxButtonPacket implements IMessage {
 		this(te, 0, 0);
 	}
 
-	public AuxButtonPacket(EasyLocation loc, int value, int id)
+	public AuxButtonPacket(ILocationProvider loc, int value, int id)
 	{
-		this((int) loc.posX, (int) loc.posY, (int) loc.posZ, value, id);
+		this((int) loc.getX(), (int) loc.getY(), (int) loc.getZ(), value, id);
 	}
 	
-	public AuxButtonPacket(EasyLocation loc)
+	public AuxButtonPacket(ILocationProvider loc)
 	{
 		this(loc, 0, 0);
 	}

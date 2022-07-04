@@ -9,6 +9,7 @@ import com.google.common.annotations.Beta;
 import com.hbm.inventory.RecipesCommon.AStack;
 import com.hbm.items.ItemAmmoEnums.AmmoHandGrenade;
 
+import api.hbm.entity.IEntityDefenseAttributes;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -16,7 +17,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
 @Beta
-public abstract class EntityFactionBase extends EntityLivingBase implements IFactionDataProvider
+public abstract class EntityFactionBase extends EntityLivingBase implements IFactionDataProvider, IEntityDefenseAttributes
 {
 	protected final ArrayList<EntityItem> interestedItems = new ArrayList<>();
 	public EntityFactionBase(World world)
@@ -42,15 +43,18 @@ public abstract class EntityFactionBase extends EntityLivingBase implements IFac
 	protected void updateAITasks()
 	{
 		super.updateAITasks();
-		final List<EntityItem> nearbyItems = worldObj.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(10, 2, 10, -10, -2, -10));
-		interestedItems.clear();
-		nearbyItems.forEach(entityItem ->
+		if (worldObj.getWorldTime() % 20 == 0)
 		{
-			final ItemStack stack = entityItem.getEntityItem();
-			for (AStack aStack : interestedStacks())
-				if (aStack.isApplicable(stack))
-					interestedItems.add(entityItem);
-		});
+			final List<EntityItem> nearbyItems = worldObj.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(10, 2, 10, -10, -2, -10));
+			interestedItems.clear();
+			nearbyItems.forEach(entityItem ->
+			{
+				final ItemStack stack = entityItem.getEntityItem();
+				for (AStack aStack : interestedStacks())
+					if (aStack.isApplicable(stack))
+						interestedItems.add(entityItem);
+			});
+		}
 	}
 	
 	

@@ -1,6 +1,6 @@
 package com.hbm.packet;
 
-import com.hbm.calc.EasyLocation;
+import com.hbm.interfaces.ILocationProvider;
 import com.hbm.items.machine.ItemCassette.SoundType;
 import com.hbm.items.machine.ItemCassette.TrackType;
 import com.hbm.sound.SoundLoopSiren;
@@ -38,9 +38,9 @@ public class TESirenPacket implements IMessage {
 		this.active = active;
 	}
 	
-	public TESirenPacket(EasyLocation loc, int id, boolean active)
+	public TESirenPacket(ILocationProvider loc, int id, boolean active)
 	{
-		this((int) loc.posX, (int) loc.posY, (int) loc.posZ, id, active);
+		this((int) loc.getX(), (int) loc.getY(), (int) loc.getZ(), id, active);
 	}
 
 	@Override

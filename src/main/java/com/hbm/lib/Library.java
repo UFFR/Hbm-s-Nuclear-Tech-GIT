@@ -207,7 +207,7 @@ public class Library
 	
 	public static byte[] boolToByte(boolean[] bools)
 	{
-		byte[] bytes = new byte[bools.length];
+		final byte[] bytes = new byte[bools.length];
 		for (int i = 0; i < bools.length; i++)
 			bytes[i] = (byte) (bools[i] ? 1 : 0);
 		return bytes;
@@ -215,7 +215,7 @@ public class Library
 	
 	public static boolean[] byteToBool(byte[] bytes, boolean defaultVal)
 	{
-		boolean[] bools = new boolean[bytes.length];
+		final boolean[] bools = new boolean[bytes.length];
 		for (int i = 0; i < bytes.length; i++)
 			bools[i] = bytes[i] == 1 ? true : defaultVal;
 		return bools;
@@ -223,7 +223,7 @@ public class Library
 	
 	public static byte[] compressStringCollection(Collection<String> strings)
 	{
-		ByteBuf buf = Unpooled.buffer();
+		final ByteBuf buf = Unpooled.buffer();
 		buf.writeInt(strings.size());
 		
 		for (String s : strings)
@@ -239,9 +239,9 @@ public class Library
 	{
 		try
 		{
-			ByteBuf buf = Unpooled.copiedBuffer(bytes);
+			final ByteBuf buf = Unpooled.copiedBuffer(bytes);
 			final int size = buf.readInt();
-			ArrayList<String> strings = new ArrayList<String>(size);
+			final ArrayList<String> strings = new ArrayList<String>(size);
 			
 			for (int i = 0; i < size; i++)
 			{
@@ -310,8 +310,8 @@ public class Library
 	 */
 	public static double roundNumber(double num, @Nonnegative int digits)
 	{
-		double leftDigitCount = Math.ceil(Math.log10(Math.abs(num)));
-		double fac = Math.pow(10, digits - leftDigitCount);
+		final double leftDigitCount = Math.ceil(Math.log10(Math.abs(num)));
+		final double fac = Math.pow(10, digits - leftDigitCount);
 		return Math.round(num * fac) / fac;
 	}
 	
@@ -367,11 +367,25 @@ public class Library
 		return false;
 	}
 	
-	public static <T> T[] concatArrays(T[] array1, T[] array2)
+	public static <T> T concatArrays(T array1, T array2)
 	{
-		T[] out = Arrays.copyOf(array1, array1.length + array2.length);
-		System.arraycopy(array2, 0, out, array1.length, array2.length);
-		return out;
+	    if (!array1.getClass().isArray() || !array2.getClass().isArray())
+	        throw new IllegalArgumentException("Only arrays are accepted.");
+
+	    final Class<?> compType1 = array1.getClass().getComponentType();
+	    final Class<?> compType2 = array2.getClass().getComponentType();
+
+	    if (!compType1.equals(compType2))
+	        throw new IllegalArgumentException("Two arrays have different types.");
+
+	    final int len1 = Array.getLength(array1), len2 = Array.getLength(array2);
+
+	    final T result = (T) Array.newInstance(compType1, len1 + len2);
+
+	    System.arraycopy(array1, 0, result, 0, len1);
+	    System.arraycopy(array2, 0, result, len1, len2);
+
+	    return result;
 	}
 	
 	public static <T> T randomFromArray(T[] array)

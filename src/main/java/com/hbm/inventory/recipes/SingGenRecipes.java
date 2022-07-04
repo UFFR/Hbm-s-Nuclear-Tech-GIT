@@ -3,10 +3,13 @@ package com.hbm.inventory.recipes;
 import static com.hbm.inventory.OreDictManager.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.annotation.Nonnegative;
 
+import com.google.common.collect.ImmutableList;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.interfaces.Spaghetti;
 import com.hbm.inventory.RecipesCommon.*;
@@ -19,11 +22,10 @@ import api.hbm.computer.Researchable;
 import api.hbm.energy.IBatteryItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import scala.actors.threadpool.Arrays;
 @Spaghetti("Is there a more efficient way of doing this? Probably")
 public class SingGenRecipes
 {
-	public static final ArrayList<SingGenRecipe> recipes = new ArrayList<SingGenRecipes.SingGenRecipe>();
+	public static final ArrayList<SingGenRecipe> RECIPES = new ArrayList<SingGenRecipes.SingGenRecipe>();
 	/* -- Input Slots --
 	 * 5  9  6
 	 * 11 4  12
@@ -32,86 +34,86 @@ public class SingGenRecipes
 	// Output:{<Item(s) out>}, Input:{<corner>, <side>, <corner>, <side>, <side>, <corner>, <side>, <corner>, <center>, Shaped?, Keep shell?, Fluid, Fluid amount}
 	public static void register()
 	{
-		recipes.add(commonFluid(new ItemStack(ModItems.singularity, 1), ModItems.nugget_euphemium, Fluids.ASCHRAB, new ComparableStack(ModBlocks.block_schrabidium), 4000).setLevel(1));
-		recipes.add(commonStandard(new ItemStack(ModItems.singularity_super_heated, 1), ModItems.plate_advanced_alloy, ModItems.powder_power, new ComparableStack(ModItems.singularity)).setLevel(2));
-		recipes.add(commonStandard(new ItemStack(ModItems.singularity_counter_resonant, 1), ModItems.plate_combine_steel, ModItems.ingot_magnetized_tungsten, new ComparableStack(ModItems.singularity)).setLevel(3));
-		recipes.add(addRecipe(new ItemStack(ModItems.black_hole, 1), new AStack[]
+		RECIPES.add(commonFluid(new ItemStack(ModItems.singularity, 1), ModItems.nugget_euphemium, Fluids.ASCHRAB, new ComparableStack(ModBlocks.block_schrabidium), 4000).setLevel(1));
+		RECIPES.add(commonStandard(new ItemStack(ModItems.singularity_super_heated, 1), ModItems.plate_advanced_alloy, ModItems.powder_power, new ComparableStack(ModItems.singularity)).setLevel(2));
+		RECIPES.add(commonStandard(new ItemStack(ModItems.singularity_counter_resonant, 1), ModItems.plate_combine_steel, ModItems.ingot_magnetized_tungsten, new ComparableStack(ModItems.singularity)).setLevel(3));
+		RECIPES.add(addRecipe(new ItemStack(ModItems.black_hole, 1), new AStack[]
 				{
 					new ComparableStack(ModItems.crystal_xen), new ComparableStack(ModItems.crystal_xen), new ComparableStack(ModItems.crystal_xen),
 					new ComparableStack(ModItems.crystal_xen), new ComparableStack(ModItems.crystal_xen),
 					new ComparableStack(ModItems.crystal_xen), new ComparableStack(ModItems.crystal_xen), new ComparableStack(ModItems.crystal_xen)
 				}, new ComparableStack(ModItems.singularity)).setLevel(4));
-		recipes.add(addRecipe(new ItemStack(ModItems.overfuse, 1), new ComparableStack[]
+		RECIPES.add(addRecipe(new ItemStack(ModItems.overfuse, 1), new ComparableStack[]
 				{
 					new ComparableStack(ModItems.screwdriver_desh), new ComparableStack(ModItems.board_copper), new ComparableStack(ModItems.powder_nitan_mix),
 					new ComparableStack(ModItems.powder_nitan_mix), new ComparableStack(ModItems.powder_nitan_mix),
 					new ComparableStack(ModItems.powder_nitan_mix), new ComparableStack(ModItems.powder_nitan_mix), new ComparableStack(ModItems.powder_nitan_mix)
 				}, new ComparableStack(ModItems.black_hole)).setLevel(5).setShapeless());
-		recipes.add(addRecipe(new ItemStack(ModItems.overfuse, 1), new AStack[]
+		RECIPES.add(addRecipe(new ItemStack(ModItems.overfuse, 1), new AStack[]
 				{
 					new ComparableStack(ModItems.screwdriver_desh), new ComparableStack(ModItems.board_copper), new OreDictStack(NP237.dust()),
 					new OreDictStack(I.dust()), new OreDictStack(TH232.dust()),
 					new OreDictStack(AT.dust()), new OreDictStack(ND.dust()), new OreDictStack(CS.dust())
 				}, new ComparableStack(ModItems.black_hole)).setLevel(5).setShapeless());
-		recipes.add(addRecipe(new ItemStack(ModItems.overfuse, 1), new AStack[]
+		RECIPES.add(addRecipe(new ItemStack(ModItems.overfuse, 1), new AStack[]
 				{
 					new ComparableStack(ModItems.screwdriver_desh), new ComparableStack(ModItems.board_copper), new OreDictStack(ST.dust()),
 					new OreDictStack(BR.dust()), new OreDictStack(CO.dust()),
 					new OreDictStack(TS.dust()), new OreDictStack(NB.dust()), new OreDictStack(CE.dust())
 				}, new ComparableStack(ModItems.black_hole)).setLevel(5).setShapeless());
-		recipes.add(addRecipe(new ItemStack(ModItems.singularity_spark, 1), new ComparableStack[]
+		RECIPES.add(addRecipe(new ItemStack(ModItems.singularity_spark, 1), new ComparableStack[]
 				{
 					new ComparableStack(ModItems.plate_dineutronium), new ComparableStack(ModItems.singularity_super_heated), new ComparableStack(ModItems.plate_dineutronium),
 					new ComparableStack(ModItems.singularity_counter_resonant), new ComparableStack(ModItems.singularity_counter_resonant),
 					new ComparableStack(ModItems.plate_dineutronium), new ComparableStack(ModItems.singularity_super_heated), new ComparableStack(ModItems.plate_dineutronium)
 				}, new ComparableStack(ModItems.black_hole)).setLevel(5));
-		recipes.add(addRecipe(new ItemStack(ModItems.singularity_spark, 1), new ComparableStack[]
+		RECIPES.add(addRecipe(new ItemStack(ModItems.singularity_spark, 1), new ComparableStack[]
 				{
 					new ComparableStack(ModItems.plate_dineutronium), new ComparableStack(ModItems.singularity_counter_resonant), new ComparableStack(ModItems.plate_dineutronium),
 					new ComparableStack(ModItems.singularity_super_heated), new ComparableStack(ModItems.singularity_super_heated),
 					new ComparableStack(ModItems.plate_dineutronium), new ComparableStack(ModItems.singularity_counter_resonant), new ComparableStack(ModItems.plate_dineutronium)
 				}, new ComparableStack(ModItems.black_hole)).setLevel(5));
-		recipes.add(commonFluid(new ItemStack(ModItems.ams_core_sing, 1), ModItems.plate_euphemium, Fluids.ASCHRAB, new ComparableStack(ModItems.singularity), 4000).setLevel(5));
-		recipes.add(commonStandard(new ItemStack(ModItems.ams_core_wormhole, 1), ModItems.plate_dineutronium, ModItems.powder_spark_mix, new ComparableStack(ModItems.singularity)).setLevel(5));
-		recipes.add(commonFluid(new ItemStack(ModItems.ams_core_eyeofharmony, 1), ModItems.plate_dalekanium, Fluids.PLASMA_WARP, new ComparableStack(ModItems.black_hole), 64000).setLevel(5));
-		recipes.add(new SingGenRecipe(new ItemStack(ModItems.singularity_micro, 8), new AStack[]
+		RECIPES.add(commonFluid(new ItemStack(ModItems.ams_core_sing, 1), ModItems.plate_euphemium, Fluids.ASCHRAB, new ComparableStack(ModItems.singularity), 4000).setLevel(5));
+		RECIPES.add(commonStandard(new ItemStack(ModItems.ams_core_wormhole, 1), ModItems.plate_dineutronium, ModItems.powder_spark_mix, new ComparableStack(ModItems.singularity)).setLevel(5));
+		RECIPES.add(commonFluid(new ItemStack(ModItems.ams_core_eyeofharmony, 1), ModItems.plate_dalekanium, Fluids.PLASMA_WARP, new ComparableStack(ModItems.black_hole), 64000).setLevel(5));
+		RECIPES.add(new SingGenRecipe(new ItemStack(ModItems.singularity_micro, 8), new AStack[]
 				{
 					new ComparableStack(ModItems.nugget_euphemium), new ComparableStack(ModItems.catalyst_rare), new ComparableStack(ModItems.nugget_euphemium),
 					new ComparableStack(ModItems.catalyst_rare), new ComparableStack(ModItems.catalyst_rare),
 					new ComparableStack(ModItems.nugget_euphemium), new ComparableStack(ModItems.catalyst_rare), new ComparableStack(ModItems.nugget_euphemium)
 				}, new ComparableStack(ModItems.ingot_schrabidium)).setFluid(Fluids.ASCHRAB, 1000).setKeepRing());
-		recipes.add(addRecipe(new ItemStack(ModItems.ingot_dineutronium, 1), new ComparableStack[]
+		RECIPES.add(addRecipe(new ItemStack(ModItems.ingot_dineutronium, 1), new ComparableStack[]
 				{
 					new ComparableStack(ModBlocks.block_starmetal), new ComparableStack(ModItems.powder_spark_mix), new ComparableStack(ModBlocks.block_starmetal),
 					new ComparableStack(ModItems.powder_spark_mix), new ComparableStack(ModItems.powder_spark_mix),
 					new ComparableStack(ModBlocks.block_starmetal), new ComparableStack(ModItems.powder_spark_mix), new ComparableStack(ModBlocks.block_starmetal)
 				}, new ComparableStack(ModBlocks.block_schrabidate), true, false, Fluids.ASCHRAB, 4000).setLevel(1));
-		recipes.add(commonStandard(IBatteryItem.emptyBattery(ModItems.battery_fast_2_advanced), ModItems.ingot_schrabidate, ModItems.powder_tennessine, new ComparableStack(ModItems.battery_fast_2_enhanced)).setLevel(2));
-		recipes.add(addRecipe(IBatteryItem.emptyBattery(ModItems.battery_fast_2_elite), new ComparableStack[]
+		RECIPES.add(commonStandard(IBatteryItem.emptyBattery(ModItems.battery_fast_2_advanced), ModItems.ingot_schrabidate, ModItems.powder_tennessine, new ComparableStack(ModItems.battery_fast_2_enhanced)).setLevel(2));
+		RECIPES.add(addRecipe(IBatteryItem.emptyBattery(ModItems.battery_fast_2_elite), new ComparableStack[]
 				{
 					new ComparableStack(ModItems.powder_spark_mix), new ComparableStack(ModItems.plate_dineutronium), new ComparableStack(ModItems.powder_spark_mix),
 					new ComparableStack(ModItems.plate_euphemium), new ComparableStack(ModItems.plate_euphemium),
 					new ComparableStack(ModItems.powder_spark_mix), new ComparableStack(ModItems.plate_dineutronium), new ComparableStack(ModItems.powder_spark_mix)
 				}, new ComparableStack(ModItems.battery_fast_2_advanced)).setLevel(3).setFluid(Fluids.PLASMA_WARP, 2000));
-		recipes.add(addRecipe(IBatteryItem.emptyBattery(ModItems.battery_fast_2_elite), new ComparableStack[]
+		RECIPES.add(addRecipe(IBatteryItem.emptyBattery(ModItems.battery_fast_2_elite), new ComparableStack[]
 				{
 					new ComparableStack(ModItems.powder_spark_mix), new ComparableStack(ModItems.plate_euphemium), new ComparableStack(ModItems.powder_spark_mix),
 					new ComparableStack(ModItems.plate_dineutronium), new ComparableStack(ModItems.plate_dineutronium),
 					new ComparableStack(ModItems.powder_spark_mix), new ComparableStack(ModItems.plate_euphemium), new ComparableStack(ModItems.powder_spark_mix)
 				}, new ComparableStack(ModItems.battery_fast_2_advanced)).setLevel(3).setFluid(Fluids.ASCHRAB, 2000));
-		recipes.add(addRecipe(new ItemStack(ModItems.orichalcum, 1, Orichalcum.PLATE), new ComparableStack[]
+		RECIPES.add(addRecipe(new ItemStack(ModItems.orichalcum, 1, Orichalcum.PLATE), new ComparableStack[]
 				{
 						new ComparableStack(ModItems.billet_yharonite), new ComparableStack(ModItems.orichalcum, 1, Orichalcum.INGOT_SMALL_IRR), new ComparableStack(ModItems.billet_yharonite),
 						new ComparableStack(ModItems.orichalcum, 1, Orichalcum.INGOT_SMALL_IRR), new ComparableStack(ModItems.orichalcum, 1, Orichalcum.INGOT_SMALL_IRR),
 						new ComparableStack(ModItems.billet_yharonite), new ComparableStack(ModItems.orichalcum, 1, Orichalcum.INGOT_SMALL_IRR), new ComparableStack(ModItems.billet_yharonite)
 				}, new OreDictStack(TA.block())).setLevel(4).setFluid(Fluids.PLASMA_WARP, 32000));
-		recipes.add(addRecipe(new ItemStack(ModItems.orichalcum, 1, Orichalcum.INGOT_FINSIHED), new ComparableStack[]
+		RECIPES.add(addRecipe(new ItemStack(ModItems.orichalcum, 1, Orichalcum.INGOT_FINSIHED), new ComparableStack[]
 				{
 						new ComparableStack(ModItems.orichalcum, 1, Orichalcum.GEM), new ComparableStack(ModItems.orichalcum, 1, Orichalcum.PLATE), new ComparableStack(ModItems.orichalcum, 1, Orichalcum.GEM),
 						new ComparableStack(ModItems.orichalcum, 1, Orichalcum.PLATE), new ComparableStack(ModItems.orichalcum, 1, Orichalcum.PLATE),
 						new ComparableStack(ModItems.orichalcum, 1, Orichalcum.GEM), new ComparableStack(ModItems.orichalcum, 1, Orichalcum.PLATE), new ComparableStack(ModItems.orichalcum, 1, Orichalcum.GEM)
 				}, new ComparableStack(ModItems.orichalcum, 1, Orichalcum.INGOT)).setLevel(5).setFluid(Fluids.ASCHRAB, 4000));
-		recipes.add(addRecipe(new ItemStack(ModItems.orichalcum, 1, Orichalcum.GEM), new ComparableStack[]
+		RECIPES.add(addRecipe(new ItemStack(ModItems.orichalcum, 1, Orichalcum.GEM), new ComparableStack[]
 				{
 						new ComparableStack(ModItems.ingot_bismuth), new ComparableStack(ModItems.orichalcum, 1, Orichalcum.FRAGMENT), new ComparableStack(ModItems.ingot_bismuth),
 						new ComparableStack(ModItems.orichalcum, 1, Orichalcum.FRAGMENT), new ComparableStack(ModItems.orichalcum, 1, Orichalcum.FRAGMENT),
@@ -192,15 +194,15 @@ public class SingGenRecipes
 		}
 		else
 		{
-			ArrayList<AStack> recipeStacks = new ArrayList<AStack>(Arrays.asList(recipe.inputRing));
+			final ArrayList<AStack> recipeStacks = new ArrayList<AStack>(Arrays.asList(recipe.inputRing));
 //			ArrayList<ItemStack> machineStacks = new ArrayList<ItemStack>(Arrays.asList(machineRing));
 			for (ItemStack mStack : machineRing)
 			{
 				boolean inRecipe = false;
-				Iterator<AStack> recipeIterator = recipeStacks.iterator();
+				final Iterator<AStack> recipeIterator = recipeStacks.iterator();
 				while (recipeIterator.hasNext())
 				{
-					AStack rStack = recipeIterator.next();
+					final AStack rStack = recipeIterator.next();
 					if (isItemValid(mStack, rStack))
 					{
 						inRecipe = true;
@@ -229,6 +231,11 @@ public class SingGenRecipes
 		if (stackIn == null && recipeIn == null)
 			return true;
 		return (recipeIn.matchesRecipe(stackIn, true));
+	}
+	
+	public static List<SingGenRecipe> getSingGenRecipes()
+	{
+		return ImmutableList.copyOf(RECIPES);
 	}
 	
 	public static class SingGenRecipe extends Researchable

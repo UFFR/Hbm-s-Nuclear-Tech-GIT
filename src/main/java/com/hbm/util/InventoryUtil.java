@@ -302,24 +302,26 @@ public class InventoryUtil {
 	
 	public static int countAStackMatches(IInventory inventory, AStack stack, boolean ignoreSize)
 	{
-		final ItemStack[] stacks = new ItemStack[inventory.getSizeInventory()];
+		int count = 0;
 		for (int i = 0; i < inventory.getSizeInventory(); i++)
-			stacks[i] = inventory.getStackInSlot(i);
-		return countAStackMatches(stacks, stack, ignoreSize);
+			if (inventory.getStackInSlot(i) != null)
+				if (stack.matchesRecipe(inventory.getStackInSlot(i), ignoreSize))
+					count += ignoreSize ? inventory.getStackInSlot(i).stackSize : stack.stacksize;// TODO
+		return count;
 	}
 	
 	public static int countAStackMatches(EntityPlayer player, AStack stack, boolean ignoreSize)
 	{
 		return countAStackMatches(player.inventory.mainInventory, stack, ignoreSize);
 	}
-	
+	// FIXME
 	public static int countAStackMatches(ItemStack[] inventory, AStack stack, boolean ignoreSize)
 	{
 		int count = 0;
 		for (ItemStack itemStack : inventory)
 			if (itemStack != null)
 				if (stack.matchesRecipe(itemStack, ignoreSize))
-					count += ignoreSize ? itemStack.stackSize : stack.stacksize;
+					count += ignoreSize ? itemStack.stackSize : stack.stacksize;// TODO
 		return count;
 	}
 	

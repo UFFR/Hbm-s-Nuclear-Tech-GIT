@@ -1,5 +1,6 @@
 package com.hbm.items.special;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -17,7 +18,6 @@ import api.hbm.computer.filesystem.TextFile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
-import scala.actors.threadpool.Arrays;
 
 public final class ItemSpecialFloppy extends ItemCustomLore implements IDataStorageItem
 {

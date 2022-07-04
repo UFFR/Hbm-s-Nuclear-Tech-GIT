@@ -2,8 +2,8 @@ package com.hbm.packet;
 
 import java.io.IOException;
 
-import com.hbm.calc.EasyLocation;
 import com.hbm.interfaces.IControlReceiver;
+import com.hbm.interfaces.ILocationProvider;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -44,9 +44,9 @@ public class NBTControlPacket implements IMessage {
 		this(nbt, te.xCoord, te.yCoord, te.zCoord);
 	}
 	
-	public NBTControlPacket(NBTTagCompound nbt, EasyLocation loc)
+	public NBTControlPacket(NBTTagCompound nbt, ILocationProvider loc)
 	{
-		this(nbt, (int) loc.posX, (int) loc.posY, (int) loc.posZ);
+		this(nbt, (int) loc.getX(), (int) loc.getY(), (int) loc.getZ());
 	}
 
 	@Override

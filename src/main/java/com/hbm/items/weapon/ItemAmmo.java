@@ -3,6 +3,7 @@ package com.hbm.items.weapon;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import com.hbm.handler.BulletConfiguration;
 import com.hbm.items.ItemAmmoEnums.AmmoRocket;
@@ -17,7 +18,6 @@ import com.hbm.util.I18nUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
-import scala.actors.threadpool.Arrays;
 
 public class ItemAmmo extends ItemEnumMulti
 {
@@ -106,16 +106,16 @@ public class ItemAmmo extends ItemEnumMulti
 			key += this.toString().toLowerCase();
 		}
 	}
-	private String altName = "";
+	private final String altName;
 	public ItemAmmo(Class<? extends Enum<?>> clazz)
 	{
-		super(clazz, true, true);
-		setCreativeTab(MainRegistry.weaponTab);
+		this(clazz, "");
 	}
 	
 	public ItemAmmo(Class<? extends Enum<?>> clazz, String altName)
 	{
-		this(clazz);
+		super(clazz, true, true);
+		setCreativeTab(MainRegistry.weaponTab);
 		this.altName = altName;
 	}
 	
@@ -129,38 +129,30 @@ public class ItemAmmo extends ItemEnumMulti
 			list.add(player.worldObj.rand.nextInt(3) < 2 ? EnumChatFormatting.RED + "COVER YOURSELF IN OIL" : EnumChatFormatting.RED + "" + EnumChatFormatting.OBFUSCATED + "COVER YOURSELF IN OIL");
 		
 		final IAmmoItemEnum item = (IAmmoItemEnum) EnumUtil.grabEnumSafely(theEnum, stack.getItemDamage());
-		final AmmoItemTrait[] traitArray = item.getTraits();
+		final Set<AmmoItemTrait> ammoTraits = item.getTraits();
 		
 		if (bool)
 		{
 			final BulletConfiguration config = item.getConfig();
 			list.add("Damage: " + config.dmgMin + '-' + config.dmgMax);
 			list.add("Penetration value: " + config.penetration);
-			list.add("Penetration value at 50 meters: ~" + Math.round(config.modFunction.orElse(BulletConfiguration.defaultModifier).mod(config.penetration, config.penetrationModifier, 50)));
+			list.add("Penetration value at 100 meters: ~" + Math.round(config.modFunction.orElse(BulletConfiguration.defaultModifier).mod(config.penetration, config.penetrationModifier, 100)));
 		}
 		
-		if (traitArray.length > 0)
+		if (ammoTraits.size() > 0)
 		{
 			//List traits = Arrays.asList(traitArray);
-			final ArrayList<AmmoItemTrait> sortedTraits = new ArrayList<AmmoItemTrait>(Arrays.asList(traitArray));
+			final ArrayList<AmmoItemTrait> sortedTraits = new ArrayList<AmmoItemTrait>(ammoTraits);
 			Collections.sort(sortedTraits, Collections.reverseOrder());
 			for (AmmoItemTrait trait : sortedTraits)
 			{
 				final EnumChatFormatting color;
 				switch(trait.toString().substring(0, 3))
 				{
-				case "PRO":
-					color = EnumChatFormatting.BLUE;
-					break;
-				case "NEU":
-					color = EnumChatFormatting.YELLOW;
-					break;
-				case "CON":
-					color = EnumChatFormatting.RED;
-					break;
-				default:
-					color = EnumChatFormatting.DARK_GRAY;
-					break;
+				case "PRO": color = EnumChatFormatting.BLUE; break;
+				case "NEU": color = EnumChatFormatting.YELLOW; break;
+				case "CON": color = EnumChatFormatting.RED; break;
+				default: color = EnumChatFormatting.DARK_GRAY; break;
 				}
 				list.add(color + I18nUtil.resolveKey(trait.key));
 			}

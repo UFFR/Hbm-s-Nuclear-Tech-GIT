@@ -79,13 +79,13 @@ public interface ILocationProvider
 		return Math.atan2(Math.sqrt(vec.zCoord * vec.zCoord + vec.xCoord * vec.xCoord), vec.yCoord) + Math.PI;
 	}
 	
-	public static ILocationProvider wrap(Entity entity)
+	public static ILocationProvider wrap(Entity entity, boolean adjustForHeight)
 	{
 		return new ILocationProvider()
 		{
 			@Override public boolean hasWorld() {return true;}
 			@Override public double getZ() {return entity.posZ;}
-			@Override public double getY() {return entity.posY;}
+			@Override public double getY() {return entity.posY + (adjustForHeight ? entity.getEyeHeight() : 0);}
 			@Override public double getX() {return entity.posX;}
 			@Override public World getWorld() {return entity.worldObj;}
 		};

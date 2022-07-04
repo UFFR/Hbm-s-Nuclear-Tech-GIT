@@ -3,14 +3,20 @@ package com.hbm.util;
 import java.util.Objects;
 import java.util.function.Function;
 
-public class StringWrapper<T>
+public class StringWrapper<T> implements Wrapper<T>
 {
-	public final T storedObj;
+	private final T storedObj;
 	private final Function<T, String> stringFunction;
 	public StringWrapper(T storedObj, Function<T, String> stringFunction)
 	{
 		this.storedObj = storedObj;
 		this.stringFunction = stringFunction;
+	}
+	
+	@Override
+	public T getStoredObj()
+	{
+		return storedObj;
 	}
 	
 	@Override

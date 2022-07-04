@@ -1,14 +1,15 @@
 package com.hbm.entity.mob.faction;
 
-import java.util.HashSet;
+import java.util.EnumSet;
+import java.util.Set;
 
 import com.hbm.lib.Library;
 
 public class CMBUtil
 {
 	/**
-	 * Each type of unit has different lines<br>
-	 * {@link #APF} {@link #ECHO} {@link #ORDINAL} {@link #WALLHAMMER}
+	 * Each type of unit has different recorded lines.<br>
+	 * {@link #APF} {@link #ECHO} {@link #ORDINAL} {@link #WALLHAMMER} {@link #SOLDIER}
 	 * @author UFFR
 	 * 
 	 */
@@ -16,12 +17,14 @@ public class CMBUtil
 	{
 		/**(Short for "Antibody Protection Force") Carry HMGs, very heavy armor, role of suppressor. Limited to one per squad.**/
 		APF(50, 50),
-		/**Carry SMGs, no armor except of the head. Bulk of the squad, comparatively unskilled, at least two per.**/
+		/**Carry SMGs, no armor except of the head. Bulk of the squad, at least two per.**/
 		ECHO(20, 5),
 		/**Carry the OSIPR, medium armor. Commander of the squad.**/
 		ORDINAL(25, 20),
 		/**Carry heavy shotguns, very heavy armor, role of tank and charger. Limited to one per squad.**/
-		WALLHAMMER(75, 70);
+		WALLHAMMER(75, 70),
+		/**Classic HL2 soldier, includes shotgunner, decently thick body armor**/
+		SOLDIER(25, 40);
 		private final int health;
 		private final int armor;
 		private UnitType(int hp, int ar)
@@ -51,12 +54,15 @@ public class CMBUtil
 		COMBAT_IDLE,
 		/**Not doing anything, just waiting for orders or hostiles**/
 		IDLE,
+		/**Not necessarily literal, could just be pointing out hostile weaknesses to the squad**/
+		TAUNT,
 		/**When none of the above apply**/
 		MISC;
-		public final HashSet<VoiceLine> lines = new HashSet<>();
+		final Set<VoiceLine> lines = EnumSet.noneOf(VoiceLine.class);
 	}
 	/**
-	 * Most units have the same voice lines<br>
+	 * Most units have the same voice lines, but check first.<br>
+	 * JavaDoc should have the approximate caption.<br>
 	 * @author UFFR
 	 *
 	 */
