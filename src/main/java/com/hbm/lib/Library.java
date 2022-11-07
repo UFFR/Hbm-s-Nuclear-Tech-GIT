@@ -1,10 +1,12 @@
 package com.hbm.lib;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.calc.UnionOfTileEntitiesAndBooleansForFluids;
@@ -706,5 +708,20 @@ public class Library {
 			return ModBlocks.brick_concrete_mossy;
 		
 		return ModBlocks.brick_concrete;
+	}
+
+	public static <T> T randomFromArray(T[] elements)
+	{
+		return elements[rand.nextInt(elements.length)];
+	}
+	
+	public static <T> T randomFromList(List<T> elements)
+	{
+		return elements.get(rand.nextInt(elements.size()));
+	}
+	
+	public static <T> T randomFromCollection(Collection<T> elements)
+	{
+		return Iterables.get(elements, rand.nextInt(elements.size()));
 	}
 }

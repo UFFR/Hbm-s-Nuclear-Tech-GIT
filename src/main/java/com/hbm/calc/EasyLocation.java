@@ -23,7 +23,7 @@ public class EasyLocation implements Cloneable, Comparable<EasyLocation>, ISeria
 	 * 
 	 */
 	private static final long serialVersionUID = -1791762616348589379L;
-	private static final EasyLocation ZERO_LOCATION = new EasyLocation(0, 0, 0);
+	private static final ILocationProvider ZERO_LOCATION = new EasyLocation(0, 0, 0);
 	public double posX, posY, posZ;
 	public int dimID;
 	public transient Optional<World> world = Optional.empty();
@@ -271,13 +271,7 @@ public class EasyLocation implements Cloneable, Comparable<EasyLocation>, ISeria
 	@Override
 	public int compareTo(EasyLocation o)
 	{
-		if (equals(o))
-			return 0;
-		final double testDist = ILocationProvider.distance(o, ZERO_LOCATION);
-		final double myDist = ILocationProvider.distance(this, ZERO_LOCATION);
-		if (testDist == myDist)
-			return 0;
-		return myDist < testDist ? 1 : -1;
+		return equals(o) ? 0 : Double.compare(ILocationProvider.distance(this, ZERO_LOCATION), ILocationProvider.distance(o, ZERO_LOCATION));
 	}
 
 	@Override

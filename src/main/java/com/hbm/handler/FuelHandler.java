@@ -1,44 +1,77 @@
 package com.hbm.handler;
 
+import static net.minecraftforge.oredict.OreDictionary.WILDCARD_VALUE;
+
+import java.util.HashMap;
+
 import com.hbm.blocks.ModBlocks;
 import com.hbm.items.ModItems;
+import com.hbm.util.wrappers.HashWrapper;
+import com.hbm.util.wrappers.Wrapper;
 
 import cpw.mods.fml.common.IFuelHandler;
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class FuelHandler implements IFuelHandler {
-
+	
+	private static final HashMap<Wrapper<ItemStack>, Integer> FUEL_MAP = new HashMap<Wrapper<ItemStack>, Integer>();
+	private static final short single = 200;
+	
+	static
+	{
+		registerFuel(ModItems.solid_fuel,	 				single * 16);
+		registerFuel(ModItems.solid_fuel_presto,	 		single * 40);
+		registerFuel(ModItems.solid_fuel_presto_triplet,	single * 200);
+		registerFuel(ModItems.solid_fuel_bf, 				single * 160);
+		registerFuel(ModItems.solid_fuel_presto_bf, 		single * 400);
+		registerFuel(ModItems.solid_fuel_presto_triplet_bf,	single * 2000);
+		registerFuel(ModItems.rocket_fuel, 					single * 32);
+		registerFuel(ModItems.biomass, 						single * 4);
+		registerFuel(ModItems.biomass_compressed, 			single * 12);
+		registerFuel(ModItems.powder_coal, 					single * 8);
+		registerFuel(ModItems.scrap, 						single * 4);
+		registerFuel(ModItems.dust, 						single * 2);
+		registerFuel(ModItems.powder_fire, 					single * 32);
+		registerFuel(ModBlocks.block_scrap, 				single * 20);
+		registerFuel(ModItems.lignite, 						single * 6);
+		registerFuel(ModItems.powder_lignite, 				single * 6);
+		registerFuel(ModItems.briquette_lignite, 			single * 8);
+		registerFuel(ModItems.coke, 	  WILDCARD_VALUE, 	single * 16);
+		registerFuel(ModItems.book_guide, WILDCARD_VALUE, 	single * 4);
+		registerFuel(ModItems.coal_infernal, 				single * 32);
+		registerFuel(ModItems.powder_sawdust, 				100);
+	}
+	
 	@Override
 	public int getBurnTime(ItemStack fuel) {
-		
-		int single = 200;
-
-		if(fuel.getItem().equals(ModItems.solid_fuel))						return single * 16;
-		if(fuel.getItem().equals(ModItems.solid_fuel_presto))				return single * 40;
-		if(fuel.getItem().equals(ModItems.solid_fuel_presto_triplet))		return single * 200;
-		if(fuel.getItem().equals(ModItems.solid_fuel_bf))					return single * 160;
-		if(fuel.getItem().equals(ModItems.solid_fuel_presto_bf))			return single * 400;
-		if(fuel.getItem().equals(ModItems.solid_fuel_presto_triplet_bf))	return single * 2000;
-		if(fuel.getItem().equals(ModItems.rocket_fuel))						return single * 32;
-		
-		if(fuel.getItem().equals(ModItems.biomass)) return 800;
-		if(fuel.getItem().equals(ModItems.biomass_compressed)) return 2400;
-		if(fuel.getItem().equals(ModItems.powder_coal)) return 1600;
-		if(fuel.getItem().equals(ModItems.scrap)) return 800;
-		if(fuel.getItem().equals(ModItems.dust)) return 400;
-		if(fuel.getItem().equals(ModItems.powder_fire)) return 6400;
-		if(fuel.getItem().equals(Item.getItemFromBlock(ModBlocks.block_scrap))) return 4000;
-		if(fuel.getItem() == ModItems.lignite) return 1200;
-		if(fuel.getItem() == ModItems.powder_lignite) return 1200;
-		if(fuel.getItem() == ModItems.briquette_lignite) return 1600;
-		if(fuel.getItem() == ModItems.coke) return 3200;
-		if(fuel.getItem() == ModItems.book_guide) return 800;
-		if(fuel.getItem() == ModItems.coal_infernal) return 4800;
-		if(fuel.getItem() == ModItems.crystal_coal) return 6400;
-		if(fuel.getItem() == ModItems.powder_sawdust) return 100;
-		
-		return 0;
+		return getFuelTime(fuel);
+	}
+	
+	public static void registerFuel(Item item, int fuelTime)
+	{
+		registerFuel(item, 0, fuelTime);
 	}
 
+	public static void registerFuel(Item item, int meta, int fuelTime)
+	{
+		FUEL_MAP.put(new HashWrapper<ItemStack>(new ItemStack(item, 1, meta), Wrapper::hashItemStack, Wrapper::testItemStack), fuelTime);
+	}
+	
+	public static void registerFuel(Block block, int fuelTime)
+	{
+		registerFuel(block, 0, fuelTime);
+	}
+	
+	public static void registerFuel(Block block, int meta, int fuelTime)
+	{
+		FUEL_MAP.put(new HashWrapper<ItemStack>(new ItemStack(block, 1, meta), Wrapper::hashItemStack, Wrapper::testItemStack), fuelTime);
+	}
+	
+	public static int getFuelTime(ItemStack stack)
+	{
+		return FUEL_MAP.getOrDefault(new HashWrapper<ItemStack>(stack, Wrapper::hashItemStack, Wrapper::testItemStack), 0);
+	}
+	
 }

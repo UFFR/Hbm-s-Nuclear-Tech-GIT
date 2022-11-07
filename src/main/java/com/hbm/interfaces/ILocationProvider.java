@@ -1,6 +1,10 @@
 package com.hbm.interfaces;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
@@ -17,6 +21,14 @@ public interface ILocationProvider
 	public double posZ();
 	public boolean hasWorld();
 	public World getWorld();
+	
+	@Override
+	public boolean equals(Object obj);
+	@Override
+	public int hashCode();
+	@Override
+	public String toString();
+	
 	public default double[] getCoordDouble()
 	{
 		return new double[] {posX(), posY(), posZ()};
@@ -57,9 +69,15 @@ public interface ILocationProvider
 	{
 		return getWorld().setBlock((int) posX(), (int) posY(), (int) posZ(), block);
 	}
+	
 	public static Vec3 makeVector(@Nonnull ILocationProvider loc1, @Nonnull ILocationProvider loc2)
 	{
 		return Vec3.createVectorHelper(loc2.posX() - loc1.posX(), loc2.posY() - loc1.posY(), loc2.posZ() - loc2.posZ());
+	}
+	
+	public static Vec3 makeUnitVector(@Nonnull ILocationProvider loc1, @Nonnull ILocationProvider loc2)
+	{
+		return makeVector(loc1, loc2).normalize();
 	}
 	
 	public static double distance(@Nonnull ILocationProvider loc1, @Nonnull ILocationProvider loc2)
@@ -84,9 +102,30 @@ public interface ILocationProvider
 		return new DelegatedEntityLocation(entity, adjustForHeight);
 	}
 	
+	public static List<ILocationProvider> wrapEntityCollection(Collection<? extends Entity> entities)
+	{
+		return wrapEntityCollection(entities, false);
+	}
+	
+	public static List<ILocationProvider> wrapEntityCollection(Collection<? extends Entity> entities, boolean adjustForHeight)
+	{
+		final List<ILocationProvider> locations = new ArrayList<ILocationProvider>();
+		for (Entity entity : entities)
+			locations.add(wrap(entity, adjustForHeight));
+		return locations;
+	}
+	
 	public static ILocationProvider wrap(TileEntity tileEntity)
 	{
 		return new DelegatedTileEntityLocation(tileEntity);
+	}
+	
+	public static List<ILocationProvider> wrapTECollection(Collection<? extends TileEntity> tileEntities)
+	{
+		final List<ILocationProvider> locations = new ArrayList<ILocationProvider>();
+		for (TileEntity tileEntity : tileEntities)
+			locations.add(wrap(tileEntity));
+		return locations;
 	}
 	
 	static class DelegatedEntityLocation implements ILocationProvider
@@ -124,6 +163,30 @@ public interface ILocationProvider
 		{
 			return entity.worldObj;
 		}
+		@Override
+		public int hashCode()
+		{
+			return Objects.hash(adjustForHeight, entity);
+		}
+		@Override
+		public boolean equals(Object obj)
+		{
+			if (this == obj)
+				return true;
+			if (!(obj instanceof DelegatedEntityLocation))
+				return false;
+			final DelegatedEntityLocation other = (DelegatedEntityLocation) obj;
+			return adjustForHeight == other.adjustForHeight && Objects.equals(entity, other.entity);
+		}
+		@Override
+		public String toString()
+		{
+			final StringBuilder builder = new StringBuilder();
+			builder.append("DelegatedEntityLocation [entity=").append(entity).append(", adjustForHeight=")
+					.append(adjustForHeight).append(", posX()=").append(posX()).append(", posY()=").append(posY())
+					.append(", posZ()=").append(posZ()).append(", getWorld()=").append(getWorld()).append(']');
+			return builder.toString();
+		}
 	}
 	
 	static class DelegatedTileEntityLocation implements ILocationProvider
@@ -158,6 +221,32 @@ public interface ILocationProvider
 		public World getWorld()
 		{
 			return tileEntity.getWorldObj();
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return Objects.hash(posX(), posY(), posZ());
+		}
+
+		@Override
+		public boolean equals(Object obj)
+		{
+			if (this == obj)
+				return true;
+			if (!(obj instanceof DelegatedTileEntityLocation))
+				return false;
+			final DelegatedTileEntityLocation other = (DelegatedTileEntityLocation) obj;
+			return Objects.equals(tileEntity, other.tileEntity);
+		}
+		@Override
+		public String toString()
+		{
+			final StringBuilder builder = new StringBuilder();
+			builder.append("DelegatedTileEntityLocation [tileEntity=").append(tileEntity).append(", posX()=")
+					.append(posX()).append(", posY()=").append(posY()).append(", posZ()=").append(posZ())
+					.append(", getWorld()=").append(getWorld()).append(']');
+			return builder.toString();
 		}
 		
 	}

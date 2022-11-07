@@ -13,6 +13,7 @@ import com.hbm.entity.missile.*;
 import com.hbm.entity.mob.*;
 import com.hbm.entity.mob.botprime.*;
 import com.hbm.entity.mob.siege.*;
+import com.hbm.entity.mob.smart.combine.*;
 import com.hbm.entity.particle.*;
 import com.hbm.entity.projectile.*;
 import com.hbm.entity.qic.*;
@@ -225,6 +226,8 @@ public class EntityMappings {
 		addMob(EntitySiegeSkeleton.class, "entity_meme_skeleton", 0x303030, 0x000080);
 		addMob(EntitySiegeUFO.class, "entity_meme_ufo", 0x303030, 0x800000);
 		addMob(EntitySiegeCraft.class, "entity_meme_craft", 0x303030, 0x808000);
+		
+		addMob(EntityCombineOrdinal.class, "entity.hbm.combine.ordinal", 0x9da4b1, 0x0ddde7);
 		
 		int id = 0;
 		for(Quartet<Class<? extends Entity>, String, Integer, Boolean> entry : entityMappings) {

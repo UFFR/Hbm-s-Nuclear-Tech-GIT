@@ -67,6 +67,7 @@ import com.hbm.util.ArmorUtil;
 import com.hbm.util.ArmorRegistry.HazardClass;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
+import api.hbm.faction.IEntityDataProvider;
 import api.hbm.item.IButtonReceiver;
 import api.hbm.item.IClickReceiver;
 
@@ -923,7 +924,7 @@ public class ModEventHandlerClient {
 	@SubscribeEvent
 	public void preRenderEvent(RenderLivingEvent.Pre event) {
 		
-		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+		final EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 		
 		if(ArmorFSB.hasFSBArmor(player) && HbmPlayerProps.getData(player).enableHUD) {
 			ItemStack plate = player.inventory.armorInventory[2];
@@ -935,18 +936,22 @@ public class ModEventHandlerClient {
 				
 				int bars = (int)Math.ceil(event.entity.getHealth() * count / event.entity.getMaxHealth());
 				
-				String bar = EnumChatFormatting.RED + "";
+//				String bar = EnumChatFormatting.RED + "";
+				final StringBuilder bar = new StringBuilder().append(EnumChatFormatting.RED);
 				
 				for(int i = 0; i < count; i++) {
 					
 					if(i == bars)
-						bar += EnumChatFormatting.RESET + "";
+						bar.append(EnumChatFormatting.RESET);
 					
-						bar += "|";
+					bar.append('|');
 				}
-				RenderOverhead.renderTag(event.entity, event.x, event.y, event.z, event.renderer, bar, chestplate.thermal);
+				RenderOverhead.renderTag(event.entity, event.x, event.y, event.z, event.renderer, bar.toString(), chestplate.thermal);
 			}
 		}
+		
+		if (event.entity instanceof IEntityDataProvider)
+			RenderOverhead.renderTag(event.entity, event.x, event.y, event.z, event.renderer, player.isSneaking() ? ((IEntityDataProvider) event.entity).toDisplay() : ((IEntityDataProvider) event.entity).toDisplayShort(), true);
 	}
 	
 	/*@SubscribeEvent

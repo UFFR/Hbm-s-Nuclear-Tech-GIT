@@ -31,6 +31,11 @@ public class EntityGrenadeBouncyBaseNT extends EntityGrenadeBouncyBase
 		this.grenade = grenade;
 	}
 	
+	public AmmoHandGrenade getType()
+	{
+		return grenade;
+	}
+	
 	@Override
 	protected void writeEntityToNBT(NBTTagCompound nbt)
 	{
