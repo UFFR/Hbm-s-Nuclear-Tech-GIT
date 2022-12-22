@@ -29,6 +29,10 @@ public interface ILocationProvider
 	@Override
 	public String toString();
 	
+	public default Vec3 toVec3()
+	{
+		return Vec3.createVectorHelper(posX(), posY(), posZ());
+	}
 	public default double[] getCoordDouble()
 	{
 		return new double[] {posX(), posY(), posZ()};
