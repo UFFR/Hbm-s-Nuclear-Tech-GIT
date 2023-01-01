@@ -32,7 +32,7 @@ import net.minecraft.util.Vec3;
 
 public class GunOSIPRFactory {
 	
-	static final SpentCasingConfig CASING_AR2 = new SpentCasingConfigBuilder("ar2", CasingType.AR2, false)
+	public static final SpentCasingConfig CASING_AR2 = new SpentCasingConfigBuilder("ar2", CasingType.AR2, false)
 			.setSmokeChance(0).setInitialMotion(Vec3.createVectorHelper(-0.15, 0.2, 0)).setPitchFactor(0.02f)
 			.setAfterReload(true).setPosOffset(new EasyLocation(-0.4, 0, 0)).build();
 	

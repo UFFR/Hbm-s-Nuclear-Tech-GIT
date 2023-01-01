@@ -1,20 +1,12 @@
 package com.hbm.entity.mob.ai.squad;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.Objects;
 
 import net.minecraft.entity.EntityLivingBase;
 
 public class CachedEntityStats extends EntityStats
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -8825278872246408515L;
-	private transient EntityLivingBase delegate;
 	private float health, maxHealth;
-	private int sinceLastContact = 0;
 	private boolean lostContact = false;
 	public CachedEntityStats(EntityLivingBase entity)
 	{
@@ -29,6 +21,11 @@ public class CachedEntityStats extends EntityStats
 	{
 		if (lostContact)
 			sinceLastContact++;
+		else
+		{
+			health = delegate.getHealth();
+			maxHealth = delegate.getMaxHealth();
+		}
 	}
 
 	@Override
@@ -41,7 +38,7 @@ public class CachedEntityStats extends EntityStats
 	public void reestablishContact()
 	{
 		lostContact = false;
-		sinceLastContact = 0;
+		sinceLastContact = -1;
 		health = delegate.getHealth();
 		maxHealth = delegate.getMaxHealth();
 	}
@@ -59,33 +56,12 @@ public class CachedEntityStats extends EntityStats
 	}
 
 	@Override
-	public boolean isStillFull()
-	{
-		return getHealthPercentage() >= 0.8f;
-	}
-
-	@Override
-	public boolean isInjured()
-	{
-		return getHealthPercentage() <= 0.5f;
-	}
-
-	@Override
-	public boolean isAlmostDead()
-	{
-		return getHealthPercentage() <= 0.2f;
-	}
-
-	@Override
-	public int timeSinceLastContact()
-	{
-		return sinceLastContact;
-	}
-
-	@Override
 	public int hashCode()
 	{
-		return Objects.hash(delegateID, health, maxHealth, sinceLastContact);
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(health, lostContact, maxHealth);
+		return result;
 	}
 
 	@Override
@@ -93,12 +69,13 @@ public class CachedEntityStats extends EntityStats
 	{
 		if (this == obj)
 			return true;
+		if (!super.equals(obj))
+			return false;
 		if (!(obj instanceof CachedEntityStats))
 			return false;
 		final CachedEntityStats other = (CachedEntityStats) obj;
-		return delegateID == other.delegateID && Float.floatToIntBits(health) == Float.floatToIntBits(other.health)
-				&& Float.floatToIntBits(maxHealth) == Float.floatToIntBits(other.maxHealth)
-				&& sinceLastContact == other.sinceLastContact;
+		return Float.floatToIntBits(health) == Float.floatToIntBits(other.health) && lostContact == other.lostContact
+				&& Float.floatToIntBits(maxHealth) == Float.floatToIntBits(other.maxHealth);
 	}
 
 	@Override
@@ -110,11 +87,4 @@ public class CachedEntityStats extends EntityStats
 				.append(']');
 		return builder.toString();
 	}
-
-	private void readObject(ObjectInputStream stream) throws ClassNotFoundException, IOException
-	{
-		stream.defaultReadObject();
-		delegate = (EntityLivingBase) WORLD_SUPPLIER.get().getEntityByID(delegateID);
-	}
-	
 }

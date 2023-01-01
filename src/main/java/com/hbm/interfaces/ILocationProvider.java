@@ -2,11 +2,14 @@ package com.hbm.interfaces;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+
+import com.hbm.calc.EasyLocation;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -14,7 +17,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-public interface ILocationProvider
+public interface ILocationProvider extends Comparable<ILocationProvider>
 {
 	public double posX();
 	public double posY();
@@ -74,6 +77,12 @@ public interface ILocationProvider
 		return getWorld().setBlock((int) posX(), (int) posY(), (int) posZ(), block);
 	}
 	
+	@Override
+	public default int compareTo(ILocationProvider arg0)
+	{
+		return Double.compare(distanceSquared(arg0, EasyLocation.getZeroLocation()), distanceSquared(this, EasyLocation.getZeroLocation()));
+	}
+	
 	public static Vec3 makeVector(@Nonnull ILocationProvider loc1, @Nonnull ILocationProvider loc2)
 	{
 		return Vec3.createVectorHelper(loc2.posX() - loc1.posX(), loc2.posY() - loc1.posY(), loc2.posZ() - loc2.posZ());
@@ -84,10 +93,15 @@ public interface ILocationProvider
 		return makeVector(loc1, loc2).normalize();
 	}
 	
-	public static double distance(@Nonnull ILocationProvider loc1, @Nonnull ILocationProvider loc2)
+	public static double distanceSquared(@Nonnull ILocationProvider loc1, @Nonnull ILocationProvider loc2)
 	{
 		final Vec3 vec = makeVector(loc1, loc2);
-		return Math.sqrt((vec.xCoord * vec.xCoord) + (vec.yCoord * vec.yCoord) + (vec.zCoord + vec.zCoord));
+		return (vec.xCoord * vec.xCoord) + (vec.yCoord * vec.yCoord) + (vec.zCoord + vec.zCoord);
+	}
+	
+	public static double distance(@Nonnull ILocationProvider loc1, @Nonnull ILocationProvider loc2)
+	{
+		return Math.sqrt(distanceSquared(loc1, loc2));
 	}
 	
 	public static double yaw(@Nonnull ILocationProvider loc1, @Nonnull ILocationProvider loc2)
@@ -99,6 +113,11 @@ public interface ILocationProvider
 	{
 		final Vec3 vec = makeVector(loc1, loc2);
 		return Math.atan2(Math.sqrt(vec.zCoord * vec.zCoord + vec.xCoord * vec.xCoord), vec.yCoord) + Math.PI;
+	}
+	
+	public static ILocationProvider wrap(Entity entity)
+	{
+		return new DelegatedEntityLocation(entity, false);
 	}
 	
 	public static ILocationProvider wrap(Entity entity, boolean adjustForHeight)
@@ -130,6 +149,21 @@ public interface ILocationProvider
 		for (TileEntity tileEntity : tileEntities)
 			locations.add(wrap(tileEntity));
 		return locations;
+	}
+	
+	public static void sortEntitiesByDistanceFrom(List<? extends Entity> entities, ILocationProvider reference)
+	{
+		entities.sort(Comparator.comparing(e -> distanceSquared(wrap(e), reference)));
+	}
+	
+	public static void sortEntitiesByDistanceFromZero(List<? extends Entity> entities)
+	{
+		entities.sort(Comparator.comparing(e -> wrap(e)));
+	}
+	
+	public static void sortTEsByDistanceFrom(List<? extends TileEntity> tileEntities, ILocationProvider reference)
+	{
+		tileEntities.sort(Comparator.comparing(e -> distanceSquared(wrap(e), reference)));
 	}
 	
 	static class DelegatedEntityLocation implements ILocationProvider
@@ -252,6 +286,5 @@ public interface ILocationProvider
 					.append(", getWorld()=").append(getWorld()).append(']');
 			return builder.toString();
 		}
-		
 	}
 }

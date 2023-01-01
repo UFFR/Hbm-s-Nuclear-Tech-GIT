@@ -227,7 +227,7 @@ public class EntityMappings {
 		addMob(EntitySiegeUFO.class, "entity_meme_ufo", 0x303030, 0x800000);
 		addMob(EntitySiegeCraft.class, "entity_meme_craft", 0x303030, 0x808000);
 		
-		addMob(EntityCombineOrdinal.class, "entity.hbm.combine.ordinal", 0x9da4b1, 0x0ddde7);
+		addMob(EntityCombineOrdinal.class, "hbm.combine.ordinal", 0x3a3a48, 0x0ddde7);
 		
 		int id = 0;
 		for(Quartet<Class<? extends Entity>, String, Integer, Boolean> entry : entityMappings) {

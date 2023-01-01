@@ -22,7 +22,8 @@ import net.minecraft.entity.player.EntityPlayer;
 
 /**
  * Registry for entity/NPC classes, vanilla and NTM NPCs already handled.<br>
- * Players have special behavior, their species traits can be change, for support with other mods that may do that. Is a plain humanoid by default.
+ * If registered correctly, smarter NPCs will identify these traits and change tactics to better combat them, if applicable<br>
+ * Players have special behavior, their species traits can be changed, for support with other mods that may do that. Is a plain humanoid by default.
  * @author UFFR
  *
  */

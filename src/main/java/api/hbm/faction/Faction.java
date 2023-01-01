@@ -9,10 +9,13 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.google.common.annotations.Beta;
+import com.hbm.entity.mob.ai.squad.SquadBase;
 import com.hbm.interfaces.ILocationProvider;
 import com.hbm.main.MainRegistry;
+import com.hbm.util.ArraySet;
 import com.hbm.util.I18nUtil;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
@@ -66,6 +69,7 @@ public abstract class Faction implements Serializable
 	private static final Map<FactionPair, EnumTreaty> TREATY_MAP = new HashMap<FactionPair, EnumTreaty>();
 	
 	protected final Set<String> registeredNames = new HashSet<String>();
+	protected final List<SquadBase> activeSquads = new ArraySet<SquadBase>();
 	private final Map<Faction, EnumRelation> relationMap = new HashMap<Faction, EnumRelation>();
 	private final Map<UUID, EnumRelation> playerRelationMap = new HashMap<UUID, EnumRelation>();
 	private final String registryName;
@@ -83,6 +87,7 @@ public abstract class Faction implements Serializable
 	
 	public abstract void constructAndDeploySquad(ILocationProvider loc);
 	public abstract List<SquadBuilder> getSquadBuilders();
+	public abstract boolean isValidTarget(EntityLivingBase entity);
 	
 	public String getRegistryName()
 	{
@@ -137,6 +142,11 @@ public abstract class Faction implements Serializable
 	public EnumRelation getPlayerRelationship(EntityPlayer player)
 	{
 		return getPlayerRelationship(player.getPersistentID());
+	}
+	
+	protected boolean shouldTargetPlayer(EntityPlayer player)
+	{
+		return getPlayerRelationship(player).ordinal() < EnumRelation.NEUTRAL.ordinal();
 	}
 	
 	// TODO

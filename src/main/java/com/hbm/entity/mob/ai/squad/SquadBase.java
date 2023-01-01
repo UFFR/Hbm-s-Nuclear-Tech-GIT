@@ -1,9 +1,5 @@
 package com.hbm.entity.mob.ai.squad;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -13,13 +9,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import org.apache.logging.log4j.Logger;
 
@@ -29,8 +25,11 @@ import com.hbm.calc.EasyLocation;
 import com.hbm.entity.grenade.EntityGrenadeBouncyBaseNT;
 import com.hbm.entity.mob.smart.EntitySmartNPCBase;
 import com.hbm.interfaces.ILocationProvider;
+import com.hbm.interfaces.INBTSerializable;
 import com.hbm.lib.Library;
+import com.hbm.main.DeserializationException;
 import com.hbm.main.MainRegistry;
+import com.hbm.util.ArraySet;
 import com.hbm.util.wrappers.Wrapper;
 
 import api.hbm.faction.Faction;
@@ -42,6 +41,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentText;
@@ -56,12 +56,8 @@ import net.minecraft.world.World;
  *
  */
 @Beta
-public abstract class SquadBase implements Serializable
+public abstract class SquadBase implements INBTSerializable
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 137261370580268948L;
 	/**Reference to the main logger**/
 	protected static final Logger LOGGER = MainRegistry.logger;
 	protected static final Set<Wrapper<Block>> HAZARDOUS_BLOCKS = new HashSet<Wrapper<Block>>();
@@ -69,7 +65,7 @@ public abstract class SquadBase implements Serializable
 	protected final List<EntitySmartNPCBase> members = new ArrayList<EntitySmartNPCBase>();
 	protected final Set<String> registeredNames = new HashSet<String>();
 	protected transient final Map<EntitySmartNPCBase, AxisAlignedBB> memberSightMap = new HashMap<EntitySmartNPCBase, AxisAlignedBB>(), memberProximityMap = new HashMap<EntitySmartNPCBase, AxisAlignedBB>();
-	protected transient final Set<EntityLivingBase> targets = new HashSet<EntityLivingBase>();
+	protected transient final List<EntityLivingBase> targets = new ArraySet<EntityLivingBase>();
 	protected transient final Map<EntityLivingBase, EntityStats> targetStatMap = new HashMap<EntityLivingBase, EntityStats>();
 	protected transient final Map<EntitySmartNPCBase, Set<ILocationProvider>> localHazards = new HashMap<EntitySmartNPCBase, Set<ILocationProvider>>();
 	protected transient final Consumer<IChatComponent> worldChat;
@@ -92,6 +88,7 @@ public abstract class SquadBase implements Serializable
 	public SquadBase(World world)
 	{
 		this.world = world;
+		
 		worldChat = MinecraftServer.getServer().getConfigurationManager()::sendChatMsg;
 	}
 	
@@ -100,42 +97,15 @@ public abstract class SquadBase implements Serializable
 	public abstract void update();
 	public abstract void updateMembers();
 	public abstract boolean isTaskComplete();
+	public abstract boolean strictSize();
 	public abstract void notifyUpdatedTask(SquadTask task);
 	public abstract Faction getFaction();
 	
-	private void writeObject(ObjectOutputStream stream) throws IOException
+	public void checkInvalidMembers()
 	{
-		stream.defaultWriteObject();
-		stream.writeObject(members.stream().mapToInt(EntitySmartNPCBase::hashCode).toArray());
-		stream.writeObject(targetStatMap.keySet().stream().collect(Collectors.toMap(EntityLivingBase::hashCode, targetStatMap::get)));
-	}
-	
-	private void readObject(ObjectInputStream stream) throws ClassNotFoundException, IOException
-	{
-		stream.defaultReadObject();
-		world = MinecraftServer.getServer().getEntityWorld();
-		final int[] memberIDs = (int[]) stream.readObject();
-		for (int id : memberIDs)
-		{
-			final Entity entity = world.getEntityByID(id);
-			if (entity instanceof EntitySmartNPCBase)
-				members.add((EntitySmartNPCBase) entity);
-			else
-				LOGGER.warn("Saved member either null or wrong class!");
-		}
-		final Map<Integer, EntityStats> savedStats = (Map<Integer, EntityStats>) stream.readObject();
-		final Map<Entity, EntityStats> translatedStats = savedStats.keySet().stream().collect(Collectors.toMap(world::getEntityByID, savedStats::get));
-		for (Entry<Entity, EntityStats> entry : translatedStats.entrySet())
-		{
-			if (entry.getKey() instanceof EntityLivingBase)
-				targetStatMap.put((EntityLivingBase) entry.getKey(), entry.getValue());
-			else
-				LOGGER.warn("Saved key: [" + entry.getKey() + "] is not an instance of EntityLivingBase!");
-		}
-	}
-	
-	public void checkDeadOrInvalidMembers()
-	{
+		if (isSquadDead())
+			return;
+		
 		if (members.removeIf(Objects::isNull))
 			LOGGER.warn("Null element(s) found in squad list, this should not be possible!");
 		if (members.removeIf(m -> m.getSquad() != this))
@@ -143,11 +113,7 @@ public abstract class SquadBase implements Serializable
 		if (members.removeIf(m -> Faction.getTreaty(getFaction(), m.getFaction()).ordinal() < EnumTreaty.DEFENSE.ordinal()))
 			LOGGER.catching(new IllegalStateException("Unallied NPC(s) included in squad, this should not be possible!"));
 		
-		if (isSquadDead())
-			return;
-		
 		members.sort(Comparator.comparing(EntitySmartNPCBase::getRank));
-		
 		final List<EntitySmartNPCBase> leaders = members.stream().filter(EntitySmartNPCBase::isSquadLeader).collect(ArrayList::new, List::add, List::addAll);
 		
 		if (leaders.size() > 1)
@@ -156,6 +122,14 @@ public abstract class SquadBase implements Serializable
 			for (int i = 1; i < leaders.size(); i++)
 				leaders.get(i).setSquadLeader(false);
 		}
+	}
+	
+	public void checkDeadMembers()
+	{
+		if (isSquadDead())
+			return;
+		
+		members.sort(Comparator.comparing(EntitySmartNPCBase::getRank));
 		
 		final List<EntitySmartNPCBase> dead = members.stream().filter(EntitySmartNPCBase::isDead).collect(ArrayList::new, List::add, List::addAll);
 		
@@ -175,22 +149,23 @@ public abstract class SquadBase implements Serializable
 		}
 	}
 	
-	public void getMemberSightlines()
+	public void refreshMemberSightlines()
 	{
 		memberSightMap.clear();
 		for (EntitySmartNPCBase member : members)
 			memberSightMap.put(member, member.getSpottingBox());
 	}
 	
-	public void getMemberProximities()
+	public void refreshMemberProximities()
 	{
 		memberProximityMap.clear();
 		for (EntitySmartNPCBase member : members)
 			memberProximityMap.put(member, member.getProximityBox());
 	}
 	
-	public void checkMemberSightlines()
+	public List<EntityLivingBase> checkMemberSightlines()
 	{
+		final List<EntityLivingBase> allEntities = new ArraySet<EntityLivingBase>();
 		for (EntitySmartNPCBase member : members)
 		{
 			final AxisAlignedBB box = memberSightMap.get(member);
@@ -201,17 +176,16 @@ public abstract class SquadBase implements Serializable
 			if (entities.isEmpty())
 				continue;
 			
-			entities.sort(Comparator.comparing(e -> ILocationProvider.distance(ILocationProvider.wrap(e, false), member.getMyLocation())));
-			targets.addAll(entities);
-			if (member.getAttackTarget() == null)
-				member.setAttackTarget(entities.get(0));
+			ILocationProvider.sortEntitiesByDistanceFrom(entities, member.getMyLocation());
+			allEntities.addAll(entities);
 		}
+		return allEntities;
 	}
 	
 	public void recheckLocalArea()
 	{
 		final List<ILocationProvider> blockCache = new ArrayList<ILocationProvider>();
-		getMemberSightlines();
+		refreshMemberSightlines();
 		localHazards.clear();
 		for (EntitySmartNPCBase member : members)
 		{
@@ -227,7 +201,7 @@ public abstract class SquadBase implements Serializable
 			if (blockCache.isEmpty())
 				continue;
 			
-			blockCache.sort(Comparator.comparing(l -> ILocationProvider.distance(l, member.getMyLocation())));
+			ILocationProvider.sortEntitiesByDistanceFrom(members, member.getMyLocation());
 			member.notifyDangerGeneric(blockCache.get(0));
 			
 			final List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, spotBox);
@@ -238,7 +212,7 @@ public abstract class SquadBase implements Serializable
 			nades.removeIf(g -> badTarget(g.getThrower()));
 			if (!nades.isEmpty())
 			{
-				nades.sort(Comparator.comparing(nade -> ILocationProvider.distance(ILocationProvider.wrap(nade, false), member.getMyLocation())));
+				ILocationProvider.sortEntitiesByDistanceFrom(nades, member.getMyLocation());
 				member.notifyDangerGrenade(ILocationProvider.wrap(nades.get(0), false), nades.get(0).getType());
 			}
 			
@@ -247,7 +221,7 @@ public abstract class SquadBase implements Serializable
 			closeEnemies.removeAll(getMembers());
 			if (!closeEnemies.isEmpty())
 			{
-				closeEnemies.sort(Comparator.comparing(e -> ILocationProvider.distance(ILocationProvider.wrap(e, false), member.getMyLocation())));
+				ILocationProvider.sortEntitiesByDistanceFrom(closeEnemies, member.getMyLocation());
 				member.notifyEnemyTooClose(closeEnemies.get(0));
 			}
 		}
@@ -255,7 +229,7 @@ public abstract class SquadBase implements Serializable
 	
 	public SquadBase setTaskAndLocation(SquadTask task, @Nullable ILocationProvider loc)
 	{
-		checkDeadOrInvalidMembers();
+		checkDeadMembers();
 		this.task = task;
 		taskLocation = loc == null ? ILocationProvider.wrap(getLeaderOrNextRanked(), false) : loc;
 		return this;
@@ -273,7 +247,7 @@ public abstract class SquadBase implements Serializable
 	
 	public EntitySmartNPCBase getLeaderOrNextRanked()
 	{
-		checkDeadOrInvalidMembers();
+		checkDeadMembers();
 		return leader.orElse(members.get(0));
 	}
 	
@@ -292,27 +266,30 @@ public abstract class SquadBase implements Serializable
 	
 	public boolean addMember(@Nonnull EntitySmartNPCBase npc)
 	{
+		if (strictSize())
+			return false;
+		
 		if (npc == null || npc.getFaction() != getFaction() && Faction.getTreaty(getFaction(), npc.getFaction()).ordinal() < EnumTreaty.DEFENSE.ordinal())
 			return false;
 		
 		members.add(npc);
-		registeredNames.add(npc.getMySquadName());
-		checkDeadOrInvalidMembers();
+		registeredNames.add(npc.getSquadName());
+		checkDeadMembers();
 		return true;
 	}
 	
 	public boolean addTarget(EntityLivingBase entity)
 	{
-		if (entity == null || members.contains(entity))
+		if (entity == null || members.contains(entity) || badTarget(entity))
 			return false;
 		
-		if (entity instanceof EntitySmartNPCBase)
-			if (Faction.getTreaty(((EntitySmartNPCBase) entity).getFaction(), getFaction()).ordinal() >= EnumTreaty.NO_AGGRESSION.ordinal())
-				return false;
+//		if (entity instanceof EntitySmartNPCBase)
+//			if (Faction.getTreaty(((EntitySmartNPCBase) entity).getFaction(), getFaction()).ordinal() >= EnumTreaty.NO_AGGRESSION.ordinal())
+//				return false;
 		return targets.add(entity);
 	}
 	
-	public Set<EntityLivingBase> getTargets()
+	public List<EntityLivingBase> getTargets()
 	{
 		return targets;
 	}
@@ -334,13 +311,13 @@ public abstract class SquadBase implements Serializable
 
 	public EntitySmartNPCBase getMember(int index) throws IndexOutOfBoundsException
 	{
-		checkDeadOrInvalidMembers();
+		checkDeadMembers();
 		return members.get(index);
 	}
 
 	public int size()
 	{
-		checkDeadOrInvalidMembers();
+		checkDeadMembers();
 		return members.size();
 	}
 	
@@ -365,6 +342,52 @@ public abstract class SquadBase implements Serializable
 	}
 
 	@Override
+	@OverridingMethodsMustInvokeSuper
+	public void writeToNBT(NBTTagCompound nbt)
+	{
+		// TODO Auto-generated method stub
+		nbt.setIntArray("members", members.stream().mapToInt(EntitySmartNPCBase::hashCode).toArray());
+		nbt.setIntArray("targets", targets.stream().mapToInt(EntityLivingBase::hashCode).toArray());
+		nbt.setByteArray("names", Library.serializeStringCollection(getRegisteredNames()));
+		nbt.setInteger("taskID", task.ordinal());
+	}
+	
+	@Override
+	@OverridingMethodsMustInvokeSuper
+	public void readFromNBT(NBTTagCompound nbt)
+	{
+		// TODO Auto-generated method stub
+		final int[] memberIDs = nbt.getIntArray("members"), targetIDs = nbt.getIntArray("targets");
+		for (int id : memberIDs)
+		{
+			final Entity entity = world.getEntityByID(id);
+			if (entity instanceof EntitySmartNPCBase)
+				members.add((EntitySmartNPCBase) entity);
+			else
+				LOGGER.warn("Saved member ID [" + id + "] associated with either null or wrong class!");
+		}
+		for (int id : targetIDs)
+		{
+			final Entity entity = world.getEntityByID(id);
+			if (entity instanceof EntityLivingBase)
+				targets.add((EntityLivingBase) entity);
+			else
+				LOGGER.warn("Saved target ID [" + id + "] associated with either null or wrong class!");
+		}
+		registeredNames.clear();
+		try
+		{
+			registeredNames.addAll(Library.deserializeStringCollection(nbt.getByteArray("names")));
+		} catch (DeserializationException e)
+		{
+			LOGGER.catching(e);
+			registeredNames.addAll(members.stream().map(EntitySmartNPCBase::getSquadName).collect(Collectors.toList()));
+		}
+		refreshMemberProximities();
+		refreshMemberSightlines();
+	}
+	
+	@Override
 	public int hashCode()
 	{
 		return Objects.hash(memberSightMap, leader, members, targets, task, taskLocation);
@@ -383,6 +406,12 @@ public abstract class SquadBase implements Serializable
 				&& Objects.equals(targets, other.targets) && task == other.task && Objects.equals(taskLocation, other.taskLocation);
 	}
 	
+	@Override
+	public String toString()
+	{
+		return getName();
+	}
+	
 	public boolean badTarget(EntityLivingBase entity)
 	{
 		if (entity.isDead)
@@ -394,7 +423,7 @@ public abstract class SquadBase implements Serializable
 		return entity.getClass().getCanonicalName().contains("passive");
 	}
 	
-	protected EnumDifficulty getWorldDifficulty()
+	protected final EnumDifficulty getWorldDifficulty()
 	{
 		return world.difficultySetting;
 	}

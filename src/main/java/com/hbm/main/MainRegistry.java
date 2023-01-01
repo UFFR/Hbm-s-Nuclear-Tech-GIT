@@ -1,6 +1,7 @@
 package com.hbm.main;
 
 import net.minecraft.block.BlockDispenser;
+import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.dispenser.BehaviorProjectileDispense;
 import net.minecraft.dispenser.IPosition;
@@ -49,6 +50,7 @@ import com.hbm.entity.EntityMappings;
 import com.hbm.entity.grenade.*;
 import com.hbm.entity.logic.*;
 import com.hbm.entity.mob.siege.*;
+import com.hbm.faction.Factions;
 import com.hbm.handler.*;
 import com.hbm.handler.imc.*;
 import com.hbm.handler.radiation.ChunkRadiationManager;
@@ -812,6 +814,9 @@ public class MainRegistry {
 		//new OreLayer(Blocks.coal_ore, 0.2F).setThreshold(4).setRangeMult(3).setYLevel(70);
 		
 		SuicideThreadDump.register();
+		
+		// TODO
+		Factions.initialize(Minecraft.getMinecraft().theWorld);
 	}
 
 	@EventHandler

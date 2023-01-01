@@ -1,0 +1,62 @@
+package com.hbm.render.entity.mob;
+
+/**
+ * Animations for general humanoid NPCs.
+ * @author UFFR
+ *
+ */
+public enum AnimationHumanoid
+{
+	/// Default
+	STAND,
+	
+	//// LOWER BODY/LEGS
+	/// MOVEMENT
+	WALK_FORWARD,
+	WALK_BACKWARD,
+	RUN_FORWARD,
+	RUN_BACKWARD,
+	STRAFE_RIGHT,
+	STRAFE_LEFT,
+	
+	SNEAK_FORWARD,
+	SNEAK_BACKWARD,
+	STRAFE_SNEAK_RIGHT,
+	STRAFE_SNEAK_LEFT,
+	
+	/// MELEE
+	MELEE_KICK_RIGHT,
+	MELEE_KICK_LEFT,
+	MELEE_KNEE_RIGHT,
+	MELEE_KNEE_LEFT,
+	
+	//// UPPER BODY/TORSO
+	LEAN_FORWARD,
+	LEAN_BACKWARD,
+	LEAN_RIGHT,
+	LEAN_LEFT,
+	
+	//// ARMS
+	/** Delegates to {@link HandSign}.**/
+	HAND_SIGN,
+	RELOAD,
+	
+	/// ITEM HOLDING
+	HOLD_GENERIC,
+	HOLD_RIFLE,
+	HOLD_PISTOL,
+	HOLD_POLARM,
+	HOLD_SWORD,
+	
+	/// GRENADE
+	GRENADE_THROW,
+	GRENADE_THROW_LOW,
+	GRENADE_THROW_HIGH,
+	
+	/// MELEE
+	MELEE_GUN_BUTT,
+	MELEE_SHOVE,
+	
+	//// OTHER
+	CUSTOM;
+}

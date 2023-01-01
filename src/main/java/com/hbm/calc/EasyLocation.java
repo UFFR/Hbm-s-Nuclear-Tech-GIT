@@ -20,13 +20,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-public class EasyLocation implements Cloneable, Comparable<EasyLocation>, ISerializable<EasyLocation>, IByteSerializable, INBTSerializable, ILocationProvider
+public class EasyLocation implements Cloneable, ISerializable<EasyLocation>, IByteSerializable, INBTSerializable, ILocationProvider
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -1791762616348589379L;
-	private static final ILocationProvider ZERO_LOCATION = new EasyLocation(0, 0, 0);
+	private static final EasyLocation ZERO_LOCATION = new EasyLocation(0, 0, 0);
 	public double posX, posY, posZ;
 	public int dimID;
 	public transient Optional<World> world = Optional.empty();
@@ -279,11 +279,11 @@ public class EasyLocation implements Cloneable, Comparable<EasyLocation>, ISeria
 		return Objects.hash(dimID, posX, posY, posZ);
 	}
 	
-	@Override
-	public int compareTo(EasyLocation o)
-	{
-		return equals(o) ? 0 : Double.compare(ILocationProvider.distance(this, ZERO_LOCATION), ILocationProvider.distance(o, ZERO_LOCATION));
-	}
+//	@Override
+//	public int compareTo(EasyLocation o)
+//	{
+//		return equals(o) ? 0 : Double.compare(ILocationProvider.distance(this, ZERO_LOCATION), ILocationProvider.distance(o, ZERO_LOCATION));
+//	}
 
 	@Override
 	public EasyLocation deserialize(byte[] bytes) throws DeserializationException

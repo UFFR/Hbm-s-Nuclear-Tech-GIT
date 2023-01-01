@@ -1,6 +1,7 @@
 package com.hbm.entity.mob.smart;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -22,9 +23,11 @@ import com.hbm.interfaces.ILocationProvider;
 import com.hbm.items.ItemAmmoEnums.AmmoHandGrenade;
 import com.hbm.main.DeserializationException;
 import com.hbm.main.MainRegistry;
+import com.hbm.particle.SpentCasingConfig;
 import com.hbm.render.entity.mob.DeathPose;
 import com.hbm.util.CacheList;
 import com.hbm.util.ItemStackSerialization;
+import com.hbm.util.ParticleUtil;
 
 import api.hbm.entity.IDefenseAttributes;
 import api.hbm.faction.Faction;
@@ -55,38 +58,57 @@ public abstract class EntitySmartNPCBase extends EntityCreature implements IEnti
 {
 	/**Reference to the main logger**/
 	protected static final Logger LOGGER = MainRegistry.logger;
-	protected final ItemStack[] armorSlots = new ItemStack[4], myInventory = new ItemStack[16];
-	protected transient final List<ItemStack> previousStacks = new CacheList<ItemStack>(10);
+	protected final ItemStack[] equipmentSlots = new ItemStack[5], myInventory = new ItemStack[16];
+	protected final List<ItemStack> previousStacks = new CacheList<ItemStack>(10);
 	protected transient final ILocationProvider myLocation = ILocationProvider.wrap(this, false);
 	protected transient final Consumer<IChatComponent> worldChat;
 	protected transient final Function<String, IChatComponent> chatSupplier = ChatComponentText::new;
+	protected transient AxisAlignedBB spotBox, proximityBox;
 	protected NPCTask currentTask = NPCTask.HOLD;
 	protected boolean isSquadLeader, isSolo;
 	protected SquadBase squad;
+	protected String name, squadName;
 	protected int regenTimer, mainRoFCooldown, reloadTimer, altRoFCooldown, mainMagAmmo, mainAmmo, altAmmo;
 	protected boolean isSneaking = false;
-	public EntitySmartNPCBase(World world, SquadBase squad)
+	
+	public EntitySmartNPCBase(World world)
+	{
+		this(world, null, "", "");// TODO
+	}
+	
+	public EntitySmartNPCBase(World world, SquadBase squad, String name, String squadName)
 	{
 		super(world);
 		this.squad = squad;
+		this.name = name;
+		this.squadName = squadName;
+		
 		worldChat = MinecraftServer.getServer().getConfigurationManager()::sendChatMsg;
 		regenTimer = regenDelay();
 		func_110163_bv();
 		setCanPickUpLoot(true);
 		preventEntitySpawning = true;
 		setSize(getWidth(), getHeight());
+		initializeAI();
+		spotBox = AxisAlignedBB.getBoundingBox(posX + spotDistance(), posY + spotDistance(), posZ + spotDistance(), posX - spotDistance(), posY - spotDistance(), posZ - spotDistance());
+		proximityBox = AxisAlignedBB.getBoundingBox(posX + proximityDistance(), posY + proximityDistance(), posZ + proximityDistance(), posX - proximityDistance(), posY - proximityDistance(), posZ - proximityDistance());
+		
+		if (squad != null)
+			squad.addMember(this);
+		
+		LOGGER.info("Spawned SNPC:\n" + toDisplay());
 	}
 	
 	/// Basic behavior and details
 	public abstract float getWidth();
 	public abstract float getHeight();
-	@Override
-	public abstract ItemStack getHeldItem();
 	/**
 	 * Replace the held item with something else.
 	 * @param stack The new ItemStack or null.
 	 */
 	public abstract void overrideHeldItem(@Nullable ItemStack stack);
+	@Override
+	protected abstract int getExperiencePoints(EntityPlayer player);
 	/**
 	 * The max distance this NPC can see and spot targets.
 	 * @return An integer for the distance this NPC can detect targets.
@@ -200,6 +222,8 @@ public abstract class EntitySmartNPCBase extends EntityCreature implements IEnti
 	public abstract boolean isOmniscient();
 	protected abstract void initializeAI();
 	protected abstract void resetAI();
+	protected abstract boolean usesCasings();
+	protected abstract SpentCasingConfig casingConfig();
 	
 	/// Squad and smart behavior
 	/**Non-specific behavior when not in combat, implementation is allowed to vary.**/
@@ -209,6 +233,11 @@ public abstract class EntitySmartNPCBase extends EntityCreature implements IEnti
 	 * @param entity The entity in question.
 	 */
 	public abstract void onNewSpotting(EntityLivingBase entity);
+	/**
+	 * When the NPC is engaging a target.
+	 * @param entity The entity in question.
+	 */
+	public abstract void onBeginAttack(EntityLivingBase entity);
 	/**
 	 * An enemy is in cover.
 	 * @param entity The entity in cover.
@@ -224,7 +253,8 @@ public abstract class EntitySmartNPCBase extends EntityCreature implements IEnti
 	 * When this NPC successfully kills an enemy.
 	 * @param entity The killed entity.
 	 */
-	public abstract void onKilledEnemy(EntityLivingBase entity);
+	@Override
+	public abstract void onKillEntity(EntityLivingBase entity);
 	/**
 	 * When a previously unspotted player (enemy) is seen.
 	 * @param player The player in question.
@@ -335,6 +365,10 @@ public abstract class EntitySmartNPCBase extends EntityCreature implements IEnti
 	public void onLivingUpdate()
 	{
 		super.onLivingUpdate();
+//		setDead();
+		if (hasSquad())
+			squad.update();
+		
 		if (regenAmount() > 0)
 		{
 			if (regenTimer > 0)
@@ -387,14 +421,24 @@ public abstract class EntitySmartNPCBase extends EntityCreature implements IEnti
 		return true;
 	}
 	
+	public void refreshSpottingBox()
+	{
+		spotBox = AxisAlignedBB.getBoundingBox(posX + spotDistance(), posY + spotDistance(), posZ + spotDistance(), posX - spotDistance(), posY - spotDistance(), posZ - spotDistance());
+	}
+	
 	public AxisAlignedBB getSpottingBox()
 	{
-		return AxisAlignedBB.getBoundingBox(posX + spotDistance(), posY + spotDistance(), posZ + spotDistance(), posX - spotDistance(), posY - spotDistance(), posZ - spotDistance());
+		return spotBox;
+	}
+	
+	public void refreshProximityBox()
+	{
+		proximityBox = AxisAlignedBB.getBoundingBox(posX + proximityDistance(), posY + proximityDistance(), posZ + proximityDistance(), posX - proximityDistance(), posY - proximityDistance(), posZ - proximityDistance());
 	}
 	
 	public AxisAlignedBB getProximityBox()
 	{
-		return AxisAlignedBB.getBoundingBox(posX + proximityDistance(), posY + proximityDistance(), posZ + proximityDistance(), posX - proximityDistance(), posY - proximityDistance(), posZ - proximityDistance());
+		return proximityBox;
 	}
 	
 	@Beta
@@ -416,10 +460,14 @@ public abstract class EntitySmartNPCBase extends EntityCreature implements IEnti
 			mainMagAmmo -= gunConfiguration.roundsPerCycle;
 			
 			for (int i = 0; i < amountToFire; i++)
-				worldObj.spawnEntityInWorld(new EntityBulletBase(worldObj, key, this));
+				worldObj.spawnEntityInWorld(new EntityBulletBase(worldObj, key, this, getAttackTarget(), 1, 0));
+			
+			if (usesCasings() && !casingConfig().isAfterReload())
+				ParticleUtil.spawnCasing(getMyLocation(), casingConfig(), (float) Math.toRadians(rotationPitch), (float) Math.toRadians(rotationYaw), getEyeHeight(), isSneaking);
 		}
 	}
 	
+	@Override
 	public SquadBase getSquad()
 	{
 		return squad;
@@ -431,9 +479,27 @@ public abstract class EntitySmartNPCBase extends EntityCreature implements IEnti
 		this.squad = squad;
 	}
 	
+	@Override
+	public ItemStack getHeldItem()
+	{
+		return equipmentSlots[0];
+	}
+	
+	@Override
+	public ItemStack getEquipmentInSlot(int slot)
+	{
+		return equipmentSlots[slot];
+	}
+	
+	@Override
+	public void setCurrentItemOrArmor(int slot, ItemStack stack)
+	{
+		equipmentSlots[slot] = stack;
+	}
+	
 	public ItemStack[] getArmorSlots()
 	{
-		return armorSlots;
+		return Arrays.copyOfRange(equipmentSlots, 1, 5);
 	}
 	
 	public NPCTask getCurrentTask()
@@ -465,21 +531,15 @@ public abstract class EntitySmartNPCBase extends EntityCreature implements IEnti
 	{
 		return myLocation;
 	}
-	
-	@Override
-	public ItemStack getEquipmentInSlot(int slot)
-	{
-		return slot == 0 ? getHeldItem() : armorSlots[slot];
-	}
 
-	@Override
-	public void setCurrentItemOrArmor(int slot, ItemStack stack)
-	{
-		if (slot == 0)
-			overrideHeldItem(stack);
-		else
-			armorSlots[slot] = stack;
-	}
+//	@Override
+//	public void setCurrentItemOrArmor(int slot, ItemStack stack)
+//	{
+//		if (slot == 0)
+//			overrideHeldItem(stack);
+//		else
+//			armorSlots[slot] = stack;
+//	}
 
 	@Override
 	public ItemStack[] getLastActiveItems()
@@ -492,13 +552,32 @@ public abstract class EntitySmartNPCBase extends EntityCreature implements IEnti
 		return isDead || getHealth() <= 0;
 	}
 	
+//	@Override
+//	@OverridingMethodsMustInvokeSuper
+//	public void writeToNBT(NBTTagCompound nbt)
+//	{
+//		super.writeToNBT(nbt);
+//		writeEntityToNBT(nbt);
+//	}
+//	
+//	@Override
+//	@OverridingMethodsMustInvokeSuper
+//	public void readFromNBT(NBTTagCompound nbt)
+//	{
+//		super.readFromNBT(nbt);
+//		readEntityFromNBT(nbt);
+//	}
+//	
 	@Override
 	@OverridingMethodsMustInvokeSuper
 	public void writeEntityToNBT(NBTTagCompound nbt)
 	{
 		super.writeEntityToNBT(nbt);
-		nbt.setByteArray("armorSlots", ItemStackSerialization.serializeArray(armorSlots));
+		nbt.setByteArray("armorSlots", ItemStackSerialization.serializeArray(equipmentSlots));
 		nbt.setByteArray("lastItems", ItemStackSerialization.serializeArray(previousStacks.toArray(new ItemStack[previousStacks.size()])));
+		nbt.setByteArray("inventory", ItemStackSerialization.serializeArray(myInventory));
+		nbt.setString("name", name);
+		nbt.setString("squadName", squadName);
 		nbt.setByte("task", (byte) currentTask.ordinal());
 		nbt.setBoolean("isLeader", isSquadLeader);
 		nbt.setBoolean("isSolo", isSolo);
@@ -520,15 +599,20 @@ public abstract class EntitySmartNPCBase extends EntityCreature implements IEnti
 		try
 		{
 			final ItemStack[] savedArmorSlots = ItemStackSerialization.deserializeItemStacks(nbt.getByteArray("armorSlots")),
-					lastStacks = ItemStackSerialization.deserializeItemStacks(nbt.getByteArray("lastItems"));
+							  lastStacks = ItemStackSerialization.deserializeItemStacks(nbt.getByteArray("lastItems")),
+							  inventoryStacks = ItemStackSerialization.deserializeItemStacks(nbt.getByteArray("inventory"));
 			for (byte i = 0; i < 4; i++)
-				armorSlots[i] = savedArmorSlots[i];
+				equipmentSlots[i] = savedArmorSlots[i];
+			for (byte i = 0; i < 16; i++)
+				myInventory[i] = inventoryStacks[i];
 			previousStacks.clear();
-			previousStacks.addAll(Arrays.asList(lastStacks));
+			Collections.addAll(previousStacks, lastStacks);
 		} catch (DeserializationException e)
 		{
 			LOGGER.catching(e);
 		}
+		name = nbt.getString("name");
+		squadName = nbt.getString("squadName");
 		currentTask = NPCTask.values()[nbt.getByte("task")];
 		isSquadLeader = nbt.getBoolean("isLeader");
 		isSolo = nbt.getBoolean("isSolo");
@@ -544,7 +628,7 @@ public abstract class EntitySmartNPCBase extends EntityCreature implements IEnti
 	
 	protected void say(String string)
 	{
-		worldChat.accept(chatSupplier.apply(string));
+		worldChat.accept(chatSupplier.apply('[' + getSquadName() + ": " + string + ']'));
 	}
 	
 	@Override
@@ -554,6 +638,6 @@ public abstract class EntitySmartNPCBase extends EntityCreature implements IEnti
 		if (hasFaction())
 			getFaction().getRegisteredNames().remove(getName());
 		if (hasSquad())
-			getSquad().getRegisteredNames().remove(getMySquadName());
+			getSquad().getRegisteredNames().remove(getSquadName());
 	}
 }

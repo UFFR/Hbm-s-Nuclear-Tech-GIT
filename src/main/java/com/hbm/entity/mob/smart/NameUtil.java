@@ -1,5 +1,6 @@
 package com.hbm.entity.mob.smart;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Random;
@@ -9,7 +10,7 @@ import com.hbm.lib.Library;
 import com.hbm.main.MainRegistry;
 
 /**
- * Utility method for generating names for faction NPCs.
+ * Utility class for generating names for faction NPCs.
  * @author UFFR
  *
  */
@@ -42,6 +43,7 @@ public class NameUtil
 														"Stab", "Spear", "Striker", "Dagger"},
 								  COMBINE_SKYSHIELD_NAMES = {"Ghost", "Reaper", "Nomad", "Hurricane", "Phantom", "Judge",
 										  					"Shadow", "Slam", "Stinger", "Storm", "Vamp", "Winder", "Star"};
+//								  COMBINE_SQUADS = {"Apex", "Boomer", "Helix", "Ice", "Ion", "Nova", "Slam", "Spear", "Storm"};
 	private static final HashSet<Character> MIDDLE_INITIALS = new HashSet<Character>();
 	private static final Random RANDOM = new Random();
 	static
@@ -92,7 +94,16 @@ public class NameUtil
 	 */
 	public static String generateLunarName()
 	{
-		return Integer.toHexString(RANDOM.nextInt()).toUpperCase();
+		final StringBuilder builder = new StringBuilder(8);
+		final String name = Integer.toHexString(RANDOM.nextInt() & 0xffffffff).toUpperCase();
+		if (name.length() < 8)
+		{
+			final char[] padding = new char[8 - name.length()];
+			Arrays.fill(padding, '0');
+			builder.append(padding);
+		}
+		builder.append(name);
+		return builder.toString();
 	}
 	
 	/**
@@ -112,6 +123,7 @@ public class NameUtil
 		} while (defined.contains(name) && iterations++ < failSafe);
 		if (defined.contains(name))
 			MainRegistry.logger.warn("Failed to generate unique NPC name because loop ran for " + iterations + " iterations, which is or exceeds the set fail safe parameter.");
+//		System.out.println(name);
 		return name;
 	}
 }

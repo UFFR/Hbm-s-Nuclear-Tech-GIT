@@ -950,7 +950,7 @@ public class ModEventHandlerClient {
 			}
 		}
 		
-		if (event.entity instanceof IEntityDataProvider)
+		if (event.entity instanceof IEntityDataProvider && event.entity.getDistanceSqToEntity(player) < 25)
 			RenderOverhead.renderTag(event.entity, event.x, event.y, event.z, event.renderer, player.isSneaking() ? ((IEntityDataProvider) event.entity).toDisplay() : ((IEntityDataProvider) event.entity).toDisplayShort(), true);
 	}
 	

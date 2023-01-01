@@ -25,4 +25,13 @@ public abstract class EntityAISmartBase extends EntityAIBase
  	@Override
  	public abstract boolean equals(Object obj);
 	
+ 	public EntitySmartNPCBase getHost()
+	{
+		return host;
+	}
+ 	
+ 	public ILocationProvider getHostLocation()
+	{
+		return hostLocation;
+	}
 }

@@ -42,8 +42,7 @@ public class CacheList<E> extends ArrayList<E>
 	{
 		super.addAll(c);
 		if (size() > maxSize)
-			for (int i = 0; i < size() - maxSize; i++)
-				remove(0);
+			removeRange(0, size() - maxSize);
 		return true;
 	}
 	
@@ -52,8 +51,7 @@ public class CacheList<E> extends ArrayList<E>
 	{
 		super.addAll(index, c);
 		if (size() > maxSize)
-			for (int i = 0; i < size() - maxSize; i++)
-				remove(0);
+			removeRange(0, size() - maxSize);
 		return true;
 	}
 }

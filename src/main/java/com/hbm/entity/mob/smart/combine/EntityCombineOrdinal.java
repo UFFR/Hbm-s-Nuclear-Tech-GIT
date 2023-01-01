@@ -2,23 +2,30 @@ package com.hbm.entity.mob.smart.combine;
 
 import java.util.List;
 
+import com.hbm.entity.mob.ai.snpc.EntityAIRangePrimaryAttack;
+import com.hbm.entity.mob.ai.squad.CombineSpecialSquad;
 import com.hbm.entity.mob.ai.squad.SquadBase;
 import com.hbm.entity.mob.smart.EntitySmartNPCBase;
 import com.hbm.entity.mob.smart.NPCTask;
+import com.hbm.entity.mob.smart.NameUtil;
 import com.hbm.entity.mob.smart.combine.CombineCommandoSoundUtil.LineCategory;
 import com.hbm.entity.mob.smart.combine.CombineCommandoSoundUtil.UnitType;
 import com.hbm.entity.mob.smart.combine.CombineCommandoSoundUtil.VoiceLine;
+import com.hbm.faction.Factions;
 import com.hbm.handler.BulletConfiguration;
 import com.hbm.handler.GunConfiguration;
 import com.hbm.handler.guncfg.GunOSIPRFactory;
 import com.hbm.interfaces.ILocationProvider;
 import com.hbm.items.ItemAmmoEnums.AmmoHandGrenade;
 import com.hbm.items.ModItems;
+import com.hbm.particle.SpentCasingConfig;
 import com.hbm.render.entity.mob.DeathPose;
+import com.hbm.util.ParticleUtil;
 
 import api.hbm.faction.EnumRank;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -26,19 +33,27 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-public class EntityCombineOrdinal extends EntityCombineBase
+public class EntityCombineOrdinal extends EntityCombineCommando
 {
 	private static final int[] FRONT_ARMOR = {3, 25, 5, 2}, BACK_ARMOR = {3, 15, 2, 2};
+	
+	public EntityCombineOrdinal(World world)
+	{
+		this(world, new CombineSpecialSquad(world));
+	}
+	
 	public EntityCombineOrdinal(World world, SquadBase squad, String name)
 	{
-		super(world, squad, name);
-		heldGun = new ItemStack(ModItems.gun_osipr);
+		super(world, squad == null ? new CombineSpecialSquad(world) : squad, name, "Ordinal");
+		setCurrentItemOrArmor(0, new ItemStack(ModItems.gun_osipr));
 	}
 
 	public EntityCombineOrdinal(World world, SquadBase squad)
 	{
-		super(world, squad);
-		heldGun = new ItemStack(ModItems.gun_osipr);
+		super(world, squad == null ? new CombineSpecialSquad(world) : squad,
+				NameUtil.generateNameFromDefined(NameUtil::generateCombineName, Factions.COMBINE.getRegisteredNames(), Short.MAX_VALUE), "Ordinal");
+		
+		setCurrentItemOrArmor(0, new ItemStack(ModItems.gun_osipr));
 	}
 	
 	@Override
@@ -47,27 +62,32 @@ public class EntityCombineOrdinal extends EntityCombineBase
 		super.applyEntityAttributes();
 		getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(20);
 		getEntityAttribute(SharedMonsterAttributes.followRange).setBaseValue(64);
-		getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(0.5);
+		getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(0.55);
+		getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(0.3);
 		
 		getAttributeMap().registerAttribute(SharedMonsterAttributes.attackDamage).setBaseValue(4);
 	}
-
+	
 	@Override
-	public String getSquadName()
+	protected int getExperiencePoints(EntityPlayer player)
 	{
-		return squad.getName();
+		return 20;
 	}
-
+	
 	@Override
-	public String getMySquadName()
+	public void onLivingUpdate()
 	{
-		return "Ordinal";
+		super.onLivingUpdate();
+//		if (name == null)
+//			name = NameUtil.generateNameFromDefined(NameUtil::generateCombineName, Factions.COMBINE.getRegisteredNames(), Short.MAX_VALUE);
+//		if (squadName == null)
+//			squadName = "Ordinal";
 	}
 
 	@Override
 	public EnumRank getRank()
 	{
-		return EnumRank.SERGEANT_FCLASS;
+		return EnumRank.SERGEANT;
 	}
 
 	@Override
@@ -143,15 +163,9 @@ public class EntityCombineOrdinal extends EntityCombineBase
 	}
 
 	@Override
-	public ItemStack getHeldItem()
-	{
-		return heldGun;
-	}
-	
-	@Override
 	public void overrideHeldItem(ItemStack stack)
 	{
-		LOGGER.debug("This NPC is not designed to have its held item be overridden.");
+		LOGGER.debug("This NPC is not designed to have its held item be overridden, cannot comply.");
 	}
 
 	@Override
@@ -268,7 +282,9 @@ public class EntityCombineOrdinal extends EntityCombineBase
 	public void reload()
 	{
 		// TODO Auto-generated method stub
-		say("Reloading...");
+		say("Provisions low, reloading...");
+		mainMagAmmo = 30;
+		ParticleUtil.spawnCasing(getMyLocation(), casingConfig(), (float) Math.toRadians(rotationPitch), (float) Math.toRadians(rotationYaw), getEyeHeight(), isSneaking);
 	}
 
 	@Override
@@ -285,6 +301,9 @@ public class EntityCombineOrdinal extends EntityCombineBase
 		getNavigator().setCanSwim(true);
 		getNavigator().setEnterDoors(true);
 		getNavigator().setBreakDoors(true);
+		
+		tasks.addTask(2, new EntityAIRangePrimaryAttack(this, getAIMoveSpeed(), 1, 5));
+		tasks.addTask(3, new EntityAIWander(this, getAIMoveSpeed() * 0.75));
 	}
 	
 	@Override
@@ -293,12 +312,25 @@ public class EntityCombineOrdinal extends EntityCombineBase
 		tasks.taskEntries.clear();
 		targetTasks.taskEntries.clear();
 	}
+	
+	@Override
+	protected boolean usesCasings()
+	{
+		return true;
+	}
+	
+	@Override
+	protected SpentCasingConfig casingConfig()
+	{
+		return GunOSIPRFactory.CASING_AR2;
+	}
 
 	@Override
 	public void onIdle()
 	{
 		// TODO Auto-generated method stub
 		say("Idling...");
+		worldObj.playSoundAtEntity(this, CombineCommandoSoundUtil.generateVoiceLine(UnitType.ORDINAL, CombineCommandoSoundUtil.randomLine(LineCategory.IDLE)), 1, 1);
 	}
 
 	@Override
@@ -311,8 +343,18 @@ public class EntityCombineOrdinal extends EntityCombineBase
 			say("Outbreak.");
 		else
 			say("Visual on exogen.");
+		
+		if (getAttackTarget() == null)
+			setAttackTarget(entity);
 	}
 
+	@Override
+	public void onBeginAttack(EntityLivingBase entity)
+	{
+		// TODO Auto-generated method stub
+		say("Applying pressure...");
+	}
+	
 	@Override
 	public void notifyEnemyInCover(EntityLivingBase entity, ILocationProvider loc)
 	{
@@ -328,10 +370,15 @@ public class EntityCombineOrdinal extends EntityCombineBase
 	}
 
 	@Override
-	public void onKilledEnemy(EntityLivingBase entity)
+	public void onKillEntity(EntityLivingBase entity)
 	{
 		// TODO Auto-generated method stub
-		say("Kill confirmed.");
+		if (entity instanceof EntityPlayer)
+			onKilledPlayer((EntityPlayer) entity);
+		else if (entity.isEntityUndead())
+			say("Tag one necrotic.");
+		else
+			say("Kill confirmed.");
 	}
 
 	@Override
@@ -352,7 +399,7 @@ public class EntityCombineOrdinal extends EntityCombineBase
 	public void onKilledPlayer(EntityPlayer player)
 	{
 		// TODO Auto-generated method stub
-		say("HVT is contained.");
+		say("Overwatch, HVT is contained.");
 	}
 
 	@Override
@@ -408,7 +455,7 @@ public class EntityCombineOrdinal extends EntityCombineBase
 	public void onSquadMemberAlmostDead(EntitySmartNPCBase entity)
 	{
 		// TODO Auto-generated method stub
-		say("Medical assist on " + entity.getMySquadName() + '.');
+		say("Medical assist on " + entity.getSquadName() + '.');
 	}
 
 	@Override
@@ -509,7 +556,8 @@ public class EntityCombineOrdinal extends EntityCombineBase
 	@Override
 	protected String getLivingSound()
 	{
-		return CombineCommandoSoundUtil.generateVoiceLine(UnitType.ORDINAL, CombineCommandoSoundUtil.randomLine(LineCategory.IDLE));
+//		return CombineCommandoSoundUtil.generateVoiceLine(UnitType.ORDINAL, CombineCommandoSoundUtil.randomLine(LineCategory.IDLE));
+		return null;
 	}
 
 	@Override
@@ -524,11 +572,4 @@ public class EntityCombineOrdinal extends EntityCombineBase
 	{
 		return CombineCommandoSoundUtil.generateVoiceLine(UnitType.ORDINAL, VoiceLine.DEATH);
 	}
-	
-	@Override
-	protected void say(String string)
-	{
-		super.say("[Ordinal: " + string + ']');
-	}
-
 }

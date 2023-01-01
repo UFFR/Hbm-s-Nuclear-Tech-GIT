@@ -3,16 +3,11 @@ package com.hbm.entity.mob.ai.squad;
 import java.util.Objects;
 
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.nbt.NBTTagCompound;
 
 public class DelegatedEntityStats extends EntityStats
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -7241716187372205945L;
-	private transient EntityLivingBase delegate;
 	private boolean lostContact = false;
-	private int sinceLastContact = 0;
 	public DelegatedEntityStats(EntityLivingBase entity)
 	{
 		super(entity);
@@ -52,33 +47,12 @@ public class DelegatedEntityStats extends EntityStats
 	}
 
 	@Override
-	public boolean isStillFull()
-	{
-		return getHealthPercentage() >= 0.8f;
-	}
-
-	@Override
-	public boolean isInjured()
-	{
-		return getHealthPercentage() <= 0.5f;
-	}
-
-	@Override
-	public boolean isAlmostDead()
-	{
-		return getHealthPercentage() <= 0.2f;
-	}
-
-	@Override
-	public int timeSinceLastContact()
-	{
-		return sinceLastContact;
-	}
-
-	@Override
 	public int hashCode()
 	{
-		return Objects.hash(delegate, lostContact, sinceLastContact);
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(lostContact);
+		return result;
 	}
 
 	@Override
@@ -86,11 +60,12 @@ public class DelegatedEntityStats extends EntityStats
 	{
 		if (this == obj)
 			return true;
+		if (!super.equals(obj))
+			return false;
 		if (!(obj instanceof DelegatedEntityStats))
 			return false;
 		final DelegatedEntityStats other = (DelegatedEntityStats) obj;
-		return delegateID == other.delegateID && lostContact == other.lostContact
-				&& sinceLastContact == other.sinceLastContact;
+		return lostContact == other.lostContact;
 	}
 
 	@Override
@@ -101,6 +76,20 @@ public class DelegatedEntityStats extends EntityStats
 				.append(", sinceLastContact=").append(sinceLastContact).append(", delegateID=").append(delegateID)
 				.append(']');
 		return builder.toString();
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound nbt)
+	{
+		super.writeToNBT(nbt);
+		nbt.setBoolean("lostContact", lostContact);
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound nbt)
+	{
+		super.readFromNBT(nbt);
+		lostContact = nbt.getBoolean("lostContact");
 	}
 
 }

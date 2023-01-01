@@ -20,7 +20,7 @@ public class ItemStackSerialization
 	public static byte[] serializeStack(@Nullable ItemStack stack)
 	{
 		final ByteBuf buf = ISerializable.alloc.get();
-		if (stack != null)
+		if (stack != null && stack.getItem() != null)
 		{
 			final byte[] registry = Item.itemRegistry.getNameForObject(stack.getItem()).getBytes();
 			buf.writeInt(registry.length);
@@ -58,7 +58,7 @@ public class ItemStackSerialization
 		try
 		{
 			final ByteBuf buf = ISerializable.allocCopy.apply(bytes);
-			if (buf.capacity() == 0)
+			if (buf.capacity() == 0 || bytes.length == 0)
 				return null;
 			final byte[] nameBytes, nbtBytes;
 			final String name;

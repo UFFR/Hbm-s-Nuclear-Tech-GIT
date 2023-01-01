@@ -20,6 +20,7 @@ import com.hbm.interfaces.ILocationProvider;
 import com.hbm.interfaces.Spaghetti;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.items.ModItems;
+import com.hbm.main.DeserializationException;
 import com.hbm.tileentity.TileEntityProxyBase;
 import com.hbm.tileentity.TileEntityProxyInventory;
 import com.hbm.tileentity.conductor.TileEntityFluidDuctSimple;
@@ -35,6 +36,8 @@ import api.hbm.energy.IEnergyConnectorBlock;
 import api.hbm.fluid.IFluidConnector;
 import api.hbm.fluid.IFluidConnectorBlock;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -127,6 +130,37 @@ public class Library {
 		final List<T> newList = listWithoutDuplicates(list);
 		list.clear();
 		list.addAll(newList);
+	}
+	
+	public static byte[] serializeStringCollection(Collection<String> strings)
+	{
+		final ByteBuf buf = Unpooled.buffer();
+		buf.writeByte(strings.size());
+		for (String string : strings)
+			buf.writeInt(string.length()).writeBytes(string.getBytes());
+		return buf.array();
+	}
+	
+	public static Collection<String> deserializeStringCollection(byte[] bytes) throws DeserializationException
+	{
+		try
+		{
+			final ByteBuf buf = Unpooled.copiedBuffer(bytes);
+			final List<String> strings = new ArrayList<String>();
+			final int size = buf.readInt();
+			
+			for (int i = 0; i < size; i++)
+			{
+				final byte[] stringBytes = new byte[buf.readInt()];
+				buf.readBytes(stringBytes);
+				strings.add(new String(stringBytes));
+			}
+			
+			return strings;
+		} catch (Exception e)
+		{
+			throw new DeserializationException(e);
+		}
 	}
 	
 	/*

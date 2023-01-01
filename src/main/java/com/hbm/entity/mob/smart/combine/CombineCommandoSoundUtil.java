@@ -1,12 +1,25 @@
 package com.hbm.entity.mob.smart.combine;
 
+import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.Map;
 import java.util.Set;
 
 import com.hbm.lib.Library;
 
 public class CombineCommandoSoundUtil
 {
+	static final Map<LineCategory, Set<VoiceLine>> CATEGORY_MAP = new EnumMap<>(LineCategory.class);
+	
+	static
+	{
+		for (LineCategory category : LineCategory.values())
+			CATEGORY_MAP.put(category, EnumSet.noneOf(VoiceLine.class));
+		
+		for (VoiceLine line : VoiceLine.values())
+			CATEGORY_MAP.get(line.category).add(line);
+	}
+	
 	/**
 	 * Each type of unit has different recorded lines, but the contents are roughly the same.<br>
 	 * {@link #APF} {@link #ECHO} {@link #ORDINAL} {@link #WALLHAMMER}
@@ -41,7 +54,7 @@ public class CombineCommandoSoundUtil
 		TAUNT,
 		/**When none of the above apply**/
 		MISC;
-		final Set<VoiceLine> lines = EnumSet.noneOf(VoiceLine.class);
+//		final Set<VoiceLine> lines = EnumSet.noneOf(VoiceLine.class);
 	}
 	/**
 	 * Most units have the same voice lines, but check first.<br>
@@ -126,21 +139,20 @@ public class CombineCommandoSoundUtil
 		/**"Copy that, no sector containment, no confirmation on target 1 vector. Waiting for seconday parameter codes"**/
 		WAITING_FOR_CODES(LineCategory.IDLE),
 		/**"Sending vicerator to Apex 5, we have biotics at the perimeter, over"**/
-		WAITING_FOR_CONTAICT(LineCategory.IDLE);
+		WAITING_FOR_CONTACT(LineCategory.IDLE);
 		public final LineCategory category;
 		private VoiceLine(LineCategory cat)
 		{
 			category = cat;
-			cat.lines.add(this);
 		}
 	}
 
 	public static String generateVoiceLine(UnitType type, VoiceLine line)
 	{
 		if (line.category == LineCategory.MISC)
-			return String.format("entity.cmb.%s.%s", type.toString().toLowerCase(), line.toString().toLowerCase());
+			return String.format("hbm:entity.cmb.%s.%s", type.toString().toLowerCase(), line.toString().toLowerCase());
 		else
-			return String.format("entity.cmb.%s.%s.%s", type.toString().toLowerCase(), line.category.toString().toLowerCase(), line.toString().toLowerCase());
+			return String.format("hbm:entity.cmb.%s.%s.%s", type.toString().toLowerCase(), line.category.toString().toLowerCase(), line.toString().toLowerCase());
 	}
 	/**
 	 * Get a random line from a category (use with the appropriate category, such as idle)
@@ -149,6 +161,7 @@ public class CombineCommandoSoundUtil
 	 */
 	public static VoiceLine randomLine(LineCategory cat)
 	{
-		return Library.randomFromCollection(cat.lines);
+		CATEGORY_MAP.putIfAbsent(cat, EnumSet.noneOf(VoiceLine.class));
+		return Library.randomFromCollection(CATEGORY_MAP.get(cat));
 	}
 }

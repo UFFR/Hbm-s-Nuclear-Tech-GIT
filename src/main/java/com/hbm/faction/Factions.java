@@ -2,10 +2,14 @@ package com.hbm.faction;
 
 import java.util.List;
 
+import com.hbm.entity.mob.smart.combine.EntityCombineBase;
 import com.hbm.interfaces.ILocationProvider;
 
 import api.hbm.faction.Faction;
 import api.hbm.faction.SquadBuilder;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.IMob;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 public class Factions
@@ -40,6 +44,18 @@ public class Factions
 			{
 				// TODO Auto-generated method stub
 				return null;
+			}
+			
+			@Override
+			public boolean isValidTarget(EntityLivingBase entity)
+			{
+				// TODO Auto-generated method stub
+				if (entity instanceof EntityPlayer && !((EntityPlayer) entity).capabilities.isCreativeMode)
+					return true;
+				if (entity.isEntityUndead() || entity instanceof IMob && !(entity instanceof EntityCombineBase))
+					return true;
+				
+				return false;
 			}
 			
 			@Override
