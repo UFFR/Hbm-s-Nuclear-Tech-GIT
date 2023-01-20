@@ -2,18 +2,22 @@ package com.hbm.interfaces;
 
 import com.hbm.main.DeserializationException;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import bytes.ByteSequence;
 
 public interface IByteSerializable
 {
-	public void writeToBytes(ByteBuf buf);
-	public void readFromBytes(byte[] bytes) throws DeserializationException;
+	public void writeToBytes(ByteSequence buf);
+	public void readFromBytes(ByteSequence buf) throws DeserializationException;
 	
 	public default byte[] writeToBytes()
 	{
-		final ByteBuf buf = Unpooled.buffer();
+		final ByteSequence buf = ByteSequence.allocate(true);
 		writeToBytes(buf);
 		return buf.array();
+	}
+	
+	public default void readFromBytes(byte[] bytes) throws DeserializationException
+	{
+		readFromBytes(ByteSequence.wrapReadOnly(bytes));
 	}
 }

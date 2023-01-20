@@ -1,76 +1,49 @@
 package com.hbm.faction;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.hbm.entity.mob.smart.combine.EntityCombineBase;
-import com.hbm.interfaces.ILocationProvider;
+import com.google.common.collect.ImmutableMap;
 
 import api.hbm.faction.Faction;
-import api.hbm.faction.SquadBuilder;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 public class Factions
 {
-	public static Faction COMBINE;
+	private static final Map<String, Faction> FACTION_MAP = new HashMap<String, Faction>();
 	
-	public static void initialize(World world)
+	static Faction COMBINE;
+	
+	public static void initialize()
 	{
-		COMBINE = new Faction("cmb", world)
-		{
-			
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
+		COMBINE = registerFaction(FactionCombine.getCombine());
+		
+	}
+	
+	public static void prepare(World world)
+	{
+		for (Faction faction : FACTION_MAP.values())
+			faction.setWorld(world);
+	}
+	
+	private static Faction registerFaction(Faction faction)
+	{
+		FACTION_MAP.put(faction.getRegistryName(), faction);
+		return faction;
+	}
+	
+	public static void updateFactions()
+	{
+		FACTION_MAP.values().forEach(Faction::update);
+	}
 
-			@Override
-			public String toString()
-			{
-				return "The Combine";
-			}
-			
-			@Override
-			public int hashCode()
-			{
-				// TODO Auto-generated method stub
-				return 0;
-			}
-			
-			@Override
-			public List<SquadBuilder> getSquadBuilders()
-			{
-				// TODO Auto-generated method stub
-				return null;
-			}
-			
-			@Override
-			public boolean isValidTarget(EntityLivingBase entity)
-			{
-				// TODO Auto-generated method stub
-				if (entity instanceof EntityPlayer && !((EntityPlayer) entity).capabilities.isCreativeMode)
-					return true;
-				if (entity.isEntityUndead() || entity instanceof IMob && !(entity instanceof EntityCombineBase))
-					return true;
-				
-				return false;
-			}
-			
-			@Override
-			public boolean equals(Object obj)
-			{
-				// TODO Auto-generated method stub
-				return false;
-			}
-			
-			@Override
-			public void constructAndDeploySquad(ILocationProvider loc)
-			{
-				// TODO Auto-generated method stub
-				
-			}
-		};
+	public static Faction getFaction(String key)
+	{
+		return FACTION_MAP.get(key);
+	}
+	
+	public static Map<String, Faction> getFactionMap()
+	{
+		return ImmutableMap.copyOf(FACTION_MAP);
 	}
 }

@@ -12,8 +12,9 @@ import com.google.common.collect.Sets;
 import com.hbm.entity.mob.*;
 import com.hbm.entity.mob.botprime.*;
 import com.hbm.entity.mob.siege.*;
-import com.hbm.entity.mob.smart.EnumSpeciesType;
+import com.hbm.entity.mob.smart.combine.*;
 
+import api.hbm.entity.EnumSpeciesType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.*;
 import net.minecraft.entity.monster.*;
@@ -84,6 +85,8 @@ public class SpeciesRegistry
 		register(EntitySiegeUFO.class, AIRCRAFT);
 		register(EntitySlime.class, EnumSpeciesType.OTHER, EnumSpeciesType.YOUKAI);
 		register(EntityMagmaCube.class, EnumSpeciesType.INORGANIC, EnumSpeciesType.OTHER, EnumSpeciesType.YOUKAI);
+		
+		register(EntityCombineOrdinal.class, EnumSpeciesType.HUMANOID);
 	}
 	
 	@SafeVarargs

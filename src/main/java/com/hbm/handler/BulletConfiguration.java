@@ -3,6 +3,7 @@ package com.hbm.handler;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -19,6 +20,8 @@ import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.lib.ModDamageSource;
 import com.hbm.main.MainRegistry;
 
+import api.hbm.entity.IPenetratingProjectile;
+import api.hbm.entity.PenetrationModifierFunction;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
@@ -29,21 +32,6 @@ import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraft.util.EnumChatFormatting;
 
 public class BulletConfiguration implements Cloneable {
-	
-	@FunctionalInterface
-	public interface PenetrationModifierFunction
-	{
-		public double mod(int penetration, double modifier, double distance);
-	}
-	
-	/**
-	 * {@code m^(d / 50) * p}<br>
-	 * Penetration value = p<br>
-	 * Distance = d<br>
-	 * Modifier = m (default 0.95)<br>
-	 * Meaning, assuming the modifier is 0.95, the penetration will drop ~5% over 50 meters or be reduced to ~95% of the original value
-	 * **/
-	public static final PenetrationModifierFunction DEFAULT_FUNCTION = (pen, mod, dist) -> pen * Math.pow(mod, dist / 50);
 	
 	//what item this specific configuration consumes
 	public ComparableStack ammo;
@@ -87,7 +75,7 @@ public class BulletConfiguration implements Cloneable {
 	public double penetrationModifier = 0.95f;
 	/**The function that handles lost penetration over distance**/
 	@Nonnull
-	public Optional<PenetrationModifierFunction> modFunction = Optional.of(DEFAULT_FUNCTION);
+	public Optional<PenetrationModifierFunction> modFunction = Optional.of(IPenetratingProjectile.DEFAULT_FUNCTION);
 	
 	//whether or not the bullet should penetrate mobs
 	public boolean doesPenetrate;
@@ -151,6 +139,47 @@ public class BulletConfiguration implements Cloneable {
 	public boolean dmgExplosion = false;
 	public boolean dmgBypass = false;
 
+	public enum BulletStyle
+	{
+		NONE,
+		NORMAL,
+		PISTOL,
+		FLECHETTE,
+		PELLET,
+		BOLT,
+		FOLLY,
+		ROCKET,
+		STINGER,
+		NUKE,
+		MIRV,
+		GRENADE,
+		BF,
+		ORB,
+		METEOR,
+		BLADE,
+		BARREL;
+	}
+	
+	public enum BulletPlink
+	{
+		NONE,
+		BULLET,
+		GRENADE,
+		ENERGY,
+		SING;
+	}
+	
+	public enum BulletBolt
+	{
+		LACUNAE,
+		NIGHTMARE,
+		LASER,
+		ZOMG,
+		WORM,
+		GLASS_CYAN,
+		GLASS_BLUE;
+	}
+	
 	public static final int STYLE_NONE = -1;
 	public static final int STYLE_NORMAL = 0;
 	public static final int STYLE_PISTOL = 1;
@@ -257,6 +286,58 @@ public class BulletConfiguration implements Cloneable {
 		return dmg;
 	}
 	
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(HBRC, LBRC, ammo, ammoCount, blackPowder, blockDamage, bounceMod, bulletsMax, bulletsMin,
+				caustic, chatColour, chlorine, damageType, destroysBlocks, dischargePerShot, dmgBypass, dmgExplosion,
+				dmgFire, dmgMax, dmgMin, dmgProj, doesBreakGlass, doesPenetrate, doesRicochet, effects, emp, explosive,
+				firingRate, gravity, headshotMult, incendiary, instakill, isSpectral, jolt, leadChance, liveAfterImpact,
+				maxAge, modFunction, modeName, nuke, penetration, penetrationModifier, plink, rainbow, ricochetAngle,
+				shrapnel, spectralBlocks, spectralMaterials, spread, style, trail, vPFX, velocity, wear);
+	}
+	
+	
+	// TODO Kill Bob IRL
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (!(obj instanceof BulletConfiguration))
+			return false;
+		final BulletConfiguration other = (BulletConfiguration) obj;
+		return HBRC == other.HBRC && LBRC == other.LBRC && Objects.equals(ammo, other.ammo)
+				&& ammoCount == other.ammoCount && blackPowder == other.blackPowder && blockDamage == other.blockDamage
+				&& Double.doubleToLongBits(bounceMod) == Double.doubleToLongBits(other.bounceMod)
+				&& bulletsMax == other.bulletsMax && bulletsMin == other.bulletsMin && caustic == other.caustic
+				&& chatColour == other.chatColour && chlorine == other.chlorine
+				&& Objects.equals(damageType, other.damageType) && destroysBlocks == other.destroysBlocks
+				&& dischargePerShot == other.dischargePerShot && dmgBypass == other.dmgBypass
+				&& dmgExplosion == other.dmgExplosion && dmgFire == other.dmgFire
+				&& Float.floatToIntBits(dmgMax) == Float.floatToIntBits(other.dmgMax)
+				&& Float.floatToIntBits(dmgMin) == Float.floatToIntBits(other.dmgMin) && dmgProj == other.dmgProj
+				&& doesBreakGlass == other.doesBreakGlass && doesPenetrate == other.doesPenetrate
+				&& doesRicochet == other.doesRicochet && Objects.equals(effects, other.effects) && emp == other.emp
+				&& Float.floatToIntBits(explosive) == Float.floatToIntBits(other.explosive)
+				&& firingRate == other.firingRate
+				&& Double.doubleToLongBits(gravity) == Double.doubleToLongBits(other.gravity)
+				&& Float.floatToIntBits(headshotMult) == Float.floatToIntBits(other.headshotMult)
+				&& incendiary == other.incendiary && instakill == other.instakill && isSpectral == other.isSpectral
+				&& Double.doubleToLongBits(jolt) == Double.doubleToLongBits(other.jolt)
+				&& leadChance == other.leadChance && liveAfterImpact == other.liveAfterImpact && maxAge == other.maxAge
+				&& Objects.equals(modFunction, other.modFunction) && Objects.equals(modeName, other.modeName)
+				&& nuke == other.nuke && penetration == other.penetration
+				&& Double.doubleToLongBits(penetrationModifier) == Double.doubleToLongBits(other.penetrationModifier)
+				&& plink == other.plink && rainbow == other.rainbow
+				&& Double.doubleToLongBits(ricochetAngle) == Double.doubleToLongBits(other.ricochetAngle)
+				&& shrapnel == other.shrapnel && Objects.equals(spectralBlocks, other.spectralBlocks)
+				&& Objects.equals(spectralMaterials, other.spectralMaterials)
+				&& Float.floatToIntBits(spread) == Float.floatToIntBits(other.spread) && style == other.style
+				&& trail == other.trail && Objects.equals(vPFX, other.vPFX)
+				&& Float.floatToIntBits(velocity) == Float.floatToIntBits(other.velocity) && wear == other.wear;
+	}
+
 	@Override
 	public BulletConfiguration clone()
 	{

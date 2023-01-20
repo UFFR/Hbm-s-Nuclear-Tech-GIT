@@ -814,9 +814,6 @@ public class MainRegistry {
 		//new OreLayer(Blocks.coal_ore, 0.2F).setThreshold(4).setRangeMult(3).setYLevel(70);
 		
 		SuicideThreadDump.register();
-		
-		// TODO
-		Factions.initialize(Minecraft.getMinecraft().theWorld);
 	}
 
 	@EventHandler
@@ -859,7 +856,9 @@ public class MainRegistry {
 
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 		config.load();
-
+		
+		Factions.initialize();
+		
 		GeneralConfig.loadFromConfig(config);
 		WorldConfig.loadFromConfig(config);
 		MachineConfig.loadFromConfig(config);
@@ -870,6 +869,7 @@ public class MainRegistry {
 		WeaponConfig.loadFromConfig(config);
 		MobConfig.loadFromConfig(config);
 		StructureConfig.loadFromConfig(config);
+		FactionConfig.loadFromConfig(config);
 		
 		try {
 			if(GeneralConfig.enableThermosPreventer && Class.forName("thermos.Thermos") != null) {

@@ -7,8 +7,7 @@ import javax.annotation.Nullable;
 import com.google.common.annotations.Beta;
 import com.hbm.main.DeserializationException;
 
-import api.hbm.serialization.ISerializable;
-import io.netty.buffer.ByteBuf;
+import bytes.ByteSequence;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,7 +18,7 @@ public class ItemStackSerialization
 
 	public static byte[] serializeStack(@Nullable ItemStack stack)
 	{
-		final ByteBuf buf = ISerializable.alloc.get();
+		final ByteSequence buf = ByteSequence.allocate(true);
 		if (stack != null && stack.getItem() != null)
 		{
 			final byte[] registry = Item.itemRegistry.getNameForObject(stack.getItem()).getBytes();
@@ -40,7 +39,7 @@ public class ItemStackSerialization
 	
 	public static byte[] serializeArray(ItemStack... stacks)
 	{
-		final ByteBuf buf = ISerializable.alloc.get();
+		final ByteSequence buf = ByteSequence.allocate(true);
 		buf.writeInt(stacks.length);
 		
 		for (ItemStack stack : stacks)
@@ -57,8 +56,8 @@ public class ItemStackSerialization
 	{
 		try
 		{
-			final ByteBuf buf = ISerializable.allocCopy.apply(bytes);
-			if (buf.capacity() == 0 || bytes.length == 0)
+			final ByteSequence buf = ByteSequence.wrapReadOnly(bytes);
+			if (buf.getRemainingSize() == 0 || bytes.length == 0)
 				return null;
 			final byte[] nameBytes, nbtBytes;
 			final String name;
@@ -72,6 +71,9 @@ public class ItemStackSerialization
 			buf.readBytes(nameBytes);
 			name = new String(nameBytes);
 			item = (Item) Item.itemRegistry.getObject(name);
+			if (item == null)
+				throw new DeserializationException("Item from name [" + name + "] is null!");
+			
 			stackSize = buf.readInt();
 			meta = buf.readShort();
 			nbtSize = buf.readInt();
@@ -96,7 +98,7 @@ public class ItemStackSerialization
 		try
 		{
 			final ArrayList<ItemStack> stacks;
-			final ByteBuf buf = ISerializable.allocCopy.apply(bytes);
+			final ByteSequence buf = ByteSequence.wrapReadOnly(bytes);
 			final int count;
 			
 			count = buf.readInt();

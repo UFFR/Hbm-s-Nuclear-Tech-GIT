@@ -1,37 +1,33 @@
 package com.hbm.entity.mob.smart.combine;
 
 import com.hbm.entity.mob.ai.squad.SquadBase;
-import com.hbm.entity.mob.ai.squad.SquadSingle;
 import com.hbm.entity.mob.smart.EntitySmartNPCBase;
 import com.hbm.entity.mob.smart.NameUtil;
-import com.hbm.faction.Factions;
+import com.hbm.faction.FactionCombine;
+import com.hbm.handler.GunConfiguration;
+import com.hbm.handler.guncfg.GunOSIPRFactory;
+import com.hbm.util.I18nUtil;
 
 import api.hbm.faction.Faction;
-import net.minecraft.entity.IEntityLivingData;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 public abstract class EntityCombineBase extends EntitySmartNPCBase
 {
+	protected static final GunConfiguration OSIPR_CONFIG = GunOSIPRFactory.getOSIPRConfig(), OSIPR_ALT_CONFIG = GunOSIPRFactory.getAltConfig();
+	
 	public EntityCombineBase(World world, SquadBase squad, String name, String squadName)
 	{
 		super(world, squad, name, squadName);
 		this.name = name;
-		Factions.COMBINE.getRegisteredNames().add(name);
+		getFaction().getRegisteredNames().add(name);
 	}
 	
 	public EntityCombineBase(World world, SquadBase squad)
 	{
-		this(world, squad == null ? new SquadSingle(world) : squad,
-				NameUtil.generateNameFromDefined(NameUtil::generateCombineName, Factions.COMBINE.getRegisteredNames(), Short.MAX_VALUE),
+		this(world, squad,
+				NameUtil.generateNameFromDefined(NameUtil::generateCombineName, FactionCombine.getCombine().getRegisteredNames(), Short.MAX_VALUE),
 				squad == null ? NameUtil.generateCombineSquadName() : NameUtil.generateNameFromDefined(NameUtil::generateCombineSquadName, squad.getRegisteredNames(), NameUtil.MAX_COMBINE_SQUAD_NAMES));
-	}
-	
-	@Override
-	public IEntityLivingData onSpawnWithEgg(IEntityLivingData data)
-	{
-//		name = NameUtil.generateNameFromDefined(NameUtil::generateCombineName, Factions.COMBINE.getRegisteredNames(), Short.MAX_VALUE);
-		return super.onSpawnWithEgg(data);
 	}
 	
 	@Override
@@ -61,7 +57,7 @@ public abstract class EntityCombineBase extends EntitySmartNPCBase
 	@Override
 	public Faction getFaction()
 	{
-		return Factions.COMBINE;
+		return FactionCombine.getCombine();
 	}
 	
 	@Override
@@ -69,26 +65,22 @@ public abstract class EntityCombineBase extends EntitySmartNPCBase
 	{
 		return true;
 	}
-	
+
 	@Override
-	public void writeEntityToNBT(NBTTagCompound nbt)
+	public void onKilledPlayer(EntityPlayer player)
 	{
-		super.writeEntityToNBT(nbt);
-		nbt.setString("name", name);
-		nbt.setString("squadName", squadName);
-	}
-	
-	@Override
-	public void readEntityFromNBT(NBTTagCompound nbt)
-	{
-		super.readEntityFromNBT(nbt);
-		name = nbt.getString("name");
-		squadName = nbt.getString("squadName");
+		worldChat.accept(chatSupplier.apply(I18nUtil.resolveKey("death.attack.cmb" + rand.nextInt(6), player.getCommandSenderName(), getSquadName())));
 	}
 	
 	@Override
 	public int getTalkInterval()
 	{
-		return 200;
+		return 600;
+	}
+	
+	@Override
+	public String toDisplayShort()
+	{
+		return new StringBuilder("Unit #").append(name).append("\nSquad Name: ").append(squadName).toString();
 	}
 }

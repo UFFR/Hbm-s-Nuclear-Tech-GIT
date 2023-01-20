@@ -1,30 +1,33 @@
 package com.hbm.entity.mob.ai.squad;
 
 import java.util.Objects;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
-import com.hbm.interfaces.INBTSerializable;
+import com.hbm.interfaces.IByteSerializable;
+import com.hbm.main.ModEventHandler;
 
+import bytes.ByteSequence;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 
-public abstract class EntityStats implements INBTSerializable
+public abstract class EntityStats implements IByteSerializable
 {
 	protected static final Supplier<World> WORLD_SUPPLIER = MinecraftServer.getServer()::getEntityWorld;
-	protected int delegateID, sinceLastContact = -1;
+	protected int sinceLastContact = -1;
+	protected UUID delegateID;
 	protected EntityLivingBase delegate;
 	public EntityStats(EntityLivingBase entity)
 	{
-		delegateID = entity.hashCode();
+		delegateID = entity.getPersistentID();
 	}
 	
 	public boolean stillValid()
 	{
-		return WORLD_SUPPLIER.get().getEntityByID(delegateID) != null;
+		return delegate.isEntityAlive();
 	}
 	
 	public float getHealthPercentage()
@@ -80,19 +83,18 @@ public abstract class EntityStats implements INBTSerializable
 	
 	@Override
 	@OverridingMethodsMustInvokeSuper
-	public void writeToNBT(NBTTagCompound nbt)
+	public void writeToBytes(ByteSequence buf)
 	{
-		nbt.setInteger("sinceLastContact", sinceLastContact);
-		nbt.setInteger("delegateID", delegateID);
+		buf.writeInt(sinceLastContact).writeLong(delegateID.getMostSignificantBits()).writeLong(delegateID.getLeastSignificantBits());
 	}
 
 	@Override
 	@OverridingMethodsMustInvokeSuper
-	public void readFromNBT(NBTTagCompound nbt)
+	public void readFromBytes(ByteSequence buf)
 	{
-		sinceLastContact = nbt.getInteger("sinceLastConact");
-		delegateID = nbt.getInteger("delegateID");
-		delegate = (EntityLivingBase) WORLD_SUPPLIER.get().getEntityByID(delegateID);
+		sinceLastContact = buf.readInt();
+		delegateID = new UUID(buf.readLong(), buf.readLong());
+		delegate = (EntityLivingBase) ModEventHandler.getEntityByUUID(delegateID);
 	}
 
 }

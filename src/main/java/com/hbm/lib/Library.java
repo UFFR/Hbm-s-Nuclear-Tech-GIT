@@ -1,11 +1,17 @@
 package com.hbm.lib;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
+
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
@@ -35,20 +41,25 @@ import api.hbm.energy.IEnergyConnector;
 import api.hbm.energy.IEnergyConnectorBlock;
 import api.hbm.fluid.IFluidConnector;
 import api.hbm.fluid.IFluidConnectorBlock;
+import bytes.ByteSequence;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTBase.NBTPrimitive;
+import net.minecraft.nbt.NBTTagByteArray;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
 
 @Spaghetti("this whole class")
@@ -112,6 +123,57 @@ public class Library {
 	public static final ForgeDirection POS_Z = ForgeDirection.SOUTH;
 	public static final ForgeDirection NEG_Z = ForgeDirection.NORTH;
 	
+	public static void nbtCompoundToList(NBTTagCompound nbt, Consumer<String> appender)
+	{
+		nbtCompoundToList(nbt, appender, 0);
+	}
+	
+	public static void nbtCompoundToList(NBTTagCompound nbt, Consumer<String> appender, int depth)
+	{
+		final Set<String> keys = nbt.func_150296_c();
+		final StringBuilder builder = new StringBuilder();
+		for (String key : keys)
+		{
+			final char[] padding = new char[depth + 1];
+			final NBTBase nbtBase = nbt.getTag(key);
+			
+			Arrays.fill(padding, '-');
+			builder.append(padding).append(' ').append(key).append(" = ");
+			if (nbtBase instanceof NBTTagCompound)
+			{
+				appender.accept(builder.toString());
+				nbtCompoundToList((NBTTagCompound) nbtBase, appender, depth + 1);
+			} else
+			{
+				switch (nbtBase.getId())
+				{
+					case NBT.TAG_BYTE: builder.append(((NBTPrimitive) nbtBase).func_150290_f()).append('b'); break;
+					case NBT.TAG_SHORT: builder.append(((NBTPrimitive) nbtBase).func_150289_e()).append('s'); break;
+					case NBT.TAG_INT: builder.append(((NBTPrimitive) nbtBase).func_150287_d()); break;
+					case NBT.TAG_LONG: builder.append(((NBTPrimitive) nbtBase).func_150291_c()).append('l'); break;
+					case NBT.TAG_FLOAT: builder.append(((NBTPrimitive) nbtBase).func_150288_h()).append('f'); break;
+					case NBT.TAG_DOUBLE: builder.append(((NBTPrimitive) nbtBase).func_150286_g()).append('d'); break;
+					case NBT.TAG_BYTE_ARRAY: builder.append(Arrays.toString(((NBTTagByteArray) nbtBase).func_150292_c())).append(" bytes"); break;
+					case NBT.TAG_INT_ARRAY: builder.append(Arrays.toString(((NBTTagIntArray) nbtBase).func_150302_c())); break;
+					default: builder.append(nbtBase); break;
+				}
+				
+				appender.accept(builder.toString());
+			}
+			
+			builder.delete(0, builder.length());
+		}
+	}
+	
+	@CheckForNull
+	public static Entity findEntityWithUUID(@Nonnull UUID uuid, @Nonnull World world)
+	{
+		for (Entity entity : (List<Entity>) world.getLoadedEntityList())
+			if (uuid.equals(entity.getUniqueID()))
+				return entity;
+		return null;
+	}
+	
 	public static <T> List<T> mergeWithoutDuplicates(List<T>...lists)
 	{
 		final List<T> totalList = new ArrayList<T>();
@@ -134,18 +196,18 @@ public class Library {
 	
 	public static byte[] serializeStringCollection(Collection<String> strings)
 	{
-		final ByteBuf buf = Unpooled.buffer();
+		final ByteSequence buf = ByteSequence.allocate(true);
 		buf.writeByte(strings.size());
 		for (String string : strings)
 			buf.writeInt(string.length()).writeBytes(string.getBytes());
 		return buf.array();
 	}
 	
-	public static Collection<String> deserializeStringCollection(byte[] bytes) throws DeserializationException
+	public static List<String> deserializeStringCollection(byte[] bytes) throws DeserializationException
 	{
 		try
 		{
-			final ByteBuf buf = Unpooled.copiedBuffer(bytes);
+			final ByteSequence buf = ByteSequence.wrapReadOnly(bytes);
 			final List<String> strings = new ArrayList<String>();
 			final int size = buf.readInt();
 			
@@ -795,5 +857,21 @@ public class Library {
 	public static <T> T randomFromCollection(Collection<T> elements)
 	{
 		return Iterables.get(elements, rand.nextInt(elements.size()));
+	}
+	
+	public static <T> boolean arrayContainsClass(T[] array, Class<? extends T> clazz, boolean strict)
+	{
+		for (T item : array)
+			if (item != null && (strict ? clazz.equals(item.getClass()) : clazz.isAssignableFrom(item.getClass())))
+				return true;
+		return false;
+	}
+	
+	public static <T> boolean collectionContainsClass(Collection<T> collection, Class<? extends T> clazz, boolean strict)
+	{
+		for (T item : collection)
+			if (item != null && (strict ? clazz.equals(item.getClass()) : clazz.isAssignableFrom(item.getClass())))
+				return true;
+		return false;
 	}
 }

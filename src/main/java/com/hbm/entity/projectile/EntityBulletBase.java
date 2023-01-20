@@ -75,13 +75,14 @@ public class EntityBulletBase extends Entity implements IProjectile {
 		this.setSize(0.5F, 0.5F);
 	}
 	
-	public EntityBulletBase(World world, int config, EntityLivingBase shooter) {
+	public EntityBulletBase(World world, int config, EntityLivingBase shooter, boolean npc)
+	{
 		super(world);
 		this.config = BulletConfigSyncingUtil.pullConfig(config);
 		this.dataWatcher.updateObject(18, config);
 		this.shooter = shooter;
 
-		this.setLocationAndAngles(shooter.posX, shooter.posY + shooter.getEyeHeight(), shooter.posZ, shooter.rotationYaw, shooter.rotationPitch);
+		this.setLocationAndAngles(shooter.posX, shooter.posY + shooter.getEyeHeight(), shooter.posZ, npc ? shooter.rotationYawHead : shooter.rotationYaw, shooter.rotationPitch);
 		
 		double sideOffset = 0.16D;
 		
@@ -102,11 +103,23 @@ public class EntityBulletBase extends Entity implements IProjectile {
 		this.dataWatcher.updateObject(16, (byte)this.config.style);
 		this.dataWatcher.updateObject(17, (byte)this.config.trail);
 	}
+	
+	public EntityBulletBase(World world, int config, EntityLivingBase shooter)
+	{
+		this(world, config, shooter, false);
+	}
 
 	public EntityBulletBase(World world, int config, EntityLivingBase entity, EntityLivingBase target, float motion, float deviation) {
 		super(world);
 		
 		this.config = BulletConfigSyncingUtil.pullConfig(config);
+		
+		if (this.config == null)
+		{
+			MainRegistry.logger.warn("Config [" + config + "] corresponds to null! This should not happen!");
+			this.config = BulletConfigSyncingUtil.pullConfig(1);
+		}
+		
 		this.dataWatcher.updateObject(18, config);
 		this.shooter = entity;
 

@@ -8,11 +8,13 @@ import com.hbm.config.RadiationConfig;
 import com.hbm.entity.mob.EntityDuck;
 import com.hbm.lib.ModDamageSource;
 import com.hbm.main.MainRegistry;
+import com.hbm.main.ServerProxy;
 import com.hbm.packet.AuxParticlePacketNT;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.packet.PlayerInformPacket;
 import com.hbm.util.ChatBuilder;
 
+import api.hbm.entity.IDefenseAttributes;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -48,7 +50,7 @@ public class HbmLivingProps implements IExtendedEntityProperties {
 	private int bombTimer;
 	private int contagion;
 	private int oil;
-	private List<ContaminationEffect> contamination = new ArrayList();
+	private List<ContaminationEffect> contamination = new ArrayList<ContaminationEffect>();
 	
 	public HbmLivingProps(EntityLivingBase entity) {
 		this.entity = entity;
@@ -84,15 +86,15 @@ public class HbmLivingProps implements IExtendedEntityProperties {
 		if(!RadiationConfig.enableContamination)
 			return;
 		
-		HbmLivingProps data = getData(entity);
-		float radiation = getData(entity).radiation + rad;
+//		HbmLivingProps data = getData(entity);
+		float radiation = getData(entity).radiation + (entity instanceof IDefenseAttributes ? rad * ((IDefenseAttributes) entity).getRadResist() : rad);
 		
 		if(radiation > 2500)
 			radiation = 2500;
 		if(radiation < 0)
 			radiation = 0;
 		
-		data.setRadiation(entity, radiation);
+		HbmLivingProps.setRadiation(entity, radiation);
 	}
 	
 	/// RAD ENV ///
@@ -183,7 +185,7 @@ public class HbmLivingProps implements IExtendedEntityProperties {
 		if(entity instanceof EntityDuck)
 			digamma = 0.0F;
 		
-		HbmLivingProps data = getData(entity);
+//		HbmLivingProps data = getData(entity);
 		float dRad = getDigamma(entity) + digamma;
 		
 		if(dRad > 10)
@@ -191,7 +193,7 @@ public class HbmLivingProps implements IExtendedEntityProperties {
 		if(dRad < 0)
 			dRad = 0;
 		
-		data.setDigamma(entity, dRad);
+		HbmLivingProps.setDigamma(entity, dRad);
 	}
 	
 	
@@ -217,7 +219,7 @@ public class HbmLivingProps implements IExtendedEntityProperties {
 		incrementFibrosis(entity, asbestos);
 		
 		if(entity instanceof EntityPlayerMP) {
-			PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(ChatBuilder.start("").nextTranslation("info.asbestos").color(EnumChatFormatting.RED).flush(), MainRegistry.proxy.ID_GAS_HAZARD, 3000), (EntityPlayerMP) entity);
+			PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(ChatBuilder.start("").nextTranslation("info.asbestos").color(EnumChatFormatting.RED).flush(), ServerProxy.ID_GAS_HAZARD, 3000), (EntityPlayerMP) entity);
 		}
 	}
 	
@@ -244,7 +246,7 @@ public class HbmLivingProps implements IExtendedEntityProperties {
 		incrementFibrosis(entity, blacklung);
 		
 		if(entity instanceof EntityPlayerMP) {
-			PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(ChatBuilder.start("").nextTranslation("info.coaldust").color(EnumChatFormatting.RED).flush(), MainRegistry.proxy.ID_GAS_HAZARD, 3000), (EntityPlayerMP) entity);
+			PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(ChatBuilder.start("").nextTranslation("info.coaldust").color(EnumChatFormatting.RED).flush(), ServerProxy.ID_GAS_HAZARD, 3000), (EntityPlayerMP) entity);
 		}
 	}
 	

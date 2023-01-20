@@ -151,6 +151,11 @@ public interface ILocationProvider extends Comparable<ILocationProvider>
 		return locations;
 	}
 	
+	public static void sortLocationsByDistanceFrom(List<? extends ILocationProvider> locations, ILocationProvider reference)
+	{
+		locations.sort(Comparator.comparing(l -> distanceSquared(l, reference)));
+	}
+	
 	public static void sortEntitiesByDistanceFrom(List<? extends Entity> entities, ILocationProvider reference)
 	{
 		entities.sort(Comparator.comparing(e -> distanceSquared(wrap(e), reference)));

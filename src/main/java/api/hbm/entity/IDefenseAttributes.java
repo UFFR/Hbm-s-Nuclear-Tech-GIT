@@ -1,9 +1,15 @@
 package api.hbm.entity;
 
+import java.util.Arrays;
+
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 import com.google.common.annotations.Beta;
+import com.hbm.entity.mob.smart.EntitySmartNPCBase;
+
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
 
 @Beta
 public interface IDefenseAttributes
@@ -71,5 +77,52 @@ public interface IDefenseAttributes
 	public default int[] getBackArmorValues()
 	{
 		return getFrontArmorValues();
+	}
+	
+	public default String listValues()
+	{
+		final StringBuilder builder = new StringBuilder();
+		
+		builder.append("Vanilla armor level: ").append(getArmorValue()).append('\n')
+			   .append("Front armor levels: ").append(Arrays.toString(getFrontArmorValues())).append('\n')
+			   .append("Back armor levels: ").append(Arrays.toString(getBackArmorValues())).append('\n')
+			   .append("Overall damage threshold: ").append(getDamageThreshold()).append('\n')
+			   .append("Overall damage cap: ").append(getDamageCap()).append('\n')
+			   .append("Overall damage modifier: ").append(getDamageModifier()).append('\n')
+			   .append("Projectile resistance: ").append(getProjectileResist()).append('\n')
+			   .append("Explosion resistance: ").append(getBlastResist()).append('\n')
+			   .append("Fire resistance: ").append(getFireResist()).append('\n')
+			   .append("Radiation resistance: ").append(getRadResist());
+		
+		return builder.toString();
+	}
+	
+	public static float calculateDefenses(IDefenseAttributes defense, DamageSource source, float amount)
+	{
+		float newAmount = amount;
+		newAmount *= defense.getDamageModifier();
+		
+		if (defense.getDamageCap() > 0)
+			newAmount = MathHelper.clamp_float(newAmount, 0, defense.getDamageCap());
+		
+		if (source.isProjectile())
+			newAmount *= defense.getProjectileResist();
+		
+		if ("radiation".equals(source.getDamageType()))
+			newAmount *= defense.getRadResist();
+		
+		if (source.isExplosion())
+			newAmount *= defense.getRadResist();
+		
+		if (source.isFireDamage())
+			newAmount *= defense.getFireResist();
+		
+		if (defense.getDamageThreshold() > newAmount || newAmount == 0)
+		{
+			if (defense instanceof EntitySmartNPCBase)
+				((EntitySmartNPCBase) defense).onDamageBlocked(source, amount);
+		}
+		
+		return newAmount;
 	}
 }

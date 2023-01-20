@@ -13,7 +13,7 @@ import com.hbm.main.DeserializationException;
 
 import api.hbm.serialization.ISerializable;
 import api.hbm.serialization.SerializationRegistry;
-import io.netty.buffer.ByteBuf;
+import bytes.ByteSequence;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -107,7 +107,7 @@ public class EasyLocation implements Cloneable, ISerializable<EasyLocation>, IBy
 	{
 		try
 		{
-			final ByteBuf buf = allocCopy.apply(bytes);
+			final ByteSequence buf = ByteSequence.wrapReadOnly(bytes);
 			posX = buf.readDouble();
 			posY = buf.readDouble();
 			posZ = buf.readDouble();
@@ -121,7 +121,7 @@ public class EasyLocation implements Cloneable, ISerializable<EasyLocation>, IBy
 	@Override
 	public byte[] serialize()
 	{
-		final ByteBuf buf = alloc.get();
+		final ByteSequence buf = ByteSequence.allocate(28, true);
 		buf.writeDouble(posX);
 		buf.writeDouble(posY);
 		buf.writeDouble(posZ);
@@ -340,17 +340,16 @@ public class EasyLocation implements Cloneable, ISerializable<EasyLocation>, IBy
 	}
 
 	@Override
-	public void writeToBytes(ByteBuf buf)
+	public void writeToBytes(ByteSequence buf)
 	{
 		buf.writeBytes(serialize());
 	}
 
 	@Override
-	public void readFromBytes(byte[] bytes) throws DeserializationException
+	public void readFromBytes(ByteSequence buf) throws DeserializationException
 	{
 		try
 		{
-			final ByteBuf buf = allocCopy.apply(bytes);
 			posX = buf.readDouble();
 			posY = buf.readDouble();
 			posZ = buf.readDouble();

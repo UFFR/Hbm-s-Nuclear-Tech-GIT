@@ -951,7 +951,12 @@ public class ModEventHandlerClient {
 		}
 		
 		if (event.entity instanceof IEntityDataProvider && event.entity.getDistanceSqToEntity(player) < 25)
-			RenderOverhead.renderTag(event.entity, event.x, event.y, event.z, event.renderer, player.isSneaking() ? ((IEntityDataProvider) event.entity).toDisplay() : ((IEntityDataProvider) event.entity).toDisplayShort(), true);
+		{
+			final String[] strings = (player.isSneaking() ? ((IEntityDataProvider) event.entity).toDisplay() : ((IEntityDataProvider) event.entity).toDisplayShort()).split("\n");
+//			RenderOverhead.renderTag(event.entity, event.x, event.y, event.z, event.renderer, , true);
+			for (byte i = 0; i < strings.length; i++)
+				RenderOverhead.renderTag(event.entity, event.x, event.y + (strings.length - i) * 0.5, event.z, event.renderer, strings[i], false);
+		}
 	}
 	
 	/*@SubscribeEvent

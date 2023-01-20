@@ -11,6 +11,9 @@ import com.hbm.entity.projectile.EntityBulletBase;
 import com.hbm.explosion.ExplosionNukeSmall;
 import com.hbm.handler.BulletConfigSyncingUtil;
 import com.hbm.handler.BulletConfiguration;
+import com.hbm.handler.BulletConfigurationBuilder;
+import com.hbm.handler.BulletConfiguration.BulletPlink;
+import com.hbm.handler.BulletConfiguration.BulletStyle;
 import com.hbm.interfaces.IBulletImpactBehavior;
 import com.hbm.interfaces.IBulletUpdateBehavior;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
@@ -36,6 +39,29 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 
 public class BulletConfigFactory {
+	
+	private static final BulletConfigurationBuilder
+				TEST_CONFIG = new BulletConfigurationBuilder("test", new ComparableStack(ModItems.ammo_357.stackFromEnum(Ammo357Magnum.LEAD)))
+								  .setVelocity(5).setSpread(0.05f).setWear(10).setDmgMin(15).setDmgMax(17).setBulletsMin(1)
+								  .setBulletsMax(1).setGravity(0).setMaxAge(100).setDoesRicochet(true).setRicochetAngle(10)
+								  .setHBRC(2).setLBRC(90).setBounceMod(0.8).setDoesPenetrate(true).setDoesBreakGlass(true)
+								  .setStyle(BulletStyle.NORMAL).setPlink(BulletPlink.BULLET),
+								  
+				STANDARD_BUILDER = new BulletConfigurationBuilder("STANDARD", null).setVelocity(5).setSpread(0.005f)
+									   .setWear(10).setBulletsMin(1).setBulletsMax(1).setGravity(0).setMaxAge(100)
+									   .setDoesRicochet(true).setRicochetAngle(5).setHBRC(2).setLBRC(95).setBounceMod(0.8)
+									   .setDoesPenetrate(true).setDoesBreakGlass(true).setDestroysBlocks(false)
+									   .setStyle(BulletStyle.NORMAL).setPlink(BulletPlink.BULLET).setLeadChance(5);
+	
+	public static BulletConfigurationBuilder getTestBuilder()
+	{
+		return TEST_CONFIG.clone();
+	}
+	
+	public static BulletConfigurationBuilder getStandardBuilder(String registryName, ComparableStack ammo)
+	{
+		return STANDARD_BUILDER.clone().setRegistryName(registryName).setAmmo(ammo);
+	}
 	
 	/// configs should never be loaded manually due to syncing issues: use the syncing util and pass the UID in the DW of the bullet to make the client load the config correctly ////
 	

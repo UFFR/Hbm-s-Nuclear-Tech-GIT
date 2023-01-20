@@ -5,11 +5,9 @@ import java.util.List;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import com.hbm.config.MachineConfig;
 import com.hbm.config.VersatileConfig;
-import com.hbm.interfaces.ICustomWarhead.SaltedFuel.HalfLifeType;
-import com.hbm.lib.Library;
 import com.hbm.util.BobMathUtil;
+import com.hbm.util.HalfLifeType;
 import com.hbm.util.I18nUtil;
 
 import net.minecraft.item.Item;
@@ -120,6 +118,8 @@ public interface IRadioisotopeFuel
 			break;
 		case SHORT:
 			life = 48000 * halfLife;
+			break;
+		default:
 			break;
 		}
 		return (long) life;

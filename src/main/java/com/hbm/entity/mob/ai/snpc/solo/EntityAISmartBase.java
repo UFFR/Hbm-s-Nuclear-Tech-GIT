@@ -1,18 +1,15 @@
-package com.hbm.entity.mob.ai.snpc;
+package com.hbm.entity.mob.ai.snpc.solo;
 
 import com.hbm.entity.mob.smart.EntitySmartNPCBase;
-import com.hbm.interfaces.ILocationProvider;
 
 import net.minecraft.entity.ai.EntityAIBase;
 
 public abstract class EntityAISmartBase extends EntityAIBase
 {
 	protected final EntitySmartNPCBase host;
-	protected final ILocationProvider hostLocation;
 	public EntityAISmartBase(EntitySmartNPCBase host)
 	{
 		this.host = host;
-		hostLocation = ILocationProvider.wrap(host, false);
 	}
 	
 	@Override
@@ -28,10 +25,5 @@ public abstract class EntityAISmartBase extends EntityAIBase
  	public EntitySmartNPCBase getHost()
 	{
 		return host;
-	}
- 	
- 	public ILocationProvider getHostLocation()
-	{
-		return hostLocation;
 	}
 }

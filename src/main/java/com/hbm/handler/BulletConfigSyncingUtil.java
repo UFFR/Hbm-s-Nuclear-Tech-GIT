@@ -565,7 +565,7 @@ public class BulletConfigSyncingUtil {
 
 		for(Entry<Integer, BulletConfiguration> e : configSet.entrySet()) {
 
-			if(e.getValue() == config)
+			if(e.getValue().equals(config))
 				return e.getKey();
 		}
 

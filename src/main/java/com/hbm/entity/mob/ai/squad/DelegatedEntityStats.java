@@ -2,8 +2,8 @@ package com.hbm.entity.mob.ai.squad;
 
 import java.util.Objects;
 
+import bytes.ByteSequence;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.nbt.NBTTagCompound;
 
 public class DelegatedEntityStats extends EntityStats
 {
@@ -79,17 +79,17 @@ public class DelegatedEntityStats extends EntityStats
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbt)
+	public void writeToBytes(ByteSequence buf)
 	{
-		super.writeToNBT(nbt);
-		nbt.setBoolean("lostContact", lostContact);
+		super.writeToBytes(buf);
+		buf.writeBoolean(lostContact);
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound nbt)
+	public void readFromBytes(ByteSequence buf)
 	{
-		super.readFromNBT(nbt);
-		lostContact = nbt.getBoolean("lostContact");
+		super.readFromBytes(buf);
+		lostContact = buf.readBoolean();
 	}
 
 }

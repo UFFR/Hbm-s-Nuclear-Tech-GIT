@@ -1,4 +1,4 @@
-package com.hbm.util;
+package com.hbm.util.lists;
 
 import java.util.ArrayList;
 import java.util.Collection;

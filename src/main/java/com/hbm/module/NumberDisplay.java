@@ -103,46 +103,43 @@ public class NumberDisplay {
 	 * @param c Color to use
 	 * @return
 	 */
-	private int enumToColor(EnumChatFormatting c) {
-		if(c.isColor()) {
-			switch(c) {
-			case AQUA:
-				return 0x55FFFF;
-			case BLACK:
-				return 0x000000;
-			case BLUE:
-				return 0x5555FF;
-			case DARK_AQUA:
-				return 0x00AAAA;
-			case DARK_BLUE:
-				return 0x0000AA;
-			case DARK_GRAY:
-				return 0x555555;
-			case DARK_GREEN:
-				return 0x00AA00;
-			case DARK_PURPLE:
-				return 0xAA00AA;
-			case DARK_RED:
-				return 0xAA0000;
-			case GOLD:
-				return 0xFFAA00;
-			case GRAY:
-				return 0xAAAAAA;
-			case GREEN:
-				return 0x55FF55;
-			case LIGHT_PURPLE:
-				return 0xFF55FF;
-			case RED:
-				return 0xFF5555;
-			case WHITE:
-				return 0xFFFFFF;
-			case YELLOW:
-				return 0xFFFF55;
-			default:
-			}
+	private static int enumToColor(EnumChatFormatting c) {
+		switch(c) {
+		case AQUA:
+			return 0x55FFFF;
+		case BLACK:
+			return 0x000000;
+		case BLUE:
+			return 0x5555FF;
+		case DARK_AQUA:
+			return 0x00AAAA;
+		case DARK_BLUE:
+			return 0x0000AA;
+		case DARK_GRAY:
+			return 0x555555;
+		case DARK_GREEN:
+			return 0x00AA00;
+		case DARK_PURPLE:
+			return 0xAA00AA;
+		case DARK_RED:
+			return 0xAA0000;
+		case GOLD:
+			return 0xFFAA00;
+		case GRAY:
+			return 0xAAAAAA;
+		case GREEN:
+			return 0x55FF55;
+		case LIGHT_PURPLE:
+			return 0xFF55FF;
+		case RED:
+			return 0xFF5555;
+		case WHITE:
+			return 0xFFFFFF;
+		case YELLOW:
+			return 0xFFFF55;
+		default:
+			return 0xFFFF55;
 		}
-		
-		return 0xFFFF55;
 	}
 	/**
 	 * Sets color 

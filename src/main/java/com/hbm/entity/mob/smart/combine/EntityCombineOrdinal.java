@@ -2,8 +2,11 @@ package com.hbm.entity.mob.smart.combine;
 
 import java.util.List;
 
-import com.hbm.entity.mob.ai.snpc.EntityAIRangePrimaryAttack;
-import com.hbm.entity.mob.ai.squad.CombineSpecialSquad;
+import com.hbm.entity.mob.ai.snpc.solo.EntityAILookAtTarget;
+import com.hbm.entity.mob.ai.snpc.solo.EntityAIRangePrimaryAttack;
+import com.hbm.entity.mob.ai.snpc.squad.EntityAIEnemyProximitySquad;
+import com.hbm.entity.mob.ai.snpc.squad.EntityAINearestTargetSquad;
+import com.hbm.entity.mob.ai.squad.CombineCommandoSquad;
 import com.hbm.entity.mob.ai.squad.SquadBase;
 import com.hbm.entity.mob.smart.EntitySmartNPCBase;
 import com.hbm.entity.mob.smart.NPCTask;
@@ -11,8 +14,8 @@ import com.hbm.entity.mob.smart.NameUtil;
 import com.hbm.entity.mob.smart.combine.CombineCommandoSoundUtil.LineCategory;
 import com.hbm.entity.mob.smart.combine.CombineCommandoSoundUtil.UnitType;
 import com.hbm.entity.mob.smart.combine.CombineCommandoSoundUtil.VoiceLine;
-import com.hbm.faction.Factions;
-import com.hbm.handler.BulletConfiguration;
+import com.hbm.faction.FactionCombine;
+import com.hbm.handler.BulletConfigSyncingUtil;
 import com.hbm.handler.GunConfiguration;
 import com.hbm.handler.guncfg.GunOSIPRFactory;
 import com.hbm.interfaces.ILocationProvider;
@@ -29,29 +32,33 @@ import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 public class EntityCombineOrdinal extends EntityCombineCommando
 {
 	private static final int[] FRONT_ARMOR = {3, 25, 5, 2}, BACK_ARMOR = {3, 15, 2, 2};
+	private boolean hasManhack = true;
 	
 	public EntityCombineOrdinal(World world)
 	{
-		this(world, new CombineSpecialSquad(world));
+		this(world, new CombineCommandoSquad(world));
 	}
 	
 	public EntityCombineOrdinal(World world, SquadBase squad, String name)
 	{
-		super(world, squad == null ? new CombineSpecialSquad(world) : squad, name, "Ordinal");
+		super(world, squad == null ? new CombineCommandoSquad(world) : squad, name, "Ordinal");
+		
 		setCurrentItemOrArmor(0, new ItemStack(ModItems.gun_osipr));
 	}
 
 	public EntityCombineOrdinal(World world, SquadBase squad)
 	{
-		super(world, squad == null ? new CombineSpecialSquad(world) : squad,
-				NameUtil.generateNameFromDefined(NameUtil::generateCombineName, Factions.COMBINE.getRegisteredNames(), Short.MAX_VALUE), "Ordinal");
+		super(world, squad == null ? new CombineCommandoSquad(world) : squad,
+				NameUtil.generateNameFromDefined(NameUtil::generateCombineName, FactionCombine.getCombine().getRegisteredNames(), Short.MAX_VALUE), "Ordinal");
 		
 		setCurrentItemOrArmor(0, new ItemStack(ModItems.gun_osipr));
 	}
@@ -64,14 +71,15 @@ public class EntityCombineOrdinal extends EntityCombineCommando
 		getEntityAttribute(SharedMonsterAttributes.followRange).setBaseValue(64);
 		getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(0.55);
 		getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(0.3);
+		getEntityAttribute(SharedMonsterAttributes.attackDamage).setBaseValue(4);
 		
-		getAttributeMap().registerAttribute(SharedMonsterAttributes.attackDamage).setBaseValue(4);
+//		getAttributeMap().registerAttribute(SharedMonsterAttributes.attackDamage).setBaseValue(4);
 	}
 	
 	@Override
 	protected int getExperiencePoints(EntityPlayer player)
 	{
-		return 20;
+		return 40;
 	}
 	
 	@Override
@@ -165,7 +173,10 @@ public class EntityCombineOrdinal extends EntityCombineCommando
 	@Override
 	public void overrideHeldItem(ItemStack stack)
 	{
-		LOGGER.debug("This NPC is not designed to have its held item be overridden, cannot comply.");
+		if (stack != null && stack.getItem() == ModItems.gun_osipr)
+			equipmentSlots[0] = stack;
+		else
+			LOGGER.debug("This NPC is not designed to have its held item be overridden, cannot comply.");
 	}
 
 	@Override
@@ -183,7 +194,7 @@ public class EntityCombineOrdinal extends EntityCombineCommando
 	@Override
 	public int proximityDistance()
 	{
-		return 2;
+		return 5;
 	}
 
 	@Override
@@ -208,13 +219,13 @@ public class EntityCombineOrdinal extends EntityCombineCommando
 	@Override
 	public GunConfiguration getMainGunConfiguration()
 	{
-		return GunOSIPRFactory.getOSIPRConfig();
+		return OSIPR_CONFIG;
 	}
 
 	@Override
-	public BulletConfiguration getMainBulletConfiguration()
+	public int getMainBulletConfiguration()
 	{
-		return GunOSIPRFactory.getPulseConfig();
+		return BulletConfigSyncingUtil.SPECIAL_OSIPR;
 	}
 
 	@Override
@@ -226,13 +237,13 @@ public class EntityCombineOrdinal extends EntityCombineCommando
 	@Override
 	public GunConfiguration getAltGunConfiguration()
 	{
-		return GunOSIPRFactory.getAltConfig();
+		return OSIPR_ALT_CONFIG;
 	}
 
 	@Override
-	public BulletConfiguration getAltBulletConfiguration()
+	public int getAltBulletConfiguration()
 	{
-		return GunOSIPRFactory.getPulseChargedConfig();
+		return BulletConfigSyncingUtil.SPECIAL_OSIPR_CHARGED;
 	}
 
 	@Override
@@ -284,7 +295,7 @@ public class EntityCombineOrdinal extends EntityCombineCommando
 		// TODO Auto-generated method stub
 		say("Provisions low, reloading...");
 		mainMagAmmo = 30;
-		ParticleUtil.spawnCasing(getMyLocation(), casingConfig(), (float) Math.toRadians(rotationPitch), (float) Math.toRadians(rotationYaw), getEyeHeight(), isSneaking);
+		ParticleUtil.spawnCasing(this, casingConfig(), (float) Math.toRadians(rotationPitch), (float) Math.toRadians(rotationYaw), getEyeHeight(), isSneaking());
 	}
 
 	@Override
@@ -302,8 +313,12 @@ public class EntityCombineOrdinal extends EntityCombineCommando
 		getNavigator().setEnterDoors(true);
 		getNavigator().setBreakDoors(true);
 		
-		tasks.addTask(2, new EntityAIRangePrimaryAttack(this, getAIMoveSpeed(), 1, 5));
-		tasks.addTask(3, new EntityAIWander(this, getAIMoveSpeed() * 0.75));
+		tasks.addTask(1, new EntityAIRangePrimaryAttack(this));
+		tasks.addTask(1, new EntityAILookAtTarget(this, this::getAttackTarget));
+		tasks.addTask(2, new EntityAIWander(this, getAIMoveSpeed() * 0.75));
+		
+		targetTasks.addTask(0, new EntityAIEnemyProximitySquad(this));
+		targetTasks.addTask(1, new EntityAINearestTargetSquad(this));
 	}
 	
 	@Override
@@ -329,8 +344,13 @@ public class EntityCombineOrdinal extends EntityCombineCommando
 	public void onIdle()
 	{
 		// TODO Auto-generated method stub
-		say("Idling...");
-		worldObj.playSoundAtEntity(this, CombineCommandoSoundUtil.generateVoiceLine(UnitType.ORDINAL, CombineCommandoSoundUtil.randomLine(LineCategory.IDLE)), 1, 1);
+		if (currentTask == NPCTask.HOLD)
+		{
+			say(CombineCommandoSoundUtil.randomLine(LineCategory.IDLE));
+		} else
+		{
+			say(CombineCommandoSoundUtil.randomLine(LineCategory.COMBAT_IDLE));
+		}
 	}
 
 	@Override
@@ -377,8 +397,10 @@ public class EntityCombineOrdinal extends EntityCombineCommando
 			onKilledPlayer((EntityPlayer) entity);
 		else if (entity.isEntityUndead())
 			say("Tag one necrotic.");
-		else
+		else if (entity instanceof EntitySmartNPCBase)
 			say("Kill confirmed.");
+		else
+			say("One contained.");
 	}
 
 	@Override
@@ -399,7 +421,15 @@ public class EntityCombineOrdinal extends EntityCombineCommando
 	public void onKilledPlayer(EntityPlayer player)
 	{
 		// TODO Auto-generated method stub
+		super.onKilledPlayer(player);
 		say("Overwatch, HVT is contained.");
+	}
+	
+	@Override
+	public void onDamageBlocked(DamageSource source, float originalAmount)
+	{
+		// TODO Auto-generated method stub
+		say("Target ineffective.");
 	}
 
 	@Override
@@ -452,6 +482,13 @@ public class EntityCombineOrdinal extends EntityCombineCommando
 	}
 
 	@Override
+	public void onSquadMemberNeedHelp(EntitySmartNPCBase entity)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
 	public void onSquadMemberAlmostDead(EntitySmartNPCBase entity)
 	{
 		// TODO Auto-generated method stub
@@ -478,6 +515,13 @@ public class EntityCombineOrdinal extends EntityCombineCommando
 		// TODO Auto-generated method stub
 		say("Overwatch, outbreak is uncontained.");
 	}
+	
+	@Override
+	public void onFriendNeedHelp(EntityLivingBase entity)
+	{
+		// TODO Auto-generated method stub
+		
+	}
 
 	@Override
 	public void onFriendAlmostDead(EntityLivingBase entity)
@@ -497,7 +541,7 @@ public class EntityCombineOrdinal extends EntityCombineCommando
 	public void notifyLowAmmunition()
 	{
 		// TODO Auto-generated method stub
-		say("Provisions low, recharging.");
+		say("Provisions low.");
 	}
 
 	@Override
@@ -538,19 +582,25 @@ public class EntityCombineOrdinal extends EntityCombineCommando
 	@Override
 	protected void dropEquipment(boolean byPlayer, int lootLevel)
 	{
-		dropItem(ModItems.gun_osipr, 0);
+		final ItemStack gunStack = new ItemStack(ModItems.gun_osipr), ammoStack = new ItemStack(ModItems.gun_osipr_ammo, mainAmmo / 30);
+		gunStack.stackTagCompound = getStackNBTForGun();
+		entityDropItem(gunStack, rand.nextFloat());
+		entityDropItem(ammoStack, rand.nextFloat());
 	}
 
 	@Override
 	protected void dropFewItems(boolean byPlayer, int lootLevel)
 	{
-		dropItem(ModItems.syringe_metal_stimpak, 0);
+		dropItem(ModItems.syringe_metal_stimpak, rand.nextInt(MathHelper.clamp_int(lootLevel, 1, 64)));
 	}
 
 	@Override
 	protected void dropRareDrop(int i)
 	{
-		dropItem(ModItems.grenade, AmmoHandGrenade.IF_GENERIC.ordinal());
+		if (rand.nextBoolean())
+			entityDropItem(ModItems.grenade.stackFromEnum(AmmoHandGrenade.IF_GENERIC), rand.nextFloat());
+		else
+			dropItem(ModItems.gun_osipr_ammo2, 1);
 	}
 
 	@Override
@@ -563,13 +613,34 @@ public class EntityCombineOrdinal extends EntityCombineCommando
 	@Override
 	protected String getHurtSound()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		say("*Hurt*");
+		return CombineCommandoSoundUtil.generateVoiceLine(UnitType.ORDINAL, VoiceLine.HURT);
 	}
 
 	@Override
 	protected String getDeathSound()
 	{
+		say("*Flatline*");
 		return CombineCommandoSoundUtil.generateVoiceLine(UnitType.ORDINAL, VoiceLine.DEATH);
+	}
+	
+	protected void say(VoiceLine line)
+	{
+		say(line.caption);
+		worldObj.playSoundAtEntity(this, CombineCommandoSoundUtil.generateVoiceLine(UnitType.ORDINAL, line), 2, 1);
+	}
+	
+	@Override
+	public void writeEntityToNBT(NBTTagCompound nbt)
+	{
+		super.writeEntityToNBT(nbt);
+		nbt.setBoolean("hasManhack", hasManhack);
+	}
+	
+	@Override
+	public void readEntityFromNBT(NBTTagCompound nbt)
+	{
+		super.readEntityFromNBT(nbt);
+		hasManhack = nbt.getBoolean("hasManhack");
 	}
 }

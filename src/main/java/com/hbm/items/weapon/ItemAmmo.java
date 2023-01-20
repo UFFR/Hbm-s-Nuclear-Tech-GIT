@@ -15,6 +15,7 @@ import com.hbm.main.MainRegistry;
 import com.hbm.util.EnumUtil;
 import com.hbm.util.I18nUtil;
 
+import api.hbm.entity.IPenetratingProjectile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
@@ -136,7 +137,7 @@ public class ItemAmmo extends ItemEnumMulti
 			final BulletConfiguration config = item.getConfig();
 			list.add("Damage: " + config.dmgMin + '-' + config.dmgMax);
 			list.add("Penetration value: " + config.penetration);
-			list.add("Penetration value at 100 meters: ~" + Math.round(config.modFunction.orElse(BulletConfiguration.DEFAULT_FUNCTION).mod(config.penetration, config.penetrationModifier, 100)));
+			list.add("Penetration value at 100 meters: ~" + Math.round(config.modFunction.orElse(IPenetratingProjectile.DEFAULT_FUNCTION).mod(config.penetration, config.penetrationModifier, 100)));
 		}
 		
 		if (ammoTraits.size() > 0)

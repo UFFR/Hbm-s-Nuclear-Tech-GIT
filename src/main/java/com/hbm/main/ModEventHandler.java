@@ -4,18 +4,24 @@ import java.lang.reflect.Field;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
+
+import javax.annotation.CheckForNull;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.logging.log4j.Level;
 
+import com.google.common.annotations.Beta;
 import com.google.common.collect.Multimap;
 import com.hbm.blocks.IStepTickReceiver;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.generic.BlockAshes;
+import com.hbm.config.FactionConfig;
 import com.hbm.config.GeneralConfig;
 import com.hbm.config.MobConfig;
 import com.hbm.entity.missile.EntityMissileBaseAdvanced;
@@ -25,9 +31,11 @@ import com.hbm.entity.mob.EntityDuck;
 import com.hbm.entity.mob.EntityNuclearCreeper;
 import com.hbm.entity.mob.EntityQuackos;
 import com.hbm.entity.mob.EntityTaintedCreeper;
+import com.hbm.entity.mob.smart.EntitySmartNPCBase;
 import com.hbm.entity.projectile.EntityBurningFOEQ;
 import com.hbm.extprop.HbmLivingProps;
 import com.hbm.extprop.HbmPlayerProps;
+import com.hbm.faction.Factions;
 import com.hbm.handler.ArmorModHandler;
 import com.hbm.handler.BobmazonOfferFactory;
 import com.hbm.handler.BossSpawnHandler;
@@ -55,6 +63,7 @@ import com.hbm.packet.PacketDispatcher;
 import com.hbm.packet.PlayerInformPacket;
 import com.hbm.potion.HbmPotion;
 import com.hbm.saveddata.AuxSavedData;
+import com.hbm.saveddata.FactionSaveData;
 import com.hbm.saveddata.TomSaveData;
 import com.hbm.util.ArmorUtil;
 import com.hbm.util.ContaminationUtil;
@@ -63,6 +72,8 @@ import com.hbm.util.EntityDamageUtil;
 import com.hbm.world.WorldProviderNTM;
 import com.hbm.world.generator.TimedGenerator;
 
+import api.hbm.entity.IDefenseAttributes;
+import api.hbm.faction.Faction;
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -148,6 +159,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
+@SuppressWarnings("static-method")
 public class ModEventHandler {
 	
 	//////////////////////////////////////////
@@ -156,6 +168,17 @@ public class ModEventHandler {
 	public static float fire;
 	public static boolean impact;
 	//////////////////////////////////////////
+	
+	private static Map<String, Faction> factionMap;
+	private static final Map<UUID, Entity> ENTITY_UUID_MAP = new HashMap<UUID, Entity>();
+	private static final List<Faction> factions = new ArrayList<Faction>();
+	
+	@CheckForNull
+	@Beta
+	public static Entity getEntityByUUID(UUID uuid)
+	{
+		return ENTITY_UUID_MAP.get(uuid);
+	}
 	
 	@SubscribeEvent
 	public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
@@ -179,13 +202,22 @@ public class ModEventHandler {
 			}
 			
 			if(MobConfig.enableDucks && event.player instanceof EntityPlayerMP && !event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean("hasDucked"))
-				PacketDispatcher.wrapper.sendTo(new PlayerInformPacket("Press O to Duck!", MainRegistry.proxy.ID_DUCK, 30_000), (EntityPlayerMP) event.player);
+				PacketDispatcher.wrapper.sendTo(new PlayerInformPacket("Press O to Duck!", ServerProxy.ID_DUCK, 30_000), (EntityPlayerMP) event.player);
 			
 			if(event.player instanceof EntityPlayerMP && !event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean("hasGuide")) {
 				event.player.inventory.addItemStackToInventory(new ItemStack(ModItems.book_guide, 1, BookType.STARTER.ordinal()));
 				event.player.inventoryContainer.detectAndSendChanges();
 				event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).setBoolean("hasGuide", true);
 			}
+			
+			Factions.prepare(event.player.worldObj);
+			FactionSaveData.getData(event.player.worldObj);
+			factionMap = Factions.getFactionMap();
+			for (Faction faction : factionMap.values())
+				if (FactionConfig.ENABLE_FACTION_MAP.getOrDefault(faction.getRegistryName(), false))
+					factions.add(faction);
+			
+			ENTITY_UUID_MAP.put(event.player.getPersistentID(), event.player);
 		}
 	}
 	
@@ -194,7 +226,9 @@ public class ModEventHandler {
 		
 		EntityPlayer player = event.player;
 		
-		if(player.getUniqueID().toString().equals(Library.Dr_Nostalgia) && !player.worldObj.isRemote) {
+		ENTITY_UUID_MAP.putIfAbsent(player.getPersistentID(), player);
+		
+		if(player.getPersistentID().toString().equals(Library.Dr_Nostalgia) && !player.worldObj.isRemote) {
 			
 			if(!player.inventory.hasItem(ModItems.hat))
 				player.inventory.addItemStackToInventory(new ItemStack(ModItems.hat));
@@ -221,6 +255,12 @@ public class ModEventHandler {
 			EntityLivingBase living = (EntityLivingBase) event.entity;
 			HbmLivingProps.getData(living); //ditto
 		}
+	}
+	
+	@SubscribeEvent
+	public void onEntityJoinWorld(EntityJoinWorldEvent event)
+	{
+		ENTITY_UUID_MAP.put(event.entity.getPersistentID(), event.entity);
 	}
 	
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -274,6 +314,8 @@ public class ModEventHandler {
 	@SubscribeEvent
 	public void onEntityDeath(LivingDeathEvent event) {
 		
+		ENTITY_UUID_MAP.remove(event.entity.getPersistentID(), event.entity);
+		
 		HbmLivingProps.setRadiation(event.entityLiving, 0);
 		
 		if(event.entity.worldObj.isRemote)
@@ -285,7 +327,7 @@ public class ModEventHandler {
 			event.entity.worldObj.spawnEntityInWorld(foeq);
 		}
 		
-		if(event.entity.getUniqueID().toString().equals(Library.HbMinecraft) || event.entity.getCommandSenderName().equals("HbMinecraft")) {
+		if(event.entity.getPersistentID().toString().equals(Library.HbMinecraft) || event.entity.getCommandSenderName().equals("HbMinecraft")) {
 			event.entity.dropItem(ModItems.book_of_, 1);
 		}
 		
@@ -484,7 +526,7 @@ public class ModEventHandler {
 		
 		try {
 			prevArmor = (ItemStack[]) ReflectionHelper.findField(EntityLivingBase.class, "field_82180_bT", "previousEquipment").get(event.entityLiving);
-		} catch(Exception e) { }
+		} catch(Exception e) {/**/ }
 
 		if(event.entityLiving instanceof EntityPlayer && prevArmor != null && event.entityLiving.getHeldItem() != null 
 				&& (prevArmor[0] == null || prevArmor[0].getItem() != event.entityLiving.getHeldItem().getItem())
@@ -560,12 +602,12 @@ public class ModEventHandler {
 	public void onUnload(WorldEvent.Unload event) {
 		// We don't want Tom's impact data transferring between worlds.
 		TomSaveData data = TomSaveData.forWorld(event.world);
-		this.fire = 0;
-		this.dust = 0;
-		this.impact = false;
-		data.fire = 0;
-		data.dust = 0;
-		data.impact = false;
+		ModEventHandler.fire = 0;
+		ModEventHandler.dust = 0;
+		ModEventHandler.impact = false;
+		TomSaveData.fire = 0;
+		TomSaveData.dust = 0;
+		TomSaveData.impact = false;
 	}
 
 	@SubscribeEvent
@@ -651,13 +693,13 @@ public class ModEventHandler {
 			EventType type = event.type;
 			
 			if(dust > 0 || fire > 0) {
-				if(type == event.type.TREE || type == event.type.BIG_SHROOM || type == event.type.GRASS || type == event.type.REED || type == event.type.FLOWERS || type == event.type.DEAD_BUSH
-						|| type == event.type.CACTUS || type == event.type.PUMPKIN || type == event.type.LILYPAD) {
+				if(type == EventType.TREE || type == EventType.BIG_SHROOM || type == EventType.GRASS || type == EventType.REED || type == EventType.FLOWERS || type == EventType.DEAD_BUSH
+						|| type == EventType.CACTUS || type == EventType.PUMPKIN || type == EventType.LILYPAD) {
 					event.setResult(Result.DENY);
 				}
 				
 			} else if(dust == 0 && fire == 0) {
-				if(type == event.type.TREE || type == event.type.BIG_SHROOM || type == event.type.CACTUS) {
+				if(type == EventType.TREE || type == EventType.BIG_SHROOM || type == EventType.CACTUS) {
 					if(event.world.rand.nextInt(9) == 0) {
 						event.setResult(Result.DEFAULT);
 					} else {
@@ -665,7 +707,7 @@ public class ModEventHandler {
 					}
 				}
 				
-				if(type == event.type.GRASS || type == event.type.REED) {
+				if(type == EventType.GRASS || type == EventType.REED) {
 					event.setResult(Result.DEFAULT);
 				}
 			}
@@ -729,22 +771,22 @@ public class ModEventHandler {
 			float atmosphericDust = tag.getFloat("dust");
 			float firestorm = tag.getFloat("fire");
 			boolean hasImpacted = tag.getBoolean("impact");
-			data.impact = hasImpacted;
+			TomSaveData.impact = hasImpacted;
 			if(atmosphericDust > 0 && firestorm == 0) {
 				tag.setFloat("dust", Math.max(0, atmosphericDust - settle));
 				data.markDirty();
-				data.dust = atmosphericDust;
+				TomSaveData.dust = atmosphericDust;
 			}
 			if(firestorm > 0) {
 				tag.setFloat("fire", Math.max(0, (firestorm - cool)));
 				tag.setFloat("dust", Math.min(1, (atmosphericDust + cool)));
 				data.markDirty();
-				data.fire = firestorm;
-				data.dust = atmosphericDust;
+				TomSaveData.fire = firestorm;
+				TomSaveData.dust = atmosphericDust;
 			}
-			dust = data.dust;
-			fire = data.fire;
-			impact = data.impact;
+			dust = TomSaveData.dust;
+			fire = TomSaveData.fire;
+			impact = TomSaveData.impact;
 		}
 		/// TOM IMPACT END///
 		
@@ -898,6 +940,11 @@ public class ModEventHandler {
 			TimedGenerator.automaton(event.world, 100);
 			SiegeOrchestrator.update(event.world);
 		}
+		
+//		if (FactionConfig.enableFactionMode)
+		if (!event.world.isRemote)
+			Factions.updateFactions();
+//			factions.forEach(Faction::update);
 	}
 	
 	@SubscribeEvent
@@ -928,6 +975,8 @@ public class ModEventHandler {
 	@SubscribeEvent
 	public void onEntityDamaged(LivingHurtEvent event) {
 		
+		final float originalDamage = event.ammount;
+		
 		EntityLivingBase e = event.entityLiving;
 		
 		if(e instanceof EntityPlayer) {
@@ -941,6 +990,36 @@ public class ModEventHandler {
 				event.ammount -= reduce;
 			}
 			props.lastDamage = player.ticksExisted;
+		}
+		
+		if (e instanceof IDefenseAttributes)
+		{
+			final IDefenseAttributes defense = (IDefenseAttributes) e;
+			
+			event.ammount *= defense.getDamageModifier();
+			
+			if (defense.getDamageCap() > 0)
+				event.ammount = MathHelper.clamp_float(event.ammount, 0, defense.getDamageCap());
+			
+			if (event.source.isProjectile())
+				event.ammount *= defense.getProjectileResist();
+			
+			if ("radiation".equals(event.source.getDamageType()))
+				event.ammount *= defense.getRadResist();
+			
+			if (event.source.isExplosion())
+				event.ammount *= defense.getRadResist();
+			
+			if (event.source.isFireDamage())
+				event.ammount *= defense.getFireResist();
+			
+			if (defense.getDamageThreshold() > event.ammount || event.ammount == 0)
+			{
+				if (e instanceof EntitySmartNPCBase)
+					((EntitySmartNPCBase) e).onDamageBlocked(event.source, originalDamage);
+				event.setCanceled(true);
+				return;
+			}
 		}
 		
 		if (e.isPotionActive(HbmPotion.fragile))
@@ -1035,9 +1114,9 @@ public class ModEventHandler {
 			
 			if(player.getCurrentArmor(2) == null && !player.onGround) {
 				
-				boolean isBob = player.getUniqueID().toString().equals(Library.HbMinecraft) || player.getDisplayName().equals("HbMinecraft");
-				boolean isOther = player.getUniqueID().toString().equals(Library.SolsticeUnlimitd) || player.getDisplayName().equals("SolsticeUnlimitd") ||
-						player.getUniqueID().toString().equals(Library.the_NCR) || player.getDisplayName().equals("the_NCR");
+				boolean isBob = player.getPersistentID().toString().equals(Library.HbMinecraft) || player.getDisplayName().equals("HbMinecraft");
+				boolean isOther = player.getPersistentID().toString().equals(Library.SolsticeUnlimitd) || player.getDisplayName().equals("SolsticeUnlimitd") ||
+						player.getPersistentID().toString().equals(Library.the_NCR) || player.getDisplayName().equals("the_NCR");
 				
 				if(isBob || isOther) {
 					
@@ -1179,7 +1258,7 @@ public class ModEventHandler {
 
 			/// PU RADIATION START ///
 			
-			if(player.getUniqueID().toString().equals(Library.Pu_238)) {
+			if(player.getPersistentID().toString().equals(Library.Pu_238)) {
 				
 				List<EntityLivingBase> entities = player.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, player.boundingBox.expand(3, 3, 3));
 				
@@ -1210,9 +1289,9 @@ public class ModEventHandler {
 		}
 
 		//TODO: rewrite this so it doesn't look like shit
-		if(player.worldObj.isRemote && event.phase == event.phase.START && !player.isInvisible() && !player.isSneaking()) {
+		if(player.worldObj.isRemote && event.phase == Phase.START && !player.isInvisible() && !player.isSneaking()) {
 			
-			if(player.getUniqueID().toString().equals(Library.HbMinecraft)) {
+			if(player.getPersistentID().toString().equals(Library.HbMinecraft)) {
 				
 				int i = player.ticksExisted * 3;
 				
@@ -1227,7 +1306,7 @@ public class ModEventHandler {
 				}
 			}
 			
-			if(player.getUniqueID().toString().equals(Library.Pu_238)) {
+			if(player.getPersistentID().toString().equals(Library.Pu_238)) {
 				
 				Vec3 vec = Vec3.createVectorHelper(3 * rand.nextDouble(), 0, 0);
 				
@@ -1457,7 +1536,7 @@ public class ModEventHandler {
 		//in any other way except for    |  |                                              |            |  |
 		//the config file: |             |  |                                              |            |  |
 		//                 V             V  V                                              V            V  V
-		if(GeneralConfig.enableDebugMode && player.getUniqueID().toString().equals(Library.HbMinecraft) && message.startsWith("!")) {
+		if(GeneralConfig.enableDebugMode && player.getPersistentID().toString().equals(Library.HbMinecraft) && message.startsWith("!")) {
 			
 			String[] msg = message.split(" ");
 			

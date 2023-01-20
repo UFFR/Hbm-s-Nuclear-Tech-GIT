@@ -8,8 +8,7 @@ import com.google.common.collect.ImmutableSet;
 import com.hbm.main.DeserializationException;
 
 import api.hbm.serialization.Deserializer;
-import api.hbm.serialization.ISerializable;
-import io.netty.buffer.ByteBuf;
+import bytes.ByteSequence;
 import net.minecraft.nbt.*;
 
 @Beta
@@ -52,7 +51,7 @@ public class NBTSerialization
 			case 9: return serializeList((NBTTagList) nbtBase);
 			case 10: return serializeCompound((NBTTagCompound) nbtBase);
 			case 11:
-				final ByteBuf buf = ISerializable.alloc.get();
+				final ByteSequence buf = ByteSequence.allocate(true);
 				buf.writeByte(11);
 				final int[] ints = ((NBTTagIntArray) nbtBase).func_150302_c();
 				buf.writeInt(ints.length);
@@ -64,8 +63,8 @@ public class NBTSerialization
 	
 	public static byte[] serializeList(NBTTagList nbtTagList)
 	{
-		final ByteBuf buf = ISerializable.alloc.get();
-		final ByteBuf dataBuf = ISerializable.alloc.get();
+		final ByteSequence buf = ByteSequence.allocate(true);
+		final ByteSequence dataBuf = ByteSequence.allocate(true);
 		final NBTTagList copy = (NBTTagList) nbtTagList.copy();
 		buf.writeByte(9);
 		buf.writeByte(copy.func_150303_d());
@@ -73,14 +72,14 @@ public class NBTSerialization
 		for (int i = 0; i < nbtTagList.tagCount(); i++)
 			dataBuf.writeBytes(serializeBase(copy.removeTag(i)));
 		buf.writeInt(dataBuf.array().length + 6);
-		buf.writeBytes(dataBuf);
+		buf.writeBuffer(dataBuf);
 		return buf.array();
 	}
 	
 	public static byte[] serializeCompound(NBTTagCompound tagCompound)
 	{
-		final ByteBuf buf = ISerializable.alloc.get();
-		final ByteBuf dataBuf = ISerializable.alloc.get();
+		final ByteSequence buf = ByteSequence.allocate(true);
+		final ByteSequence dataBuf = ByteSequence.allocate(true);
 		final Set<String> nameSet = ImmutableSet.copyOf(tagCompound.func_150296_c());
 		int count = 0;
 		for (String name : nameSet)
@@ -95,7 +94,7 @@ public class NBTSerialization
 		}
 		buf.writeInt(dataBuf.array().length);
 		buf.writeInt(count);
-		buf.writeBytes(dataBuf);
+		buf.writeBuffer(dataBuf);
 		return buf.array();
 	}
 	
@@ -103,7 +102,7 @@ public class NBTSerialization
 	{
 		try
 		{
-			final ByteBuf buf = ISerializable.allocCopy.apply(bytes);
+			final ByteSequence buf = ByteSequence.wrapReadOnly(bytes);
 			final byte type = buf.readByte();
 			switch (type)
 			{
@@ -141,7 +140,7 @@ public class NBTSerialization
 	{
 		try
 		{
-			final ByteBuf buf = ISerializable.allocCopy.apply(bytes);
+			final ByteSequence buf = ByteSequence.wrapReadOnly(bytes);
 			buf.readByte();
 			final byte type = buf.readByte();
 			final int length = buf.readInt();
@@ -168,12 +167,12 @@ public class NBTSerialization
 						tagList.appendTag(new NBTTagString(new String(nbtString)));
 						break;
 					case 9:
-						final byte[] subListBytes = new byte[buf.getInt(buf.readerIndex() + 6)];
+						final byte[] subListBytes = new byte[buf.getInt(buf.getReadIndex() + 6)];
 						buf.readBytes(subListBytes);
 						tagList.appendTag(deserializeList(subListBytes));
 						break;
 					case 10:
-						final byte[] compoundBytes = new byte[buf.getInt(buf.readerIndex())];
+						final byte[] compoundBytes = new byte[buf.getInt(buf.getReadIndex())];
 						buf.readBytes(compoundBytes);
 						tagList.appendTag(deserializeTagCompound(compoundBytes));
 						break;
@@ -198,7 +197,7 @@ public class NBTSerialization
 		try
 		{
 			final NBTTagCompound nbt = new NBTTagCompound();
-			final ByteBuf buf = ISerializable.allocCopy.apply(bytes);
+			final ByteSequence buf = ByteSequence.wrapReadOnly(bytes);
 			buf.readInt();
 			final int tagCount = buf.readInt();
 			for (int i = 0; i < tagCount; i++)

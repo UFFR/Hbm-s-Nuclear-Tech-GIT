@@ -1,4 +1,4 @@
-package com.hbm.entity.mob.smart;
+package api.hbm.entity;
 
 /**
  * Identify the 12 basic traits of a mob or NPC. Meant for more smart combat and building one's bestiary.<br>

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -23,25 +24,24 @@ import com.google.common.annotations.Beta;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.calc.EasyLocation;
 import com.hbm.entity.grenade.EntityGrenadeBouncyBaseNT;
+import com.hbm.entity.mob.ai.task.TaskHelper;
 import com.hbm.entity.mob.smart.EntitySmartNPCBase;
+import com.hbm.interfaces.IByteSerializable;
 import com.hbm.interfaces.ILocationProvider;
-import com.hbm.interfaces.INBTSerializable;
 import com.hbm.lib.Library;
 import com.hbm.main.DeserializationException;
 import com.hbm.main.MainRegistry;
-import com.hbm.util.ArraySet;
+import com.hbm.util.lists.ArraySet;
 import com.hbm.util.wrappers.Wrapper;
 
 import api.hbm.faction.Faction;
-import api.hbm.faction.Faction.EnumRelation;
 import api.hbm.faction.Faction.EnumTreaty;
+import bytes.ByteSequence;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentText;
@@ -56,7 +56,7 @@ import net.minecraft.world.World;
  *
  */
 @Beta
-public abstract class SquadBase implements INBTSerializable
+public abstract class SquadBase implements IByteSerializable
 {
 	/**Reference to the main logger**/
 	protected static final Logger LOGGER = MainRegistry.logger;
@@ -65,14 +65,16 @@ public abstract class SquadBase implements INBTSerializable
 	protected final List<EntitySmartNPCBase> members = new ArrayList<EntitySmartNPCBase>();
 	protected final Set<String> registeredNames = new HashSet<String>();
 	protected transient final Map<EntitySmartNPCBase, AxisAlignedBB> memberSightMap = new HashMap<EntitySmartNPCBase, AxisAlignedBB>(), memberProximityMap = new HashMap<EntitySmartNPCBase, AxisAlignedBB>();
-	protected transient final List<EntityLivingBase> targets = new ArraySet<EntityLivingBase>();
+	protected final List<EntityLivingBase> targets = new ArraySet<EntityLivingBase>();
 	protected transient final Map<EntityLivingBase, EntityStats> targetStatMap = new HashMap<EntityLivingBase, EntityStats>();
 	protected transient final Map<EntitySmartNPCBase, Set<ILocationProvider>> localHazards = new HashMap<EntitySmartNPCBase, Set<ILocationProvider>>();
 	protected transient final Consumer<IChatComponent> worldChat;
 	protected transient final Function<String, IChatComponent> chatSupplier = ChatComponentText::new;
 	protected Optional<EntitySmartNPCBase> leader = Optional.empty();
+	protected Optional<TaskHelper> taskHelper = Optional.empty();
 	protected SquadTask task = SquadTask.PATROL;
 	protected ILocationProvider taskLocation;
+	protected String name;
 	
 	static
 	{
@@ -90,9 +92,10 @@ public abstract class SquadBase implements INBTSerializable
 		this.world = world;
 		
 		worldChat = MinecraftServer.getServer().getConfigurationManager()::sendChatMsg;
+		
+		getFaction().addSquad(this);
 	}
 	
-	public abstract String getName();
 	public abstract int preferredSize();
 	public abstract void update();
 	public abstract void updateMembers();
@@ -149,6 +152,24 @@ public abstract class SquadBase implements INBTSerializable
 		}
 	}
 	
+	public void notifyDead(EntitySmartNPCBase member)
+	{
+		if (!members.contains(member))
+			return;
+		
+		members.remove(member);
+		
+		if (isSquadDead())
+			return;
+		
+		if (member.isSquadLeader())
+		{
+			setLeader(null);
+			getLeaderOrNextRanked().onLostSquadLeader(member);
+		} else
+			getLeaderOrNextRanked().onLostSquadMember(member);
+	}
+	
 	public void refreshMemberSightlines()
 	{
 		memberSightMap.clear();
@@ -166,18 +187,25 @@ public abstract class SquadBase implements INBTSerializable
 	public List<EntityLivingBase> checkMemberSightlines()
 	{
 		final List<EntityLivingBase> allEntities = new ArraySet<EntityLivingBase>();
-		for (EntitySmartNPCBase member : members)
+		if (!world.isRemote)
 		{
-			final AxisAlignedBB box = memberSightMap.get(member);
-			final List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, box);
-			entities.remove(member);
-			entities.removeIf(this::badTarget);
-			entities.removeAll(getMembers());
-			if (entities.isEmpty())
-				continue;
-			
-			ILocationProvider.sortEntitiesByDistanceFrom(entities, member.getMyLocation());
-			allEntities.addAll(entities);
+			for (EntitySmartNPCBase member : members)
+			{
+				final AxisAlignedBB box = memberSightMap.get(member);
+				final List<EntityLivingBase> entities = member.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, box);
+				
+//				System.out.println(entities);
+				
+				entities.removeIf(getFaction()::isBadTarget);
+				entities.removeAll(getMembers());
+				if (entities.isEmpty())
+					continue;
+				
+				ILocationProvider.sortEntitiesByDistanceFrom(entities, member);
+				allEntities.addAll(entities);
+				
+//				System.out.println(entities);
+			}
 		}
 		return allEntities;
 	}
@@ -196,12 +224,12 @@ public abstract class SquadBase implements INBTSerializable
 					for (int z = (int) spotBox.minZ; z < spotBox.maxZ; z++)
 						if (isBlockHazardous(world.getBlock(x, y, z)))
 							blockCache.add(new EasyLocation(x, y, z));
-			blockCache.removeIf(l -> Library.isObstructed(world, l, member.getMyLocation()));
+			blockCache.removeIf(l -> Library.isObstructed(world, l, member));
 			localHazards.put(member, new HashSet<>(blockCache));
 			if (blockCache.isEmpty())
 				continue;
 			
-			ILocationProvider.sortEntitiesByDistanceFrom(members, member.getMyLocation());
+			ILocationProvider.sortEntitiesByDistanceFrom(members, member);
 			member.notifyDangerGeneric(blockCache.get(0));
 			
 			final List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, spotBox);
@@ -209,19 +237,19 @@ public abstract class SquadBase implements INBTSerializable
 				member.notifyNearbyItems(items);
 			
 			final List<EntityGrenadeBouncyBaseNT> nades = world.getEntitiesWithinAABB(EntityGrenadeBouncyBaseNT.class, proximityBox);
-			nades.removeIf(g -> badTarget(g.getThrower()));
+			nades.removeIf(g -> getFaction().isBadTarget(g.getThrower()));
 			if (!nades.isEmpty())
 			{
-				ILocationProvider.sortEntitiesByDistanceFrom(nades, member.getMyLocation());
+				ILocationProvider.sortEntitiesByDistanceFrom(nades, member);
 				member.notifyDangerGrenade(ILocationProvider.wrap(nades.get(0), false), nades.get(0).getType());
 			}
 			
 			final List<EntityLivingBase> closeEnemies = world.getEntitiesWithinAABB(EntityLivingBase.class, proximityBox);
-			closeEnemies.removeIf(this::badTarget);
+			closeEnemies.removeIf(getFaction()::isBadTarget);
 			closeEnemies.removeAll(getMembers());
 			if (!closeEnemies.isEmpty())
 			{
-				ILocationProvider.sortEntitiesByDistanceFrom(closeEnemies, member.getMyLocation());
+				ILocationProvider.sortEntitiesByDistanceFrom(closeEnemies, member);
 				member.notifyEnemyTooClose(closeEnemies.get(0));
 			}
 		}
@@ -280,7 +308,7 @@ public abstract class SquadBase implements INBTSerializable
 	
 	public boolean addTarget(EntityLivingBase entity)
 	{
-		if (entity == null || members.contains(entity) || badTarget(entity))
+		if (entity == null || members.contains(entity) || getFaction().isBadTarget(entity))
 			return false;
 		
 //		if (entity instanceof EntitySmartNPCBase)
@@ -341,50 +369,105 @@ public abstract class SquadBase implements INBTSerializable
 		return !targets.isEmpty();
 	}
 
-	@Override
-	@OverridingMethodsMustInvokeSuper
-	public void writeToNBT(NBTTagCompound nbt)
+	public String getName()
 	{
-		// TODO Auto-generated method stub
-		nbt.setIntArray("members", members.stream().mapToInt(EntitySmartNPCBase::hashCode).toArray());
-		nbt.setIntArray("targets", targets.stream().mapToInt(EntityLivingBase::hashCode).toArray());
-		nbt.setByteArray("names", Library.serializeStringCollection(getRegisteredNames()));
-		nbt.setInteger("taskID", task.ordinal());
+		return name;
+	}
+	
+	public SquadBase setName(String name)
+	{
+		this.name = name;
+		return this;
 	}
 	
 	@Override
 	@OverridingMethodsMustInvokeSuper
-	public void readFromNBT(NBTTagCompound nbt)
+	public void writeToBytes(ByteSequence buf)
 	{
 		// TODO Auto-generated method stub
-		final int[] memberIDs = nbt.getIntArray("members"), targetIDs = nbt.getIntArray("targets");
-		for (int id : memberIDs)
+		final byte[] memberBytes, targetBytes, nameBytes;
+		
+		memberBytes = serializeEntityList(members);
+		targetBytes = serializeEntityList(targets);
+		nameBytes = Library.serializeStringCollection(registeredNames);
+		
+		buf.writeInt(memberBytes.length).writeInt(targetBytes.length).writeInt(nameBytes.length);
+		buf.writeBytes(memberBytes).writeBytes(targetBytes).writeBytes(nameBytes);
+		buf.writeByte(task.ordinal());
+		buf.writeString(name);
+	}
+	
+	@Override
+	@OverridingMethodsMustInvokeSuper
+	public void readFromBytes(ByteSequence buf) throws DeserializationException
+	{
+		// TODO Auto-generated method stub
+		members.clear();
+		targets.clear();
+		registeredNames.clear();
+		
+		final byte[] memberBytes, targetBytes, nameBytes;
+		final List<UUID> memberUuids, targetUuids;
+
+		memberBytes = new byte[buf.readInt()];
+		targetBytes = new byte[buf.readInt()];
+		nameBytes = new byte[buf.readInt()];
+		
+		buf.readBytes(memberBytes);
+		buf.readBytes(targetBytes);
+		buf.readBytes(nameBytes);
+		
+		memberUuids = deserializeEntityUUIDList(memberBytes);
+		targetUuids = deserializeEntityUUIDList(targetBytes);
+		
+		registeredNames.addAll(Library.deserializeStringCollection(nameBytes));
+		for (UUID uuid : memberUuids)
 		{
-			final Entity entity = world.getEntityByID(id);
+			final Entity entity = Library.findEntityWithUUID(uuid, world);
 			if (entity instanceof EntitySmartNPCBase)
 				members.add((EntitySmartNPCBase) entity);
 			else
-				LOGGER.warn("Saved member ID [" + id + "] associated with either null or wrong class!");
+				LOGGER.warn("Saved member UUID [" + uuid + "] associated with either null or wrong class!");
 		}
-		for (int id : targetIDs)
+		for (UUID uuid : targetUuids)
 		{
-			final Entity entity = world.getEntityByID(id);
+			final Entity entity = Library.findEntityWithUUID(uuid, world);
 			if (entity instanceof EntityLivingBase)
 				targets.add((EntityLivingBase) entity);
 			else
-				LOGGER.warn("Saved target ID [" + id + "] associated with either null or wrong class!");
+				LOGGER.warn("Saved target UUID [" + uuid + "] associated with either null or wrong class!");
 		}
-		registeredNames.clear();
-		try
-		{
-			registeredNames.addAll(Library.deserializeStringCollection(nbt.getByteArray("names")));
-		} catch (DeserializationException e)
-		{
-			LOGGER.catching(e);
-			registeredNames.addAll(members.stream().map(EntitySmartNPCBase::getSquadName).collect(Collectors.toList()));
-		}
+		task = SquadTask.values()[buf.readByte()];
+		name = buf.readString();
+		for (EntitySmartNPCBase member : members)
+			member.setSquad(this);
 		refreshMemberProximities();
 		refreshMemberSightlines();
+	}
+	
+	protected static byte[] serializeEntityList(List<? extends Entity> entities)
+	{
+		final ByteSequence buf = ByteSequence.allocate(entities.size() * 16, true);
+		
+		for (UUID uuid : entities.stream().map(Entity::getUniqueID).collect(Collectors.toList()))
+			buf.writeLong(uuid.getMostSignificantBits()).writeLong(uuid.getLeastSignificantBits());
+		
+		return buf.array();
+	}
+	
+	protected static List<UUID> deserializeEntityUUIDList(byte[] bytes) throws DeserializationException
+	{
+		try
+		{
+			final List<UUID> uuids = new ArrayList<UUID>();
+			final ByteSequence buf = ByteSequence.wrapReadOnly(bytes);
+			while (buf.getRemainingSize() > 0)
+				uuids.add(new UUID(buf.readLong(), buf.readLong()));
+			return uuids;
+		} catch (Exception e)
+		{
+			throw new DeserializationException(e);
+		}
 	}
 	
 	@Override
@@ -412,16 +495,16 @@ public abstract class SquadBase implements INBTSerializable
 		return getName();
 	}
 	
-	public boolean badTarget(EntityLivingBase entity)
-	{
-		if (entity.isDead)
-			return true;
-		if (entity instanceof EntitySmartNPCBase)
-			return ((EntitySmartNPCBase) entity).hasFaction() && getFaction().getRelationship(((EntitySmartNPCBase) entity).getFaction()).ordinal() >= EnumRelation.NEUTRAL.ordinal() || Faction.getTreaty(((EntitySmartNPCBase) entity).getFaction(), getFaction()).ordinal() >= EnumTreaty.NO_AGGRESSION.ordinal();
-		if (entity instanceof EntityPlayer)
-			return getFaction().getPlayerRelationship((EntityPlayer) entity).ordinal() >= EnumRelation.NEUTRAL.ordinal();
-		return entity.getClass().getCanonicalName().contains("passive");
-	}
+//	public boolean badTarget(EntityLivingBase entity)
+//	{
+//		if (entity.isDead)
+//			return true;
+//		if (entity instanceof EntitySmartNPCBase)
+//			return ((EntitySmartNPCBase) entity).hasFaction() && getFaction().getRelationship(((EntitySmartNPCBase) entity).getFaction()).ordinal() >= EnumRelation.NEUTRAL.ordinal() || Faction.getTreaty(((EntitySmartNPCBase) entity).getFaction(), getFaction()).ordinal() >= EnumTreaty.NO_AGGRESSION.ordinal();
+//		if (entity instanceof EntityPlayer)
+//			return getFaction().getPlayerRelationship((EntityPlayer) entity).ordinal() >= EnumRelation.NEUTRAL.ordinal();
+//		return entity.getClass().getCanonicalName().contains("passive");
+//	}
 	
 	protected final EnumDifficulty getWorldDifficulty()
 	{

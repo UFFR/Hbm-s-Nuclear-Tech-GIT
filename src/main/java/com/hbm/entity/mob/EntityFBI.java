@@ -153,7 +153,7 @@ public class EntityFBI extends EntityMob implements IRangedAttackMob {
 				data.setDouble("posY", posY + getEyeHeight());
 				data.setDouble("posZ", posZ);
 				data.setFloat("pitch", (float) Math.toRadians(rotationPitch));
-				data.setFloat("yaw", (float) Math.toRadians(rotationYaw));
+				data.setFloat("yaw", (float) Math.toRadians(rotationYawHead));
 				data.setBoolean("crouched", isSneaking());
 				data.setString("name", "4g");
 				MainRegistry.proxy.effectNT(data);

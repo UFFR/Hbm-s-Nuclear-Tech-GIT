@@ -12,6 +12,7 @@ import org.lwjgl.util.vector.Vector4f;
 import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableMap;
 import com.hbm.interfaces.ILocationProvider;
+import com.hbm.main.MainRegistry;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -93,7 +94,9 @@ public class SpentCasingConfig
 		this.delay = delay;
 		this.smokeChance = smokeChance;
 		
-		CONFIG_MAP.put(registryName, this);
+		final SpentCasingConfig oldConfig = CONFIG_MAP.put(registryName, this);
+		if (oldConfig != null)
+			MainRegistry.logger.info("Re-registration of key [" + registryName + "] detected. Old config is as follows:\n" + oldConfig);
 	}
 
 	public void spawnCasing(TextureManager textureManager, World world, double x, double y, double z, float pitch, float yaw, boolean crouched)

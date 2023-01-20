@@ -126,4 +126,15 @@ public class NameUtil
 //		System.out.println(name);
 		return name;
 	}
+	
+	public static String generateCombineCommandoSquadName(Collection<String> defined)
+	{
+		String name;
+		int i = 1;
+		do
+		{
+			name = "Combine Special Stabilization Force " + i++;
+		} while (defined.contains(name));
+		return name;
+	}
 }
