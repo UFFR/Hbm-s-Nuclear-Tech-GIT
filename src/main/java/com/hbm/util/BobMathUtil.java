@@ -9,9 +9,12 @@ import java.util.List;
 
 import javax.annotation.Nonnegative;
 
+import com.google.common.annotations.Beta;
 import com.hbm.calc.EasyLocation;
+import com.hbm.interfaces.ILocationProvider;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -189,18 +192,75 @@ public class BobMathUtil {
 	
 	public static Vec3 entityUnitVector(Entity entity)
 	{
+		final double yaw = Math.toRadians(entity.rotationYaw), pitch = Math.toRadians(entity.rotationPitch);
 		return Vec3.createVectorHelper
 					(
-						-(Math.sin(entity.rotationYaw / 180 * Math.PI) * Math.cos(entity.rotationPitch / 180 * Math.PI)),
-						-Math.sin(entity.rotationPitch / 180 * Math.PI),
-						Math.cos(entity.rotationYaw / 180 * Math.PI) * Math.cos(entity.rotationPitch / 180 * Math.PI)
+						-(Math.sin(yaw) * Math.cos(pitch)),
+						-Math.sin(pitch),
+						Math.cos(yaw) * Math.cos(pitch)
 					);
 	}
 
 	public static void offsetForHand(Entity entity, EasyLocation loc)
 	{
-		loc.posX -= Math.cos(entity.rotationYaw / 180 * Math.PI) * 0.16;
+		final double yaw = Math.toRadians(entity.rotationYaw);
+		loc.posX -= Math.cos(yaw) * 0.16;
 		loc.posY -= 0.16;
-		loc.posZ -= Math.sin(entity.rotationYaw / 180 * Math.PI) * 0.16;
+		loc.posZ -= Math.sin(yaw) * 0.16;
+	}
+	
+	/**
+	 * SLAB-type method to check if a ray intersects an axis aligned bounding box 
+	 * @param vec The ray's direction
+	 * @param origin The ray's origin
+	 * @param box The box to check
+	 * @return True, if the ray intersects the box, false otherwise
+	 */
+	@Beta
+	public static boolean rayIntersects(Vec3 vec, ILocationProvider origin, AxisAlignedBB box)
+	{
+		
+		double tMin = Double.NEGATIVE_INFINITY;
+	    double tMax = Double.POSITIVE_INFINITY;
+	    final double x0 = origin.posX();
+	    final double y0 = origin.posY();
+	    final double z0 = origin.posZ();
+
+	    for (int i = 0; i < 3; i++)
+	    {
+	        final double dir = i == 0 ? vec.xCoord : i == 1 ? vec.yCoord : vec.zCoord;
+	        final double ori = i == 0 ? x0 : i == 1 ? y0 : z0;
+	        final double boxMin = i == 0 ? box.minX : i == 1 ? box.minY : box.minZ;
+	        final double boxMax = i == 0 ? box.maxX : i == 1 ? box.maxY : box.maxZ;
+
+	        if (Math.abs(dir) < 1e-6)
+	        {
+	            if (ori < boxMin || ori > boxMax)
+	                return false;
+	        } else
+	        {
+	            double t1 = (boxMin - ori) / dir;
+	            double t2 = (boxMax - ori) / dir;
+
+	            if (t1 > t2)
+	            {
+	                final double temp = t1;
+	                t1 = t2;
+	                t2 = temp;
+	            }
+
+	            if (t1 > tMin)
+	                tMin = t1;
+
+	            if (t2 < tMax)
+	                tMax = t2;
+	            
+
+	            if (tMin > tMax)
+	                return false;
+	        }
+	    }
+
+	    return true;
 	}
 }

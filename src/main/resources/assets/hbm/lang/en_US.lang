@@ -651,8 +651,12 @@ death.attack.tauBlast=%1$s charged the XVL1456 for too long and was blown into p
 death.attack.teleporter=%1$s was teleported into nothingness.
 death.attack.twr0=%1$s was shattered into a million shards of light.
 death.attack.twr1=%1$s found out there was no exit.
-death.attack.twr2=%2$s shattered %1$s into a million shards of light.
-death.attack.twr3=%2$s showed %1$s that there was no exit.
+death.attack.twr2=You can't dodge a bullet that's already hit, %1$s.
+death.attack.twr3=May the blessing of the Moon be upon %1$s.
+death.attack.twr4=%2$s shattered %1$s into a million shards of light.
+death.attack.twr5=%2$s showed %1$s that there was no exit.
+death.attack.twr6=%2$s gives %1$s the Moon's blessings.
+death.attack.twr7=%2$s showed %1$s how ephemeral life and existence itself is against the infinite black sky.
 
 desc.item.pileRod=§eUse on drilled graphite to insert$§eUse screwdriver to extract$ 
 desc.item.rtgDecay=Decays to: %s

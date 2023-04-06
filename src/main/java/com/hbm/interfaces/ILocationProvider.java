@@ -4,9 +4,12 @@ import java.util.NoSuchElementException;
 
 import javax.annotation.Nonnull;
 
+import com.hbm.calc.EasyLocation;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
@@ -69,10 +72,15 @@ public interface ILocationProvider
 		return Vec3.createVectorHelper(loc2.posX() - loc1.posX(), loc2.posY() - loc1.posY(), loc2.posZ() - loc2.posZ());
 	}
 	
-	public static double distance(@Nonnull ILocationProvider loc1, @Nonnull ILocationProvider loc2)
+	public static double distanceSq(@Nonnull ILocationProvider loc1, @Nonnull ILocationProvider loc2)
 	{
 		final Vec3 vec = makeVector(loc1, loc2);
-		return Math.sqrt((vec.xCoord * vec.xCoord) + (vec.yCoord * vec.yCoord) + (vec.zCoord + vec.zCoord));
+		return (vec.xCoord * vec.xCoord) + (vec.yCoord * vec.yCoord) + (vec.zCoord + vec.zCoord);
+	}
+	
+	public static double distance(@Nonnull ILocationProvider loc1, @Nonnull ILocationProvider loc2)
+	{
+		return Math.sqrt(distanceSq(loc1, loc2));
 	}
 	
 	public static double yaw(@Nonnull ILocationProvider loc1, @Nonnull ILocationProvider loc2)
@@ -94,6 +102,11 @@ public interface ILocationProvider
 	public static ILocationProvider wrap(TileEntity tileEntity)
 	{
 		return new DelegatedTileEntityLocation(tileEntity);
+	}
+	
+	public static ILocationProvider wrap(MovingObjectPosition mop)
+	{
+		return new EasyLocation(mop.blockX, mop.blockY, mop.blockZ);
 	}
 	
 	static class DelegatedEntityLocation implements ILocationProvider
