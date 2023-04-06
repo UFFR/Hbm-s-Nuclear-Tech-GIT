@@ -42,7 +42,7 @@ public class ItemGunTWR extends ItemGunBase
 		// Unit vector for player
 		final Vec3 step = BobMathUtil.entityUnitVector(player);
 		// First block in the way
-		final ILocationProvider blockTrace = ILocationProvider.wrap(Library.rayTrace(player, 500, 1));
+		final double blockLoc = ILocationProvider.distanceSq(playerLoc, ILocationProvider.wrap(Library.rayTrace(player, 500, 1)));
 		
 		// LEGACY RAY-MARCHING CODE; KNOWN TO WORK, QUESTIONABLE EFFICIENCY
 //		final EasyLocation checkCoord = playerLoc.clone().setWorld(world);
@@ -63,10 +63,10 @@ public class ItemGunTWR extends ItemGunBase
 		// Remove invalid targets
 		entities.removeIf(e ->
 		{
-			// Save entity location conveniently and to be more efficient on CPU
+			// Save entity location conveniently
 			final ILocationProvider entLoc = ILocationProvider.wrap(e, false);
-			//										Check if the block checked earlier is in the way								Check if the ray doesn't intersect
-			return ILocationProvider.distanceSq(playerLoc, blockTrace) < ILocationProvider.distanceSq(playerLoc, entLoc) || !BobMathUtil.rayIntersects(step, playerLoc, e.boundingBox);
+			// Check if the block checked earlier is in the way							Check if the ray doesn't intersect
+			return blockLoc < ILocationProvider.distanceSq(playerLoc, entLoc) || !BobMathUtil.rayIntersects(step, playerLoc, e.boundingBox);
 		});
 		
 		// Loop over all entities
