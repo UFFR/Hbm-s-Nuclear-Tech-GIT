@@ -1,3 +1,6 @@
+NTM fork solely for development of various features. Each branch is either for old archived development or a single feature or group of related features. Some are completed, some aren't, most aren't up to date due to their limited scope.
+Original `README.md` follows.
+
 # Hbm-s-Nuclear-Tech-GIT
 
 https://minecraft.curseforge.com/projects/hbms-nuclear-tech-mod?gameCategorySlug=mc-mods&projectID=235439
